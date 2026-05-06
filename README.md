@@ -1,50 +1,128 @@
-# Welcome to your Expo app 👋
+# CRICKBUZ 🏏
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+A modern cricket social platform built with React Native and Expo.
 
-## Get started
+## Features
 
-1. Install dependencies
+### 🔐 Authentication
+- Splash screen with gradient design
+- Login with social media integration
+- User registration with cricket-themed UI
 
-   ```bash
-   npm install
-   ```
+### 🏠 Home Dashboard
+- Personal profile section
+- Nearby matches discovery
+- Popular cricketers showcase
+- Cricket equipment store
+- Social feed with posts
 
-2. Start the app
+### 🔍 Looking (Match Discovery)
+- Match recommendations
+- Location-based filtering
+- User profile management
 
-   ```bash
-   npx expo start
-   ```
+### 🏏 My Cricket
+- Personal cricket statistics
+- Match history and performance
+- Achievement system
+- Career analytics
 
-In the output, you'll find options to open the app in a
+### 👥 Community
+- Social feed with posts
+- Cricket groups and clubs
+- Events and tournaments
+- Community interactions
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+### 🛒 Store
+- Cricket equipment catalog
+- Featured deals and discounts
+- Category-based browsing
+- Shopping cart functionality
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+## Tech Stack
 
-## Get a fresh project
+- **Framework**: React Native with Expo
+- **Navigation**: Expo Router
+- **UI**: Custom components with Ionicons
+- **Styling**: StyleSheet with responsive design
+- **State Management**: React useState
+- **Gradients**: expo-linear-gradient
 
-When you're ready, run:
+## Color Scheme
 
+- Primary Red: #E63946
+- Secondary Pink: #FF6B8A  
+- Purple Theme: #9D4EDD, #7209B7
+- Cream Background: #FFF8E7, #FFFBF0
+- Accent Gold: #FFD700
+
+## Getting Started
+
+1. Clone the repository
 ```bash
-npm run reset-project
+git clone https://github.com/Dharmendra8202/crickbuz.git
+cd crickbuz
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+2. Install dependencies
+```bash
+npm install
+```
 
-## Learn more
+3. Start the development server
+```bash
+npx expo start
+```
 
-To learn more about developing your project with Expo, look at the following resources:
+4. Run on device
+- Scan QR code with Expo Go app (iOS/Android)
+- Or press 'i' for iOS simulator, 'a' for Android emulator
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+## Project Structure
 
-## Join the community
+```
+app/
+├── index.tsx              # Authentication screens
+├── _layout.tsx           # Root layout
+└── (tabs)/
+    ├── _layout.tsx       # Tab navigation
+    ├── home.tsx          # Main dashboard
+    ├── looking.tsx       # Match discovery
+    ├── my-cricket.tsx    # Personal stats
+    ├── community.tsx     # Social features
+    └── store.tsx         # Equipment store
+```
 
-Join our community of developers creating universal apps.
+## Development Status
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+✅ Complete authentication flow  
+✅ 5 fully functional app screens  
+✅ Bottom tab navigation  
+✅ Interactive modals and features  
+✅ Responsive design  
+✅ Cricket-themed UI/UX  
+
+## Future Enhancements
+
+- [ ] Backend integration
+- [ ] Real-time match updates
+- [ ] Push notifications
+- [ ] Offline functionality
+- [ ] Payment integration
+- [ ] Advanced analytics
+
+## Contributing
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+## License
+
+This project is licensed under the MIT License.
+
+---
+
+**Built with ❤️ for cricket enthusiasts**
