@@ -1,16 +1,17 @@
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
+import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import {
-    Dimensions,
-    ImageBackground,
-    Modal,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View
+  Dimensions,
+  ImageBackground,
+  Modal,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View
 } from 'react-native';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
@@ -21,11 +22,13 @@ const CARD_SPACING = CARD_WIDTH + CARD_MARGIN;
 const SIDE_PADDING = (SCREEN_WIDTH - CARD_WIDTH - (SECTION_PADDING * 2)) / 2;
 
 export default function HomeScreen() {
+  const router = useRouter();
   const [selectedPlayer, setSelectedPlayer] = useState<any>(null);
   const [showPlayerModal, setShowPlayerModal] = useState(false);
   const [showSearchModal, setShowSearchModal] = useState(false);
   const [showChatModal, setShowChatModal] = useState(false);
   const [showMenuDrawer, setShowMenuDrawer] = useState(false);
+  const [showMatchOptionsModal, setShowMatchOptionsModal] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [showAllPlayers, setShowAllPlayers] = useState(false);
   const [activeMatchIndex, setActiveMatchIndex] = useState(0);
@@ -569,14 +572,14 @@ export default function HomeScreen() {
 
             {/* Menu Items */}
             <ScrollView style={styles.drawerMenu}>
-              <TouchableOpacity style={styles.drawerMenuItem}>
-                <View style={styles.drawerMenuIcon}>
-                  <Ionicons name="star" size={20} color="#666" />
-                </View>
-                <Text style={styles.drawerMenuText}>PRO at ₹199 (No autopay)</Text>
-              </TouchableOpacity>
-
-              <TouchableOpacity style={styles.drawerMenuItem}>
+              <TouchableOpacity 
+                style={styles.drawerMenuItem}
+                onPress={() => {
+                  setShowMenuDrawer(false);
+                  router.push('/(tabs)/my-cricket');
+                  // TODO: Set initial view to tournament creation
+                }}
+              >
                 <View style={styles.drawerMenuIcon}>
                   <Ionicons name="trophy-outline" size={20} color="#666" />
                 </View>
@@ -586,7 +589,13 @@ export default function HomeScreen() {
                 </View>
               </TouchableOpacity>
 
-              <TouchableOpacity style={styles.drawerMenuItem}>
+              <TouchableOpacity 
+                style={styles.drawerMenuItem}
+                onPress={() => {
+                  setShowMenuDrawer(false);
+                  setShowMatchOptionsModal(true);
+                }}
+              >
                 <View style={styles.drawerMenuIcon}>
                   <Ionicons name="baseball-outline" size={20} color="#666" />
                 </View>
@@ -675,6 +684,82 @@ export default function HomeScreen() {
               </TouchableOpacity>
             </ScrollView>
           </TouchableOpacity>
+        </TouchableOpacity>
+      </Modal>
+
+      {/* Match Options Modal */}
+      <Modal
+        visible={showMatchOptionsModal}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setShowMatchOptionsModal(false)}
+      >
+        <TouchableOpacity
+          style={styles.modalOverlay}
+          activeOpacity={1}
+          onPress={() => setShowMatchOptionsModal(false)}
+        >
+          <View style={styles.matchOptionsContainer}>
+            <Text style={styles.matchOptionsTitle}>Choose an Option</Text>
+            
+            {/* Start a Match Card */}
+            <TouchableOpacity
+              style={styles.matchOptionCard}
+              onPress={() => {
+                setShowMatchOptionsModal(false);
+                router.push('/(tabs)/my-cricket');
+                // TODO: Set initial view to match creation
+              }}
+              activeOpacity={0.9}
+            >
+              <LinearGradient
+                colors={["#17A2B8", "#138496", "#0E6674"]}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
+                style={styles.matchOptionGradient}
+              >
+                <View style={styles.matchOptionIconCircle}>
+                  <Ionicons name="baseball" size={32} color="#FFF" />
+                </View>
+                <View style={styles.matchOptionTextContainer}>
+                  <Text style={styles.matchOptionTitle}>Start a Match</Text>
+                  <Text style={styles.matchOptionDescription}>
+                    Create and manage your cricket match
+                  </Text>
+                </View>
+                <Ionicons name="chevron-forward" size={24} color="#FFF" />
+              </LinearGradient>
+            </TouchableOpacity>
+
+            {/* Create Tournament Card */}
+            <TouchableOpacity
+              style={styles.matchOptionCard}
+              onPress={() => {
+                setShowMatchOptionsModal(false);
+                router.push('/(tabs)/my-cricket');
+                // TODO: Set initial view to tournament creation
+              }}
+              activeOpacity={0.9}
+            >
+              <LinearGradient
+                colors={["#E63946", "#C1121F", "#780000"]}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
+                style={styles.matchOptionGradient}
+              >
+                <View style={styles.matchOptionIconCircle}>
+                  <Ionicons name="trophy" size={32} color="#FFF" />
+                </View>
+                <View style={styles.matchOptionTextContainer}>
+                  <Text style={styles.matchOptionTitle}>Create Tournament</Text>
+                  <Text style={styles.matchOptionDescription}>
+                    Add a tournament or series
+                  </Text>
+                </View>
+                <Ionicons name="chevron-forward" size={24} color="#FFF" />
+              </LinearGradient>
+            </TouchableOpacity>
+          </View>
         </TouchableOpacity>
       </Modal>
     </View>
@@ -1524,5 +1609,56 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: '#666',
     fontWeight: '600',
+  },
+  matchOptionsContainer: {
+    backgroundColor: '#FFF',
+    borderRadius: 20,
+    padding: 24,
+    width: '85%',
+    maxWidth: 400,
+  },
+  matchOptionsTitle: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    color: '#333',
+    marginBottom: 20,
+    textAlign: 'center',
+  },
+  matchOptionCard: {
+    marginBottom: 16,
+    borderRadius: 16,
+    overflow: 'hidden',
+    elevation: 4,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+  },
+  matchOptionGradient: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 20,
+    gap: 16,
+  },
+  matchOptionIconCircle: {
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  matchOptionTextContainer: {
+    flex: 1,
+  },
+  matchOptionTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#FFF',
+    marginBottom: 4,
+  },
+  matchOptionDescription: {
+    fontSize: 14,
+    color: 'rgba(255, 255, 255, 0.9)',
   },
 });
