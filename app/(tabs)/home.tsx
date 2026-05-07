@@ -576,8 +576,10 @@ export default function HomeScreen() {
                 style={styles.drawerMenuItem}
                 onPress={() => {
                   setShowMenuDrawer(false);
-                  router.push('/(tabs)/my-cricket');
-                  // TODO: Set initial view to tournament creation
+                  router.push({
+                    pathname: '/(tabs)/my-cricket',
+                    params: { action: 'createTournament' }
+                  });
                 }}
               >
                 <View style={styles.drawerMenuIcon}>
@@ -707,8 +709,10 @@ export default function HomeScreen() {
               style={styles.matchOptionCard}
               onPress={() => {
                 setShowMatchOptionsModal(false);
-                router.push('/(tabs)/my-cricket');
-                // TODO: Set initial view to match creation
+                router.push({
+                  pathname: '/(tabs)/my-cricket',
+                  params: { action: 'startMatch' }
+                });
               }}
               activeOpacity={0.9}
             >
@@ -736,8 +740,10 @@ export default function HomeScreen() {
               style={styles.matchOptionCard}
               onPress={() => {
                 setShowMatchOptionsModal(false);
-                router.push('/(tabs)/my-cricket');
-                // TODO: Set initial view to tournament creation
+                router.push({
+                  pathname: '/(tabs)/my-cricket',
+                  params: { action: 'createTournament' }
+                });
               }}
               activeOpacity={0.9}
             >

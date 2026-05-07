@@ -2,7 +2,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { useFocusEffect } from "@react-navigation/native";
 import { LinearGradient } from "expo-linear-gradient";
 import * as Location from "expo-location";
-import { useRouter } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
   Alert,
@@ -19,6 +19,7 @@ import {
 
 export default function MyCricketScreen() {
   const router = useRouter();
+  const params = useLocalSearchParams();
   const [activeTab, setActiveTab] = useState("matches");
   const [activeFilter, setActiveFilter] = useState("your");
   const [activeTournamentFilter, setActiveTournamentFilter] = useState("your");
@@ -177,6 +178,22 @@ export default function MyCricketScreen() {
       ),
     ).start();
   }, []);
+
+  // Handle navigation parameters from home screen
+  useFocusEffect(
+    useCallback(() => {
+      if (params.action === 'createTournament') {
+        // Set to tournaments tab and keep currentView as "matches" so tabs are visible
+        setActiveTab('tournaments');
+        setCurrentView('matches');
+      } else if (params.action === 'startMatch') {
+        // Set to matches tab and show team selection
+        setActiveTab('matches');
+        setCurrentView('teamSelection');
+        setShowTeamSelection(true);
+      }
+    }, [params.action])
+  );
 
   // Handle hardware back button
   useFocusEffect(
