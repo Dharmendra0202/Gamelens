@@ -1,4 +1,5 @@
 import { Ionicons } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
 import React, { useState } from 'react';
 import {
     ScrollView,
@@ -56,7 +57,12 @@ export default function CommunityScreen() {
   return (
     <View style={styles.container}>
       {/* Header */}
-      <View style={styles.header}>
+      <LinearGradient
+        colors={["#E63946", "#C1121F", "#780000"]}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+        style={styles.header}
+      >
         <Text style={styles.headerTitle}>Community</Text>
         <View style={styles.headerRight}>
           <TouchableOpacity style={styles.iconButton}>
@@ -66,7 +72,7 @@ export default function CommunityScreen() {
             <Ionicons name="notifications-outline" size={24} color="#FFF" />
           </TouchableOpacity>
         </View>
-      </View>
+      </LinearGradient>
 
       {/* Tabs */}
       <View style={styles.tabsContainer}>
@@ -280,16 +286,20 @@ export default function CommunityScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F3E8FF',
+    backgroundColor: '#FFF0F0',
   },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingHorizontal: 16,
-    paddingTop: 50,
+    paddingTop: 35,
     paddingBottom: 12,
-    backgroundColor: '#9D4EDD',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 8,
   },
   headerTitle: {
     fontSize: 24,

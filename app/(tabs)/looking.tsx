@@ -1,4 +1,5 @@
 import { Ionicons } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
 import React, { useState } from 'react';
 import {
     ScrollView,
@@ -21,7 +22,12 @@ export default function LookingScreen() {
   return (
     <View style={styles.container}>
       {/* Header */}
-      <View style={styles.header}>
+      <LinearGradient
+        colors={["#E63946", "#C1121F", "#780000"]}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+        style={styles.header}
+      >
         <TouchableOpacity style={styles.menuButton}>
           <Ionicons name="menu" size={28} color="#FFF" />
         </TouchableOpacity>
@@ -47,7 +53,7 @@ export default function LookingScreen() {
             <Ionicons name="notifications-outline" size={24} color="#FFF" />
           </TouchableOpacity>
         </View>
-      </View>
+      </LinearGradient>
 
       {/* Tabs */}
       <View style={styles.tabsContainer}>
@@ -132,16 +138,20 @@ export default function LookingScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F5F5F5',
+    backgroundColor: '#FFF0F0',
   },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingHorizontal: 16,
-    paddingTop: 50,
+    paddingTop: 35,
     paddingBottom: 12,
-    backgroundColor: '#E63946',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 8,
   },
   menuButton: {
     padding: 4,

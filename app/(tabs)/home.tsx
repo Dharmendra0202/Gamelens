@@ -1,15 +1,16 @@
 import { Ionicons } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
 import React, { useState } from 'react';
 import {
-  Dimensions,
-  ImageBackground,
-  Modal,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View
+    Dimensions,
+    ImageBackground,
+    Modal,
+    ScrollView,
+    StyleSheet,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    View
 } from 'react-native';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
@@ -85,7 +86,12 @@ export default function HomeScreen() {
   return (
     <View style={styles.container}>
       {/* Header */}
-      <View style={styles.header}>
+      <LinearGradient
+        colors={["#E63946", "#C1121F", "#780000"]}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+        style={styles.header}
+      >
         <View style={styles.headerLeft}>
           <TouchableOpacity style={styles.menuButton} onPress={() => setShowMenuDrawer(true)}>
             <Ionicons name="menu" size={28} color="#FFF" />
@@ -105,7 +111,7 @@ export default function HomeScreen() {
             <Ionicons name="notifications-outline" size={24} color="#FFF" />
           </TouchableOpacity>
         </View>
-      </View>
+      </LinearGradient>
 
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
         {/* Profile Section */}
@@ -678,18 +684,20 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F3E8FF',
+    backgroundColor: '#FFF0F0',
   },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingHorizontal: 16,
-    paddingTop: 40,
+    paddingTop: 35,
     paddingBottom: 12,
-    backgroundColor: '#9D4EDD',
-    borderBottomWidth: 1,
-    borderBottomColor: '#7209B7',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 8,
   },
   headerLeft: {
     flexDirection: 'row',
