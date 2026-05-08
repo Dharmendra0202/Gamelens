@@ -22,7 +22,7 @@ export default function CommunityScreen() {
       likes: 234,
       comments: 45,
       shares: 12,
-      color: '#9D4EDD',
+      color: '#B91C1C',
     },
     {
       id: 2,
@@ -33,7 +33,7 @@ export default function CommunityScreen() {
       likes: 89,
       comments: 23,
       shares: 5,
-      color: '#C77DFF',
+      color: '#DC2626',
     },
     {
       id: 3,
@@ -44,7 +44,7 @@ export default function CommunityScreen() {
       likes: 456,
       comments: 78,
       shares: 34,
-      color: '#7209B7',
+      color: '#991B1B',
     },
   ];
 
@@ -58,7 +58,7 @@ export default function CommunityScreen() {
     <View style={styles.container}>
       {/* Header */}
       <LinearGradient
-        colors={["#E63946", "#C1121F", "#780000"]}
+        colors={["#B91C1C", "#991B1B", "#7F1D1D"]}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
         style={styles.header}
@@ -83,7 +83,7 @@ export default function CommunityScreen() {
           <Ionicons
             name="home"
             size={20}
-            color={activeTab === 'feed' ? '#9D4EDD' : '#999'}
+            color={activeTab === 'feed' ? '#B91C1C' : '#999'}
           />
           <Text style={[styles.tabText, activeTab === 'feed' && styles.activeTabText]}>
             Feed
@@ -96,7 +96,7 @@ export default function CommunityScreen() {
           <Ionicons
             name="people"
             size={20}
-            color={activeTab === 'groups' ? '#9D4EDD' : '#999'}
+            color={activeTab === 'groups' ? '#B91C1C' : '#999'}
           />
           <Text style={[styles.tabText, activeTab === 'groups' && styles.activeTabText]}>
             Groups
@@ -109,7 +109,7 @@ export default function CommunityScreen() {
           <Ionicons
             name="calendar"
             size={20}
-            color={activeTab === 'events' ? '#9D4EDD' : '#999'}
+            color={activeTab === 'events' ? '#B91C1C' : '#999'}
           />
           <Text style={[styles.tabText, activeTab === 'events' && styles.activeTabText]}>
             Events
@@ -126,19 +126,19 @@ export default function CommunityScreen() {
                 <View style={styles.createPostAvatar}>
                   <Text style={styles.createPostInitials}>ME</Text>
                 </View>
-                <Text style={styles.createPostPlaceholder}>What's on your mind?</Text>
+                <Text style={styles.createPostPlaceholder}>{"What's on your mind?"}</Text>
               </TouchableOpacity>
               <View style={styles.createPostActions}>
                 <TouchableOpacity style={styles.createPostAction}>
-                  <Ionicons name="image-outline" size={20} color="#9D4EDD" />
+                  <Ionicons name="image-outline" size={20} color="#B91C1C" />
                   <Text style={styles.createPostActionText}>Photo</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.createPostAction}>
-                  <Ionicons name="videocam-outline" size={20} color="#9D4EDD" />
+                  <Ionicons name="videocam-outline" size={20} color="#B91C1C" />
                   <Text style={styles.createPostActionText}>Video</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.createPostAction}>
-                  <Ionicons name="location-outline" size={20} color="#9D4EDD" />
+                  <Ionicons name="location-outline" size={20} color="#B91C1C" />
                   <Text style={styles.createPostActionText}>Location</Text>
                 </TouchableOpacity>
               </View>
@@ -191,7 +191,7 @@ export default function CommunityScreen() {
         {activeTab === 'groups' && (
           <View style={styles.groupsSection}>
             <TouchableOpacity style={styles.createGroupButton}>
-              <Ionicons name="add-circle" size={24} color="#9D4EDD" />
+              <Ionicons name="add-circle" size={24} color="#B91C1C" />
               <Text style={styles.createGroupText}>Create New Group</Text>
             </TouchableOpacity>
 
@@ -228,7 +228,7 @@ export default function CommunityScreen() {
         {activeTab === 'events' && (
           <View style={styles.eventsSection}>
             <TouchableOpacity style={styles.createEventButton}>
-              <Ionicons name="add-circle" size={24} color="#9D4EDD" />
+              <Ionicons name="add-circle" size={24} color="#B91C1C" />
               <Text style={styles.createEventText}>Create Event</Text>
             </TouchableOpacity>
 
@@ -286,7 +286,7 @@ export default function CommunityScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFF0F0',
+    backgroundColor: '#FEF2F2',
   },
   header: {
     flexDirection: 'row',
@@ -329,7 +329,7 @@ const styles = StyleSheet.create({
   },
   activeTab: {
     borderBottomWidth: 3,
-    borderBottomColor: '#9D4EDD',
+    borderBottomColor: '#B91C1C',
   },
   tabText: {
     fontSize: 14,
@@ -337,7 +337,7 @@ const styles = StyleSheet.create({
     fontWeight: '500',
   },
   activeTabText: {
-    color: '#9D4EDD',
+    color: '#B91C1C',
     fontWeight: '600',
   },
   content: {
@@ -351,7 +351,7 @@ const styles = StyleSheet.create({
   createPost: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#F3E8FF',
+    backgroundColor: '#FEE2E2',
     borderRadius: 24,
     padding: 12,
     marginBottom: 12,
@@ -360,7 +360,7 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: '#9D4EDD',
+    backgroundColor: '#B91C1C',
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 12,
@@ -385,7 +385,7 @@ const styles = StyleSheet.create({
   },
   createPostActionText: {
     fontSize: 12,
-    color: '#9D4EDD',
+    color: '#B91C1C',
     fontWeight: '600',
   },
   postCard: {
@@ -470,13 +470,13 @@ const styles = StyleSheet.create({
     marginBottom: 24,
     gap: 8,
     borderWidth: 2,
-    borderColor: '#9D4EDD',
+    borderColor: '#B91C1C',
     borderStyle: 'dashed',
   },
   createGroupText: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#9D4EDD',
+    color: '#B91C1C',
   },
   sectionTitle: {
     fontSize: 18,
@@ -497,7 +497,7 @@ const styles = StyleSheet.create({
     width: 50,
     height: 50,
     borderRadius: 25,
-    backgroundColor: '#F3E8FF',
+    backgroundColor: '#FEE2E2',
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 12,
@@ -519,7 +519,7 @@ const styles = StyleSheet.create({
     color: '#666',
   },
   joinButton: {
-    backgroundColor: '#9D4EDD',
+    backgroundColor: '#B91C1C',
     paddingHorizontal: 20,
     paddingVertical: 8,
     borderRadius: 20,
@@ -542,13 +542,13 @@ const styles = StyleSheet.create({
     marginBottom: 24,
     gap: 8,
     borderWidth: 2,
-    borderColor: '#9D4EDD',
+    borderColor: '#B91C1C',
     borderStyle: 'dashed',
   },
   createEventText: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#9D4EDD',
+    color: '#B91C1C',
   },
   eventCard: {
     flexDirection: 'row',
@@ -560,7 +560,7 @@ const styles = StyleSheet.create({
   eventDate: {
     width: 60,
     height: 60,
-    backgroundColor: '#9D4EDD',
+    backgroundColor: '#B91C1C',
     borderRadius: 12,
     justifyContent: 'center',
     alignItems: 'center',

@@ -23,7 +23,7 @@ export default function LookingScreen() {
     <View style={styles.container}>
       {/* Header */}
       <LinearGradient
-        colors={["#E63946", "#C1121F", "#780000"]}
+        colors={["#B91C1C", "#991B1B", "#7F1D1D"]}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
         style={styles.header}
@@ -83,7 +83,7 @@ export default function LookingScreen() {
         <View style={styles.profileSection}>
           <View style={styles.profileCard}>
             <View style={styles.profileAvatar}>
-              <Ionicons name="person" size={32} color="#9D4EDD" />
+              <Ionicons name="person" size={32} color="#B91C1C" />
               <TouchableOpacity style={styles.addButton}>
                 <Ionicons name="add" size={16} color="#FFF" />
               </TouchableOpacity>
@@ -138,7 +138,7 @@ export default function LookingScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFF0F0',
+    backgroundColor: '#FEF2F2',
   },
   header: {
     flexDirection: 'row',
@@ -194,7 +194,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 4,
     right: 4,
-    backgroundColor: '#00D9FF',
+    backgroundColor: '#B91C1C',
     borderRadius: 10,
     width: 20,
     height: 20,
@@ -223,7 +223,7 @@ const styles = StyleSheet.create({
   },
   activeTab: {
     borderBottomWidth: 3,
-    borderBottomColor: '#E63946',
+    borderBottomColor: '#B91C1C',
   },
   tabText: {
     fontSize: 16,
@@ -235,7 +235,7 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   proTag: {
-    backgroundColor: '#00D9FF',
+    backgroundColor: '#B91C1C',
     paddingHorizontal: 8,
     paddingVertical: 2,
     borderRadius: 8,
@@ -260,7 +260,7 @@ const styles = StyleSheet.create({
     width: 80,
     height: 80,
     borderRadius: 40,
-    backgroundColor: '#F3E8FF',
+    backgroundColor: '#FEE2E2',
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 8,
@@ -273,7 +273,7 @@ const styles = StyleSheet.create({
     width: 28,
     height: 28,
     borderRadius: 14,
-    backgroundColor: '#00D9FF',
+    backgroundColor: '#B91C1C',
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 2,
@@ -302,7 +302,7 @@ const styles = StyleSheet.create({
   },
   viewAll: {
     fontSize: 14,
-    color: '#00D9FF',
+    color: '#B91C1C',
     fontWeight: '600',
   },
   matchCard: {
@@ -320,7 +320,7 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   matchBadge: {
-    backgroundColor: '#E63946',
+    backgroundColor: '#B91C1C',
     paddingHorizontal: 12,
     paddingVertical: 4,
     borderRadius: 12,
@@ -348,7 +348,7 @@ const styles = StyleSheet.create({
   },
   vsText: {
     fontSize: 14,
-    color: '#E63946',
+    color: '#B91C1C',
     marginHorizontal: 12,
     fontWeight: '600',
   },

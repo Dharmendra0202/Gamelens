@@ -60,7 +60,7 @@ export default function AuthScreen() {
             onPress={() => setCurrentScreen('login')}
           >
             <LinearGradient
-              colors={['#feffd2', '#ffeea9', '#ffbf78', '#ff7d29']}
+              colors={['#FEE2E2', '#FCA5A5', '#DC2626', '#991B1B']}
               start={{ x: 0.48, y: 0.07 }}
               end={{ x: 0.21, y: 0.85 }}
               style={styles.continueButton}
@@ -128,12 +128,12 @@ export default function AuthScreen() {
               <Text style={styles.socialIcon}>f</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.socialButton} onPress={() => console.log('Twitter login clicked')}>
-              <Ionicons name="logo-twitter" size={24} color="#1DA1F2" />
+              <Ionicons name="logo-twitter" size={24} color="#B91C1C" />
             </TouchableOpacity>
           </View>
           
           <View style={styles.signupContainer}>
-            <Text style={styles.signupText}>Don't have an account? </Text>
+            <Text style={styles.signupText}>{"Don't have an account? "}</Text>
             <TouchableOpacity onPress={() => setCurrentScreen('signup')}>
               <Text style={styles.signupLink}>Sign up</Text>
             </TouchableOpacity>
@@ -233,7 +233,7 @@ export default function AuthScreen() {
             style={styles.backButton} 
             onPress={() => setCurrentScreen('login')}
           >
-            <Ionicons name="arrow-back" size={16} color="#E63946" />
+            <Ionicons name="arrow-back" size={16} color="#B91C1C" />
             <Text style={styles.backButtonText}>Back to login</Text>
           </TouchableOpacity>
         </View>
@@ -245,7 +245,7 @@ export default function AuthScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFFBF0',
+    backgroundColor: '#FEF2F2',
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -255,7 +255,7 @@ const styles = StyleSheet.create({
     left: -SCREEN_WIDTH * 0.15,
     width: SCREEN_WIDTH * 0.4,
     height: SCREEN_WIDTH * 0.4,
-    backgroundColor: '#FF6B8A',
+    backgroundColor: '#DC2626',
     borderRadius: SCREEN_WIDTH * 0.2,
     opacity: 0.8,
   },
@@ -265,7 +265,7 @@ const styles = StyleSheet.create({
     right: -SCREEN_WIDTH * 0.2,
     width: SCREEN_WIDTH * 0.5,
     height: SCREEN_WIDTH * 0.5,
-    backgroundColor: '#E63946',
+    backgroundColor: '#B91C1C',
     borderRadius: SCREEN_WIDTH * 0.25,
     opacity: 0.7,
   },
@@ -293,12 +293,12 @@ const styles = StyleSheet.create({
     width: SCREEN_WIDTH * 0.28,
     height: SCREEN_WIDTH * 0.28,
     borderRadius: SCREEN_WIDTH * 0.14,
-    backgroundColor: '#E63946',
+    backgroundColor: '#B91C1C',
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 4,
-    borderColor: '#FFF8E7',
-    shadowColor: '#E63946',
+    borderColor: '#FEF2F2',
+    shadowColor: '#B91C1C',
     shadowOffset: { width: 0, height: 8 },
     shadowOpacity: 0.4,
     shadowRadius: 12,
@@ -313,17 +313,17 @@ const styles = StyleSheet.create({
     color: '#333',
     letterSpacing: 2,
     marginBottom: SCREEN_HEIGHT * 0.03,
-    textShadowColor: 'rgba(255, 107, 138, 0.3)',
+    textShadowColor: 'rgba(185, 28, 28, 0.24)',
     textShadowOffset: { width: 2, height: 2 },
     textShadowRadius: 4,
   },
   appNamePurple: {
-    color: '#FF6B8A',
+    color: '#DC2626',
   },
   continueButtonWrapper: {
     borderRadius: 30,
     overflow: 'hidden',
-    shadowColor: '#ff7d29',
+    shadowColor: '#991B1B',
     shadowOffset: { width: 0, height: 6 },
     shadowOpacity: 0.4,
     shadowRadius: 10,
@@ -337,7 +337,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: SCREEN_WIDTH * 0.1,
     borderRadius: 30,
     borderWidth: 2,
-    borderColor: '#FFF8E7',
+    borderColor: '#FEF2F2',
     gap: 8,
   },
   continueText: {
@@ -363,8 +363,8 @@ const styles = StyleSheet.create({
     fontSize: SCREEN_WIDTH * 0.04,
     marginBottom: SCREEN_HEIGHT * 0.018,
     borderWidth: 2,
-    borderColor: '#FFD4DD',
-    shadowColor: '#FF6B8A',
+    borderColor: '#FCA5A5',
+    shadowColor: '#DC2626',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.15,
     shadowRadius: 6,
@@ -375,17 +375,17 @@ const styles = StyleSheet.create({
     marginBottom: 24,
   },
   forgotPasswordText: {
-    color: '#E63946',
+    color: '#B91C1C',
     fontSize: 14,
     fontWeight: '500',
   },
   loginButton: {
     width: '100%',
-    backgroundColor: '#E63946',
+    backgroundColor: '#B91C1C',
     borderRadius: 25,
     paddingVertical: 16,
     alignItems: 'center',
-    shadowColor: '#E63946',
+    shadowColor: '#B91C1C',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 8,
@@ -415,8 +415,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 2,
-    borderColor: '#FFD4DD',
-    shadowColor: '#FF6B8A',
+    borderColor: '#FCA5A5',
+    shadowColor: '#DC2626',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
@@ -425,7 +425,7 @@ const styles = StyleSheet.create({
   socialIcon: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#E63946',
+    color: '#B91C1C',
   },
   signupContainer: {
     flexDirection: 'row',
@@ -436,7 +436,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   signupLink: {
-    color: '#FF6B8A',
+    color: '#DC2626',
     fontSize: 14,
     fontWeight: '600',
   },
@@ -445,14 +445,14 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 16,
-    backgroundColor: '#FFF8E7',
+    backgroundColor: '#FEF2F2',
     borderRadius: 28,
     paddingHorizontal: 18,
     paddingVertical: 16,
     marginBottom: 24,
     borderWidth: 1,
-    borderColor: '#FFD4DD',
-    shadowColor: '#FF6B8A',
+    borderColor: '#FCA5A5',
+    shadowColor: '#DC2626',
     shadowOffset: { width: 0, height: 6 },
     shadowOpacity: 0.15,
     shadowRadius: 14,
@@ -462,7 +462,7 @@ const styles = StyleSheet.create({
     width: 88,
     height: 88,
     borderRadius: 24,
-    backgroundColor: '#FF6B8A',
+    backgroundColor: '#DC2626',
     justifyContent: 'center',
     alignItems: 'center',
     position: 'relative',
@@ -471,7 +471,7 @@ const styles = StyleSheet.create({
     width: 34,
     height: 62,
     borderRadius: 16,
-    backgroundColor: '#FFD4DD',
+    backgroundColor: '#FCA5A5',
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingVertical: 10,
@@ -485,7 +485,7 @@ const styles = StyleSheet.create({
     width: 3,
     height: 12,
     borderRadius: 2,
-    backgroundColor: '#E63946',
+    backgroundColor: '#B91C1C',
   },
   pitchLine: {
     width: 2,
@@ -500,9 +500,9 @@ const styles = StyleSheet.create({
     width: 14,
     height: 14,
     borderRadius: 7,
-    backgroundColor: '#FFF8E7',
+    backgroundColor: '#FEF2F2',
     borderWidth: 2,
-    borderColor: '#E63946',
+    borderColor: '#B91C1C',
   },
   heroCopy: {
     flex: 1,
@@ -512,7 +512,7 @@ const styles = StyleSheet.create({
     fontSize: 11,
     fontWeight: '700',
     letterSpacing: 1.2,
-    color: '#E63946',
+    color: '#B91C1C',
   },
   heroText: {
     fontSize: 18,
@@ -529,11 +529,11 @@ const styles = StyleSheet.create({
   },
   signupButton: {
     width: '100%',
-    backgroundColor: '#E63946',
+    backgroundColor: '#B91C1C',
     borderRadius: 25,
     paddingVertical: 16,
     alignItems: 'center',
-    shadowColor: '#E63946',
+    shadowColor: '#B91C1C',
     shadowOffset: { width: 0, height: 5 },
     shadowOpacity: 0.3,
     shadowRadius: 10,
@@ -556,7 +556,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   loginLink: {
-    color: '#FF6B8A',
+    color: '#DC2626',
     fontSize: 14,
     fontWeight: '600',
   },
@@ -567,7 +567,7 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
   },
   backButtonText: {
-    color: '#E63946',
+    color: '#B91C1C',
     fontSize: 14,
     fontWeight: '600',
   },

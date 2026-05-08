@@ -35,15 +35,15 @@ export default function StoreScreen() {
   ];
 
   const featuredDeals = [
-    { id: 1, title: 'Summer Sale', subtitle: 'Up to 50% OFF', image: 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=800&h=400&fit=crop', color: '#FF6B8A' },
-    { id: 2, title: 'New Arrivals', subtitle: 'Latest Cricket Gear', image: 'https://images.unsplash.com/photo-1531415074968-036ba1b575da?w=800&h=400&fit=crop', color: '#9D4EDD' },
+    { id: 1, title: 'Summer Sale', subtitle: 'Up to 50% OFF', image: 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=800&h=400&fit=crop', color: '#DC2626' },
+    { id: 2, title: 'New Arrivals', subtitle: 'Latest Cricket Gear', image: 'https://images.unsplash.com/photo-1531415074968-036ba1b575da?w=800&h=400&fit=crop', color: '#B91C1C' },
   ];
 
   return (
     <View style={styles.container}>
       {/* Header */}
       <LinearGradient
-        colors={["#E63946", "#C1121F", "#780000"]}
+        colors={["#B91C1C", "#991B1B", "#7F1D1D"]}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
         style={styles.header}
@@ -116,7 +116,7 @@ export default function StoreScreen() {
                 <Ionicons
                   name={category.icon as any}
                   size={20}
-                  color={activeCategory === category.id ? '#FFF' : '#9D4EDD'}
+                  color={activeCategory === category.id ? '#FFF' : '#B91C1C'}
                 />
                 <Text
                   style={[
@@ -136,7 +136,7 @@ export default function StoreScreen() {
           <View style={styles.sectionHeader}>
             <Text style={styles.sectionTitle}>All Products</Text>
             <TouchableOpacity>
-              <Ionicons name="options-outline" size={24} color="#9D4EDD" />
+              <Ionicons name="options-outline" size={24} color="#B91C1C" />
             </TouchableOpacity>
           </View>
 
@@ -161,7 +161,7 @@ export default function StoreScreen() {
                     {product.name}
                   </Text>
                   <View style={styles.ratingContainer}>
-                    <Ionicons name="star" size={14} color="#FFD700" />
+                    <Ionicons name="star" size={14} color="#B91C1C" />
                     <Text style={styles.ratingText}>{product.rating}</Text>
                   </View>
                   <View style={styles.priceContainer}>
@@ -188,7 +188,7 @@ export default function StoreScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFF0F0',
+    backgroundColor: '#FEF2F2',
   },
   header: {
     flexDirection: 'row',
@@ -209,7 +209,7 @@ const styles = StyleSheet.create({
     color: '#FFF',
   },
   headerTitleOrange: {
-    color: '#FFD60A',
+    color: '#FCA5A5',
   },
   headerRight: {
     flexDirection: 'row',
@@ -223,7 +223,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 4,
     right: 4,
-    backgroundColor: '#FF6B8A',
+    backgroundColor: '#DC2626',
     borderRadius: 10,
     width: 20,
     height: 20,
@@ -247,7 +247,7 @@ const styles = StyleSheet.create({
   searchBar: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#F3E8FF',
+    backgroundColor: '#FEE2E2',
     borderRadius: 25,
     paddingHorizontal: 16,
     paddingVertical: 12,
@@ -307,7 +307,7 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   dealButton: {
-    backgroundColor: '#FFD60A',
+    backgroundColor: '#FCA5A5',
     paddingHorizontal: 20,
     paddingVertical: 8,
     borderRadius: 20,
@@ -330,17 +330,17 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 10,
     borderRadius: 20,
-    backgroundColor: '#F3E8FF',
+    backgroundColor: '#FEE2E2',
     marginRight: 12,
     gap: 6,
   },
   activeCategoryChip: {
-    backgroundColor: '#9D4EDD',
+    backgroundColor: '#B91C1C',
   },
   categoryChipText: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#9D4EDD',
+    color: '#B91C1C',
   },
   activeCategoryChipText: {
     color: '#FFF',
@@ -371,7 +371,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 8,
     left: 8,
-    backgroundColor: '#FF6B8A',
+    backgroundColor: '#DC2626',
     paddingHorizontal: 8,
     paddingVertical: 4,
     borderRadius: 8,
@@ -422,7 +422,7 @@ const styles = StyleSheet.create({
   productPrice: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#9D4EDD',
+    color: '#B91C1C',
   },
   originalPrice: {
     fontSize: 12,
@@ -431,7 +431,7 @@ const styles = StyleSheet.create({
   },
   addToCartButton: {
     flexDirection: 'row',
-    backgroundColor: '#9D4EDD',
+    backgroundColor: '#B91C1C',
     paddingVertical: 8,
     borderRadius: 8,
     alignItems: 'center',

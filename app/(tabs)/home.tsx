@@ -34,10 +34,10 @@ export default function HomeScreen() {
   const [activeMatchIndex, setActiveMatchIndex] = useState(0);
 
   const players = [
-    { id: 1, name: 'Virat Kohli', role: 'Batsman', team: 'India', runs: '25,000+', initials: 'VK', color: '#9D4EDD' },
-    { id: 2, name: 'MS Dhoni', role: 'Wicket Keeper', team: 'India', runs: '17,000+', initials: 'MS', color: '#7209B7' },
-    { id: 3, name: 'Rohit Sharma', role: 'Batsman', team: 'India', runs: '18,000+', initials: 'RS', color: '#C77DFF' },
-    { id: 4, name: 'Jasprit Bumrah', role: 'Bowler', team: 'India', wickets: '500+', initials: 'JB', color: '#E0AAFF' },
+    { id: 1, name: 'Virat Kohli', role: 'Batsman', team: 'India', runs: '25,000+', initials: 'VK', color: '#B91C1C' },
+    { id: 2, name: 'MS Dhoni', role: 'Wicket Keeper', team: 'India', runs: '17,000+', initials: 'MS', color: '#991B1B' },
+    { id: 3, name: 'Rohit Sharma', role: 'Batsman', team: 'India', runs: '18,000+', initials: 'RS', color: '#DC2626' },
+    { id: 4, name: 'Jasprit Bumrah', role: 'Bowler', team: 'India', wickets: '500+', initials: 'JB', color: '#FCA5A5' },
   ];
 
   const products = [
@@ -90,7 +90,7 @@ export default function HomeScreen() {
     <View style={styles.container}>
       {/* Header */}
       <LinearGradient
-        colors={["#E63946", "#C1121F", "#780000"]}
+        colors={["#B91C1C", "#991B1B", "#7F1D1D"]}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
         style={styles.header}
@@ -128,7 +128,7 @@ export default function HomeScreen() {
               <Text style={styles.myProfileStats}>125 Friends • 45 Posts</Text>
             </View>
             <TouchableOpacity style={styles.viewProfileButton} onPress={() => console.log('View profile clicked')}>
-              <Ionicons name="chevron-forward" size={20} color="#9D4EDD" />
+              <Ionicons name="chevron-forward" size={20} color="#B91C1C" />
             </TouchableOpacity>
           </View>
         </View>
@@ -138,7 +138,7 @@ export default function HomeScreen() {
           <View style={styles.sectionHeader}>
             <Text style={styles.sectionTitle}>Matches Nearby</Text>
             <TouchableOpacity style={styles.locationButton} onPress={() => console.log('Location clicked')}>
-              <Ionicons name="location" size={16} color="#9D4EDD" />
+              <Ionicons name="location" size={16} color="#B91C1C" />
               <Text style={styles.locationText}>Mumbai</Text>
             </TouchableOpacity>
           </View>
@@ -217,7 +217,7 @@ export default function HomeScreen() {
               </TouchableOpacity>
             </View>
             <View style={styles.bannerIcon}>
-              <Ionicons name="ticket" size={60} color="#FFD700" />
+              <Ionicons name="ticket" size={60} color="#B91C1C" />
             </View>
           </View>
         </View>
@@ -262,7 +262,7 @@ export default function HomeScreen() {
                 </View>
 
                 <TouchableOpacity style={styles.playerFollowBtn}>
-                  <Ionicons name="person-add-outline" size={18} color="#9D4EDD" />
+                  <Ionicons name="person-add-outline" size={18} color="#B91C1C" />
                 </TouchableOpacity>
               </TouchableOpacity>
             ))}
@@ -273,7 +273,7 @@ export default function HomeScreen() {
                 onPress={() => setShowAllPlayers(true)}
               >
                 <Text style={styles.seeMoreText}>See More Cricketers</Text>
-                <Ionicons name="chevron-down" size={20} color="#9D4EDD" />
+                <Ionicons name="chevron-down" size={20} color="#B91C1C" />
               </TouchableOpacity>
             )}
           </View>
@@ -329,7 +329,7 @@ export default function HomeScreen() {
             <View style={styles.createPostAvatar}>
               <Text style={styles.createPostInitials}>ME</Text>
             </View>
-            <Text style={styles.createPostPlaceholder}>What's on your mind?</Text>
+            <Text style={styles.createPostPlaceholder}>{"What's on your mind?"}</Text>
           </TouchableOpacity>
 
           {/* Posts */}
@@ -478,7 +478,7 @@ export default function HomeScreen() {
             </TouchableOpacity>
             <Text style={styles.chatModalTitle}>Messages</Text>
             <TouchableOpacity>
-              <Ionicons name="create-outline" size={24} color="#9D4EDD" />
+              <Ionicons name="create-outline" size={24} color="#B91C1C" />
             </TouchableOpacity>
           </View>
 
@@ -500,7 +500,7 @@ export default function HomeScreen() {
             </TouchableOpacity>
 
             <TouchableOpacity style={styles.chatItem}>
-              <View style={[styles.chatAvatar, { backgroundColor: '#C77DFF' }]}>
+              <View style={[styles.chatAvatar, { backgroundColor: '#DC2626' }]}>
                 <Text style={styles.chatAvatarText}>PP</Text>
               </View>
               <View style={styles.chatInfo}>
@@ -513,7 +513,7 @@ export default function HomeScreen() {
             </TouchableOpacity>
 
             <TouchableOpacity style={styles.chatItem}>
-              <View style={[styles.chatAvatar, { backgroundColor: '#7209B7' }]}>
+              <View style={[styles.chatAvatar, { backgroundColor: '#991B1B' }]}>
                 <Text style={styles.chatAvatarText}>TW</Text>
               </View>
               <View style={styles.chatInfo}>
@@ -614,11 +614,37 @@ export default function HomeScreen() {
                 <Text style={styles.drawerMenuText}>Go Live</Text>
               </TouchableOpacity>
 
-              <TouchableOpacity style={styles.drawerMenuItem}>
+              <TouchableOpacity
+                style={styles.drawerMenuItem}
+                onPress={() => {
+                  setShowMenuDrawer(false);
+                  router.push({
+                    pathname: '/(tabs)/my-cricket',
+                    params: { section: 'menu' }
+                  });
+                }}
+              >
                 <View style={styles.drawerMenuIcon}>
                   <Ionicons name="baseball" size={20} color="#666" />
                 </View>
                 <Text style={styles.drawerMenuText}>My Cricket</Text>
+                <Ionicons name="chevron-forward" size={16} color="#B91C1C" style={{ marginLeft: 'auto' }} />
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={styles.drawerMenuItem}
+                onPress={() => {
+                  setShowMenuDrawer(false);
+                  router.push({
+                    pathname: '/(tabs)/my-cricket',
+                    params: { tab: 'tournaments' }
+                  });
+                }}
+              >
+                <View style={styles.drawerMenuIcon}>
+                  <Ionicons name="trophy" size={20} color="#666" />
+                </View>
+                <Text style={styles.drawerMenuText}>My Tournament</Text>
               </TouchableOpacity>
 
               <TouchableOpacity style={styles.drawerMenuItem}>
@@ -633,7 +659,7 @@ export default function HomeScreen() {
                   <Ionicons name="bag-outline" size={20} color="#666" />
                 </View>
                 <Text style={styles.drawerMenuText}>CricHeroes Store</Text>
-                <Ionicons name="lock-closed" size={16} color="#FFD700" style={{ marginLeft: 'auto' }} />
+                <Ionicons name="lock-closed" size={16} color="#B91C1C" style={{ marginLeft: 'auto' }} />
               </TouchableOpacity>
 
               <TouchableOpacity style={styles.drawerMenuItem}>
@@ -717,7 +743,7 @@ export default function HomeScreen() {
               activeOpacity={0.9}
             >
               <LinearGradient
-                colors={["#17A2B8", "#138496", "#0E6674"]}
+                colors={["#B91C1C", "#991B1B", "#7F1D1D"]}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 1 }}
                 style={styles.matchOptionGradient}
@@ -748,7 +774,7 @@ export default function HomeScreen() {
               activeOpacity={0.9}
             >
               <LinearGradient
-                colors={["#E63946", "#C1121F", "#780000"]}
+                colors={["#B91C1C", "#991B1B", "#7F1D1D"]}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 1 }}
                 style={styles.matchOptionGradient}
@@ -775,7 +801,7 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFF0F0',
+    backgroundColor: '#FEF2F2',
   },
   header: {
     flexDirection: 'row',
@@ -804,7 +830,7 @@ const styles = StyleSheet.create({
     color: '#FFF',
   },
   headerTitleOrange: {
-    color: '#FFD60A',
+    color: '#FCA5A5',
   },
   headerRight: {
     flexDirection: 'row',
@@ -831,7 +857,7 @@ const styles = StyleSheet.create({
     width: 45,
     height: 45,
     borderRadius: 22.5,
-    backgroundColor: '#9D4EDD',
+    backgroundColor: '#B91C1C',
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -879,12 +905,12 @@ const styles = StyleSheet.create({
     gap: 4,
     paddingHorizontal: 12,
     paddingVertical: 6,
-    backgroundColor: '#F3E8FF',
+    backgroundColor: '#FEE2E2',
     borderRadius: 16,
   },
   locationText: {
     fontSize: 14,
-    color: '#9D4EDD',
+    color: '#B91C1C',
     fontWeight: '600',
   },
   matchScrollContent: {
@@ -917,7 +943,7 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   matchBadge: {
-    backgroundColor: '#9D4EDD',
+    backgroundColor: '#B91C1C',
     paddingHorizontal: 12,
     paddingVertical: 4,
     borderRadius: 12,
@@ -945,7 +971,7 @@ const styles = StyleSheet.create({
   },
   matchVs: {
     fontSize: 14,
-    color: '#FFD700',
+    color: '#B91C1C',
     marginHorizontal: 12,
   },
   matchLocation: {
@@ -960,7 +986,7 @@ const styles = StyleSheet.create({
     color: '#FFF',
   },
   joinMatchButton: {
-    backgroundColor: '#9D4EDD',
+    backgroundColor: '#B91C1C',
     paddingVertical: 12,
     borderRadius: 8,
     alignItems: 'center',
@@ -981,18 +1007,18 @@ const styles = StyleSheet.create({
     width: 8,
     height: 8,
     borderRadius: 4,
-    backgroundColor: '#E0D4F7',
+    backgroundColor: '#FCA5A5',
   },
   activeDot: {
     width: 24,
-    backgroundColor: '#9D4EDD',
+    backgroundColor: '#B91C1C',
   },
   bannerSection: {
     paddingHorizontal: 16,
     marginBottom: 8,
   },
   banner: {
-    backgroundColor: '#7209B7',
+    backgroundColor: '#991B1B',
     borderRadius: 16,
     padding: 20,
     flexDirection: 'row',
@@ -1011,11 +1037,11 @@ const styles = StyleSheet.create({
   },
   bannerSubtitle: {
     fontSize: 14,
-    color: '#E0AAFF',
+    color: '#FCA5A5',
     marginBottom: 12,
   },
   bannerButton: {
-    backgroundColor: '#FFD60A',
+    backgroundColor: '#FCA5A5',
     paddingHorizontal: 20,
     paddingVertical: 8,
     borderRadius: 20,
@@ -1024,14 +1050,14 @@ const styles = StyleSheet.create({
   bannerButtonText: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#7209B7',
+    color: '#991B1B',
   },
   bannerIcon: {
     marginLeft: 16,
   },
   seeAll: {
     fontSize: 14,
-    color: '#9D4EDD',
+    color: '#B91C1C',
     fontWeight: '600',
   },
   playersListContainer: {
@@ -1040,7 +1066,7 @@ const styles = StyleSheet.create({
   playerListItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#F8F5FF',
+    backgroundColor: '#FEF2F2',
     borderRadius: 12,
     padding: 12,
     gap: 12,
@@ -1049,7 +1075,7 @@ const styles = StyleSheet.create({
     width: 28,
     height: 28,
     borderRadius: 14,
-    backgroundColor: '#FFD700',
+    backgroundColor: '#B91C1C',
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -1088,7 +1114,7 @@ const styles = StyleSheet.create({
   },
   playerListRole: {
     fontSize: 12,
-    color: '#9D4EDD',
+    color: '#B91C1C',
     fontWeight: '600',
   },
   playerDivider: {
@@ -1111,24 +1137,24 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: '#9D4EDD',
+    borderColor: '#B91C1C',
   },
   seeMoreButton: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#F8F5FF',
+    backgroundColor: '#FEF2F2',
     borderRadius: 12,
     padding: 14,
     gap: 8,
     borderWidth: 1,
-    borderColor: '#E0D4F7',
+    borderColor: '#FCA5A5',
     borderStyle: 'dashed',
   },
   seeMoreText: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#9D4EDD',
+    color: '#B91C1C',
   },
   playerCard: {
     alignItems: 'center',
@@ -1200,17 +1226,17 @@ const styles = StyleSheet.create({
   productPrice: {
     fontSize: 14,
     fontWeight: 'bold',
-    color: '#FFD700',
+    color: '#B91C1C',
   },
   addToCartButton: {
-    backgroundColor: '#9D4EDD',
+    backgroundColor: '#B91C1C',
     width: 32,
     height: 32,
     borderRadius: 16,
     justifyContent: 'center',
     alignItems: 'center',
     elevation: 2,
-    shadowColor: '#9D4EDD',
+    shadowColor: '#B91C1C',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.3,
     shadowRadius: 3,
@@ -1218,7 +1244,7 @@ const styles = StyleSheet.create({
   createPost: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#F3E8FF',
+    backgroundColor: '#FEE2E2',
     borderRadius: 24,
     padding: 12,
     marginBottom: 16,
@@ -1227,7 +1253,7 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: '#9D4EDD',
+    backgroundColor: '#B91C1C',
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 12,
@@ -1258,7 +1284,7 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: '#C77DFF',
+    backgroundColor: '#DC2626',
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 12,
@@ -1362,7 +1388,7 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   followButton: {
-    backgroundColor: '#9D4EDD',
+    backgroundColor: '#B91C1C',
     paddingHorizontal: 40,
     paddingVertical: 12,
     borderRadius: 24,
@@ -1394,7 +1420,7 @@ const styles = StyleSheet.create({
   searchInputContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#F3E8FF',
+    backgroundColor: '#FEE2E2',
     margin: 16,
     paddingHorizontal: 16,
     paddingVertical: 12,
@@ -1458,7 +1484,7 @@ const styles = StyleSheet.create({
     width: 50,
     height: 50,
     borderRadius: 25,
-    backgroundColor: '#9D4EDD',
+    backgroundColor: '#B91C1C',
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 12,
@@ -1490,7 +1516,7 @@ const styles = StyleSheet.create({
     color: '#999',
   },
   chatBadge: {
-    backgroundColor: '#9D4EDD',
+    backgroundColor: '#B91C1C',
     borderRadius: 10,
     paddingHorizontal: 6,
     paddingVertical: 2,
@@ -1523,7 +1549,7 @@ const styles = StyleSheet.create({
     width: 60,
     height: 60,
     borderRadius: 30,
-    backgroundColor: '#9D4EDD',
+    backgroundColor: '#B91C1C',
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 12,
@@ -1578,7 +1604,7 @@ const styles = StyleSheet.create({
   progressFill: {
     width: '50%',
     height: '100%',
-    backgroundColor: '#9D4EDD',
+    backgroundColor: '#B91C1C',
   },
   progressText: {
     fontSize: 14,
