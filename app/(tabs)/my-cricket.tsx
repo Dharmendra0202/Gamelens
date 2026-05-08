@@ -27,7 +27,7 @@ export default function MyCricketScreen() {
   const [showTeamSelection, setShowTeamSelection] = useState(false);
   const [selectedTeam, setSelectedTeam] = useState<"A" | "B" | null>(null);
   const [currentView, setCurrentView] = useState<
-    "matches" | "teamSelection" | "selectTeam" | "createTeam" | "matchSetup" | "createTournament" | "tournamentTeamManagement" | "tournamentDashboard" | "tournamentDetail" | "addTeamsPlayers" | "teamsSelection" | "search"
+    "matches" | "teamSelection" | "selectTeam" | "createTeam" | "matchSetup" | "tossPage" | "createTournament" | "tournamentTeamManagement" | "tournamentDashboard" | "tournamentDetail" | "addTeamsPlayers" | "teamsSelection" | "search"
   >("matches");
   const [selectedTournament, setSelectedTournament] = useState<any>(null);
   const [activeTournamentDetailTab, setActiveTournamentDetailTab] = useState("matches");
@@ -96,6 +96,10 @@ export default function MyCricketScreen() {
   const [needMoreTeams, setNeedMoreTeams] = useState(false);
   const [needOfficials, setNeedOfficials] = useState(false);
   const [activeTournamentTab, setActiveTournamentTab] = useState("matches");
+
+  // Toss data
+  const [tossWinner, setTossWinner] = useState<"A" | "B" | null>(null);
+  const [tossDecision, setTossDecision] = useState<"bat" | "bowl" | null>(null);
 
   // Reusable render functions
   const renderTextInput = (label: string, value: string, onChange: (text: string) => void, placeholder: string, required = false, keyboardType: any = "default") => (
@@ -359,6 +363,10 @@ export default function MyCricketScreen() {
   useFocusEffect(
     useCallback(() => {
       const onBackPress = () => {
+        if (currentView === "tossPage") {
+          setCurrentView("matchSetup");
+          return true;
+        }
         if (currentView === "matchSetup") {
           setCurrentView("teamSelection");
           vsTeamAnim.setValue(0);
@@ -1063,7 +1071,9 @@ export default function MyCricketScreen() {
                 <TouchableOpacity
                   style={styles.headerBackButton}
                   onPress={() => {
-                    if (currentView === "matchSetup") {
+                    if (currentView === "tossPage") {
+                      setCurrentView("matchSetup");
+                    } else if (currentView === "matchSetup") {
                       setCurrentView("teamSelection");
                       vsTeamAnim.setValue(0);
                       vsTeamBanim.setValue(0);
@@ -2664,22 +2674,29 @@ export default function MyCricketScreen() {
             </View>
 
             {/* Number of Overs */}
-            {(matchType === "limited" || matchType === "box") && (
-              <View style={styles.setupSection}>
-                <Text style={styles.setupSectionTitle}>Number of Overs *</Text>
-                <View style={styles.inputContainer}>
-                  <Ionicons name="timer-outline" size={18} color="#B91C1C" />
-                  <TextInput
-                    style={styles.input}
-                    placeholder="Enter number of overs"
-                    placeholderTextColor="#999"
-                    keyboardType="numeric"
-                    value={numberOfOvers}
-                    onChangeText={setNumberOfOvers}
-                  />
-                </View>
+            <View style={styles.setupSection}>
+              <Text style={styles.setupSectionTitle}>
+                Number of Overs {(matchType === "limited" || matchType === "box") && "*"}
+              </Text>
+              
+              {/* Overs Input */}
+              <View style={styles.inputContainer}>
+                <Ionicons name="timer-outline" size={18} color="#B91C1C" />
+                <TextInput
+                  style={styles.input}
+                  placeholder="Type number of overs"
+                  placeholderTextColor="#999"
+                  keyboardType="numeric"
+                  value={numberOfOvers}
+                  onChangeText={setNumberOfOvers}
+                />
+                {numberOfOvers && (
+                  <TouchableOpacity onPress={() => setNumberOfOvers("")}>
+                    <Ionicons name="close-circle" size={18} color="#999" />
+                  </TouchableOpacity>
+                )}
               </View>
-            )}
+            </View>
 
             {/* Location - City & Ground */}
             <View style={styles.setupSection}>
@@ -3065,11 +3082,40 @@ export default function MyCricketScreen() {
               </View>
             </View>
 
-            {/* Start Match Button */}
+            {/* Let's Toss Button */}
             <TouchableOpacity
               style={styles.startMatchButton}
               onPress={() => {
-                console.log("Starting match with:", {
+                // Validation
+                if (!matchType) {
+                  Alert.alert("Required Field", "Please select match type");
+                  return;
+                }
+                
+                if ((matchType === "limited" || matchType === "box") && !numberOfOvers.trim()) {
+                  Alert.alert("Required Field", "Please enter number of overs");
+                  return;
+                }
+                
+                if ((matchType === "limited" || matchType === "box") && numberOfOvers.trim()) {
+                  const overs = parseInt(numberOfOvers);
+                  if (isNaN(overs) || overs < 1 || overs > 50) {
+                    Alert.alert("Invalid Input", "Please enter a valid number of overs (1-50)");
+                    return;
+                  }
+                }
+                
+                if (!selectedCity.trim()) {
+                  Alert.alert("Required Field", "Please select a city");
+                  return;
+                }
+                
+                if (!selectedGround.trim()) {
+                  Alert.alert("Required Field", "Please select a ground");
+                  return;
+                }
+
+                console.log("Match setup complete, proceeding to toss:", {
                   teamA: teamAName,
                   teamB: teamBName,
                   matchType,
@@ -3082,19 +3128,168 @@ export default function MyCricketScreen() {
                   time: matchTime,
                   wagonWheel: wagonWheelEnabled,
                 });
-                // Navigate to match screen or show success
-                alert("Match setup complete!");
+                
+                // Navigate to toss page
+                setCurrentView("tossPage");
               }}
             >
               <LinearGradient
                 colors={["#B91C1C", "#991B1B", "#7F1D1D"]}
                 style={styles.startMatchButtonGradient}
               >
-                <Ionicons name="play-circle" size={28} color="#FFF" />
-                <Text style={styles.startMatchButtonText}>Start Match</Text>
+                <Ionicons name="disc" size={28} color="#FFF" />
+                <Text style={styles.startMatchButtonText}>Let's Toss</Text>
                 <Ionicons name="arrow-forward" size={24} color="#FFF" />
               </LinearGradient>
             </TouchableOpacity>
+
+            {/* Bottom Spacing */}
+            <View style={{ height: 100 }} />
+          </View>
+        ) : currentView === "tossPage" ? (
+          /* Toss Page View */
+          <View style={styles.tossContainer}>
+            <Text style={styles.tossTitle}>Who won the toss?</Text>
+            
+            {/* Team Selection for Toss Winner */}
+            <View style={styles.tossTeamsContainer}>
+              <TouchableOpacity
+                style={[
+                  styles.tossTeamCard,
+                  tossWinner === "A" && styles.tossTeamCardSelected,
+                ]}
+                onPress={() => setTossWinner("A")}
+              >
+                <View style={[
+                  styles.tossTeamIcon,
+                  { backgroundColor: tossWinner === "A" ? "#B91C1C" : "#E5E5E5" }
+                ]}>
+                  <Text style={[
+                    styles.tossTeamInitial,
+                    { color: tossWinner === "A" ? "#FFF" : "#666" }
+                  ]}>
+                    {teamAName.charAt(0).toUpperCase()}
+                  </Text>
+                </View>
+                <Text style={[
+                  styles.tossTeamName,
+                  tossWinner === "A" && styles.tossTeamNameSelected,
+                ]}>
+                  {teamAName}
+                </Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={[
+                  styles.tossTeamCard,
+                  tossWinner === "B" && styles.tossTeamCardSelected,
+                ]}
+                onPress={() => setTossWinner("B")}
+              >
+                <View style={[
+                  styles.tossTeamIcon,
+                  { backgroundColor: tossWinner === "B" ? "#B91C1C" : "#E5E5E5" }
+                ]}>
+                  <Text style={[
+                    styles.tossTeamInitial,
+                    { color: tossWinner === "B" ? "#FFF" : "#666" }
+                  ]}>
+                    {teamBName.charAt(0).toUpperCase()}
+                  </Text>
+                </View>
+                <Text style={[
+                  styles.tossTeamName,
+                  tossWinner === "B" && styles.tossTeamNameSelected,
+                ]}>
+                  {teamBName}
+                </Text>
+              </TouchableOpacity>
+            </View>
+
+            {/* Toss Decision Section */}
+            {tossWinner && (
+              <View style={styles.tossDecisionSection}>
+                <Text style={styles.tossDecisionTitle}>
+                  Winner of the toss elected to?
+                </Text>
+                
+                <View style={styles.tossDecisionContainer}>
+                  <TouchableOpacity
+                    style={[
+                      styles.tossDecisionCard,
+                      tossDecision === "bat" && styles.tossDecisionCardSelected,
+                    ]}
+                    onPress={() => setTossDecision("bat")}
+                  >
+                    <View style={[
+                      styles.tossDecisionIcon,
+                      { backgroundColor: tossDecision === "bat" ? "#B91C1C" : "#E5E5E5" }
+                    ]}>
+                      <Ionicons 
+                        name="baseball" 
+                        size={32} 
+                        color={tossDecision === "bat" ? "#FFF" : "#666"} 
+                      />
+                    </View>
+                    <Text style={[
+                      styles.tossDecisionText,
+                      tossDecision === "bat" && styles.tossDecisionTextSelected,
+                    ]}>
+                      BAT
+                    </Text>
+                  </TouchableOpacity>
+
+                  <TouchableOpacity
+                    style={[
+                      styles.tossDecisionCard,
+                      tossDecision === "bowl" && styles.tossDecisionCardSelected,
+                    ]}
+                    onPress={() => setTossDecision("bowl")}
+                  >
+                    <View style={[
+                      styles.tossDecisionIcon,
+                      { backgroundColor: tossDecision === "bowl" ? "#B91C1C" : "#E5E5E5" }
+                    ]}>
+                      <Ionicons 
+                        name="fitness" 
+                        size={32} 
+                        color={tossDecision === "bowl" ? "#FFF" : "#666"} 
+                      />
+                    </View>
+                    <Text style={[
+                      styles.tossDecisionText,
+                      tossDecision === "bowl" && styles.tossDecisionTextSelected,
+                    ]}>
+                      BOWL
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            )}
+
+            {/* Start Match Button */}
+            {tossWinner && tossDecision && (
+              <TouchableOpacity
+                style={styles.startMatchButton}
+                onPress={() => {
+                  const winnerTeam = tossWinner === "A" ? teamAName : teamBName;
+                  Alert.alert(
+                    "Match Started!",
+                    `${winnerTeam} won the toss and elected to ${tossDecision.toUpperCase()} first.\n\nMatch is starting...`,
+                    [{ text: "Continue", onPress: () => console.log("Match started with toss results") }]
+                  );
+                }}
+              >
+                <LinearGradient
+                  colors={["#B91C1C", "#991B1B", "#7F1D1D"]}
+                  style={styles.startMatchButtonGradient}
+                >
+                  <Ionicons name="play-circle" size={28} color="#FFF" />
+                  <Text style={styles.startMatchButtonText}>Start Match</Text>
+                  <Ionicons name="arrow-forward" size={24} color="#FFF" />
+                </LinearGradient>
+              </TouchableOpacity>
+            )}
 
             {/* Bottom Spacing */}
             <View style={{ height: 100 }} />
@@ -9051,6 +9246,114 @@ const styles = StyleSheet.create({
     color: "#999",
     textAlign: "center",
     lineHeight: 20,
+  },
+  // Toss Page Styles
+  tossContainer: {
+    flex: 1,
+    padding: 20,
+    backgroundColor: "#F5F5F5",
+  },
+  tossTitle: {
+    fontSize: 24,
+    fontWeight: "700",
+    color: "#333",
+    textAlign: "center",
+    marginBottom: 30,
+    marginTop: 20,
+  },
+  tossTeamsContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginBottom: 40,
+    gap: 16,
+  },
+  tossTeamCard: {
+    flex: 1,
+    backgroundColor: "#FFF",
+    borderRadius: 16,
+    padding: 20,
+    alignItems: "center",
+    borderWidth: 2,
+    borderColor: "transparent",
+    elevation: 3,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+  },
+  tossTeamCardSelected: {
+    borderColor: "#B91C1C",
+    backgroundColor: "#FEF2F2",
+  },
+  tossTeamIcon: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    alignItems: "center",
+    justifyContent: "center",
+    marginBottom: 12,
+  },
+  tossTeamInitial: {
+    fontSize: 32,
+    fontWeight: "700",
+  },
+  tossTeamName: {
+    fontSize: 16,
+    fontWeight: "600",
+    color: "#666",
+    textAlign: "center",
+  },
+  tossTeamNameSelected: {
+    color: "#B91C1C",
+  },
+  tossDecisionSection: {
+    marginBottom: 40,
+  },
+  tossDecisionTitle: {
+    fontSize: 20,
+    fontWeight: "600",
+    color: "#333",
+    textAlign: "center",
+    marginBottom: 24,
+  },
+  tossDecisionContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    gap: 16,
+  },
+  tossDecisionCard: {
+    flex: 1,
+    backgroundColor: "#FFF",
+    borderRadius: 16,
+    padding: 24,
+    alignItems: "center",
+    borderWidth: 2,
+    borderColor: "transparent",
+    elevation: 3,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+  },
+  tossDecisionCardSelected: {
+    borderColor: "#B91C1C",
+    backgroundColor: "#FEF2F2",
+  },
+  tossDecisionIcon: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    alignItems: "center",
+    justifyContent: "center",
+    marginBottom: 12,
+  },
+  tossDecisionText: {
+    fontSize: 18,
+    fontWeight: "700",
+    color: "#666",
+  },
+  tossDecisionTextSelected: {
+    color: "#B91C1C",
   },
 });
 
