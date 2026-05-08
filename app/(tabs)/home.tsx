@@ -3,15 +3,15 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import {
-  Dimensions,
-  ImageBackground,
-  Modal,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View
+    Dimensions,
+    ImageBackground,
+    Modal,
+    ScrollView,
+    StyleSheet,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    View
 } from 'react-native';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
@@ -620,7 +620,7 @@ export default function HomeScreen() {
                   setShowMenuDrawer(false);
                   router.push({
                     pathname: '/(tabs)/my-cricket',
-                    params: { section: 'menu' }
+                    params: { source: 'drawer', section: 'menu', t: Date.now() }
                   });
                 }}
               >
@@ -637,7 +637,7 @@ export default function HomeScreen() {
                   setShowMenuDrawer(false);
                   router.push({
                     pathname: '/(tabs)/my-cricket',
-                    params: { tab: 'tournaments' }
+                    params: { tab: 'tournaments', t: Date.now() }
                   });
                 }}
               >
@@ -647,7 +647,16 @@ export default function HomeScreen() {
                 <Text style={styles.drawerMenuText}>My Tournament</Text>
               </TouchableOpacity>
 
-              <TouchableOpacity style={styles.drawerMenuItem}>
+              <TouchableOpacity
+                style={styles.drawerMenuItem}
+                onPress={() => {
+                  setShowMenuDrawer(false);
+                  router.push({
+                    pathname: '/(tabs)/my-cricket',
+                    params: { tab: 'matches', t: Date.now() }
+                  });
+                }}
+              >
                 <View style={styles.drawerMenuIcon}>
                   <Ionicons name="bar-chart-outline" size={20} color="#666" />
                 </View>
