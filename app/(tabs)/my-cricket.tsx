@@ -27,7 +27,7 @@ export default function MyCricketScreen() {
   const [showTeamSelection, setShowTeamSelection] = useState(false);
   const [selectedTeam, setSelectedTeam] = useState<"A" | "B" | null>(null);
   const [currentView, setCurrentView] = useState<
-    "matches" | "teamSelection" | "selectTeam" | "createTeam" | "matchSetup" | "tossPage" | "createTournament" | "tournamentTeamManagement" | "tournamentDashboard" | "tournamentDetail" | "addTeamsPlayers" | "teamsSelection" | "search"
+    "matches" | "teamSelection" | "selectTeam" | "createTeam" | "matchSetup" | "tossPage" | "playerSelection" | "matchSettings" | "scoringPage" | "createTournament" | "tournamentTeamManagement" | "tournamentDashboard" | "tournamentDetail" | "addTeamsPlayers" | "teamsSelection" | "search"
   >("matches");
   const [selectedTournament, setSelectedTournament] = useState<any>(null);
   const [activeTournamentDetailTab, setActiveTournamentDetailTab] = useState("matches");
@@ -100,6 +100,64 @@ export default function MyCricketScreen() {
   // Toss data
   const [tossWinner, setTossWinner] = useState<"A" | "B" | null>(null);
   const [tossDecision, setTossDecision] = useState<"bat" | "bowl" | null>(null);
+
+  // Player selection data
+  const [selectedStriker, setSelectedStriker] = useState<any>(null);
+  const [selectedNonStriker, setSelectedNonStriker] = useState<any>(null);
+  const [selectedBowler, setSelectedBowler] = useState<any>(null);
+  const [showPlayerModal, setShowPlayerModal] = useState(false);
+  const [playerModalType, setPlayerModalType] = useState<"striker" | "nonStriker" | "bowler" | null>(null);
+
+  // Match settings data
+  const [wagonWheelDotBall, setWagonWheelDotBall] = useState(true);
+  const [wagonWheel123s, setWagonWheel123s] = useState(true);
+  const [shotSelection, setShotSelection] = useState(true);
+  const [countWideAsLegal, setCountWideAsLegal] = useState(false);
+  const [wideRuns, setWideRuns] = useState(1);
+  const [countNoBallAsLegal, setCountNoBallAsLegal] = useState(false);
+  const [noBallRuns, setNoBallRuns] = useState(1);
+  const [ignoreRules, setIgnoreRules] = useState("A");
+
+  // Scoring page data
+  const [currentOver, setCurrentOver] = useState(1);
+  const [currentBall, setCurrentBall] = useState(1);
+  const [totalRuns, setTotalRuns] = useState(0);
+  const [totalWickets, setTotalWickets] = useState(0);
+  const [strikerRuns, setStrikerRuns] = useState(0);
+  const [strikerBalls, setStrikerBalls] = useState(0);
+  const [nonStrikerRuns, setNonStrikerRuns] = useState(0);
+  const [nonStrikerBalls, setNonStrikerBalls] = useState(0);
+  const [bowlerOvers, setBowlerOvers] = useState("0-0-0-0");
+  const [selectedWicketType, setSelectedWicketType] = useState<string | null>(null);
+
+  // Dummy players data
+  const battingTeamPlayers = [
+    { id: 1, name: "Rohit Sharma", role: "Batsman", isOut: false },
+    { id: 2, name: "Virat Kohli", role: "Batsman", isOut: false },
+    { id: 3, name: "KL Rahul", role: "Wicket Keeper", isOut: false },
+    { id: 4, name: "Hardik Pandya", role: "All Rounder", isOut: false },
+    { id: 5, name: "Ravindra Jadeja", role: "All Rounder", isOut: false },
+    { id: 6, name: "Suryakumar Yadav", role: "Batsman", isOut: false },
+    { id: 7, name: "Rishabh Pant", role: "Wicket Keeper", isOut: false },
+    { id: 8, name: "Axar Patel", role: "All Rounder", isOut: false },
+    { id: 9, name: "Jasprit Bumrah", role: "Bowler", isOut: false },
+    { id: 10, name: "Mohammed Shami", role: "Bowler", isOut: false },
+    { id: 11, name: "Yuzvendra Chahal", role: "Bowler", isOut: false },
+  ];
+
+  const bowlingTeamPlayers = [
+    { id: 12, name: "David Warner", role: "Batsman", isOut: false },
+    { id: 13, name: "Aaron Finch", role: "Batsman", isOut: false },
+    { id: 14, name: "Steve Smith", role: "Batsman", isOut: false },
+    { id: 15, name: "Glenn Maxwell", role: "All Rounder", isOut: false },
+    { id: 16, name: "Marcus Stoinis", role: "All Rounder", isOut: false },
+    { id: 17, name: "Alex Carey", role: "Wicket Keeper", isOut: false },
+    { id: 18, name: "Pat Cummins", role: "Bowler", isOut: false },
+    { id: 19, name: "Mitchell Starc", role: "Bowler", isOut: false },
+    { id: 20, name: "Josh Hazlewood", role: "Bowler", isOut: false },
+    { id: 21, name: "Adam Zampa", role: "Bowler", isOut: false },
+    { id: 22, name: "Nathan Lyon", role: "Bowler", isOut: false },
+  ];
 
   // Reusable render functions
   const renderTextInput = (label: string, value: string, onChange: (text: string) => void, placeholder: string, required = false, keyboardType: any = "default") => (
@@ -363,6 +421,18 @@ export default function MyCricketScreen() {
   useFocusEffect(
     useCallback(() => {
       const onBackPress = () => {
+        if (currentView === "scoringPage") {
+          setCurrentView("playerSelection");
+          return true;
+        }
+        if (currentView === "matchSettings") {
+          setCurrentView("playerSelection");
+          return true;
+        }
+        if (currentView === "playerSelection") {
+          setCurrentView("tossPage");
+          return true;
+        }
         if (currentView === "tossPage") {
           setCurrentView("matchSetup");
           return true;
@@ -1071,7 +1141,13 @@ export default function MyCricketScreen() {
                 <TouchableOpacity
                   style={styles.headerBackButton}
                   onPress={() => {
-                    if (currentView === "tossPage") {
+                    if (currentView === "scoringPage") {
+                      setCurrentView("playerSelection");
+                    } else if (currentView === "matchSettings") {
+                      setCurrentView("playerSelection");
+                    } else if (currentView === "playerSelection") {
+                      setCurrentView("tossPage");
+                    } else if (currentView === "tossPage") {
                       setCurrentView("matchSetup");
                     } else if (currentView === "matchSetup") {
                       setCurrentView("teamSelection");
@@ -3273,11 +3349,10 @@ export default function MyCricketScreen() {
                 style={styles.startMatchButton}
                 onPress={() => {
                   const winnerTeam = tossWinner === "A" ? teamAName : teamBName;
-                  Alert.alert(
-                    "Match Started!",
-                    `${winnerTeam} won the toss and elected to ${tossDecision.toUpperCase()} first.\n\nMatch is starting...`,
-                    [{ text: "Continue", onPress: () => console.log("Match started with toss results") }]
-                  );
+                  console.log(`${winnerTeam} won the toss and elected to ${tossDecision.toUpperCase()} first.`);
+                  
+                  // Navigate to player selection
+                  setCurrentView("playerSelection");
                 }}
               >
                 <LinearGradient
@@ -3293,6 +3368,423 @@ export default function MyCricketScreen() {
 
             {/* Bottom Spacing */}
             <View style={{ height: 100 }} />
+          </View>
+        ) : currentView === "playerSelection" ? (
+          /* Player Selection Page */
+          <ScrollView style={styles.playerSelectionContainer} showsVerticalScrollIndicator={false}>
+            {/* Batting Team Section */}
+            <View style={styles.playerSection}>
+              <Text style={styles.playerSectionTitle}>
+                Batting - {tossDecision === "bat" ? (tossWinner === "A" ? teamAName : teamBName) : (tossWinner === "A" ? teamBName : teamAName)}
+              </Text>
+              
+              {/* Striker Selection */}
+              <View style={styles.playerSelectionRow}>
+                <TouchableOpacity 
+                  style={[styles.playerSelectionCard, selectedStriker && styles.playerSelectionCardSelected]}
+                  onPress={() => {
+                    setPlayerModalType("striker");
+                    setShowPlayerModal(true);
+                  }}
+                >
+                  <View style={styles.playerIconContainer}>
+                    <Ionicons name="baseball" size={40} color="#666" />
+                  </View>
+                  <Text style={styles.playerSelectionLabel}>Select Striker</Text>
+                  {selectedStriker && (
+                    <Text style={styles.selectedPlayerName}>{selectedStriker.name}</Text>
+                  )}
+                </TouchableOpacity>
+
+                <TouchableOpacity 
+                  style={[styles.playerSelectionCard, selectedNonStriker && styles.playerSelectionCardSelected]}
+                  onPress={() => {
+                    setPlayerModalType("nonStriker");
+                    setShowPlayerModal(true);
+                  }}
+                >
+                  <View style={styles.playerIconContainer}>
+                    <Ionicons name="walk" size={40} color="#666" />
+                  </View>
+                  <Text style={styles.playerSelectionLabel}>Select Non-striker</Text>
+                  {selectedNonStriker && (
+                    <Text style={styles.selectedPlayerName}>{selectedNonStriker.name}</Text>
+                  )}
+                </TouchableOpacity>
+              </View>
+            </View>
+
+            {/* Bowling Team Section */}
+            <View style={styles.playerSection}>
+              <Text style={styles.playerSectionTitle}>
+                Bowling - {tossDecision === "bowl" ? (tossWinner === "A" ? teamAName : teamBName) : (tossWinner === "A" ? teamBName : teamAName)}
+              </Text>
+              
+              {/* Bowler Selection */}
+              <View style={styles.playerSelectionRow}>
+                <TouchableOpacity 
+                  style={[styles.playerSelectionCard, styles.bowlerCard, selectedBowler && styles.playerSelectionCardSelected]}
+                  onPress={() => {
+                    setPlayerModalType("bowler");
+                    setShowPlayerModal(true);
+                  }}
+                >
+                  <View style={styles.playerIconContainer}>
+                    <Ionicons name="fitness" size={40} color="#666" />
+                  </View>
+                  <Text style={styles.playerSelectionLabel}>Select Bowler</Text>
+                  {selectedBowler && (
+                    <Text style={styles.selectedPlayerName}>{selectedBowler.name}</Text>
+                  )}
+                </TouchableOpacity>
+              </View>
+            </View>
+
+            {/* Action Buttons */}
+            <View style={styles.playerActionButtons}>
+              <TouchableOpacity 
+                style={styles.matchSettingsButton}
+                onPress={() => setCurrentView("matchSettings")}
+              >
+                <LinearGradient
+                  colors={["#666", "#555"]}
+                  style={styles.matchSettingsButtonGradient}
+                >
+                  <Ionicons name="settings-outline" size={20} color="#FFF" />
+                  <Text style={styles.matchSettingsButtonText}>Match Settings</Text>
+                </LinearGradient>
+              </TouchableOpacity>
+
+              <TouchableOpacity 
+                style={styles.startScoringButton}
+                onPress={() => {
+                  // Validation: Check if all players are selected
+                  if (!selectedStriker) {
+                    Alert.alert("Missing Selection", "Please select a striker before starting the match.");
+                    return;
+                  }
+                  if (!selectedNonStriker) {
+                    Alert.alert("Missing Selection", "Please select a non-striker before starting the match.");
+                    return;
+                  }
+                  if (!selectedBowler) {
+                    Alert.alert("Missing Selection", "Please select a bowler before starting the match.");
+                    return;
+                  }
+
+                  // Navigate to scoring page
+                  setCurrentView("scoringPage");
+                }}
+              >
+                <LinearGradient
+                  colors={["#B91C1C", "#991B1B"]}
+                  style={styles.startScoringButtonGradient}
+                >
+                  <Ionicons name="play-circle" size={20} color="#FFF" />
+                  <Text style={styles.startScoringButtonText}>Start Scoring</Text>
+                </LinearGradient>
+              </TouchableOpacity>
+            </View>
+
+            {/* Bottom Spacing */}
+            <View style={{ height: 100 }} />
+          </ScrollView>
+        ) : currentView === "matchSettings" ? (
+          /* Match Settings Page */
+          <ScrollView style={styles.matchSettingsContainer} showsVerticalScrollIndicator={false}>
+            <Text style={styles.matchSettingsTitle}>Match Settings</Text>
+
+            {/* Wagon Wheel Section */}
+            <View style={styles.settingsSection}>
+              <Text style={styles.settingsSectionTitle}>WAGON WHEEL</Text>
+              
+              <View style={styles.settingItem}>
+                <Text style={styles.settingLabel}>Disable Wagon Wheel for DOT Ball</Text>
+                <TouchableOpacity 
+                  style={[styles.toggle, wagonWheelDotBall && styles.toggleActive]}
+                  onPress={() => setWagonWheelDotBall(!wagonWheelDotBall)}
+                >
+                  <View style={[styles.toggleThumb, wagonWheelDotBall && styles.toggleThumbActive]} />
+                </TouchableOpacity>
+              </View>
+
+              <View style={styles.settingItem}>
+                <Text style={styles.settingLabel}>Disable Wagon Wheel for 1s, 2s and 3s</Text>
+                <TouchableOpacity 
+                  style={[styles.toggle, wagonWheel123s && styles.toggleActive]}
+                  onPress={() => setWagonWheel123s(!wagonWheel123s)}
+                >
+                  <View style={[styles.toggleThumb, wagonWheel123s && styles.toggleThumbActive]} />
+                </TouchableOpacity>
+              </View>
+
+              <View style={styles.settingItem}>
+                <Text style={styles.settingLabel}>Disable Shot Selection</Text>
+                <TouchableOpacity 
+                  style={[styles.toggle, shotSelection && styles.toggleActive]}
+                  onPress={() => setShotSelection(!shotSelection)}
+                >
+                  <View style={[styles.toggleThumb, shotSelection && styles.toggleThumbActive]} />
+                </TouchableOpacity>
+              </View>
+
+              <Text style={styles.settingNote}>
+                *WW and Shot Selection won't be disabled for boundaries and wickets.
+              </Text>
+            </View>
+
+            {/* Wide/No Ball Rules Section */}
+            <View style={styles.settingsSection}>
+              <Text style={styles.settingsSectionTitle}>WIDE/NO BALL RULES</Text>
+              
+              <View style={styles.ruleItem}>
+                <View style={styles.ruleHeader}>
+                  <Text style={styles.ruleLabel}>A</Text>
+                  <Text style={styles.ruleText}>Count Wide as a legal delivery</Text>
+                </View>
+                <TouchableOpacity 
+                  style={[styles.toggle, countWideAsLegal && styles.toggleActive]}
+                  onPress={() => setCountWideAsLegal(!countWideAsLegal)}
+                >
+                  <View style={[styles.toggleThumb, countWideAsLegal && styles.toggleThumbActive]} />
+                </TouchableOpacity>
+              </View>
+
+              <View style={styles.ruleItem}>
+                <View style={styles.ruleHeader}>
+                  <Text style={styles.ruleLabel}>B</Text>
+                  <Text style={styles.ruleText}>Wide Runs</Text>
+                </View>
+                <View style={styles.runsCounter}>
+                  <TouchableOpacity 
+                    style={styles.counterButton}
+                    onPress={() => setWideRuns(Math.max(0, wideRuns - 1))}
+                  >
+                    <Ionicons name="remove-circle-outline" size={24} color="#666" />
+                  </TouchableOpacity>
+                  <Text style={styles.counterValue}>{wideRuns}</Text>
+                  <TouchableOpacity 
+                    style={styles.counterButton}
+                    onPress={() => setWideRuns(wideRuns + 1)}
+                  >
+                    <Ionicons name="add-circle-outline" size={24} color="#666" />
+                  </TouchableOpacity>
+                </View>
+              </View>
+
+              <View style={styles.ruleItem}>
+                <View style={styles.ruleHeader}>
+                  <Text style={styles.ruleLabel}>C</Text>
+                  <Text style={styles.ruleText}>Count No Ball as a legal delivery</Text>
+                </View>
+                <TouchableOpacity 
+                  style={[styles.toggle, countNoBallAsLegal && styles.toggleActive]}
+                  onPress={() => setCountNoBallAsLegal(!countNoBallAsLegal)}
+                >
+                  <View style={[styles.toggleThumb, countNoBallAsLegal && styles.toggleThumbActive]} />
+                </TouchableOpacity>
+              </View>
+
+              <View style={styles.ruleItem}>
+                <View style={styles.ruleHeader}>
+                  <Text style={styles.ruleLabel}>D</Text>
+                  <Text style={styles.ruleText}>No Ball Runs</Text>
+                </View>
+                <View style={styles.runsCounter}>
+                  <TouchableOpacity 
+                    style={styles.counterButton}
+                    onPress={() => setNoBallRuns(Math.max(0, noBallRuns - 1))}
+                  >
+                    <Ionicons name="remove-circle-outline" size={24} color="#666" />
+                  </TouchableOpacity>
+                  <Text style={styles.counterValue}>{noBallRuns}</Text>
+                  <TouchableOpacity 
+                    style={styles.counterButton}
+                    onPress={() => setNoBallRuns(noBallRuns + 1)}
+                  >
+                    <Ionicons name="add-circle-outline" size={24} color="#666" />
+                  </TouchableOpacity>
+                </View>
+              </View>
+
+              {/* Ignore Rules */}
+              <View style={styles.ignoreRulesContainer}>
+                <Text style={styles.ignoreRulesLabel}>Ignore Rules</Text>
+                <View style={styles.ignoreRulesOptions}>
+                  {["A", "B", "C", "D"].map((option) => (
+                    <TouchableOpacity
+                      key={option}
+                      style={[
+                        styles.ignoreRuleOption,
+                        ignoreRules === option && styles.ignoreRuleOptionActive,
+                      ]}
+                      onPress={() => setIgnoreRules(option)}
+                    >
+                      <Text style={[
+                        styles.ignoreRuleOptionText,
+                        ignoreRules === option && styles.ignoreRuleOptionTextActive,
+                      ]}>
+                        {option}
+                      </Text>
+                    </TouchableOpacity>
+                  ))}
+                </View>
+              </View>
+            </View>
+
+            {/* Save Settings Button */}
+            <TouchableOpacity 
+              style={styles.saveSettingsButton}
+              onPress={() => {
+                Alert.alert(
+                  "Settings Saved",
+                  "Match settings have been saved successfully!",
+                  [{ text: "OK", onPress: () => setCurrentView("playerSelection") }]
+                );
+              }}
+            >
+              <LinearGradient
+                colors={["#B91C1C", "#991B1B"]}
+                style={styles.saveSettingsButtonGradient}
+              >
+                <Ionicons name="checkmark-circle" size={20} color="#FFF" />
+                <Text style={styles.saveSettingsButtonText}>Save Settings</Text>
+              </LinearGradient>
+            </TouchableOpacity>
+
+            {/* Bottom Spacing */}
+            <View style={{ height: 100 }} />
+          </ScrollView>
+        ) : currentView === "scoringPage" ? (
+          /* Cricket Scoring Page */
+          <View style={styles.scoringContainer}>
+            {/* Match Header */}
+            <View style={styles.scoringHeader}>
+              <Text style={styles.matchHeaderText}>
+                {tossDecision === "bat" ? (tossWinner === "A" ? teamAName : teamBName) : (tossWinner === "A" ? teamBName : teamAName)} won the toss and elected to field
+              </Text>
+            </View>
+
+            {/* Batsmen Section */}
+            <View style={styles.batsmenSection}>
+              <View style={styles.batsmanCard}>
+                <View style={styles.batsmanIcon}>
+                  <Ionicons name="flash" size={16} color="#FF9500" />
+                </View>
+                <Text style={styles.batsmanName}>{selectedStriker?.name || "Aniket"}</Text>
+                <Text style={styles.batsmanScore}>{strikerRuns}({strikerBalls})</Text>
+              </View>
+
+              <View style={styles.batsmanCard}>
+                <View style={styles.batsmanIcon}>
+                  <Ionicons name="person" size={16} color="#666" />
+                </View>
+                <Text style={styles.batsmanName}>{selectedNonStriker?.name || "Deepu"}</Text>
+                <Text style={styles.batsmanScore}>{nonStrikerRuns}({nonStrikerBalls})</Text>
+              </View>
+            </View>
+
+            {/* Bowler Section */}
+            <View style={styles.bowlerSection}>
+              <View style={styles.bowlerIcon}>
+                <Ionicons name="baseball" size={16} color="#666" />
+              </View>
+              <Text style={styles.bowlerName}>{selectedBowler?.name || "Kapil Jangir"}</Text>
+              <View style={styles.bowlerStats}>
+                <Ionicons name="stats-chart" size={12} color="#4CAF50" />
+              </View>
+              <Text style={styles.bowlerFigures}>{bowlerOvers}</Text>
+            </View>
+
+            {/* Wicket Type Selection */}
+            <View style={styles.wicketTypeSection}>
+              <TouchableOpacity 
+                style={[styles.wicketTypeButton, selectedWicketType === "overWicket" && styles.wicketTypeButtonActive]}
+                onPress={() => setSelectedWicketType(selectedWicketType === "overWicket" ? null : "overWicket")}
+              >
+                <View style={styles.wicketIcon}>
+                  <Ionicons name="stats-chart" size={20} color="#4CAF50" />
+                </View>
+                <Text style={styles.wicketTypeText}>Over the Wicket</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity 
+                style={[styles.wicketTypeButton, selectedWicketType === "betweenWicket" && styles.wicketTypeButtonActive]}
+                onPress={() => setSelectedWicketType(selectedWicketType === "betweenWicket" ? null : "betweenWicket")}
+              >
+                <View style={styles.wicketIcon}>
+                  <Ionicons name="stats-chart" size={20} color="#4CAF50" />
+                </View>
+                <Text style={styles.wicketTypeText}>Between the Wicket</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity 
+                style={[styles.wicketTypeButton, selectedWicketType === "roundWicket" && styles.wicketTypeButtonActive]}
+                onPress={() => setSelectedWicketType(selectedWicketType === "roundWicket" ? null : "roundWicket")}
+              >
+                <View style={styles.wicketIcon}>
+                  <Ionicons name="stats-chart" size={20} color="#4CAF50" />
+                </View>
+                <Text style={styles.wicketTypeText}>Round the Wicket</Text>
+              </TouchableOpacity>
+            </View>
+
+            {/* Scoring Buttons */}
+            <View style={styles.scoringGrid}>
+              {/* First Row */}
+              <View style={styles.scoringRow}>
+                <TouchableOpacity style={styles.scoreButton} onPress={() => console.log("0 runs")}>
+                  <Text style={styles.scoreButtonText}>0</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.scoreButton} onPress={() => console.log("1 run")}>
+                  <Text style={styles.scoreButtonText}>1</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.scoreButton} onPress={() => console.log("2 runs")}>
+                  <Text style={styles.scoreButtonText}>2</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={[styles.scoreButton, styles.undoButton]} onPress={() => console.log("Undo")}>
+                  <Text style={[styles.scoreButtonText, styles.undoButtonText]}>UNDO</Text>
+                </TouchableOpacity>
+              </View>
+
+              {/* Second Row */}
+              <View style={styles.scoringRow}>
+                <TouchableOpacity style={styles.scoreButton} onPress={() => console.log("3 runs")}>
+                  <Text style={styles.scoreButtonText}>3</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.scoreButton} onPress={() => console.log("4 runs")}>
+                  <Text style={styles.scoreButtonText}>4</Text>
+                  <Text style={styles.scoreButtonSubText}>FOUR</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.scoreButton} onPress={() => console.log("6 runs")}>
+                  <Text style={styles.scoreButtonText}>6</Text>
+                  <Text style={styles.scoreButtonSubText}>SIX</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.scoreButton} onPress={() => console.log("5,7 runs")}>
+                  <Text style={styles.scoreButtonText}>5, 7</Text>
+                </TouchableOpacity>
+              </View>
+
+              {/* Third Row */}
+              <View style={styles.scoringRow}>
+                <TouchableOpacity style={styles.scoreButton} onPress={() => console.log("Wide")}>
+                  <Text style={styles.scoreButtonText}>WD</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.scoreButton} onPress={() => console.log("No Ball")}>
+                  <Text style={styles.scoreButtonText}>NB</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.scoreButton} onPress={() => console.log("Bye")}>
+                  <Text style={styles.scoreButtonText}>BYE</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={[styles.scoreButton, styles.outButton]} onPress={() => console.log("Out")}>
+                  <Text style={[styles.scoreButtonText, styles.outButtonText]}>OUT</Text>
+                </TouchableOpacity>
+              </View>
+
+              <TouchableOpacity style={styles.scoreButton} onPress={() => console.log("Leg Bye")}>
+                <Text style={styles.scoreButtonText}>LB</Text>
+              </TouchableOpacity>
+            </View>
           </View>
         ) : currentView === "selectTeam" ? (
           /* Select Team View */
@@ -5289,6 +5781,80 @@ export default function MyCricketScreen() {
                 )}
               </>
             )}
+          </ScrollView>
+        </View>
+      </Modal>
+
+      {/* Player Selection Modal */}
+      <Modal
+        visible={showPlayerModal}
+        transparent
+        animationType="slide"
+        onRequestClose={() => setShowPlayerModal(false)}
+      >
+        <View style={styles.playerModalContainer}>
+          <View style={styles.playerModalHeader}>
+            <TouchableOpacity onPress={() => setShowPlayerModal(false)}>
+              <Ionicons name="arrow-back" size={24} color="#333" />
+            </TouchableOpacity>
+            <Text style={styles.playerModalTitle}>
+              {playerModalType === "striker" && "Select Striker"}
+              {playerModalType === "nonStriker" && "Select Non-striker"}
+              {playerModalType === "bowler" && "Select Bowler"}
+            </Text>
+            <View style={{ width: 24 }} />
+          </View>
+
+          <ScrollView style={styles.playersList} showsVerticalScrollIndicator={false}>
+            {(playerModalType === "striker" || playerModalType === "nonStriker" ? battingTeamPlayers : bowlingTeamPlayers).map((player) => (
+              <TouchableOpacity
+                key={player.id}
+                style={[
+                  styles.playerItem,
+                  (playerModalType === "striker" && selectedStriker?.id === player.id) ||
+                  (playerModalType === "nonStriker" && selectedNonStriker?.id === player.id) ||
+                  (playerModalType === "bowler" && selectedBowler?.id === player.id)
+                    ? styles.playerItemSelected : null
+                ]}
+                onPress={() => {
+                  // Validation: Don't allow same player for striker and non-striker
+                  if (playerModalType === "striker" && selectedNonStriker?.id === player.id) {
+                    Alert.alert("Invalid Selection", "This player is already selected as Non-striker. Please choose a different player.");
+                    return;
+                  }
+                  if (playerModalType === "nonStriker" && selectedStriker?.id === player.id) {
+                    Alert.alert("Invalid Selection", "This player is already selected as Striker. Please choose a different player.");
+                    return;
+                  }
+
+                  if (playerModalType === "striker") {
+                    setSelectedStriker(player);
+                  } else if (playerModalType === "nonStriker") {
+                    setSelectedNonStriker(player);
+                  } else if (playerModalType === "bowler") {
+                    setSelectedBowler(player);
+                  }
+                  setShowPlayerModal(false);
+                }}
+              >
+                <View style={styles.playerItemContent}>
+                  <View style={styles.playerAvatar}>
+                    <Text style={styles.playerAvatarText}>
+                      {player.name.split(' ').map((n: string) => n[0]).join('')}
+                    </Text>
+                  </View>
+                  <View style={styles.playerInfo}>
+                    <Text style={styles.playerName}>{player.name}</Text>
+                    <Text style={styles.playerRole}>{player.role}</Text>
+                  </View>
+                  {((playerModalType === "striker" && selectedStriker?.id === player.id) ||
+                    (playerModalType === "nonStriker" && selectedNonStriker?.id === player.id) ||
+                    (playerModalType === "bowler" && selectedBowler?.id === player.id)) && (
+                    <Ionicons name="checkmark-circle" size={24} color="#B91C1C" />
+                  )}
+                </View>
+              </TouchableOpacity>
+            ))}
           </ScrollView>
         </View>
       </Modal>
@@ -7558,20 +8124,6 @@ const styles = StyleSheet.create({
   toggleSwitchActive: {
     backgroundColor: "#B91C1C",
   },
-  toggleThumb: {
-    width: 24,
-    height: 24,
-    borderRadius: 12,
-    backgroundColor: "#FFF",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 3,
-    elevation: 3,
-  },
-  toggleThumbActive: {
-    alignSelf: "flex-end",
-  },
   startMatchButton: {
     borderRadius: 16,
     overflow: "hidden",
@@ -9354,6 +9906,484 @@ const styles = StyleSheet.create({
   },
   tossDecisionTextSelected: {
     color: "#B91C1C",
+  },
+  // Player Selection Page Styles
+  playerSelectionContainer: {
+    flex: 1,
+    backgroundColor: "#F5F5F5",
+    padding: 20,
+  },
+  playerSection: {
+    marginBottom: 30,
+  },
+  playerSectionTitle: {
+    fontSize: 20,
+    fontWeight: "700",
+    color: "#333",
+    marginBottom: 20,
+  },
+  playerSelectionRow: {
+    flexDirection: "row",
+    gap: 16,
+  },
+  playerSelectionCard: {
+    flex: 1,
+    backgroundColor: "#FFF",
+    borderRadius: 16,
+    padding: 20,
+    alignItems: "center",
+    borderWidth: 2,
+    borderColor: "#E5E5E5",
+    elevation: 3,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+  },
+  playerSelectionCardSelected: {
+    borderColor: "#B91C1C",
+    backgroundColor: "#FEF2F2",
+  },
+  bowlerCard: {
+    maxWidth: "48%",
+  },
+  playerIconContainer: {
+    marginBottom: 12,
+  },
+  playerSelectionLabel: {
+    fontSize: 16,
+    fontWeight: "600",
+    color: "#666",
+    textAlign: "center",
+    marginBottom: 8,
+  },
+  selectedPlayerName: {
+    fontSize: 14,
+    fontWeight: "500",
+    color: "#B91C1C",
+    textAlign: "center",
+  },
+  playerActionButtons: {
+    flexDirection: "row",
+    gap: 12,
+    marginTop: 20,
+  },
+  matchSettingsButton: {
+    flex: 1,
+    borderRadius: 12,
+    overflow: "hidden",
+  },
+  matchSettingsButtonGradient: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    paddingVertical: 16,
+    gap: 8,
+  },
+  matchSettingsButtonText: {
+    fontSize: 16,
+    fontWeight: "600",
+    color: "#FFF",
+  },
+  startScoringButton: {
+    flex: 1,
+    borderRadius: 12,
+    overflow: "hidden",
+  },
+  startScoringButtonGradient: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    paddingVertical: 16,
+    gap: 8,
+  },
+  startScoringButtonText: {
+    fontSize: 16,
+    fontWeight: "600",
+    color: "#FFF",
+  },
+  // Match Settings Page Styles
+  matchSettingsContainer: {
+    flex: 1,
+    backgroundColor: "#F5F5F5",
+    padding: 20,
+  },
+  matchSettingsTitle: {
+    fontSize: 24,
+    fontWeight: "700",
+    color: "#333",
+    marginBottom: 30,
+    textAlign: "center",
+  },
+  settingsSection: {
+    backgroundColor: "#FFF",
+    borderRadius: 16,
+    padding: 20,
+    marginBottom: 20,
+    elevation: 2,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+  },
+  settingsSectionTitle: {
+    fontSize: 18,
+    fontWeight: "700",
+    color: "#333",
+    marginBottom: 20,
+    letterSpacing: 0.5,
+  },
+  settingItem: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingVertical: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: "#F0F0F0",
+  },
+  settingLabel: {
+    fontSize: 16,
+    color: "#333",
+    flex: 1,
+  },
+  toggle: {
+    width: 50,
+    height: 28,
+    borderRadius: 14,
+    backgroundColor: "#E5E5E5",
+    padding: 2,
+    justifyContent: "center",
+  },
+  toggleActive: {
+    backgroundColor: "#4CAF50",
+  },
+  toggleThumb: {
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    backgroundColor: "#FFF",
+    elevation: 2,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.2,
+    shadowRadius: 2,
+  },
+  toggleThumbActive: {
+    alignSelf: "flex-end",
+  },
+  settingNote: {
+    fontSize: 12,
+    color: "#666",
+    fontStyle: "italic",
+    marginTop: 10,
+  },
+  ruleItem: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingVertical: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: "#F0F0F0",
+  },
+  ruleHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    flex: 1,
+  },
+  ruleLabel: {
+    fontSize: 16,
+    fontWeight: "700",
+    color: "#B91C1C",
+    marginRight: 12,
+    width: 20,
+  },
+  ruleText: {
+    fontSize: 16,
+    color: "#333",
+    flex: 1,
+  },
+  runsCounter: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 12,
+  },
+  counterButton: {
+    padding: 4,
+  },
+  counterValue: {
+    fontSize: 18,
+    fontWeight: "600",
+    color: "#333",
+    minWidth: 30,
+    textAlign: "center",
+  },
+  ignoreRulesContainer: {
+    marginTop: 20,
+    paddingTop: 20,
+    borderTopWidth: 1,
+    borderTopColor: "#F0F0F0",
+  },
+  ignoreRulesLabel: {
+    fontSize: 16,
+    fontWeight: "600",
+    color: "#333",
+    marginBottom: 12,
+  },
+  ignoreRulesOptions: {
+    flexDirection: "row",
+    gap: 12,
+  },
+  ignoreRuleOption: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: "#F0F0F0",
+    alignItems: "center",
+    justifyContent: "center",
+    borderWidth: 2,
+    borderColor: "transparent",
+  },
+  ignoreRuleOptionActive: {
+    backgroundColor: "#B91C1C",
+    borderColor: "#B91C1C",
+  },
+  ignoreRuleOptionText: {
+    fontSize: 16,
+    fontWeight: "600",
+    color: "#666",
+  },
+  ignoreRuleOptionTextActive: {
+    color: "#FFF",
+  },
+  saveSettingsButton: {
+    borderRadius: 12,
+    overflow: "hidden",
+    marginTop: 20,
+  },
+  saveSettingsButtonGradient: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    paddingVertical: 16,
+    gap: 8,
+  },
+  saveSettingsButtonText: {
+    fontSize: 18,
+    fontWeight: "600",
+    color: "#FFF",
+  },
+  // Player Selection Modal Styles
+  playerModalContainer: {
+    flex: 1,
+    backgroundColor: "#FFF",
+  },
+  playerModalHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingHorizontal: 16,
+    paddingVertical: 16,
+    paddingTop: 50,
+    backgroundColor: "#FFF",
+    borderBottomWidth: 1,
+    borderBottomColor: "#E5E5E5",
+  },
+  playerModalTitle: {
+    fontSize: 18,
+    fontWeight: "600",
+    color: "#333",
+  },
+  playersList: {
+    flex: 1,
+    paddingHorizontal: 16,
+  },
+  playerItem: {
+    backgroundColor: "#FFF",
+    borderRadius: 12,
+    marginVertical: 6,
+    elevation: 2,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+  },
+  playerItemSelected: {
+    backgroundColor: "#FEF2F2",
+    borderWidth: 2,
+    borderColor: "#B91C1C",
+  },
+  playerItemContent: {
+    flexDirection: "row",
+    alignItems: "center",
+    padding: 16,
+  },
+  playerAvatar: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    backgroundColor: "#B91C1C",
+    alignItems: "center",
+    justifyContent: "center",
+    marginRight: 16,
+  },
+  playerAvatarText: {
+    fontSize: 16,
+    fontWeight: "600",
+    color: "#FFF",
+  },
+  playerInfo: {
+    flex: 1,
+  },
+  playerName: {
+    fontSize: 16,
+    fontWeight: "600",
+    color: "#333",
+    marginBottom: 4,
+  },
+  playerRole: {
+    fontSize: 14,
+    color: "#666",
+  },
+  // Cricket Scoring Page Styles
+  scoringContainer: {
+    flex: 1,
+    backgroundColor: "#2C3E50",
+  },
+  scoringHeader: {
+    backgroundColor: "#34495E",
+    paddingVertical: 16,
+    paddingHorizontal: 20,
+    alignItems: "center",
+  },
+  matchHeaderText: {
+    fontSize: 14,
+    color: "#FFF",
+    textAlign: "center",
+    opacity: 0.9,
+  },
+  batsmenSection: {
+    flexDirection: "row",
+    backgroundColor: "#34495E",
+    borderBottomWidth: 1,
+    borderBottomColor: "#2C3E50",
+  },
+  batsmanCard: {
+    flex: 1,
+    flexDirection: "row",
+    alignItems: "center",
+    paddingVertical: 16,
+    paddingHorizontal: 20,
+    borderRightWidth: 1,
+    borderRightColor: "#2C3E50",
+  },
+  batsmanIcon: {
+    marginRight: 8,
+  },
+  batsmanName: {
+    fontSize: 16,
+    fontWeight: "600",
+    color: "#FFF",
+    flex: 1,
+  },
+  batsmanScore: {
+    fontSize: 16,
+    fontWeight: "600",
+    color: "#FFF",
+  },
+  bowlerSection: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#34495E",
+    paddingVertical: 16,
+    paddingHorizontal: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: "#2C3E50",
+  },
+  bowlerIcon: {
+    marginRight: 8,
+  },
+  bowlerName: {
+    fontSize: 16,
+    fontWeight: "600",
+    color: "#FFF",
+    flex: 1,
+  },
+  bowlerStats: {
+    marginRight: 8,
+  },
+  bowlerFigures: {
+    fontSize: 16,
+    fontWeight: "600",
+    color: "#FFF",
+  },
+  wicketTypeSection: {
+    flexDirection: "row",
+    backgroundColor: "#34495E",
+    paddingVertical: 20,
+    paddingHorizontal: 20,
+    justifyContent: "space-between",
+  },
+  wicketTypeButton: {
+    alignItems: "center",
+    flex: 1,
+    paddingVertical: 12,
+    borderRadius: 50,
+    borderWidth: 2,
+    borderColor: "#4A5F7A",
+    marginHorizontal: 4,
+  },
+  wicketTypeButtonActive: {
+    borderColor: "#4CAF50",
+    backgroundColor: "rgba(76, 175, 80, 0.1)",
+  },
+  wicketIcon: {
+    marginBottom: 8,
+  },
+  wicketTypeText: {
+    fontSize: 12,
+    color: "#FFF",
+    textAlign: "center",
+    fontWeight: "500",
+  },
+  scoringGrid: {
+    flex: 1,
+    backgroundColor: "#ECF0F1",
+    padding: 1,
+  },
+  scoringRow: {
+    flexDirection: "row",
+    flex: 1,
+  },
+  scoreButton: {
+    flex: 1,
+    backgroundColor: "#FFF",
+    margin: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    paddingVertical: 20,
+  },
+  scoreButtonText: {
+    fontSize: 24,
+    fontWeight: "600",
+    color: "#2C3E50",
+  },
+  scoreButtonSubText: {
+    fontSize: 12,
+    color: "#7F8C8D",
+    marginTop: 2,
+  },
+  undoButton: {
+    backgroundColor: "#3498DB",
+  },
+  undoButtonText: {
+    color: "#FFF",
+    fontSize: 16,
+  },
+  outButton: {
+    backgroundColor: "#E74C3C",
+  },
+  outButtonText: {
+    color: "#FFF",
   },
 });
 
