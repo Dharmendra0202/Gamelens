@@ -32,6 +32,48 @@ export default function HomeScreen() {
   const [searchQuery, setSearchQuery] = useState('');
   const [showAllPlayers, setShowAllPlayers] = useState(false);
   const [activeMatchIndex, setActiveMatchIndex] = useState(0);
+  const [searchResults, setSearchResults] = useState<{ players: any[], matches: any[], products: any[] }>({ players: [], matches: [], products: [] });
+
+  // Search function for home screen
+  const performHomeSearch = (query: string) => {
+    if (!query.trim()) {
+      setSearchResults({ players: [], matches: [], products: [] });
+      return;
+    }
+
+    const searchTerm = query.toLowerCase().trim();
+    
+    // Search players
+    const filteredPlayers = players.filter(player =>
+      player.name.toLowerCase().includes(searchTerm) ||
+      player.role.toLowerCase().includes(searchTerm) ||
+      player.team.toLowerCase().includes(searchTerm)
+    );
+
+    // Search matches
+    const filteredMatches = matches.filter(match =>
+      match.team1.toLowerCase().includes(searchTerm) ||
+      match.team2.toLowerCase().includes(searchTerm) ||
+      match.location.toLowerCase().includes(searchTerm)
+    );
+
+    // Search products
+    const filteredProducts = products.filter(product =>
+      product.name.toLowerCase().includes(searchTerm)
+    );
+
+    setSearchResults({
+      players: filteredPlayers,
+      matches: filteredMatches,
+      products: filteredProducts
+    });
+  };
+
+  // Handle search query change
+  const handleHomeSearchChange = (query: string) => {
+    setSearchQuery(query);
+    performHomeSearch(query);
+  };
 
   const players = [
     { id: 1, name: 'Virat Kohli', role: 'Batsman', team: 'India', runs: '25,000+', initials: 'VK', color: '#B91C1C' },
@@ -436,30 +478,141 @@ export default function HomeScreen() {
               placeholder="Search players, matches, products..."
               placeholderTextColor="#999"
               value={searchQuery}
-              onChangeText={setSearchQuery}
+              onChangeText={handleHomeSearchChange}
               autoFocus
             />
             {searchQuery.length > 0 && (
-              <TouchableOpacity onPress={() => setSearchQuery('')}>
+              <TouchableOpacity onPress={() => {
+                setSearchQuery('');
+                setSearchResults({ players: [], matches: [], products: [] });
+              }}>
                 <Ionicons name="close-circle" size={20} color="#999" />
               </TouchableOpacity>
             )}
           </View>
 
-          <ScrollView style={styles.searchResults}>
-            <Text style={styles.searchResultsTitle}>Recent Searches</Text>
-            <TouchableOpacity style={styles.searchResultItem}>
-              <Ionicons name="time-outline" size={20} color="#666" />
-              <Text style={styles.searchResultText}>Virat Kohli</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.searchResultItem}>
-              <Ionicons name="time-outline" size={20} color="#666" />
-              <Text style={styles.searchResultText}>Cricket Bat</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.searchResultItem}>
-              <Ionicons name="time-outline" size={20} color="#666" />
-              <Text style={styles.searchResultText}>IPL 2024</Text>
-            </TouchableOpacity>
+          <ScrollView style={styles.searchResults} showsVerticalScrollIndicator={false}>
+            {searchQuery.length === 0 ? (
+              <>
+                <Text style={styles.searchResultsTitle}>Recent Searches</Text>
+                <TouchableOpacity style={styles.searchResultItem}>
+                  <Ionicons name="time-outline" size={20} color="#666" />
+                  <Text style={styles.searchResultText}>Virat Kohli</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.searchResultItem}>
+                  <Ionicons name="time-outline" size={20} color="#666" />
+                  <Text style={styles.searchResultText}>Cricket Bat</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.searchResultItem}>
+                  <Ionicons name="time-outline" size={20} color="#666" />
+                  <Text style={styles.searchResultText}>IPL 2024</Text>
+                </TouchableOpacity>
+              </>
+            ) : (
+              <>
+                {/* Player Results */}
+                {searchResults.players.length > 0 && (
+                  <>
+                    <Text style={styles.searchResultsTitle}>
+                      Players ({searchResults.players.length})
+                    </Text>
+                    {searchResults.players.map((player: any) => (
+                      <TouchableOpacity
+                        key={player.id}
+                        style={styles.searchPlayerItem}
+                        onPress={() => {
+                          handlePlayerPress(player);
+                          setShowSearchModal(false);
+                        }}
+                      >
+                        <View style={[styles.searchPlayerAvatar, { backgroundColor: player.color }]}>
+                          <Text style={styles.searchPlayerInitials}>{player.initials}</Text>
+                        </View>
+                        <View style={styles.searchPlayerInfo}>
+                          <Text style={styles.searchPlayerName}>{player.name}</Text>
+                          <Text style={styles.searchPlayerRole}>{player.role} • {player.team}</Text>
+                          {player.runs && (
+                            <Text style={styles.searchPlayerStats}>🏏 {player.runs}</Text>
+                          )}
+                          {player.wickets && (
+                            <Text style={styles.searchPlayerStats}>🎯 {player.wickets}</Text>
+                          )}
+                        </View>
+                      </TouchableOpacity>
+                    ))}
+                  </>
+                )}
+
+                {/* Match Results */}
+                {searchResults.matches.length > 0 && (
+                  <>
+                    <Text style={[styles.searchResultsTitle, { marginTop: searchResults.players.length > 0 ? 20 : 0 }]}>
+                      Matches ({searchResults.matches.length})
+                    </Text>
+                    {searchResults.matches.map((match: any) => (
+                      <TouchableOpacity
+                        key={match.id}
+                        style={styles.searchMatchItem}
+                        onPress={() => {
+                          console.log(`Viewing match: ${match.team1} vs ${match.team2}`);
+                          setShowSearchModal(false);
+                        }}
+                      >
+                        <View style={styles.searchMatchHeader}>
+                          <View style={styles.searchMatchBadge}>
+                            <Text style={styles.searchMatchBadgeText}>{match.badge}</Text>
+                          </View>
+                          <Text style={styles.searchMatchTime}>{match.time}</Text>
+                        </View>
+                        <Text style={styles.searchMatchTeams}>
+                          {match.team1} vs {match.team2}
+                        </Text>
+                        <View style={styles.searchMatchLocation}>
+                          <Ionicons name="location-outline" size={12} color="#999" />
+                          <Text style={styles.searchMatchLocationText}>{match.location}</Text>
+                        </View>
+                      </TouchableOpacity>
+                    ))}
+                  </>
+                )}
+
+                {/* Product Results */}
+                {searchResults.products.length > 0 && (
+                  <>
+                    <Text style={[styles.searchResultsTitle, { marginTop: (searchResults.players.length > 0 || searchResults.matches.length > 0) ? 20 : 0 }]}>
+                      Products ({searchResults.products.length})
+                    </Text>
+                    {searchResults.products.map((product: any) => (
+                      <TouchableOpacity
+                        key={product.id}
+                        style={styles.searchProductItem}
+                        onPress={() => {
+                          console.log(`Viewing product: ${product.name}`);
+                          setShowSearchModal(false);
+                        }}
+                      >
+                        <View style={styles.searchProductInfo}>
+                          <Text style={styles.searchProductName}>{product.name}</Text>
+                          <Text style={styles.searchProductPrice}>{product.price}</Text>
+                        </View>
+                        <Ionicons name="chevron-forward" size={16} color="#999" />
+                      </TouchableOpacity>
+                    ))}
+                  </>
+                )}
+
+                {/* No Results */}
+                {searchResults.players.length === 0 && searchResults.matches.length === 0 && searchResults.products.length === 0 && searchQuery.length > 0 && (
+                  <View style={styles.noResultsContainer}>
+                    <Ionicons name="search-outline" size={48} color="#CCC" />
+                    <Text style={styles.noResultsTitle}>No results found</Text>
+                    <Text style={styles.noResultsText}>
+                      Try searching for player names, match teams, or product names
+                    </Text>
+                  </View>
+                )}
+              </>
+            )}
           </ScrollView>
         </View>
       </Modal>
@@ -1701,5 +1854,127 @@ const styles = StyleSheet.create({
   matchOptionDescription: {
     fontSize: 14,
     color: 'rgba(255, 255, 255, 0.9)',
+  },
+  // Search Results Styles
+  searchPlayerItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 12,
+    gap: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: '#F0F0F0',
+  },
+  searchPlayerAvatar: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  searchPlayerInitials: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#FFF',
+  },
+  searchPlayerInfo: {
+    flex: 1,
+  },
+  searchPlayerName: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#333',
+    marginBottom: 2,
+  },
+  searchPlayerRole: {
+    fontSize: 12,
+    color: '#666',
+    marginBottom: 2,
+  },
+  searchPlayerStats: {
+    fontSize: 12,
+    color: '#B91C1C',
+    fontWeight: '500',
+  },
+  searchMatchItem: {
+    paddingVertical: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: '#F0F0F0',
+  },
+  searchMatchHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 4,
+  },
+  searchMatchBadge: {
+    backgroundColor: '#B91C1C',
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+    borderRadius: 8,
+  },
+  searchMatchBadgeText: {
+    fontSize: 10,
+    fontWeight: '600',
+    color: '#FFF',
+  },
+  searchMatchTime: {
+    fontSize: 12,
+    color: '#666',
+    fontWeight: '500',
+  },
+  searchMatchTeams: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#333',
+    marginBottom: 4,
+  },
+  searchMatchLocation: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+  },
+  searchMatchLocationText: {
+    fontSize: 12,
+    color: '#666',
+  },
+  searchProductItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingVertical: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: '#F0F0F0',
+  },
+  searchProductInfo: {
+    flex: 1,
+  },
+  searchProductName: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#333',
+    marginBottom: 2,
+  },
+  searchProductPrice: {
+    fontSize: 14,
+    color: '#B91C1C',
+    fontWeight: '600',
+  },
+  noResultsContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 60,
+  },
+  noResultsTitle: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#666',
+    marginTop: 16,
+    marginBottom: 8,
+  },
+  noResultsText: {
+    fontSize: 14,
+    color: '#999',
+    textAlign: 'center',
+    lineHeight: 20,
   },
 });

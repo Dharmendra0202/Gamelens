@@ -37,7 +37,8 @@ export default function MyCricketScreen() {
   const [countryCode, setCountryCode] = useState("+91");
   const [showCountryPicker, setShowCountryPicker] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const [searchResults, setSearchResults] = useState({ tournaments: [], matches: [] });
+  const [searchResults, setSearchResults] = useState<{ tournaments: any[], matches: any[] }>({ tournaments: [], matches: [] });
+  const [showSearchModal, setShowSearchModal] = useState(false);
   
   // Team data
   const [teamAName, setTeamAName] = useState("");
@@ -844,6 +845,209 @@ export default function MyCricketScreen() {
 
   const currentMatches = getMatchesByFilter(activeFilter);
 
+  // All tournaments data for search
+  const allTournaments = [
+    // Your tournaments
+    {
+      id: 1,
+      name: "Mumbai Premier League 2024",
+      teams: 8,
+      matches: 24,
+      status: "Ongoing",
+      startDate: "May 15, 2024",
+      progress: 65,
+      category: "your"
+    },
+    {
+      id: 2,
+      name: "Summer Cricket Championship",
+      teams: 6,
+      matches: 15,
+      status: "Upcoming",
+      startDate: "June 1, 2024",
+      progress: 0,
+      category: "your"
+    },
+    {
+      id: 10,
+      name: "Monsoon T20 Series",
+      teams: 7,
+      matches: 18,
+      status: "Ongoing",
+      startDate: "May 20, 2024",
+      progress: 45,
+      category: "your"
+    },
+    {
+      id: 11,
+      name: "Weekend Cricket Fest",
+      teams: 5,
+      matches: 10,
+      status: "Upcoming",
+      startDate: "June 15, 2024",
+      progress: 0,
+      category: "your"
+    },
+    {
+      id: 12,
+      name: "Corporate League 2024",
+      teams: 9,
+      matches: 20,
+      status: "Ongoing",
+      startDate: "May 10, 2024",
+      progress: 80,
+      category: "your"
+    },
+    {
+      id: 13,
+      name: "Youth Cricket Academy",
+      teams: 4,
+      matches: 8,
+      status: "Upcoming",
+      startDate: "July 1, 2024",
+      progress: 0,
+      category: "your"
+    },
+    // Participate tournaments
+    {
+      id: 3,
+      name: "Delhi Cricket League 2024",
+      teams: 10,
+      matches: 32,
+      status: "Completed",
+      startDate: "Apr 10, 2024",
+      progress: 100,
+      category: "participate"
+    },
+    {
+      id: 4,
+      name: "Bangalore T20 Blast",
+      teams: 7,
+      matches: 18,
+      status: "Completed",
+      startDate: "Mar 20, 2024",
+      progress: 100,
+      category: "participate"
+    },
+    {
+      id: 5,
+      name: "Pune Cricket Festival",
+      teams: 5,
+      matches: 12,
+      status: "Completed",
+      startDate: "Feb 15, 2024",
+      progress: 100,
+      category: "participate"
+    },
+    // Network tournaments
+    {
+      id: 6,
+      name: "National Cricket Championship",
+      teams: 16,
+      matches: 48,
+      status: "Upcoming",
+      startDate: "Jul 1, 2024",
+      progress: 0,
+      category: "network"
+    },
+    {
+      id: 7,
+      name: "Inter-State T20 Series",
+      teams: 12,
+      matches: 36,
+      status: "Upcoming",
+      startDate: "Aug 15, 2024",
+      progress: 0,
+      category: "network"
+    },
+    {
+      id: 8,
+      name: "Corporate Cricket League",
+      teams: 9,
+      matches: 24,
+      status: "Ongoing",
+      startDate: "May 20, 2024",
+      progress: 55,
+      category: "network"
+    },
+    // All tournaments
+    {
+      id: 9,
+      name: "IPL 2024",
+      teams: 10,
+      matches: 74,
+      status: "Ongoing",
+      startDate: "Mar 22, 2024",
+      progress: 85,
+      category: "all"
+    },
+    {
+      id: 14,
+      name: "World Cup 2024",
+      teams: 16,
+      matches: 48,
+      status: "Upcoming",
+      startDate: "Oct 1, 2024",
+      progress: 0,
+      category: "all"
+    },
+    {
+      id: 15,
+      name: "Champions Trophy 2024",
+      teams: 8,
+      matches: 15,
+      status: "Upcoming",
+      startDate: "Sep 15, 2024",
+      progress: 0,
+      category: "all"
+    }
+  ];
+
+  // All matches data for search
+  const allMatches = [
+    ...getMatchesByFilter("your"),
+    ...getMatchesByFilter("participate"),
+    ...getMatchesByFilter("network"),
+    ...getMatchesByFilter("all")
+  ];
+
+  // Search function
+  const performSearch = (query: string) => {
+    if (!query.trim()) {
+      setSearchResults({ tournaments: [], matches: [] });
+      return;
+    }
+
+    const searchTerm = query.toLowerCase().trim();
+    
+    // Search tournaments
+    const filteredTournaments = allTournaments.filter(tournament =>
+      tournament.name.toLowerCase().includes(searchTerm) ||
+      tournament.status.toLowerCase().includes(searchTerm) ||
+      tournament.category.toLowerCase().includes(searchTerm)
+    );
+
+    // Search matches
+    const filteredMatches = allMatches.filter(match =>
+      match.team.toLowerCase().includes(searchTerm) ||
+      match.type.toLowerCase().includes(searchTerm) ||
+      match.location.toLowerCase().includes(searchTerm) ||
+      match.format.toLowerCase().includes(searchTerm) ||
+      match.status.toLowerCase().includes(searchTerm)
+    );
+
+    setSearchResults({
+      tournaments: filteredTournaments,
+      matches: filteredMatches
+    });
+  };
+
+  // Handle search query change
+  const handleSearchChange = (query: string) => {
+    setSearchQuery(query);
+    performSearch(query);
+  };
+
   return (
     <View style={styles.container}>
       {/* Header - Always show except when specified */}
@@ -903,7 +1107,10 @@ export default function MyCricketScreen() {
             </View>
 
             <View style={styles.headerRight}>
-              <TouchableOpacity style={styles.iconButton}>
+              <TouchableOpacity 
+                style={styles.iconButton}
+                onPress={() => setShowSearchModal(true)}
+              >
                 <Ionicons name="search" size={24} color="#FFF" />
               </TouchableOpacity>
               <TouchableOpacity style={styles.iconButton}>
@@ -4639,6 +4846,256 @@ export default function MyCricketScreen() {
             </ScrollView>
           </TouchableOpacity>
         </TouchableOpacity>
+      </Modal>
+
+      {/* Search Modal */}
+      <Modal
+        visible={showSearchModal}
+        transparent
+        animationType="slide"
+        onRequestClose={() => setShowSearchModal(false)}
+      >
+        <View style={styles.searchModalContainer}>
+          <View style={styles.searchModalHeader}>
+            <TouchableOpacity onPress={() => setShowSearchModal(false)}>
+              <Ionicons name="arrow-back" size={24} color="#333" />
+            </TouchableOpacity>
+            <Text style={styles.searchModalTitle}>Search</Text>
+            <View style={{ width: 24 }} />
+          </View>
+          
+          <View style={styles.searchInputContainer}>
+            <Ionicons name="search" size={20} color="#999" />
+            <TextInput
+              style={styles.searchInput}
+              placeholder="Search tournaments, matches..."
+              placeholderTextColor="#999"
+              value={searchQuery}
+              onChangeText={handleSearchChange}
+              autoFocus
+            />
+            {searchQuery.length > 0 && (
+              <TouchableOpacity onPress={() => {
+                setSearchQuery('');
+                setSearchResults({ tournaments: [], matches: [] });
+              }}>
+                <Ionicons name="close-circle" size={20} color="#999" />
+              </TouchableOpacity>
+            )}
+          </View>
+
+          <ScrollView style={styles.searchResults} showsVerticalScrollIndicator={false}>
+            {searchQuery.length === 0 ? (
+              <>
+                <Text style={styles.searchResultsTitle}>Recent Searches</Text>
+                <TouchableOpacity style={styles.searchResultItem}>
+                  <Ionicons name="time-outline" size={20} color="#666" />
+                  <Text style={styles.searchResultText}>Mumbai Premier League</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.searchResultItem}>
+                  <Ionicons name="time-outline" size={20} color="#666" />
+                  <Text style={styles.searchResultText}>T20 Match</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.searchResultItem}>
+                  <Ionicons name="time-outline" size={20} color="#666" />
+                  <Text style={styles.searchResultText}>Wankhede Stadium</Text>
+                </TouchableOpacity>
+              </>
+            ) : (
+              <>
+                {/* Tournament Results */}
+                {searchResults.tournaments.length > 0 && (
+                  <>
+                    <Text style={styles.searchResultsTitle}>
+                      Tournaments ({searchResults.tournaments.length})
+                    </Text>
+                    {searchResults.tournaments.map((tournament: any) => (
+                      <TouchableOpacity
+                        key={tournament.id}
+                        style={styles.tournamentCard}
+                        activeOpacity={0.85}
+                        onPress={() => {
+                          setSelectedTournament(tournament);
+                          setActiveTournamentDetailTab("matches");
+                          setCurrentView("tournamentDetail");
+                          setShowSearchModal(false);
+                        }}
+                      >
+                        <LinearGradient
+                          colors={["#FFF", "#F8F8F8"]}
+                          style={styles.tournamentCardGradient}
+                        >
+                          <View style={styles.tournamentHeader}>
+                            <View style={styles.tournamentHeaderLeft}>
+                              <LinearGradient
+                                colors={["#FCA5A5", "#DC2626"]}
+                                style={styles.tournamentIcon}
+                              >
+                                <Ionicons name="trophy" size={18} color="#FFF" />
+                              </LinearGradient>
+                              <View style={styles.tournamentHeaderInfo}>
+                                <Text style={styles.tournamentName} numberOfLines={1}>
+                                  {tournament.name}
+                                </Text>
+                                <View style={styles.tournamentMeta}>
+                                  <Ionicons name="calendar-outline" size={11} color="#999" />
+                                  <Text style={styles.tournamentMetaText}>
+                                    {tournament.startDate}
+                                  </Text>
+                                </View>
+                              </View>
+                            </View>
+                            <LinearGradient
+                              colors={
+                                tournament.status === "Ongoing"
+                                  ? ["#B91C1C", "#991B1B"]
+                                  : ["#DC2626", "#991B1B"]
+                              }
+                              style={styles.tournamentStatusBadge}
+                            >
+                              <Text style={styles.tournamentStatusText}>
+                                {tournament.status}
+                              </Text>
+                            </LinearGradient>
+                          </View>
+
+                          <View style={styles.tournamentProgressSection}>
+                            <View style={styles.progressBar}>
+                              <View
+                                style={[
+                                  styles.progressFill,
+                                  {
+                                    width: `${tournament.progress}%`,
+                                    backgroundColor:
+                                      tournament.progress > 70
+                                        ? "#B91C1C"
+                                        : tournament.progress > 40
+                                        ? "#DC2626"
+                                        : "#B91C1C",
+                                  },
+                                ]}
+                              />
+                            </View>
+                            <Text style={styles.progressText}>
+                              {tournament.progress}% Complete
+                            </Text>
+                          </View>
+
+                          <View style={styles.tournamentStats}>
+                            <View style={styles.tournamentStat}>
+                              <View style={styles.statIcon}>
+                                <Ionicons name="people" size={12} color="#B91C1C" />
+                              </View>
+                              <Text style={styles.tournamentStatText}>
+                                {tournament.teams} Teams
+                              </Text>
+                            </View>
+                            <View style={styles.tournamentStat}>
+                              <View style={styles.statIcon}>
+                                <Ionicons name="baseball" size={12} color="#B91C1C" />
+                              </View>
+                              <Text style={styles.tournamentStatText}>
+                                {tournament.matches} Matches
+                              </Text>
+                            </View>
+                          </View>
+
+                          <View style={styles.tournamentFooter}>
+                            <TouchableOpacity 
+                              style={[styles.tournamentButton, { flex: 1 }]}
+                              onPress={(e) => {
+                                e.stopPropagation();
+                                setSelectedTournament(tournament);
+                                setActiveTournamentDetailTab("matches");
+                                setCurrentView("tournamentDetail");
+                                setShowSearchModal(false);
+                              }}
+                            >
+                              <LinearGradient
+                                colors={["#B91C1C", "#991B1B"]}
+                                style={styles.tournamentButtonGradient}
+                              >
+                                <Ionicons name="eye-outline" size={13} color="#FFF" />
+                                <Text style={styles.tournamentButtonText}>View Details</Text>
+                              </LinearGradient>
+                            </TouchableOpacity>
+                          </View>
+                        </LinearGradient>
+                      </TouchableOpacity>
+                    ))}
+                  </>
+                )}
+
+                {/* Match Results */}
+                {searchResults.matches.length > 0 && (
+                  <>
+                    <Text style={[styles.searchResultsTitle, { marginTop: searchResults.tournaments.length > 0 ? 20 : 0 }]}>
+                      Matches ({searchResults.matches.length})
+                    </Text>
+                    {searchResults.matches.map((match: any) => (
+                      <TouchableOpacity
+                        key={match.id}
+                        style={styles.searchMatchItem}
+                        onPress={() => {
+                          console.log(`Viewing match: ${match.team}`);
+                          setShowSearchModal(false);
+                        }}
+                      >
+                        <LinearGradient
+                          colors={["#FFF", "#F8F8F8"]}
+                          style={styles.searchMatchGradient}
+                        >
+                          <View style={styles.searchMatchHeader}>
+                            <View style={[
+                              styles.searchMatchStatus,
+                              { backgroundColor: match.status === "Live" ? "#B91C1C" : match.status === "Upcoming" ? "#DC2626" : "#666" }
+                            ]}>
+                              <Text style={styles.searchMatchStatusText}>
+                                {match.status}
+                              </Text>
+                            </View>
+                            <Text style={styles.searchMatchType}>{match.type}</Text>
+                          </View>
+                          <Text style={styles.searchMatchTeam} numberOfLines={1}>
+                            {match.team}
+                          </Text>
+                          <View style={styles.searchMatchMeta}>
+                            <View style={styles.searchMatchMetaItem}>
+                              <Ionicons name="calendar-outline" size={12} color="#999" />
+                              <Text style={styles.searchMatchMetaText}>{match.date} • {match.time}</Text>
+                            </View>
+                            <View style={styles.searchMatchMetaItem}>
+                              <Ionicons name="location-outline" size={12} color="#999" />
+                              <Text style={styles.searchMatchMetaText} numberOfLines={1}>{match.location}</Text>
+                            </View>
+                            <View style={styles.searchMatchMetaItem}>
+                              <Ionicons name="baseball-outline" size={12} color="#999" />
+                              <Text style={styles.searchMatchMetaText}>{match.format} • {match.overs}</Text>
+                            </View>
+                          </View>
+                          {match.result && (
+                            <Text style={styles.searchMatchResult}>{match.result}</Text>
+                          )}
+                        </LinearGradient>
+                      </TouchableOpacity>
+                    ))}
+                  </>
+                )}
+
+                {/* No Results */}
+                {searchResults.tournaments.length === 0 && searchResults.matches.length === 0 && searchQuery.length > 0 && (
+                  <View style={styles.noResultsContainer}>
+                    <Ionicons name="search-outline" size={48} color="#CCC" />
+                    <Text style={styles.noResultsTitle}>No results found</Text>
+                    <Text style={styles.noResultsText}>
+                      Try searching for tournament names, match teams, or locations
+                    </Text>
+                  </View>
+                )}
+              </>
+            )}
+          </ScrollView>
+        </View>
       </Modal>
     </View>
   );
@@ -8457,6 +8914,143 @@ const styles = StyleSheet.create({
     fontWeight: "800",
     color: "#FFF",
     letterSpacing: 0.5,
+  },
+  // Search Modal Styles
+  searchModalContainer: {
+    flex: 1,
+    backgroundColor: "#FFF",
+  },
+  searchModalHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingHorizontal: 16,
+    paddingVertical: 16,
+    paddingTop: 50,
+    backgroundColor: "#FFF",
+    borderBottomWidth: 1,
+    borderBottomColor: "#E5E5E5",
+  },
+  searchModalTitle: {
+    fontSize: 18,
+    fontWeight: "600",
+    color: "#333",
+  },
+  searchInputContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#F5F5F5",
+    marginHorizontal: 16,
+    marginVertical: 16,
+    paddingHorizontal: 12,
+    paddingVertical: 12,
+    borderRadius: 12,
+    gap: 8,
+  },
+  searchInput: {
+    flex: 1,
+    fontSize: 16,
+    color: "#333",
+  },
+  searchResults: {
+    flex: 1,
+    paddingHorizontal: 16,
+  },
+  searchResultsTitle: {
+    fontSize: 16,
+    fontWeight: "600",
+    color: "#333",
+    marginBottom: 12,
+    marginTop: 8,
+  },
+  searchResultItem: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingVertical: 12,
+    gap: 12,
+  },
+  searchResultText: {
+    fontSize: 16,
+    color: "#666",
+  },
+  // Match Search Results
+  searchMatchItem: {
+    marginBottom: 12,
+    borderRadius: 12,
+    overflow: "hidden",
+    elevation: 2,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+  },
+  searchMatchGradient: {
+    padding: 16,
+  },
+  searchMatchHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginBottom: 8,
+  },
+  searchMatchStatus: {
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+    borderRadius: 8,
+  },
+  searchMatchStatusText: {
+    fontSize: 10,
+    fontWeight: "600",
+    color: "#FFF",
+  },
+  searchMatchType: {
+    fontSize: 12,
+    color: "#666",
+    fontWeight: "500",
+  },
+  searchMatchTeam: {
+    fontSize: 16,
+    fontWeight: "600",
+    color: "#333",
+    marginBottom: 8,
+  },
+  searchMatchMeta: {
+    gap: 4,
+  },
+  searchMatchMetaItem: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 4,
+  },
+  searchMatchMetaText: {
+    fontSize: 12,
+    color: "#666",
+    flex: 1,
+  },
+  searchMatchResult: {
+    fontSize: 12,
+    color: "#B91C1C",
+    fontWeight: "600",
+    marginTop: 8,
+  },
+  // No Results
+  noResultsContainer: {
+    alignItems: "center",
+    justifyContent: "center",
+    paddingVertical: 60,
+  },
+  noResultsTitle: {
+    fontSize: 18,
+    fontWeight: "600",
+    color: "#666",
+    marginTop: 16,
+    marginBottom: 8,
+  },
+  noResultsText: {
+    fontSize: 14,
+    color: "#999",
+    textAlign: "center",
+    lineHeight: 20,
   },
 });
 
