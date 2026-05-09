@@ -1,17 +1,19 @@
 import { Ionicons } from '@expo/vector-icons';
+import * as ImagePicker from 'expo-image-picker';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import {
-    Dimensions,
-    ImageBackground,
-    Modal,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View
+  Dimensions,
+  Image,
+  ImageBackground,
+  Modal,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View
 } from 'react-native';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
@@ -21,6 +23,30 @@ const SECTION_PADDING = 16;
 const CARD_SPACING = CARD_WIDTH + CARD_MARGIN;
 const SIDE_PADDING = (SCREEN_WIDTH - CARD_WIDTH - (SECTION_PADDING * 2)) / 2;
 
+type Profile = {
+  name: string;
+  phone: string;
+  role: string;
+  location: string;
+  battingStyle: string;
+  bowlingStyle: string;
+  friends: string;
+  posts: string;
+  imageUri: string;
+};
+
+const initialProfile: Profile = {
+  name: 'Dharmendra Vishwakarma',
+  phone: '8383999973',
+  role: 'All-rounder',
+  location: 'Mumbai',
+  battingStyle: 'Right hand bat',
+  bowlingStyle: 'Medium pace',
+  friends: '125',
+  posts: '45',
+  imageUri: '',
+};
+
 export default function HomeScreen() {
   const router = useRouter();
   const [selectedPlayer, setSelectedPlayer] = useState<any>(null);
@@ -28,11 +54,67 @@ export default function HomeScreen() {
   const [showSearchModal, setShowSearchModal] = useState(false);
   const [showChatModal, setShowChatModal] = useState(false);
   const [showMenuDrawer, setShowMenuDrawer] = useState(false);
+  const [showProfileModal, setShowProfileModal] = useState(false);
   const [showMatchOptionsModal, setShowMatchOptionsModal] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [showAllPlayers, setShowAllPlayers] = useState(false);
   const [activeMatchIndex, setActiveMatchIndex] = useState(0);
   const [searchResults, setSearchResults] = useState<{ players: any[], matches: any[], products: any[] }>({ players: [], matches: [], products: [] });
+
+  // Drawer page modals
+  const [showStoreModal, setShowStoreModal] = useState(false);
+  const [showLeaderboardModal, setShowLeaderboardModal] = useState(false);
+  const [showAwardsModal, setShowAwardsModal] = useState(false);
+  const [showAssociationsModal, setShowAssociationsModal] = useState(false);
+  const [showClubsModal, setShowClubsModal] = useState(false);
+  const [showContactModal, setShowContactModal] = useState(false);
+  const [showShareModal, setShowShareModal] = useState(false);
+  const [showRateModal, setShowRateModal] = useState(false);
+  const [selectedRating, setSelectedRating] = useState(0);
+  const [ratingSubmitted, setRatingSubmitted] = useState(false);
+  const [profile, setProfile] = useState<Profile>(initialProfile);
+  const [profileDraft, setProfileDraft] = useState<Profile>(initialProfile);
+
+  const profileInitials = profile.name
+    .split(' ')
+    .filter(Boolean)
+    .map((namePart) => namePart[0])
+    .join('')
+    .slice(0, 2)
+    .toUpperCase() || 'ME';
+
+  const openProfileEditor = () => {
+    setProfileDraft(profile);
+    setShowProfileModal(true);
+  };
+
+  const updateProfileDraft = (key: keyof Profile, value: string) => {
+    setProfileDraft((currentDraft) => ({ ...currentDraft, [key]: value }));
+  };
+
+  const saveProfile = () => {
+    setProfile(profileDraft);
+    setShowProfileModal(false);
+  };
+
+  const pickProfileImage = async () => {
+    const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
+
+    if (!permission.granted) {
+      return;
+    }
+
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ['images'],
+      allowsEditing: true,
+      aspect: [1, 1],
+      quality: 0.85,
+    });
+
+    if (!result.canceled && result.assets[0]?.uri) {
+      updateProfileDraft('imageUri', result.assets[0].uri);
+    }
+  };
 
   // Search function for home screen
   const performHomeSearch = (query: string) => {
@@ -161,18 +243,28 @@ export default function HomeScreen() {
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
         {/* Profile Section */}
         <View style={styles.profileSection}>
-          <View style={styles.myProfile}>
+          <TouchableOpacity
+            style={styles.myProfile}
+            onPress={openProfileEditor}
+            activeOpacity={0.85}
+          >
             <View style={styles.myProfileAvatar}>
-              <Text style={styles.myProfileInitials}>ME</Text>
+              {profile.imageUri ? (
+                <Image source={{ uri: profile.imageUri }} style={styles.myProfileImage} />
+              ) : (
+                <Text style={styles.myProfileInitials}>{profileInitials}</Text>
+              )}
             </View>
             <View style={styles.myProfileInfo}>
-              <Text style={styles.myProfileName}>My Profile</Text>
-              <Text style={styles.myProfileStats}>125 Friends • 45 Posts</Text>
+              <Text style={styles.myProfileName}>{profile.name}</Text>
+              <Text style={styles.myProfileStats}>
+                {profile.role} - {profile.friends} Friends - {profile.posts} Posts
+              </Text>
             </View>
-            <TouchableOpacity style={styles.viewProfileButton} onPress={() => console.log('View profile clicked')}>
+            <View style={styles.viewProfileButton}>
               <Ionicons name="chevron-forward" size={20} color="#B91C1C" />
-            </TouchableOpacity>
-          </View>
+            </View>
+          </TouchableOpacity>
         </View>
 
         {/* Matches Nearby */}
@@ -681,6 +773,153 @@ export default function HomeScreen() {
         </View>
       </Modal>
 
+      {/* Profile Editor Modal */}
+      <Modal
+        visible={showProfileModal}
+        transparent
+        animationType="slide"
+        onRequestClose={() => setShowProfileModal(false)}
+      >
+        <View style={styles.profileModalOverlay}>
+          <View style={styles.profileEditor}>
+            <View style={styles.profileEditorHeader}>
+              <TouchableOpacity onPress={() => setShowProfileModal(false)}>
+                <Ionicons name="close" size={24} color="#333" />
+              </TouchableOpacity>
+              <Text style={styles.profileEditorTitle}>Manage Profile</Text>
+              <TouchableOpacity onPress={saveProfile}>
+                <Text style={styles.profileSaveText}>Save</Text>
+              </TouchableOpacity>
+            </View>
+
+            <ScrollView
+              style={styles.profileEditorBody}
+              showsVerticalScrollIndicator={false}
+              keyboardShouldPersistTaps="handled"
+            >
+              <View style={styles.profilePhotoArea}>
+                <View style={styles.profilePhotoPreview}>
+                  {profileDraft.imageUri ? (
+                    <Image source={{ uri: profileDraft.imageUri }} style={styles.profilePhotoImage} />
+                  ) : (
+                    <Text style={styles.profilePhotoInitials}>
+                      {profileDraft.name
+                        .split(' ')
+                        .filter(Boolean)
+                        .map((namePart) => namePart[0])
+                        .join('')
+                        .slice(0, 2)
+                        .toUpperCase() || 'ME'}
+                    </Text>
+                  )}
+                </View>
+                <Text style={styles.profilePhotoTitle}>Profile picture</Text>
+                <Text style={styles.profilePhotoHint}>Choose a photo from your device.</Text>
+                <TouchableOpacity style={styles.pickPhotoButton} onPress={pickProfileImage}>
+                  <Ionicons name="image-outline" size={18} color="#FFF" />
+                  <Text style={styles.pickPhotoText}>Choose from device</Text>
+                </TouchableOpacity>
+              </View>
+
+              <View style={styles.profileRow}>
+                <View style={styles.profileRowField}>
+                  <Text style={styles.profileInputLabel}>Name</Text>
+                  <TextInput
+                    style={styles.profileInput}
+                    value={profileDraft.name}
+                    onChangeText={(value) => updateProfileDraft('name', value)}
+                    placeholder="Your name"
+                    placeholderTextColor="#999"
+                  />
+                </View>
+                <View style={styles.profileRowField}>
+                  <Text style={styles.profileInputLabel}>Phone</Text>
+                  <TextInput
+                    style={styles.profileInput}
+                    value={profileDraft.phone}
+                    onChangeText={(value) => updateProfileDraft('phone', value)}
+                    placeholder="Phone number"
+                    placeholderTextColor="#999"
+                    keyboardType="phone-pad"
+                  />
+                </View>
+              </View>
+
+              <Text style={styles.profileInputLabel}>Role</Text>
+              <TextInput
+                style={styles.profileInput}
+                value={profileDraft.role}
+                onChangeText={(value) => updateProfileDraft('role', value)}
+                placeholder="Batter, bowler, all-rounder"
+                placeholderTextColor="#999"
+              />
+
+              <Text style={styles.profileInputLabel}>Location</Text>
+              <TextInput
+                style={styles.profileInput}
+                value={profileDraft.location}
+                onChangeText={(value) => updateProfileDraft('location', value)}
+                placeholder="City or area"
+                placeholderTextColor="#999"
+              />
+
+              <View style={styles.profileRow}>
+                <View style={styles.profileRowField}>
+                  <Text style={styles.profileInputLabel}>Batting</Text>
+                  <TextInput
+                    style={styles.profileInput}
+                    value={profileDraft.battingStyle}
+                    onChangeText={(value) => updateProfileDraft('battingStyle', value)}
+                    placeholder="Right hand bat"
+                    placeholderTextColor="#999"
+                  />
+                </View>
+                <View style={styles.profileRowField}>
+                  <Text style={styles.profileInputLabel}>Bowling</Text>
+                  <TextInput
+                    style={styles.profileInput}
+                    value={profileDraft.bowlingStyle}
+                    onChangeText={(value) => updateProfileDraft('bowlingStyle', value)}
+                    placeholder="Medium pace"
+                    placeholderTextColor="#999"
+                  />
+                </View>
+              </View>
+
+              <View style={styles.profileRow}>
+                <View style={styles.profileRowField}>
+                  <Text style={styles.profileInputLabel}>Friends</Text>
+                  <TextInput
+                    style={styles.profileInput}
+                    value={profileDraft.friends}
+                    onChangeText={(value) => updateProfileDraft('friends', value)}
+                    placeholder="125"
+                    placeholderTextColor="#999"
+                    keyboardType="number-pad"
+                  />
+                </View>
+                <View style={styles.profileRowField}>
+                  <Text style={styles.profileInputLabel}>Posts</Text>
+                  <TextInput
+                    style={styles.profileInput}
+                    value={profileDraft.posts}
+                    onChangeText={(value) => updateProfileDraft('posts', value)}
+                    placeholder="45"
+                    placeholderTextColor="#999"
+                    keyboardType="number-pad"
+                  />
+                </View>
+              </View>
+
+              <TouchableOpacity style={styles.clearPhotoButton} onPress={() => updateProfileDraft('imageUri', '')}>
+                <Ionicons name="trash-outline" size={18} color="#B91C1C" />
+                <Text style={styles.clearPhotoText}>Remove profile picture</Text>
+              </TouchableOpacity>
+            </ScrollView>
+          </View>
+        </View>
+      </Modal>
+
       {/* Menu Drawer */}
       <Modal
         visible={showMenuDrawer}
@@ -699,21 +938,34 @@ export default function HomeScreen() {
             onPress={(e) => e.stopPropagation()}
           >
             {/* Profile Section */}
-            <View style={styles.drawerProfile}>
+            <TouchableOpacity
+              style={styles.drawerProfile}
+              onPress={() => {
+                setShowMenuDrawer(false);
+                openProfileEditor();
+              }}
+              activeOpacity={0.9}
+            >
               <View style={styles.drawerProfileAvatar}>
-                <Text style={styles.drawerProfileInitials}>DV</Text>
+                {profile.imageUri ? (
+                  <Image source={{ uri: profile.imageUri }} style={styles.drawerProfileImage} />
+                ) : (
+                  <Text style={styles.drawerProfileInitials}>{profileInitials}</Text>
+                )}
               </View>
               <View style={styles.drawerProfileInfo}>
-                <Text style={styles.drawerProfileName}>Dharmendra Vishw...</Text>
-                <Text style={styles.drawerProfilePhone}>8383999973</Text>
-                <View style={styles.drawerProfileBadge}>
-                  <Text style={styles.drawerProfileBadgeText}>Free User</Text>
-                </View>
+                <Text style={styles.drawerProfileName} numberOfLines={1}>{profile.name}</Text>
+                <Text style={styles.drawerProfilePhone}>{profile.phone}</Text>
               </View>
-              <TouchableOpacity>
+              <TouchableOpacity
+                onPress={(event) => {
+                  event.stopPropagation();
+                  setShowMenuDrawer(false);
+                }}
+              >
                 <Ionicons name="close-circle-outline" size={24} color="#FFF" />
               </TouchableOpacity>
-            </View>
+            </TouchableOpacity>
 
             {/* Progress Bar */}
             <View style={styles.progressContainer}>
@@ -816,61 +1068,92 @@ export default function HomeScreen() {
                 <Text style={styles.drawerMenuText}>My Performance</Text>
               </TouchableOpacity>
 
-              <TouchableOpacity style={styles.drawerMenuItem}>
+              <TouchableOpacity
+                style={styles.drawerMenuItem}
+                onPress={() => { setShowMenuDrawer(false); setShowStoreModal(true); }}
+              >
                 <View style={styles.drawerMenuIcon}>
                   <Ionicons name="bag-outline" size={20} color="#666" />
                 </View>
                 <Text style={styles.drawerMenuText}>CricHeroes Store</Text>
-                <Ionicons name="lock-closed" size={16} color="#B91C1C" style={{ marginLeft: 'auto' }} />
+                <Ionicons name="chevron-forward" size={16} color="#B91C1C" style={{ marginLeft: 'auto' }} />
               </TouchableOpacity>
 
-              <TouchableOpacity style={styles.drawerMenuItem}>
+              <TouchableOpacity
+                style={styles.drawerMenuItem}
+                onPress={() => { setShowMenuDrawer(false); setShowLeaderboardModal(true); }}
+              >
                 <View style={styles.drawerMenuIcon}>
                   <Ionicons name="podium-outline" size={20} color="#666" />
                 </View>
                 <Text style={styles.drawerMenuText}>Leaderboards</Text>
+                <Ionicons name="chevron-forward" size={16} color="#B91C1C" style={{ marginLeft: 'auto' }} />
               </TouchableOpacity>
 
-              <TouchableOpacity style={styles.drawerMenuItem}>
+              <TouchableOpacity
+                style={styles.drawerMenuItem}
+                onPress={() => { setShowMenuDrawer(false); setShowAwardsModal(true); }}
+              >
                 <View style={styles.drawerMenuIcon}>
                   <Ionicons name="ribbon-outline" size={20} color="#666" />
                 </View>
                 <Text style={styles.drawerMenuText}>CricHeroes Awards</Text>
+                <Ionicons name="chevron-forward" size={16} color="#B91C1C" style={{ marginLeft: 'auto' }} />
               </TouchableOpacity>
 
-              <TouchableOpacity style={styles.drawerMenuItem}>
+              <TouchableOpacity
+                style={styles.drawerMenuItem}
+                onPress={() => { setShowMenuDrawer(false); setShowAssociationsModal(true); }}
+              >
                 <View style={styles.drawerMenuIcon}>
                   <Ionicons name="people-outline" size={20} color="#666" />
                 </View>
                 <Text style={styles.drawerMenuText}>Associations</Text>
+                <Ionicons name="chevron-forward" size={16} color="#B91C1C" style={{ marginLeft: 'auto' }} />
               </TouchableOpacity>
 
-              <TouchableOpacity style={styles.drawerMenuItem}>
+              <TouchableOpacity
+                style={styles.drawerMenuItem}
+                onPress={() => { setShowMenuDrawer(false); setShowClubsModal(true); }}
+              >
                 <View style={styles.drawerMenuIcon}>
                   <Ionicons name="business-outline" size={20} color="#666" />
                 </View>
                 <Text style={styles.drawerMenuText}>Clubs</Text>
+                <Ionicons name="chevron-forward" size={16} color="#B91C1C" style={{ marginLeft: 'auto' }} />
               </TouchableOpacity>
 
-              <TouchableOpacity style={styles.drawerMenuItem}>
+              <TouchableOpacity
+                style={styles.drawerMenuItem}
+                onPress={() => { setShowMenuDrawer(false); setShowContactModal(true); }}
+              >
                 <View style={styles.drawerMenuIcon}>
                   <Ionicons name="call-outline" size={20} color="#666" />
                 </View>
                 <Text style={styles.drawerMenuText}>Contact</Text>
+                <Ionicons name="chevron-forward" size={16} color="#B91C1C" style={{ marginLeft: 'auto' }} />
               </TouchableOpacity>
 
-              <TouchableOpacity style={styles.drawerMenuItem}>
+              <TouchableOpacity
+                style={styles.drawerMenuItem}
+                onPress={() => { setShowMenuDrawer(false); setShowShareModal(true); }}
+              >
                 <View style={styles.drawerMenuIcon}>
                   <Ionicons name="share-social-outline" size={20} color="#666" />
                 </View>
                 <Text style={styles.drawerMenuText}>Share the app</Text>
+                <Ionicons name="chevron-forward" size={16} color="#B91C1C" style={{ marginLeft: 'auto' }} />
               </TouchableOpacity>
 
-              <TouchableOpacity style={styles.drawerMenuItem}>
+              <TouchableOpacity
+                style={styles.drawerMenuItem}
+                onPress={() => { setShowMenuDrawer(false); setShowRateModal(true); }}
+              >
                 <View style={styles.drawerMenuIcon}>
                   <Ionicons name="star-outline" size={20} color="#666" />
                 </View>
                 <Text style={styles.drawerMenuText}>Rate us</Text>
+                <Ionicons name="chevron-forward" size={16} color="#B91C1C" style={{ marginLeft: 'auto' }} />
               </TouchableOpacity>
             </ScrollView>
           </TouchableOpacity>
@@ -956,6 +1239,417 @@ export default function HomeScreen() {
           </View>
         </TouchableOpacity>
       </Modal>
+
+      {/* ===== CricHeroes Store Modal ===== */}
+      <Modal visible={showStoreModal} transparent animationType="slide" onRequestClose={() => setShowStoreModal(false)}>
+        <View style={styles.fullModalContainer}>
+          <LinearGradient colors={["#B91C1C", "#991B1B", "#7F1D1D"]} style={styles.fullModalHeader}>
+            <TouchableOpacity onPress={() => setShowStoreModal(false)} style={styles.fullModalBack}>
+              <Ionicons name="arrow-back" size={24} color="#FFF" />
+            </TouchableOpacity>
+            <Text style={styles.fullModalTitle}>CricHeroes Store</Text>
+            <View style={{ width: 40 }} />
+          </LinearGradient>
+          <ScrollView style={styles.fullModalBody} showsVerticalScrollIndicator={false}>
+            <View style={styles.storeHeroBanner}>
+              <Ionicons name="bag" size={48} color="#B91C1C" />
+              <Text style={styles.storeHeroTitle}>Official Cricket Gear</Text>
+              <Text style={styles.storeHeroSubtitle}>Premium equipment for every cricketer</Text>
+            </View>
+            {[
+              { id: 1, name: 'SG Cricket Bat', price: '₹4,999', originalPrice: '₹6,500', category: 'Bats', rating: 4.8, reviews: 234, badge: 'BESTSELLER' },
+              { id: 2, name: 'Kookaburra Ball', price: '₹899', originalPrice: '₹1,200', category: 'Balls', rating: 4.6, reviews: 189, badge: 'NEW' },
+              { id: 3, name: 'MRF Batting Gloves', price: '₹1,499', originalPrice: '₹2,000', category: 'Gloves', rating: 4.7, reviews: 156, badge: null },
+              { id: 4, name: 'SS Helmet Pro', price: '₹2,799', originalPrice: '₹3,500', category: 'Helmets', rating: 4.9, reviews: 312, badge: 'TOP RATED' },
+              { id: 5, name: 'Adidas Cricket Shoes', price: '₹3,299', originalPrice: '₹4,200', category: 'Footwear', rating: 4.5, reviews: 98, badge: null },
+              { id: 6, name: 'India Team Jersey', price: '₹2,199', originalPrice: '₹2,800', category: 'Apparel', rating: 4.8, reviews: 445, badge: 'HOT' },
+            ].map(item => (
+              <TouchableOpacity key={item.id} style={styles.storeProductCard} activeOpacity={0.85}>
+                <View style={styles.storeProductImageBox}>
+                  <Ionicons name="bag-handle" size={36} color="#B91C1C" />
+                  {item.badge && <View style={styles.storeBadge}><Text style={styles.storeBadgeText}>{item.badge}</Text></View>}
+                </View>
+                <View style={styles.storeProductInfo}>
+                  <Text style={styles.storeProductCategory}>{item.category}</Text>
+                  <Text style={styles.storeProductName}>{item.name}</Text>
+                  <View style={styles.storeRatingRow}>
+                    {[1,2,3,4,5].map(s => <Ionicons key={s} name={s <= Math.floor(item.rating) ? "star" : "star-outline"} size={12} color="#F59E0B" />)}
+                    <Text style={styles.storeRatingText}>{item.rating} ({item.reviews})</Text>
+                  </View>
+                  <View style={styles.storePriceRow}>
+                    <Text style={styles.storePrice}>{item.price}</Text>
+                    <Text style={styles.storeOriginalPrice}>{item.originalPrice}</Text>
+                  </View>
+                  <TouchableOpacity style={styles.storeAddCartBtn}>
+                    <Ionicons name="cart" size={14} color="#FFF" />
+                    <Text style={styles.storeAddCartText}>Add to Cart</Text>
+                  </TouchableOpacity>
+                </View>
+              </TouchableOpacity>
+            ))}
+            <View style={{ height: 40 }} />
+          </ScrollView>
+        </View>
+      </Modal>
+
+      {/* ===== Leaderboards Modal ===== */}
+      <Modal visible={showLeaderboardModal} transparent animationType="slide" onRequestClose={() => setShowLeaderboardModal(false)}>
+        <View style={styles.fullModalContainer}>
+          <LinearGradient colors={["#B91C1C", "#991B1B", "#7F1D1D"]} style={styles.fullModalHeader}>
+            <TouchableOpacity onPress={() => setShowLeaderboardModal(false)} style={styles.fullModalBack}>
+              <Ionicons name="arrow-back" size={24} color="#FFF" />
+            </TouchableOpacity>
+            <Text style={styles.fullModalTitle}>Leaderboards</Text>
+            <View style={{ width: 40 }} />
+          </LinearGradient>
+          <ScrollView style={styles.fullModalBody} showsVerticalScrollIndicator={false}>
+            <View style={styles.lbTabRow}>
+              {['Batting', 'Bowling', 'All-Round'].map((tab, i) => (
+                <View key={tab} style={[styles.lbTab, i === 0 && styles.lbTabActive]}>
+                  <Text style={[styles.lbTabText, i === 0 && styles.lbTabTextActive]}>{tab}</Text>
+                </View>
+              ))}
+            </View>
+            {[
+              { rank: 1, name: 'Virat Kohli', team: 'India', stat: '892 pts', initials: 'VK', color: '#B91C1C' },
+              { rank: 2, name: 'Rohit Sharma', team: 'India', stat: '845 pts', initials: 'RS', color: '#991B1B' },
+              { rank: 3, name: 'Steve Smith', team: 'Australia', stat: '820 pts', initials: 'SS', color: '#DC2626' },
+              { rank: 4, name: 'Kane Williamson', team: 'New Zealand', stat: '798 pts', initials: 'KW', color: '#EF4444' },
+              { rank: 5, name: 'Joe Root', team: 'England', stat: '776 pts', initials: 'JR', color: '#F87171' },
+              { rank: 6, name: 'Babar Azam', team: 'Pakistan', stat: '754 pts', initials: 'BA', color: '#FCA5A5' },
+              { rank: 7, name: 'David Warner', team: 'Australia', stat: '731 pts', initials: 'DW', color: '#B91C1C' },
+              { rank: 8, name: 'KL Rahul', team: 'India', stat: '718 pts', initials: 'KR', color: '#991B1B' },
+            ].map(player => (
+              <View key={player.rank} style={[styles.lbRow, player.rank <= 3 && styles.lbRowTop]}>
+                <View style={[styles.lbRankBadge, player.rank === 1 && { backgroundColor: '#F59E0B' }, player.rank === 2 && { backgroundColor: '#9CA3AF' }, player.rank === 3 && { backgroundColor: '#D97706' }]}>
+                  <Text style={styles.lbRankText}>{player.rank}</Text>
+                </View>
+                <View style={[styles.lbAvatar, { backgroundColor: player.color }]}>
+                  <Text style={styles.lbAvatarText}>{player.initials}</Text>
+                </View>
+                <View style={styles.lbInfo}>
+                  <Text style={styles.lbName}>{player.name}</Text>
+                  <Text style={styles.lbTeam}>{player.team}</Text>
+                </View>
+                <Text style={styles.lbStat}>{player.stat}</Text>
+              </View>
+            ))}
+            <View style={{ height: 40 }} />
+          </ScrollView>
+        </View>
+      </Modal>
+
+      {/* ===== CricHeroes Awards Modal ===== */}
+      <Modal visible={showAwardsModal} transparent animationType="slide" onRequestClose={() => setShowAwardsModal(false)}>
+        <View style={styles.fullModalContainer}>
+          <LinearGradient colors={["#B91C1C", "#991B1B", "#7F1D1D"]} style={styles.fullModalHeader}>
+            <TouchableOpacity onPress={() => setShowAwardsModal(false)} style={styles.fullModalBack}>
+              <Ionicons name="arrow-back" size={24} color="#FFF" />
+            </TouchableOpacity>
+            <Text style={styles.fullModalTitle}>CricHeroes Awards</Text>
+            <View style={{ width: 40 }} />
+          </LinearGradient>
+          <ScrollView style={styles.fullModalBody} showsVerticalScrollIndicator={false}>
+            <View style={styles.awardsHero}>
+              <Ionicons name="trophy" size={56} color="#F59E0B" />
+              <Text style={styles.awardsHeroTitle}>Season Awards 2024</Text>
+              <Text style={styles.awardsHeroSub}>Celebrating the best in cricket</Text>
+            </View>
+            {[
+              { award: 'Player of the Year', winner: 'Virat Kohli', team: 'India', icon: 'trophy', color: '#F59E0B' },
+              { award: 'Best Batsman', winner: 'Rohit Sharma', team: 'India', icon: 'baseball', color: '#B91C1C' },
+              { award: 'Best Bowler', winner: 'Jasprit Bumrah', team: 'India', icon: 'radio-button-on', color: '#991B1B' },
+              { award: 'Best All-Rounder', winner: 'Hardik Pandya', team: 'India', icon: 'star', color: '#DC2626' },
+              { award: 'Best Wicket Keeper', winner: 'MS Dhoni', team: 'India', icon: 'shield', color: '#EF4444' },
+              { award: 'Emerging Player', winner: 'Shubman Gill', team: 'India', icon: 'flash', color: '#F87171' },
+              { award: 'Best Captain', winner: 'Rohit Sharma', team: 'India', icon: 'ribbon', color: '#B91C1C' },
+            ].map((item, i) => (
+              <View key={i} style={styles.awardCard}>
+                <View style={[styles.awardIconCircle, { backgroundColor: item.color + '20' }]}>
+                  <Ionicons name={item.icon as any} size={28} color={item.color} />
+                </View>
+                <View style={styles.awardInfo}>
+                  <Text style={styles.awardTitle}>{item.award}</Text>
+                  <Text style={styles.awardWinner}>{item.winner}</Text>
+                  <Text style={styles.awardTeam}>{item.team}</Text>
+                </View>
+                <Ionicons name="medal" size={24} color="#F59E0B" />
+              </View>
+            ))}
+            <View style={{ height: 40 }} />
+          </ScrollView>
+        </View>
+      </Modal>
+
+      {/* ===== Associations Modal ===== */}
+      <Modal visible={showAssociationsModal} transparent animationType="slide" onRequestClose={() => setShowAssociationsModal(false)}>
+        <View style={styles.fullModalContainer}>
+          <LinearGradient colors={["#B91C1C", "#991B1B", "#7F1D1D"]} style={styles.fullModalHeader}>
+            <TouchableOpacity onPress={() => setShowAssociationsModal(false)} style={styles.fullModalBack}>
+              <Ionicons name="arrow-back" size={24} color="#FFF" />
+            </TouchableOpacity>
+            <Text style={styles.fullModalTitle}>Associations</Text>
+            <View style={{ width: 40 }} />
+          </LinearGradient>
+          <ScrollView style={styles.fullModalBody} showsVerticalScrollIndicator={false}>
+            <Text style={styles.sectionSubHeader}>Cricket Associations Near You</Text>
+            {[
+              { name: 'Mumbai Cricket Association', members: '1,240', tournaments: 18, city: 'Mumbai', initials: 'MCA' },
+              { name: 'Delhi & District Cricket Association', members: '980', tournaments: 14, city: 'Delhi', initials: 'DDCA' },
+              { name: 'Board of Control for Cricket in India', members: '5,000+', tournaments: 45, city: 'National', initials: 'BCCI' },
+              { name: 'Karnataka State Cricket Association', members: '760', tournaments: 12, city: 'Bangalore', initials: 'KSCA' },
+              { name: 'Tamil Nadu Cricket Association', members: '820', tournaments: 16, city: 'Chennai', initials: 'TNCA' },
+              { name: 'Rajasthan Cricket Association', members: '540', tournaments: 9, city: 'Jaipur', initials: 'RCA' },
+            ].map((assoc, i) => (
+              <TouchableOpacity key={i} style={styles.assocCard} activeOpacity={0.85}>
+                <View style={styles.assocAvatar}>
+                  <Text style={styles.assocAvatarText}>{assoc.initials}</Text>
+                </View>
+                <View style={styles.assocInfo}>
+                  <Text style={styles.assocName}>{assoc.name}</Text>
+                  <Text style={styles.assocCity}>{assoc.city}</Text>
+                  <View style={styles.assocStats}>
+                    <Ionicons name="people" size={12} color="#666" />
+                    <Text style={styles.assocStatText}>{assoc.members} members</Text>
+                    <Ionicons name="trophy" size={12} color="#666" style={{ marginLeft: 8 }} />
+                    <Text style={styles.assocStatText}>{assoc.tournaments} tournaments</Text>
+                  </View>
+                </View>
+                <TouchableOpacity style={styles.assocJoinBtn}>
+                  <Text style={styles.assocJoinText}>Join</Text>
+                </TouchableOpacity>
+              </TouchableOpacity>
+            ))}
+            <View style={{ height: 40 }} />
+          </ScrollView>
+        </View>
+      </Modal>
+
+      {/* ===== Clubs Modal ===== */}
+      <Modal visible={showClubsModal} transparent animationType="slide" onRequestClose={() => setShowClubsModal(false)}>
+        <View style={styles.fullModalContainer}>
+          <LinearGradient colors={["#B91C1C", "#991B1B", "#7F1D1D"]} style={styles.fullModalHeader}>
+            <TouchableOpacity onPress={() => setShowClubsModal(false)} style={styles.fullModalBack}>
+              <Ionicons name="arrow-back" size={24} color="#FFF" />
+            </TouchableOpacity>
+            <Text style={styles.fullModalTitle}>Clubs</Text>
+            <View style={{ width: 40 }} />
+          </LinearGradient>
+          <ScrollView style={styles.fullModalBody} showsVerticalScrollIndicator={false}>
+            <TouchableOpacity style={styles.createClubBtn}>
+              <LinearGradient colors={["#B91C1C", "#991B1B"]} style={styles.createClubGradient}>
+                <Ionicons name="add-circle" size={22} color="#FFF" />
+                <Text style={styles.createClubText}>Create a New Club</Text>
+              </LinearGradient>
+            </TouchableOpacity>
+            <Text style={styles.sectionSubHeader}>Popular Clubs Near You</Text>
+            {[
+              { name: 'Mumbai Warriors CC', members: 24, wins: 18, matches: 25, founded: '2018', initials: 'MW', color: '#B91C1C' },
+              { name: 'Delhi Strikers Club', members: 18, wins: 12, matches: 20, founded: '2019', initials: 'DS', color: '#991B1B' },
+              { name: 'Bangalore Challengers', members: 22, wins: 15, matches: 22, founded: '2017', initials: 'BC', color: '#DC2626' },
+              { name: 'Chennai Kings CC', members: 20, wins: 10, matches: 18, founded: '2020', initials: 'CK', color: '#EF4444' },
+              { name: 'Kolkata Knights Club', members: 16, wins: 8, matches: 15, founded: '2021', initials: 'KK', color: '#F87171' },
+            ].map((club, i) => (
+              <TouchableOpacity key={i} style={styles.clubCard} activeOpacity={0.85}>
+                <View style={[styles.clubAvatar, { backgroundColor: club.color }]}>
+                  <Text style={styles.clubAvatarText}>{club.initials}</Text>
+                </View>
+                <View style={styles.clubInfo}>
+                  <Text style={styles.clubName}>{club.name}</Text>
+                  <Text style={styles.clubFounded}>Founded {club.founded}</Text>
+                  <View style={styles.clubStats}>
+                    <Ionicons name="people" size={12} color="#666" />
+                    <Text style={styles.clubStatText}>{club.members} members</Text>
+                    <Ionicons name="trophy" size={12} color="#666" style={{ marginLeft: 8 }} />
+                    <Text style={styles.clubStatText}>{club.wins}/{club.matches} W</Text>
+                  </View>
+                </View>
+                <TouchableOpacity style={styles.clubJoinBtn}>
+                  <Text style={styles.clubJoinText}>Join</Text>
+                </TouchableOpacity>
+              </TouchableOpacity>
+            ))}
+            <View style={{ height: 40 }} />
+          </ScrollView>
+        </View>
+      </Modal>
+
+      {/* ===== Contact Modal ===== */}
+      <Modal visible={showContactModal} transparent animationType="slide" onRequestClose={() => setShowContactModal(false)}>
+        <View style={styles.fullModalContainer}>
+          <LinearGradient colors={["#B91C1C", "#991B1B", "#7F1D1D"]} style={styles.fullModalHeader}>
+            <TouchableOpacity onPress={() => setShowContactModal(false)} style={styles.fullModalBack}>
+              <Ionicons name="arrow-back" size={24} color="#FFF" />
+            </TouchableOpacity>
+            <Text style={styles.fullModalTitle}>Contact Us</Text>
+            <View style={{ width: 40 }} />
+          </LinearGradient>
+          <ScrollView style={styles.fullModalBody} showsVerticalScrollIndicator={false}>
+            <View style={styles.contactHero}>
+              <Ionicons name="headset" size={56} color="#B91C1C" />
+              <Text style={styles.contactHeroTitle}>We are here to help!</Text>
+              <Text style={styles.contactHeroSub}>Reach out to us anytime</Text>
+            </View>
+            {[
+              { icon: 'call', label: 'Phone Support', value: '+91 98765 43210', sub: 'Mon-Sat, 9AM - 6PM' },
+              { icon: 'mail', label: 'Email Support', value: 'support@crickbuz.com', sub: 'Response within 24 hours' },
+              { icon: 'logo-whatsapp', label: 'WhatsApp', value: '+91 98765 43210', sub: 'Quick responses' },
+              { icon: 'location', label: 'Office Address', value: 'CrickBuz HQ, Mumbai', sub: 'Maharashtra, India - 400001' },
+            ].map((item, i) => (
+              <TouchableOpacity key={i} style={styles.contactCard} activeOpacity={0.85}>
+                <View style={styles.contactIconCircle}>
+                  <Ionicons name={item.icon as any} size={24} color="#B91C1C" />
+                </View>
+                <View style={styles.contactInfo}>
+                  <Text style={styles.contactLabel}>{item.label}</Text>
+                  <Text style={styles.contactValue}>{item.value}</Text>
+                  <Text style={styles.contactSub}>{item.sub}</Text>
+                </View>
+                <Ionicons name="chevron-forward" size={20} color="#B91C1C" />
+              </TouchableOpacity>
+            ))}
+            <View style={styles.contactFormSection}>
+              <Text style={styles.contactFormTitle}>Send us a message</Text>
+              <TextInput style={styles.contactInput} placeholder="Your name" placeholderTextColor="#999" />
+              <TextInput style={styles.contactInput} placeholder="Your email" placeholderTextColor="#999" keyboardType="email-address" />
+              <TextInput style={[styles.contactInput, { height: 100, textAlignVertical: 'top' }]} placeholder="Your message..." placeholderTextColor="#999" multiline />
+              <TouchableOpacity style={styles.contactSendBtn}>
+                <LinearGradient colors={["#B91C1C", "#991B1B"]} style={styles.contactSendGradient}>
+                  <Ionicons name="send" size={18} color="#FFF" />
+                  <Text style={styles.contactSendText}>Send Message</Text>
+                </LinearGradient>
+              </TouchableOpacity>
+            </View>
+            <View style={{ height: 40 }} />
+          </ScrollView>
+        </View>
+      </Modal>
+
+      {/* ===== Share the App Modal ===== */}
+      <Modal visible={showShareModal} transparent animationType="slide" onRequestClose={() => setShowShareModal(false)}>
+        <View style={styles.fullModalContainer}>
+          <LinearGradient colors={["#B91C1C", "#991B1B", "#7F1D1D"]} style={styles.fullModalHeader}>
+            <TouchableOpacity onPress={() => setShowShareModal(false)} style={styles.fullModalBack}>
+              <Ionicons name="arrow-back" size={24} color="#FFF" />
+            </TouchableOpacity>
+            <Text style={styles.fullModalTitle}>Share the App</Text>
+            <View style={{ width: 40 }} />
+          </LinearGradient>
+          <ScrollView style={styles.fullModalBody} showsVerticalScrollIndicator={false}>
+            <View style={styles.shareHero}>
+              <View style={styles.shareAppIcon}>
+                <Text style={styles.shareAppIconText}>{"CRICK\nBUZ"}</Text>
+              </View>
+              <Text style={styles.shareHeroTitle}>Invite Your Friends!</Text>
+              <Text style={styles.shareHeroSub}>Share CrickBuz and earn rewards for every friend who joins</Text>
+            </View>
+            <View style={styles.shareReferralBox}>
+              <Text style={styles.shareReferralLabel}>Your Referral Code</Text>
+              <View style={styles.shareReferralCodeRow}>
+                <Text style={styles.shareReferralCode}>CRICK2024</Text>
+                <TouchableOpacity style={styles.shareCopyBtn}>
+                  <Ionicons name="copy" size={18} color="#B91C1C" />
+                  <Text style={styles.shareCopyText}>Copy</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+            <Text style={styles.shareViaLabel}>Share via</Text>
+            <View style={styles.shareOptionsGrid}>
+              {[
+                { icon: 'logo-whatsapp', label: 'WhatsApp', color: '#25D366' },
+                { icon: 'logo-facebook', label: 'Facebook', color: '#1877F2' },
+                { icon: 'logo-twitter', label: 'Twitter', color: '#1DA1F2' },
+                { icon: 'mail', label: 'Email', color: '#B91C1C' },
+                { icon: 'logo-instagram', label: 'Instagram', color: '#E1306C' },
+                { icon: 'share-social', label: 'More', color: '#666' },
+              ].map((opt, i) => (
+                <TouchableOpacity key={i} style={styles.shareOption} activeOpacity={0.8}>
+                  <View style={[styles.shareOptionIcon, { backgroundColor: opt.color }]}>
+                    <Ionicons name={opt.icon as any} size={26} color="#FFF" />
+                  </View>
+                  <Text style={styles.shareOptionLabel}>{opt.label}</Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+            <View style={styles.shareRewardBox}>
+              <Ionicons name="gift" size={28} color="#F59E0B" />
+              <View style={{ flex: 1, marginLeft: 12 }}>
+                <Text style={styles.shareRewardTitle}>Earn Rewards</Text>
+                <Text style={styles.shareRewardText}>Get 50 CrickCoins for every friend who signs up using your code!</Text>
+              </View>
+            </View>
+            <View style={{ height: 40 }} />
+          </ScrollView>
+        </View>
+      </Modal>
+
+      {/* ===== Rate Us Modal ===== */}
+      <Modal visible={showRateModal} transparent animationType="slide" onRequestClose={() => setShowRateModal(false)}>
+        <View style={styles.fullModalContainer}>
+          <LinearGradient colors={["#B91C1C", "#991B1B", "#7F1D1D"]} style={styles.fullModalHeader}>
+            <TouchableOpacity onPress={() => setShowRateModal(false)} style={styles.fullModalBack}>
+              <Ionicons name="arrow-back" size={24} color="#FFF" />
+            </TouchableOpacity>
+            <Text style={styles.fullModalTitle}>Rate Us</Text>
+            <View style={{ width: 40 }} />
+          </LinearGradient>
+          <ScrollView style={styles.fullModalBody} showsVerticalScrollIndicator={false}>
+            {ratingSubmitted ? (
+              <View style={styles.ratingThanksBox}>
+                <Ionicons name="checkmark-circle" size={72} color="#22C55E" />
+                <Text style={styles.ratingThanksTitle}>Thank You!</Text>
+                <Text style={styles.ratingThanksSub}>Your feedback means a lot to us. We will keep improving CrickBuz for you!</Text>
+                <TouchableOpacity style={styles.ratingDoneBtn} onPress={() => { setShowRateModal(false); setRatingSubmitted(false); setSelectedRating(0); }}>
+                  <Text style={styles.ratingDoneBtnText}>Done</Text>
+                </TouchableOpacity>
+              </View>
+            ) : (
+              <>
+                <View style={styles.rateHero}>
+                  <Ionicons name="star" size={56} color="#F59E0B" />
+                  <Text style={styles.rateHeroTitle}>Enjoying CrickBuz?</Text>
+                  <Text style={styles.rateHeroSub}>Your rating helps us improve and reach more cricket fans</Text>
+                </View>
+                <View style={styles.rateStarsRow}>
+                  {[1, 2, 3, 4, 5].map(star => (
+                    <TouchableOpacity key={star} onPress={() => setSelectedRating(star)} style={styles.rateStar}>
+                      <Ionicons name={star <= selectedRating ? "star" : "star-outline"} size={48} color={star <= selectedRating ? "#F59E0B" : "#CCC"} />
+                    </TouchableOpacity>
+                  ))}
+                </View>
+                <Text style={styles.rateLabel}>
+                  {selectedRating === 0 ? 'Tap a star to rate' : selectedRating === 1 ? 'Poor' : selectedRating === 2 ? 'Fair' : selectedRating === 3 ? 'Good' : selectedRating === 4 ? 'Very Good' : 'Excellent!'}
+                </Text>
+                {[
+                  { title: 'Easy to use', icon: 'phone-portrait' },
+                  { title: 'Great features', icon: 'flash' },
+                  { title: 'Accurate scoring', icon: 'checkmark-circle' },
+                  { title: 'Good community', icon: 'people' },
+                ].map((tag, i) => (
+                  <View key={i} style={styles.rateTagRow}>
+                    <Ionicons name={tag.icon as any} size={18} color="#B91C1C" />
+                    <Text style={styles.rateTagText}>{tag.title}</Text>
+                  </View>
+                ))}
+                <TouchableOpacity
+                  style={[styles.rateSubmitBtn, selectedRating === 0 && { opacity: 0.5 }]}
+                  disabled={selectedRating === 0}
+                  onPress={() => setRatingSubmitted(true)}
+                >
+                  <LinearGradient colors={["#B91C1C", "#991B1B"]} style={styles.rateSubmitGradient}>
+                    <Text style={styles.rateSubmitText}>Submit Rating</Text>
+                  </LinearGradient>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.rateLaterBtn} onPress={() => setShowRateModal(false)}>
+                  <Text style={styles.rateLaterText}>Maybe Later</Text>
+                </TouchableOpacity>
+              </>
+            )}
+            <View style={{ height: 40 }} />
+          </ScrollView>
+        </View>
+      </Modal>
+
     </View>
   );
 }
@@ -1022,6 +1716,11 @@ const styles = StyleSheet.create({
     backgroundColor: '#B91C1C',
     justifyContent: 'center',
     alignItems: 'center',
+    overflow: 'hidden',
+  },
+  myProfileImage: {
+    width: '100%',
+    height: '100%',
   },
   myProfileInitials: {
     fontSize: 16,
@@ -1690,6 +2389,129 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#FFF',
   },
+  profileModalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.45)',
+    justifyContent: 'flex-end',
+  },
+  profileEditor: {
+    maxHeight: '92%',
+    backgroundColor: '#FFF',
+    borderTopLeftRadius: 16,
+    borderTopRightRadius: 16,
+    overflow: 'hidden',
+  },
+  profileEditorHeader: {
+    minHeight: 58,
+    borderBottomWidth: 1,
+    borderBottomColor: '#EEE',
+    paddingHorizontal: 16,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  profileEditorTitle: {
+    fontSize: 18,
+    fontWeight: '800',
+    color: '#222',
+  },
+  profileSaveText: {
+    fontSize: 15,
+    fontWeight: '800',
+    color: '#B91C1C',
+  },
+  profileEditorBody: {
+    padding: 16,
+  },
+  profilePhotoArea: {
+    alignItems: 'center',
+    marginBottom: 18,
+  },
+  profilePhotoPreview: {
+    width: 96,
+    height: 96,
+    borderRadius: 48,
+    backgroundColor: '#B91C1C',
+    justifyContent: 'center',
+    alignItems: 'center',
+    overflow: 'hidden',
+    marginBottom: 10,
+  },
+  profilePhotoImage: {
+    width: '100%',
+    height: '100%',
+  },
+  profilePhotoInitials: {
+    fontSize: 28,
+    fontWeight: '900',
+    color: '#FFF',
+  },
+  profilePhotoTitle: {
+    fontSize: 16,
+    fontWeight: '800',
+    color: '#222',
+  },
+  profilePhotoHint: {
+    fontSize: 12,
+    color: '#777',
+    marginTop: 4,
+  },
+  pickPhotoButton: {
+    minHeight: 40,
+    marginTop: 12,
+    borderRadius: 8,
+    backgroundColor: '#B91C1C',
+    paddingHorizontal: 16,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+  },
+  pickPhotoText: {
+    color: '#FFF',
+    fontSize: 14,
+    fontWeight: '800',
+  },
+  profileInputLabel: {
+    fontSize: 12,
+    fontWeight: '800',
+    color: '#555',
+    marginBottom: 6,
+    marginTop: 10,
+  },
+  profileInput: {
+    minHeight: 46,
+    borderWidth: 1,
+    borderColor: '#E5E5E5',
+    borderRadius: 8,
+    paddingHorizontal: 12,
+    color: '#222',
+    fontSize: 14,
+    backgroundColor: '#FAFAFA',
+  },
+  profileRow: {
+    flexDirection: 'row',
+    gap: 10,
+  },
+  profileRowField: {
+    flex: 1,
+  },
+  clearPhotoButton: {
+    minHeight: 44,
+    marginTop: 16,
+    marginBottom: 28,
+    borderRadius: 8,
+    backgroundColor: '#FEF2F2',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+  },
+  clearPhotoText: {
+    color: '#B91C1C',
+    fontSize: 14,
+    fontWeight: '800',
+  },
   drawerOverlay: {
     flex: 1,
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
@@ -1715,6 +2537,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 12,
+    overflow: 'hidden',
+  },
+  drawerProfileImage: {
+    width: '100%',
+    height: '100%',
   },
   drawerProfileInitials: {
     fontSize: 20,
@@ -1734,19 +2561,6 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#DDD',
     marginBottom: 6,
-  },
-  drawerProfileBadge: {
-    backgroundColor: 'transparent',
-    borderWidth: 1,
-    borderColor: '#FFF',
-    borderRadius: 12,
-    paddingHorizontal: 8,
-    paddingVertical: 2,
-    alignSelf: 'flex-start',
-  },
-  drawerProfileBadgeText: {
-    fontSize: 12,
-    color: '#FFF',
   },
   progressContainer: {
     backgroundColor: '#4A4A4A',
@@ -1976,5 +2790,842 @@ const styles = StyleSheet.create({
     color: '#999',
     textAlign: 'center',
     lineHeight: 20,
+  },
+
+  // ===== Shared Full-Screen Modal Styles =====
+  fullModalContainer: {
+    flex: 1,
+    backgroundColor: '#F5F5F5',
+  },
+  fullModalHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 16,
+    paddingTop: 50,
+    paddingBottom: 16,
+  },
+  fullModalBack: {
+    width: 40,
+    height: 40,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  fullModalTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#FFF',
+  },
+  fullModalBody: {
+    flex: 1,
+    padding: 16,
+  },
+  sectionSubHeader: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#666',
+    marginBottom: 12,
+    marginTop: 4,
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
+  },
+
+  // ===== Store Styles =====
+  storeHeroBanner: {
+    backgroundColor: '#FFF',
+    borderRadius: 16,
+    padding: 24,
+    alignItems: 'center',
+    marginBottom: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.08,
+    shadowRadius: 8,
+    elevation: 3,
+  },
+  storeHeroTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#333',
+    marginTop: 12,
+  },
+  storeHeroSubtitle: {
+    fontSize: 14,
+    color: '#666',
+    marginTop: 4,
+  },
+  storeProductCard: {
+    backgroundColor: '#FFF',
+    borderRadius: 16,
+    marginBottom: 12,
+    flexDirection: 'row',
+    overflow: 'hidden',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.08,
+    shadowRadius: 8,
+    elevation: 3,
+  },
+  storeProductImageBox: {
+    width: 100,
+    height: 120,
+    backgroundColor: '#FEE2E2',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  storeBadge: {
+    position: 'absolute',
+    top: 8,
+    left: 0,
+    backgroundColor: '#B91C1C',
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    borderTopRightRadius: 6,
+    borderBottomRightRadius: 6,
+  },
+  storeBadgeText: {
+    fontSize: 9,
+    fontWeight: 'bold',
+    color: '#FFF',
+  },
+  storeProductInfo: {
+    flex: 1,
+    padding: 12,
+  },
+  storeProductCategory: {
+    fontSize: 11,
+    color: '#B91C1C',
+    fontWeight: '600',
+    textTransform: 'uppercase',
+    marginBottom: 2,
+  },
+  storeProductName: {
+    fontSize: 15,
+    fontWeight: 'bold',
+    color: '#333',
+    marginBottom: 4,
+  },
+  storeRatingRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 2,
+    marginBottom: 6,
+  },
+  storeRatingText: {
+    fontSize: 11,
+    color: '#666',
+    marginLeft: 4,
+  },
+  storePriceRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    marginBottom: 8,
+  },
+  storePrice: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#B91C1C',
+  },
+  storeOriginalPrice: {
+    fontSize: 13,
+    color: '#999',
+    textDecorationLine: 'line-through',
+  },
+  storeAddCartBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#B91C1C',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 8,
+    gap: 4,
+    alignSelf: 'flex-start',
+  },
+  storeAddCartText: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: '#FFF',
+  },
+
+  // ===== Leaderboard Styles =====
+  lbTabRow: {
+    flexDirection: 'row',
+    backgroundColor: '#FFF',
+    borderRadius: 12,
+    padding: 4,
+    marginBottom: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.06,
+    shadowRadius: 4,
+    elevation: 2,
+  },
+  lbTab: {
+    flex: 1,
+    paddingVertical: 10,
+    alignItems: 'center',
+    borderRadius: 10,
+  },
+  lbTabActive: {
+    backgroundColor: '#B91C1C',
+  },
+  lbTabText: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#666',
+  },
+  lbTabTextActive: {
+    color: '#FFF',
+  },
+  lbRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#FFF',
+    borderRadius: 12,
+    padding: 12,
+    marginBottom: 8,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.06,
+    shadowRadius: 4,
+    elevation: 2,
+  },
+  lbRowTop: {
+    borderLeftWidth: 3,
+    borderLeftColor: '#F59E0B',
+  },
+  lbRankBadge: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: '#E5E7EB',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 10,
+  },
+  lbRankText: {
+    fontSize: 13,
+    fontWeight: 'bold',
+    color: '#FFF',
+  },
+  lbAvatar: {
+    width: 42,
+    height: 42,
+    borderRadius: 21,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 10,
+  },
+  lbAvatarText: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    color: '#FFF',
+  },
+  lbInfo: {
+    flex: 1,
+  },
+  lbName: {
+    fontSize: 15,
+    fontWeight: '600',
+    color: '#333',
+  },
+  lbTeam: {
+    fontSize: 12,
+    color: '#666',
+    marginTop: 2,
+  },
+  lbStat: {
+    fontSize: 15,
+    fontWeight: 'bold',
+    color: '#B91C1C',
+  },
+
+  // ===== Awards Styles =====
+  awardsHero: {
+    backgroundColor: '#FFF',
+    borderRadius: 16,
+    padding: 24,
+    alignItems: 'center',
+    marginBottom: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.08,
+    shadowRadius: 8,
+    elevation: 3,
+  },
+  awardsHeroTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#333',
+    marginTop: 12,
+  },
+  awardsHeroSub: {
+    fontSize: 14,
+    color: '#666',
+    marginTop: 4,
+  },
+  awardCard: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#FFF',
+    borderRadius: 14,
+    padding: 14,
+    marginBottom: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.06,
+    shadowRadius: 4,
+    elevation: 2,
+  },
+  awardIconCircle: {
+    width: 52,
+    height: 52,
+    borderRadius: 26,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 12,
+  },
+  awardInfo: {
+    flex: 1,
+  },
+  awardTitle: {
+    fontSize: 12,
+    color: '#666',
+    fontWeight: '500',
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
+  },
+  awardWinner: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#333',
+    marginTop: 2,
+  },
+  awardTeam: {
+    fontSize: 13,
+    color: '#B91C1C',
+    marginTop: 2,
+  },
+
+  // ===== Associations Styles =====
+  assocCard: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#FFF',
+    borderRadius: 14,
+    padding: 14,
+    marginBottom: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.06,
+    shadowRadius: 4,
+    elevation: 2,
+  },
+  assocAvatar: {
+    width: 52,
+    height: 52,
+    borderRadius: 26,
+    backgroundColor: '#B91C1C',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 12,
+  },
+  assocAvatarText: {
+    fontSize: 11,
+    fontWeight: 'bold',
+    color: '#FFF',
+  },
+  assocInfo: {
+    flex: 1,
+  },
+  assocName: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#333',
+    marginBottom: 2,
+  },
+  assocCity: {
+    fontSize: 12,
+    color: '#B91C1C',
+    marginBottom: 4,
+  },
+  assocStats: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  assocStatText: {
+    fontSize: 11,
+    color: '#666',
+    marginLeft: 4,
+  },
+  assocJoinBtn: {
+    backgroundColor: '#FEE2E2',
+    paddingHorizontal: 14,
+    paddingVertical: 7,
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: '#B91C1C',
+  },
+  assocJoinText: {
+    fontSize: 13,
+    fontWeight: '600',
+    color: '#B91C1C',
+  },
+
+  // ===== Clubs Styles =====
+  createClubBtn: {
+    borderRadius: 14,
+    overflow: 'hidden',
+    marginBottom: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.15,
+    shadowRadius: 6,
+    elevation: 4,
+  },
+  createClubGradient: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 16,
+    gap: 10,
+  },
+  createClubText: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#FFF',
+  },
+  clubCard: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#FFF',
+    borderRadius: 14,
+    padding: 14,
+    marginBottom: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.06,
+    shadowRadius: 4,
+    elevation: 2,
+  },
+  clubAvatar: {
+    width: 52,
+    height: 52,
+    borderRadius: 26,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 12,
+  },
+  clubAvatarText: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    color: '#FFF',
+  },
+  clubInfo: {
+    flex: 1,
+  },
+  clubName: {
+    fontSize: 15,
+    fontWeight: '600',
+    color: '#333',
+    marginBottom: 2,
+  },
+  clubFounded: {
+    fontSize: 12,
+    color: '#999',
+    marginBottom: 4,
+  },
+  clubStats: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  clubStatText: {
+    fontSize: 11,
+    color: '#666',
+    marginLeft: 4,
+  },
+  clubJoinBtn: {
+    backgroundColor: '#FEE2E2',
+    paddingHorizontal: 14,
+    paddingVertical: 7,
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: '#B91C1C',
+  },
+  clubJoinText: {
+    fontSize: 13,
+    fontWeight: '600',
+    color: '#B91C1C',
+  },
+
+  // ===== Contact Styles =====
+  contactHero: {
+    backgroundColor: '#FFF',
+    borderRadius: 16,
+    padding: 24,
+    alignItems: 'center',
+    marginBottom: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.08,
+    shadowRadius: 8,
+    elevation: 3,
+  },
+  contactHeroTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#333',
+    marginTop: 12,
+  },
+  contactHeroSub: {
+    fontSize: 14,
+    color: '#666',
+    marginTop: 4,
+  },
+  contactCard: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#FFF',
+    borderRadius: 14,
+    padding: 16,
+    marginBottom: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.06,
+    shadowRadius: 4,
+    elevation: 2,
+  },
+  contactIconCircle: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    backgroundColor: '#FEE2E2',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 14,
+  },
+  contactInfo: {
+    flex: 1,
+  },
+  contactLabel: {
+    fontSize: 12,
+    color: '#666',
+    fontWeight: '500',
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
+  },
+  contactValue: {
+    fontSize: 15,
+    fontWeight: '600',
+    color: '#333',
+    marginTop: 2,
+  },
+  contactSub: {
+    fontSize: 12,
+    color: '#999',
+    marginTop: 2,
+  },
+  contactFormSection: {
+    backgroundColor: '#FFF',
+    borderRadius: 16,
+    padding: 16,
+    marginTop: 8,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.06,
+    shadowRadius: 4,
+    elevation: 2,
+  },
+  contactFormTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#333',
+    marginBottom: 14,
+  },
+  contactInput: {
+    backgroundColor: '#F5F5F5',
+    borderRadius: 10,
+    paddingHorizontal: 14,
+    paddingVertical: 12,
+    fontSize: 15,
+    color: '#333',
+    marginBottom: 10,
+    borderWidth: 1,
+    borderColor: '#E5E5E5',
+  },
+  contactSendBtn: {
+    borderRadius: 12,
+    overflow: 'hidden',
+    marginTop: 4,
+  },
+  contactSendGradient: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 14,
+    gap: 8,
+  },
+  contactSendText: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#FFF',
+  },
+
+  // ===== Share Styles =====
+  shareHero: {
+    backgroundColor: '#FFF',
+    borderRadius: 16,
+    padding: 24,
+    alignItems: 'center',
+    marginBottom: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.08,
+    shadowRadius: 8,
+    elevation: 3,
+  },
+  shareAppIcon: {
+    width: 80,
+    height: 80,
+    borderRadius: 20,
+    backgroundColor: '#B91C1C',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 12,
+  },
+  shareAppIconText: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    color: '#FFF',
+    textAlign: 'center',
+    lineHeight: 18,
+  },
+  shareHeroTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#333',
+    marginBottom: 6,
+  },
+  shareHeroSub: {
+    fontSize: 14,
+    color: '#666',
+    textAlign: 'center',
+    lineHeight: 20,
+  },
+  shareReferralBox: {
+    backgroundColor: '#FFF',
+    borderRadius: 14,
+    padding: 16,
+    marginBottom: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.06,
+    shadowRadius: 4,
+    elevation: 2,
+  },
+  shareReferralLabel: {
+    fontSize: 12,
+    color: '#666',
+    fontWeight: '500',
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
+    marginBottom: 8,
+  },
+  shareReferralCodeRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    backgroundColor: '#FEE2E2',
+    borderRadius: 10,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    borderWidth: 1,
+    borderColor: '#FECACA',
+    borderStyle: 'dashed',
+  },
+  shareReferralCode: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    color: '#B91C1C',
+    letterSpacing: 2,
+  },
+  shareCopyBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+  },
+  shareCopyText: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#B91C1C',
+  },
+  shareViaLabel: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#666',
+    marginBottom: 12,
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
+  },
+  shareOptionsGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 12,
+    marginBottom: 16,
+  },
+  shareOption: {
+    width: '28%',
+    alignItems: 'center',
+    gap: 6,
+  },
+  shareOptionIcon: {
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  shareOptionLabel: {
+    fontSize: 12,
+    color: '#333',
+    fontWeight: '500',
+  },
+  shareRewardBox: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#FFFBEB',
+    borderRadius: 14,
+    padding: 16,
+    borderWidth: 1,
+    borderColor: '#FDE68A',
+  },
+  shareRewardTitle: {
+    fontSize: 15,
+    fontWeight: 'bold',
+    color: '#333',
+    marginBottom: 4,
+  },
+  shareRewardText: {
+    fontSize: 13,
+    color: '#666',
+    lineHeight: 18,
+  },
+
+  // ===== Rate Us Styles =====
+  rateHero: {
+    backgroundColor: '#FFF',
+    borderRadius: 16,
+    padding: 28,
+    alignItems: 'center',
+    marginBottom: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.08,
+    shadowRadius: 8,
+    elevation: 3,
+  },
+  rateHeroTitle: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    color: '#333',
+    marginTop: 12,
+    marginBottom: 6,
+  },
+  rateHeroSub: {
+    fontSize: 14,
+    color: '#666',
+    textAlign: 'center',
+    lineHeight: 20,
+  },
+  rateStarsRow: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    gap: 8,
+    marginBottom: 12,
+  },
+  rateStar: {
+    padding: 4,
+  },
+  rateLabel: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#B91C1C',
+    textAlign: 'center',
+    marginBottom: 20,
+    minHeight: 24,
+  },
+  rateTagRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#FFF',
+    borderRadius: 10,
+    padding: 14,
+    marginBottom: 8,
+    gap: 12,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 3,
+    elevation: 1,
+  },
+  rateTagText: {
+    fontSize: 15,
+    color: '#333',
+    fontWeight: '500',
+  },
+  rateSubmitBtn: {
+    borderRadius: 14,
+    overflow: 'hidden',
+    marginTop: 20,
+    marginBottom: 12,
+  },
+  rateSubmitGradient: {
+    paddingVertical: 16,
+    alignItems: 'center',
+  },
+  rateSubmitText: {
+    fontSize: 17,
+    fontWeight: 'bold',
+    color: '#FFF',
+  },
+  rateLaterBtn: {
+    alignItems: 'center',
+    paddingVertical: 12,
+  },
+  rateLaterText: {
+    fontSize: 15,
+    color: '#999',
+    fontWeight: '500',
+  },
+  ratingThanksBox: {
+    alignItems: 'center',
+    paddingVertical: 60,
+    paddingHorizontal: 24,
+  },
+  ratingThanksTitle: {
+    fontSize: 28,
+    fontWeight: 'bold',
+    color: '#333',
+    marginTop: 16,
+    marginBottom: 10,
+  },
+  ratingThanksSub: {
+    fontSize: 15,
+    color: '#666',
+    textAlign: 'center',
+    lineHeight: 22,
+    marginBottom: 32,
+  },
+  ratingDoneBtn: {
+    backgroundColor: '#B91C1C',
+    paddingHorizontal: 48,
+    paddingVertical: 14,
+    borderRadius: 28,
+  },
+  ratingDoneBtnText: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#FFF',
   },
 });
