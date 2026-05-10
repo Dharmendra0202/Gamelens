@@ -4,6 +4,7 @@ import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import {
     Dimensions,
+    ImageBackground,
     SafeAreaView,
     ScrollView,
     StyleSheet,
@@ -14,6 +15,8 @@ import {
 } from 'react-native';
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
+const CRICKET_HERO_IMAGE = 'https://images.unsplash.com/photo-1540747913346-19e32dc3e97e?w=900&h=900&fit=crop';
+const CRICKET_GEAR_IMAGE = 'https://images.unsplash.com/photo-1531415074968-036ba1b575da?w=500&h=500&fit=crop';
 
 type ScreenType = 'splash' | 'login' | 'signup';
 
@@ -47,9 +50,15 @@ export default function AuthScreen() {
         
         <View style={styles.content}>
           <View style={styles.logoContainer}>
-            <View style={styles.cricketBall}>
-              <Text style={styles.cricketIcon}>🏏</Text>
-            </View>
+            <ImageBackground
+              source={{ uri: CRICKET_HERO_IMAGE }}
+              style={styles.cricketBall}
+              imageStyle={styles.cricketBallImage}
+            >
+              <View style={styles.cricketBallOverlay}>
+                <Text style={styles.cricketIcon}>🏏</Text>
+              </View>
+            </ImageBackground>
           </View>
           <Text style={styles.appName}>
             CRICK<Text style={styles.appNamePurple}>BUZ</Text>
@@ -82,9 +91,15 @@ export default function AuthScreen() {
       <View style={styles.container}>
         <View style={styles.authContent}>
           <View style={styles.logoContainer}>
-            <View style={styles.cricketBall}>
-              <Text style={styles.cricketIcon}>🏏</Text>
-            </View>
+            <ImageBackground
+              source={{ uri: CRICKET_HERO_IMAGE }}
+              style={styles.cricketBall}
+              imageStyle={styles.cricketBallImage}
+            >
+              <View style={styles.cricketBallOverlay}>
+                <Text style={styles.cricketIcon}>🏏</Text>
+              </View>
+            </ImageBackground>
           </View>
           
           <Text style={styles.appName}>
@@ -153,22 +168,15 @@ export default function AuthScreen() {
       >
         <View style={styles.authContent}>
           <View style={styles.heroBanner}>
-            <View style={styles.illustrationCard}>
-              <View style={styles.pitch}>
-                <View style={styles.wicketRow}>
-                  <View style={styles.stump} />
-                  <View style={styles.stump} />
-                  <View style={styles.stump} />
-                </View>
-                <View style={styles.pitchLine} />
-                <View style={styles.wicketRow}>
-                  <View style={styles.stump} />
-                  <View style={styles.stump} />
-                  <View style={styles.stump} />
-                </View>
+            <ImageBackground
+              source={{ uri: CRICKET_GEAR_IMAGE }}
+              style={styles.illustrationCard}
+              imageStyle={styles.illustrationImage}
+            >
+              <View style={styles.illustrationOverlay}>
+                <Ionicons name="person-add" size={28} color="#FFF" />
               </View>
-              <View style={styles.ball} />
-            </View>
+            </ImageBackground>
 
             <View style={styles.heroCopy}>
               <Text style={styles.heroEyebrow}>NEW MATCHDAY ACCOUNT</Text>
@@ -303,6 +311,17 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.4,
     shadowRadius: 12,
     elevation: 10,
+    overflow: 'hidden',
+  },
+  cricketBallImage: {
+    borderRadius: SCREEN_WIDTH * 0.14,
+  },
+  cricketBallOverlay: {
+    flex: 1,
+    width: '100%',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'rgba(127, 29, 29, 0.35)',
   },
   cricketIcon: {
     fontSize: SCREEN_WIDTH * 0.14,
@@ -466,6 +485,17 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     position: 'relative',
+    overflow: 'hidden',
+  },
+  illustrationImage: {
+    borderRadius: 24,
+  },
+  illustrationOverlay: {
+    flex: 1,
+    width: '100%',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'rgba(185, 28, 28, 0.42)',
   },
   pitch: {
     width: 34,

@@ -1,5 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
 import { useFocusEffect } from "@react-navigation/native";
+import * as ImagePicker from "expo-image-picker";
 import { LinearGradient } from "expo-linear-gradient";
 import * as Location from "expo-location";
 import { useLocalSearchParams, useRouter } from "expo-router";
@@ -9,6 +10,7 @@ import {
   Animated,
   BackHandler,
   Easing,
+  Image,
   Modal,
   ScrollView,
   StyleSheet,
@@ -58,7 +60,6 @@ export default function MyCricketScreen() {
   const [ballType, setBallType] = useState<string>("");
   const [matchDate, setMatchDate] = useState("");
   const [matchTime, setMatchTime] = useState("");
-  const [wagonWheelEnabled, setWagonWheelEnabled] = useState(false);
   const [umpire1, setUmpire1] = useState("");
   const [umpire2, setUmpire2] = useState("");
   const [scorer, setScorer] = useState("");
@@ -93,6 +94,8 @@ export default function MyCricketScreen() {
   const [tournamentBallType, setTournamentBallType] = useState("");
   const [tournamentPitchType, setTournamentPitchType] = useState("");
   const [tournamentMatchType, setTournamentMatchType] = useState("");
+  const [tournamentBannerUri, setTournamentBannerUri] = useState("");
+  const [tournamentLogoUri, setTournamentLogoUri] = useState("");
   const [needMoreTeams, setNeedMoreTeams] = useState(false);
   const [needOfficials, setNeedOfficials] = useState(false);
   const [activeTournamentTab, setActiveTournamentTab] = useState("matches");
@@ -127,36 +130,115 @@ export default function MyCricketScreen() {
   const [strikerBalls, setStrikerBalls] = useState(0);
   const [nonStrikerRuns, setNonStrikerRuns] = useState(0);
   const [nonStrikerBalls, setNonStrikerBalls] = useState(0);
-  const [bowlerOvers, setBowlerOvers] = useState("0-0-0-0");
+  const [bowlerOvers, setBowlerOvers] = useState("0.0-0-0-0");
+  const [bowlerRuns, setBowlerRuns] = useState(0);
+  const [bowlerWickets, setBowlerWickets] = useState(0);
   const [selectedWicketType, setSelectedWicketType] = useState<string | null>(null);
+  const [scoreHistory, setScoreHistory] = useState<{
+    totalRuns: number;
+    totalWickets: number;
+    currentBall: number;
+    currentOver: number;
+    strikerRuns: number;
+    strikerBalls: number;
+    nonStrikerRuns: number;
+    nonStrikerBalls: number;
+    bowlerOvers: string;
+    bowlerRuns: number;
+    bowlerWickets: number;
+    selectedStriker: any;
+    selectedNonStriker: any;
+  }[]>([]);
+
+  const ballOptions = [
+    {
+      id: "tennis",
+      label: "Tennis",
+      color: "#C6F05B",
+      seamColor: "#F7FBC8",
+      shadowColor: "#7BAF1C",
+    },
+    {
+      id: "leather",
+      label: "Leather",
+      color: "#B91C1C",
+      seamColor: "#FEE2E2",
+      shadowColor: "#7F1D1D",
+    },
+    {
+      id: "other",
+      label: "Other",
+      color: "#F59E0B",
+      seamColor: "#FFE8B8",
+      shadowColor: "#B45309",
+    },
+  ];
+
+  const pitchOptions = [
+    {
+      id: "rough",
+      label: "Rough",
+      baseColor: "#B8793B",
+      laneColor: "#8A4B1F",
+      stripeColor: "rgba(255, 255, 255, 0.18)",
+    },
+    {
+      id: "cement",
+      label: "Cement",
+      baseColor: "#B8BEC3",
+      laneColor: "#8F989F",
+      stripeColor: "rgba(255, 255, 255, 0.24)",
+    },
+    {
+      id: "turf",
+      label: "Turf",
+      baseColor: "#318C4B",
+      laneColor: "#1F6D38",
+      stripeColor: "rgba(255, 255, 255, 0.18)",
+    },
+    {
+      id: "astroturf",
+      label: "Astro",
+      baseColor: "#188B72",
+      laneColor: "#0E6C59",
+      stripeColor: "rgba(255, 255, 255, 0.2)",
+    },
+    {
+      id: "matting",
+      label: "Matting",
+      baseColor: "#9B5F34",
+      laneColor: "#6F3D1D",
+      stripeColor: "rgba(255, 255, 255, 0.22)",
+    },
+  ];
 
   // Dummy players data
   const battingTeamPlayers = [
-    { id: 1, name: "Rohit Sharma", role: "Batsman", isOut: false },
-    { id: 2, name: "Virat Kohli", role: "Batsman", isOut: false },
-    { id: 3, name: "KL Rahul", role: "Wicket Keeper", isOut: false },
-    { id: 4, name: "Hardik Pandya", role: "All Rounder", isOut: false },
-    { id: 5, name: "Ravindra Jadeja", role: "All Rounder", isOut: false },
-    { id: 6, name: "Suryakumar Yadav", role: "Batsman", isOut: false },
-    { id: 7, name: "Rishabh Pant", role: "Wicket Keeper", isOut: false },
-    { id: 8, name: "Axar Patel", role: "All Rounder", isOut: false },
-    { id: 9, name: "Jasprit Bumrah", role: "Bowler", isOut: false },
-    { id: 10, name: "Mohammed Shami", role: "Bowler", isOut: false },
-    { id: 11, name: "Yuzvendra Chahal", role: "Bowler", isOut: false },
+    { id: 1, name: "Rohit Sharma", role: "Batsman", isOut: false, image: "https://images.unsplash.com/photo-1543326727-cf6c39e8f84c?w=240&h=240&fit=crop" },
+    { id: 2, name: "Virat Kohli", role: "Batsman", isOut: false, image: "https://images.unsplash.com/photo-1624532227497-856e69d6382b?w=240&h=240&fit=crop" },
+    { id: 3, name: "KL Rahul", role: "Wicket Keeper", isOut: false, image: "https://images.unsplash.com/photo-1566577739112-5180d4bf9390?w=240&h=240&fit=crop" },
+    { id: 4, name: "Hardik Pandya", role: "All Rounder", isOut: false, image: "https://images.unsplash.com/photo-1531891437562-4301cf35b7e4?w=240&h=240&fit=crop" },
+    { id: 5, name: "Ravindra Jadeja", role: "All Rounder", isOut: false, image: "https://images.unsplash.com/photo-1599566150163-29194dcaad36?w=240&h=240&fit=crop" },
+    { id: 6, name: "Suryakumar Yadav", role: "Batsman", isOut: false, image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=240&h=240&fit=crop" },
+    { id: 7, name: "Rishabh Pant", role: "Wicket Keeper", isOut: false, image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=240&h=240&fit=crop" },
+    { id: 8, name: "Axar Patel", role: "All Rounder", isOut: false, image: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=240&h=240&fit=crop" },
+    { id: 9, name: "Jasprit Bumrah", role: "Bowler", isOut: false, image: "https://images.unsplash.com/photo-1624526267942-ab0ff8a3e972?w=240&h=240&fit=crop" },
+    { id: 10, name: "Mohammed Shami", role: "Bowler", isOut: false, image: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=240&h=240&fit=crop" },
+    { id: 11, name: "Yuzvendra Chahal", role: "Bowler", isOut: false, image: "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=240&h=240&fit=crop" },
   ];
 
   const bowlingTeamPlayers = [
-    { id: 12, name: "David Warner", role: "Batsman", isOut: false },
-    { id: 13, name: "Aaron Finch", role: "Batsman", isOut: false },
-    { id: 14, name: "Steve Smith", role: "Batsman", isOut: false },
-    { id: 15, name: "Glenn Maxwell", role: "All Rounder", isOut: false },
-    { id: 16, name: "Marcus Stoinis", role: "All Rounder", isOut: false },
-    { id: 17, name: "Alex Carey", role: "Wicket Keeper", isOut: false },
-    { id: 18, name: "Pat Cummins", role: "Bowler", isOut: false },
-    { id: 19, name: "Mitchell Starc", role: "Bowler", isOut: false },
-    { id: 20, name: "Josh Hazlewood", role: "Bowler", isOut: false },
-    { id: 21, name: "Adam Zampa", role: "Bowler", isOut: false },
-    { id: 22, name: "Nathan Lyon", role: "Bowler", isOut: false },
+    { id: 12, name: "David Warner", role: "Batsman", isOut: false, image: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=240&h=240&fit=crop" },
+    { id: 13, name: "Aaron Finch", role: "Batsman", isOut: false, image: "https://images.unsplash.com/photo-1568602471122-7832951cc4c5?w=240&h=240&fit=crop" },
+    { id: 14, name: "Steve Smith", role: "Batsman", isOut: false, image: "https://images.unsplash.com/photo-1566492031773-4f4e44671857?w=240&h=240&fit=crop" },
+    { id: 15, name: "Glenn Maxwell", role: "All Rounder", isOut: false, image: "https://images.unsplash.com/photo-1527980965255-d3b416303d12?w=240&h=240&fit=crop" },
+    { id: 16, name: "Marcus Stoinis", role: "All Rounder", isOut: false, image: "https://images.unsplash.com/photo-1504257432389-52343af06ae3?w=240&h=240&fit=crop" },
+    { id: 17, name: "Alex Carey", role: "Wicket Keeper", isOut: false, image: "https://images.unsplash.com/photo-1519345182560-3f2917c472ef?w=240&h=240&fit=crop" },
+    { id: 18, name: "Pat Cummins", role: "Bowler", isOut: false, image: "https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?w=240&h=240&fit=crop" },
+    { id: 19, name: "Mitchell Starc", role: "Bowler", isOut: false, image: "https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?w=240&h=240&fit=crop" },
+    { id: 20, name: "Josh Hazlewood", role: "Bowler", isOut: false, image: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=240&h=240&fit=crop" },
+    { id: 21, name: "Adam Zampa", role: "Bowler", isOut: false, image: "https://images.unsplash.com/photo-1463453091185-61582044d556?w=240&h=240&fit=crop" },
+    { id: 22, name: "Nathan Lyon", role: "Bowler", isOut: false, image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=240&h=240&fit=crop" },
   ];
 
   // Reusable render functions
@@ -189,6 +271,142 @@ export default function MyCricketScreen() {
       ))}
     </View>
   );
+
+  const renderBallTypeSelector = (
+    selected: string,
+    onSelect: (ballId: string) => void,
+  ) => (
+    <View style={styles.ballTypeGrid}>
+      {ballOptions.map((ball) => {
+        const isSelected = selected === ball.id;
+
+        return (
+          <TouchableOpacity
+            key={ball.id}
+            style={[
+              styles.realBallOption,
+              isSelected && styles.realBallOptionSelected,
+            ]}
+            onPress={() => onSelect(ball.id)}
+            activeOpacity={0.84}
+          >
+            <View
+              style={[
+                styles.realBall,
+                {
+                  backgroundColor: ball.color,
+                  shadowColor: ball.shadowColor,
+                },
+              ]}
+            >
+              <View style={[styles.realBallHighlight, { backgroundColor: ball.seamColor }]} />
+              <View style={[styles.realBallSeamLeft, { borderColor: ball.seamColor }]} />
+              <View style={[styles.realBallSeamRight, { borderColor: ball.seamColor }]} />
+              <View style={[styles.realBallStitchLine, { backgroundColor: ball.seamColor }]} />
+              {isSelected && (
+                <View style={styles.realBallCheck}>
+                  <Ionicons name="checkmark" size={18} color="#FFF" />
+                </View>
+              )}
+            </View>
+            <Text
+              style={[
+                styles.realBallLabel,
+                isSelected && styles.realBallLabelSelected,
+              ]}
+            >
+              {ball.label}
+            </Text>
+          </TouchableOpacity>
+        );
+      })}
+    </View>
+  );
+
+  const renderPitchTypeSelector = () => (
+    <View style={styles.realPitchGrid}>
+      {pitchOptions.map((pitch) => {
+        const isSelected = pitchType === pitch.id;
+
+        return (
+          <TouchableOpacity
+            key={pitch.id}
+            style={[
+              styles.realPitchOption,
+              isSelected && styles.realPitchOptionSelected,
+            ]}
+            onPress={() => setPitchType(pitch.id)}
+            activeOpacity={0.84}
+          >
+            <View style={[styles.pitchSurface, { backgroundColor: pitch.baseColor }]}>
+              <View style={[styles.pitchLane, { backgroundColor: pitch.laneColor }]}>
+                <View style={[styles.pitchCrease, { backgroundColor: pitch.stripeColor }]} />
+                <View style={styles.pitchStumpsRow}>
+                  <View style={styles.pitchStump} />
+                  <View style={styles.pitchStump} />
+                  <View style={styles.pitchStump} />
+                </View>
+                <View style={styles.pitchCenterLine} />
+                <View style={styles.pitchStumpsRow}>
+                  <View style={styles.pitchStump} />
+                  <View style={styles.pitchStump} />
+                  <View style={styles.pitchStump} />
+                </View>
+                <View style={[styles.pitchCrease, { backgroundColor: pitch.stripeColor }]} />
+              </View>
+              {pitch.id === "matting" && (
+                <View style={styles.pitchMattingLines}>
+                  <View style={styles.pitchMattingLine} />
+                  <View style={styles.pitchMattingLine} />
+                  <View style={styles.pitchMattingLine} />
+                </View>
+              )}
+              {isSelected && (
+                <View style={styles.pitchSelectedBadge}>
+                  <Ionicons name="checkmark" size={13} color="#FFF" />
+                </View>
+              )}
+            </View>
+            <Text
+              style={[
+                styles.realPitchLabel,
+                isSelected && styles.realPitchLabelSelected,
+              ]}
+            >
+              {pitch.label}
+            </Text>
+          </TouchableOpacity>
+        );
+      })}
+    </View>
+  );
+
+  const pickTournamentImage = async (imageType: "banner" | "logo") => {
+    const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
+
+    if (!permission.granted) {
+      Alert.alert(
+        "Permission needed",
+        "Please allow photo library access to upload tournament images."
+      );
+      return;
+    }
+
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ["images"],
+      allowsEditing: true,
+      aspect: imageType === "banner" ? [16, 7] : [1, 1],
+      quality: 0.85,
+    });
+
+    if (!result.canceled && result.assets[0]?.uri) {
+      if (imageType === "banner") {
+        setTournamentBannerUri(result.assets[0].uri);
+      } else {
+        setTournamentLogoUri(result.assets[0].uri);
+      }
+    }
+  };
 
   const formatTournamentDate = (date: Date) => {
     const year = date.getFullYear();
@@ -224,6 +442,160 @@ export default function MyCricketScreen() {
     }
 
     setActiveTournamentDateField(null);
+  };
+
+  const getTossWinnerName = () => (
+    tossWinner === "A" ? teamAName : tossWinner === "B" ? teamBName : ""
+  );
+
+  const getBattingTeamName = () => {
+    if (!tossWinner || !tossDecision) {
+      return "";
+    }
+
+    const winnerName = tossWinner === "A" ? teamAName : teamBName;
+    const loserName = tossWinner === "A" ? teamBName : teamAName;
+    return tossDecision === "bat" ? winnerName : loserName;
+  };
+
+  const getBowlingTeamName = () => {
+    if (!tossWinner || !tossDecision) {
+      return "";
+    }
+
+    const winnerName = tossWinner === "A" ? teamAName : teamBName;
+    const loserName = tossWinner === "A" ? teamBName : teamAName;
+    return tossDecision === "bowl" ? winnerName : loserName;
+  };
+
+  const getOverLabel = (over: number, ball: number) => `${over}.${ball}`;
+
+  const saveScoreSnapshot = () => {
+    setScoreHistory((currentHistory) => [
+      ...currentHistory,
+      {
+        totalRuns,
+        totalWickets,
+        currentBall,
+        currentOver,
+        strikerRuns,
+        strikerBalls,
+        nonStrikerRuns,
+        nonStrikerBalls,
+        bowlerOvers,
+        bowlerRuns,
+        bowlerWickets,
+        selectedStriker,
+        selectedNonStriker,
+      },
+    ]);
+  };
+
+  const rotateStrike = () => {
+    const currentStriker = selectedStriker;
+    setSelectedStriker(selectedNonStriker);
+    setSelectedNonStriker(currentStriker);
+
+    const currentRuns = strikerRuns;
+    const currentBalls = strikerBalls;
+    setStrikerRuns(nonStrikerRuns);
+    setStrikerBalls(nonStrikerBalls);
+    setNonStrikerRuns(currentRuns);
+    setNonStrikerBalls(currentBalls);
+  };
+
+  const advanceBall = () => {
+    if (currentBall >= 6) {
+      setCurrentBall(1);
+      setCurrentOver((over) => over + 1);
+      rotateStrike();
+      return;
+    }
+
+    setCurrentBall((ball) => ball + 1);
+  };
+
+  const updateBowlerFigures = (runsAdded: number, wicketAdded = 0, legalBall = true) => {
+    const nextRuns = bowlerRuns + runsAdded;
+    const nextWickets = bowlerWickets + wicketAdded;
+    const currentLegalBalls = ((currentOver - 1) * 6) + (currentBall - 1);
+    const nextLegalBalls = currentLegalBalls + (legalBall ? 1 : 0);
+    const fullOvers = Math.floor(nextLegalBalls / 6);
+    const balls = nextLegalBalls % 6;
+    const overText = `${fullOvers}.${balls}`;
+
+    setBowlerRuns(nextRuns);
+    setBowlerWickets(nextWickets);
+    setBowlerOvers(`${overText}-0-${nextRuns}-${nextWickets}`);
+  };
+
+  const applyLegalRun = (runs: number) => {
+    saveScoreSnapshot();
+    setTotalRuns((score) => score + runs);
+    const nextStrikerRuns = strikerRuns + runs;
+    const nextStrikerBalls = strikerBalls + 1;
+    setStrikerRuns(nextStrikerRuns);
+    setStrikerBalls(nextStrikerBalls);
+    updateBowlerFigures(runs, 0, true);
+    advanceBall();
+
+    if (runs % 2 === 1) {
+      const currentStriker = selectedStriker;
+      setSelectedStriker(selectedNonStriker);
+      setSelectedNonStriker(currentStriker);
+      setStrikerRuns(nonStrikerRuns);
+      setStrikerBalls(nonStrikerBalls);
+      setNonStrikerRuns(nextStrikerRuns);
+      setNonStrikerBalls(nextStrikerBalls);
+    }
+  };
+
+  const applyExtra = (kind: "WD" | "NB" | "BYE" | "LB") => {
+    saveScoreSnapshot();
+    const isLegal = kind === "BYE" || kind === "LB";
+    const runsAdded = kind === "WD" ? wideRuns : kind === "NB" ? noBallRuns : 1;
+
+    setTotalRuns((score) => score + runsAdded);
+    updateBowlerFigures(kind === "BYE" || kind === "LB" ? 0 : runsAdded, 0, isLegal);
+
+    if (isLegal) {
+      setStrikerBalls((balls) => balls + 1);
+      advanceBall();
+      if (runsAdded % 2 === 1) {
+        rotateStrike();
+      }
+    }
+  };
+
+  const applyWicket = () => {
+    saveScoreSnapshot();
+    setTotalWickets((wickets) => wickets + 1);
+    setStrikerBalls((balls) => balls + 1);
+    updateBowlerFigures(0, 1, true);
+    advanceBall();
+  };
+
+  const undoScore = () => {
+    const previous = scoreHistory[scoreHistory.length - 1];
+
+    if (!previous) {
+      return;
+    }
+
+    setTotalRuns(previous.totalRuns);
+    setTotalWickets(previous.totalWickets);
+    setCurrentBall(previous.currentBall);
+    setCurrentOver(previous.currentOver);
+    setStrikerRuns(previous.strikerRuns);
+    setStrikerBalls(previous.strikerBalls);
+    setNonStrikerRuns(previous.nonStrikerRuns);
+    setNonStrikerBalls(previous.nonStrikerBalls);
+    setBowlerOvers(previous.bowlerOvers);
+    setBowlerRuns(previous.bowlerRuns);
+    setBowlerWickets(previous.bowlerWickets);
+    setSelectedStriker(previous.selectedStriker);
+    setSelectedNonStriker(previous.selectedNonStriker);
+    setScoreHistory((currentHistory) => currentHistory.slice(0, -1));
   };
 
   const changeTournamentCalendarMonth = (offset: number) => {
@@ -1253,30 +1625,62 @@ export default function MyCricketScreen() {
         {currentView === "createTournament" ? (
           /* Create Tournament Form View */
           <View style={styles.createTournamentFormContainer}>
-            <Text style={styles.formTitle}>Add a tournament / series</Text>
+            <View style={styles.formHeaderBlock}>
+              <Text style={styles.formTitle}>Add a tournament / series</Text>
+              <Text style={styles.formSubtitle}>
+                Set up your tournament profile, match rules, and public listing.
+              </Text>
+            </View>
             
             <View style={styles.formCard}>
-              {/* Add Banner */}
-              <TouchableOpacity style={styles.addMediaButton}>
-                <View style={[styles.mediaPlaceholder, { height: 120 }]}>
-                  <Ionicons name="image-outline" size={40} color="#CCC" />
+              <View style={styles.mediaUploadStage}>
+                <TouchableOpacity
+                  style={styles.bannerUploadButton}
+                  onPress={() => pickTournamentImage("banner")}
+                  activeOpacity={0.85}
+                >
+                  <View style={styles.bannerMediaPlaceholder}>
+                  {tournamentBannerUri ? (
+                    <Image
+                      source={{ uri: tournamentBannerUri }}
+                      style={styles.tournamentBannerPreview}
+                    />
+                  ) : (
+                    <View style={styles.emptyBannerContent}>
+                      <Ionicons name="image-outline" size={34} color="#B91C1C" />
+                      <Text style={styles.emptyBannerTitle}>Tournament banner</Text>
+                      <Text style={styles.emptyBannerSubtitle}>Tap to upload from device</Text>
+                    </View>
+                  )}
                   <View style={styles.cameraIconBadge}>
                     <Ionicons name="camera" size={16} color="#FFF" />
                   </View>
-                </View>
-                <Text style={styles.addMediaText}>Add banner</Text>
-              </TouchableOpacity>
+                  </View>
+                </TouchableOpacity>
 
-              {/* Add Logo */}
-              <TouchableOpacity style={styles.addMediaButton}>
-                <View style={[styles.mediaPlaceholder, { width: 80, height: 80, borderRadius: 40 }]}>
-                  <Ionicons name="person-circle-outline" size={40} color="#CCC" />
-                  <View style={styles.cameraIconBadge}>
+                <TouchableOpacity
+                  style={styles.logoUploadButton}
+                  onPress={() => pickTournamentImage("logo")}
+                  activeOpacity={0.85}
+                >
+                  <View style={styles.logoMediaPlaceholder}>
+                  {tournamentLogoUri ? (
+                    <Image
+                      source={{ uri: tournamentLogoUri }}
+                      style={styles.tournamentLogoPreview}
+                    />
+                  ) : (
+                    <Ionicons name="shield-outline" size={34} color="#B91C1C" />
+                  )}
+                  <View style={styles.logoCameraBadge}>
                     <Ionicons name="camera" size={12} color="#FFF" />
                   </View>
-                </View>
-                <Text style={styles.addMediaText}>Add logo</Text>
-              </TouchableOpacity>
+                  </View>
+                  <Text style={styles.logoUploadText}>
+                    {tournamentLogoUri ? "Change logo" : "Add logo"}
+                  </Text>
+                </TouchableOpacity>
+              </View>
 
               {/* Form Fields */}
               {renderTextInput("Tournament / series name", tournamentName, setTournamentName, "Enter your tournament name", true)}
@@ -1351,59 +1755,7 @@ export default function MyCricketScreen() {
               {/* Select Ball Type */}
               <View style={styles.formGroup}>
                 <Text style={styles.formLabel}>Select ball type *</Text>
-                <View style={styles.ballTypeRow}>
-                  {[
-                    { id: "tennis", label: "Tennis", color: "#3DAA5C", darkColor: "#2A7A42" },
-                    { id: "leather", label: "Leather", color: "#D32F2F", darkColor: "#9C1313" },
-                    { id: "other", label: "Other", color: "#E07B00", darkColor: "#B85E00" },
-                  ].map((ball) => (
-                    <TouchableOpacity
-                      key={ball.id}
-                      style={styles.ballTypeOption}
-                      onPress={() => setTournamentBallType(ball.id)}
-                      activeOpacity={0.8}
-                    >
-                      <View
-                        style={[
-                          styles.ballTypeOuterRing,
-                          tournamentBallType === ball.id && {
-                            borderColor: ball.color,
-                            borderWidth: 2.5,
-                          },
-                        ]}
-                      >
-                        <View style={[
-                          styles.ballTypeCircleLarge,
-                          {
-                            backgroundColor: ball.color,
-                            shadowColor: ball.color,
-                          },
-                          tournamentBallType === ball.id && styles.ballTypeCircleLargeSelected,
-                        ]}>
-                          {/* Seam lines for ball design */}
-                          <View style={[styles.ballSeamH, { borderColor: ball.darkColor }]} />
-                          <View style={[styles.ballSeamV, { borderColor: ball.darkColor }]} />
-                          {tournamentBallType === ball.id && (
-                            <View style={styles.ballCheckOverlay}>
-                              <Ionicons name="checkmark-circle" size={26} color="#FFF" />
-                            </View>
-                          )}
-                        </View>
-                      </View>
-                      <Text
-                        style={[
-                          styles.ballTypeLabel,
-                          tournamentBallType === ball.id && {
-                            ...styles.ballTypeLabelSelected,
-                            color: ball.color,
-                          },
-                        ]}
-                      >
-                        {ball.label}
-                      </Text>
-                    </TouchableOpacity>
-                  ))}
-                </View>
+                {renderBallTypeSelector(tournamentBallType, setTournamentBallType)}
               </View>
 
               {/* Pitch Type */}
@@ -1452,6 +1804,14 @@ export default function MyCricketScreen() {
                   // Validate required fields
                   if (!tournamentName.trim()) {
                     Alert.alert("Required Field", "Please enter tournament name");
+                    return;
+                  }
+                  if (!tournamentBannerUri) {
+                    Alert.alert("Required Field", "Please add tournament banner");
+                    return;
+                  }
+                  if (!tournamentLogoUri) {
+                    Alert.alert("Required Field", "Please add tournament logo");
                     return;
                   }
                   if (!tournamentCity.trim()) {
@@ -2966,83 +3326,13 @@ export default function MyCricketScreen() {
             {/* Pitch Type */}
             <View style={styles.setupSection}>
               <Text style={styles.setupSectionTitle}>Pitch Type *</Text>
-              <View style={styles.pitchTypeRow}>
-                {[
-                  { id: "rough", label: "Rough", icon: "trail-sign", color: "#7F1D1D" },
-                  { id: "cement", label: "Cement", icon: "cube", color: "#95A5A6" },
-                  { id: "turf", label: "Turf", icon: "leaf", color: "#B91C1C" },
-                  { id: "astroturf", label: "Astro", icon: "sparkles", color: "#B91C1C" },
-                  { id: "matting", label: "Matting", icon: "grid", color: "#991B1B" },
-                ].map((pitch) => (
-                  <TouchableOpacity
-                    key={pitch.id}
-                    style={styles.pitchTypeItem}
-                    onPress={() => setPitchType(pitch.id)}
-                  >
-                    <View style={[
-                      styles.pitchCircle,
-                      { 
-                        backgroundColor: pitchType === pitch.id ? pitch.color : "#F5F5F5",
-                        borderColor: pitchType === pitch.id ? pitch.color : "#E5E5E5",
-                      },
-                    ]}>
-                      <Ionicons
-                        name={pitch.icon as any}
-                        size={18}
-                        color={pitchType === pitch.id ? "#FFF" : "#999"}
-                      />
-                    </View>
-                    <Text style={[
-                      styles.pitchLabel,
-                      pitchType === pitch.id && { color: pitch.color, fontWeight: "800" },
-                    ]}>
-                      {pitch.label}
-                    </Text>
-                  </TouchableOpacity>
-                ))}
-              </View>
+              {renderPitchTypeSelector()}
             </View>
 
             {/* Ball Type */}
             <View style={styles.setupSection}>
               <Text style={styles.setupSectionTitle}>Ball Type *</Text>
-              <View style={styles.ballTypeContainer}>
-                {[
-                  { id: "tennis", label: "Tennis", icon: "tennisball" },
-                  { id: "leather", label: "Leather", icon: "baseball" },
-                  { id: "other", label: "Other", icon: "ellipse" },
-                ].map((ball) => (
-                  <TouchableOpacity
-                    key={ball.id}
-                    style={[
-                      styles.ballTypeCard,
-                      ballType === ball.id && styles.ballTypeCardActive,
-                    ]}
-                    onPress={() => setBallType(ball.id)}
-                  >
-                    <View
-                      style={[
-                        styles.ballTypeCircle,
-                        ballType === ball.id && styles.ballTypeCircleActive,
-                      ]}
-                    >
-                      <Ionicons
-                        name={ball.icon as any}
-                        size={22}
-                        color={ballType === ball.id ? "#FFF" : "#666"}
-                      />
-                    </View>
-                    <Text
-                      style={[
-                        styles.ballTypeText,
-                        ballType === ball.id && styles.ballTypeTextActive,
-                      ]}
-                    >
-                      {ball.label}
-                    </Text>
-                  </TouchableOpacity>
-                ))}
-              </View>
+              {renderBallTypeSelector(ballType, setBallType)}
             </View>
 
             {/* Date & Time */}
@@ -3070,32 +3360,6 @@ export default function MyCricketScreen() {
                   />
                 </View>
               </View>
-            </View>
-
-            {/* Wagon Wheel Toggle */}
-            <View style={styles.setupSection}>
-              <TouchableOpacity
-                style={styles.toggleRow}
-                onPress={() => setWagonWheelEnabled(!wagonWheelEnabled)}
-              >
-                <View style={styles.toggleLeft}>
-                  <Ionicons name="analytics-outline" size={20} color="#B91C1C" />
-                  <Text style={styles.toggleLabel}>Enable Wagon Wheel</Text>
-                </View>
-                <View
-                  style={[
-                    styles.toggleSwitch,
-                    wagonWheelEnabled && styles.toggleSwitchActive,
-                  ]}
-                >
-                  <View
-                    style={[
-                      styles.toggleThumb,
-                      wagonWheelEnabled && styles.toggleThumbActive,
-                    ]}
-                  />
-                </View>
-              </TouchableOpacity>
             </View>
 
             {/* Match Officials */}
@@ -3202,7 +3466,6 @@ export default function MyCricketScreen() {
                   ballType,
                   date: matchDate,
                   time: matchTime,
-                  wagonWheel: wagonWheelEnabled,
                 });
                 
                 // Navigate to toss page
@@ -3214,7 +3477,7 @@ export default function MyCricketScreen() {
                 style={styles.startMatchButtonGradient}
               >
                 <Ionicons name="disc" size={28} color="#FFF" />
-                <Text style={styles.startMatchButtonText}>Let's Toss</Text>
+                <Text style={styles.startMatchButtonText}>{"Let's Toss"}</Text>
                 <Ionicons name="arrow-forward" size={24} color="#FFF" />
               </LinearGradient>
             </TouchableOpacity>
@@ -3224,8 +3487,18 @@ export default function MyCricketScreen() {
           </View>
         ) : currentView === "tossPage" ? (
           /* Toss Page View */
-          <View style={styles.tossContainer}>
-            <Text style={styles.tossTitle}>Who won the toss?</Text>
+          <ScrollView style={styles.tossContainer} showsVerticalScrollIndicator={false}>
+            <View style={styles.tossHero}>
+              <View style={styles.coinStage}>
+                <View style={styles.coinOuter}>
+                  <View style={styles.coinInner}>
+                    <Ionicons name="disc" size={38} color="#FDE68A" />
+                  </View>
+                </View>
+              </View>
+              <Text style={styles.tossTitle}>Match toss</Text>
+              <Text style={styles.tossSubtitle}>Select the toss winner and their first innings choice.</Text>
+            </View>
             
             {/* Team Selection for Toss Winner */}
             <View style={styles.tossTeamsContainer}>
@@ -3236,16 +3509,13 @@ export default function MyCricketScreen() {
                 ]}
                 onPress={() => setTossWinner("A")}
               >
-                <View style={[
-                  styles.tossTeamIcon,
-                  { backgroundColor: tossWinner === "A" ? "#B91C1C" : "#E5E5E5" }
-                ]}>
-                  <Text style={[
-                    styles.tossTeamInitial,
-                    { color: tossWinner === "A" ? "#FFF" : "#666" }
-                  ]}>
-                    {teamAName.charAt(0).toUpperCase()}
-                  </Text>
+                <View style={styles.tossTeamJersey}>
+                  <Ionicons name="shirt" size={38} color={tossWinner === "A" ? "#B91C1C" : "#777"} />
+                  {tossWinner === "A" && (
+                    <View style={styles.tossCheckBadge}>
+                      <Ionicons name="checkmark" size={13} color="#FFF" />
+                    </View>
+                  )}
                 </View>
                 <Text style={[
                   styles.tossTeamName,
@@ -3262,16 +3532,13 @@ export default function MyCricketScreen() {
                 ]}
                 onPress={() => setTossWinner("B")}
               >
-                <View style={[
-                  styles.tossTeamIcon,
-                  { backgroundColor: tossWinner === "B" ? "#B91C1C" : "#E5E5E5" }
-                ]}>
-                  <Text style={[
-                    styles.tossTeamInitial,
-                    { color: tossWinner === "B" ? "#FFF" : "#666" }
-                  ]}>
-                    {teamBName.charAt(0).toUpperCase()}
-                  </Text>
+                <View style={styles.tossTeamJersey}>
+                  <Ionicons name="shirt" size={38} color={tossWinner === "B" ? "#B91C1C" : "#777"} />
+                  {tossWinner === "B" && (
+                    <View style={styles.tossCheckBadge}>
+                      <Ionicons name="checkmark" size={13} color="#FFF" />
+                    </View>
+                  )}
                 </View>
                 <Text style={[
                   styles.tossTeamName,
@@ -3286,7 +3553,7 @@ export default function MyCricketScreen() {
             {tossWinner && (
               <View style={styles.tossDecisionSection}>
                 <Text style={styles.tossDecisionTitle}>
-                  Winner of the toss elected to?
+                  {getTossWinnerName()} elected to
                 </Text>
                 
                 <View style={styles.tossDecisionContainer}>
@@ -3297,15 +3564,11 @@ export default function MyCricketScreen() {
                     ]}
                     onPress={() => setTossDecision("bat")}
                   >
-                    <View style={[
-                      styles.tossDecisionIcon,
-                      { backgroundColor: tossDecision === "bat" ? "#B91C1C" : "#E5E5E5" }
-                    ]}>
-                      <Ionicons 
-                        name="baseball" 
-                        size={32} 
-                        color={tossDecision === "bat" ? "#FFF" : "#666"} 
-                      />
+                    <View style={styles.cricketActionFigure}>
+                      <View style={styles.figureHead} />
+                      <View style={styles.figureBody} />
+                      <View style={styles.figureLegs} />
+                      <View style={styles.batHandle} />
                     </View>
                     <Text style={[
                       styles.tossDecisionText,
@@ -3322,15 +3585,12 @@ export default function MyCricketScreen() {
                     ]}
                     onPress={() => setTossDecision("bowl")}
                   >
-                    <View style={[
-                      styles.tossDecisionIcon,
-                      { backgroundColor: tossDecision === "bowl" ? "#B91C1C" : "#E5E5E5" }
-                    ]}>
-                      <Ionicons 
-                        name="fitness" 
-                        size={32} 
-                        color={tossDecision === "bowl" ? "#FFF" : "#666"} 
-                      />
+                    <View style={styles.cricketActionFigure}>
+                      <View style={styles.figureHead} />
+                      <View style={[styles.figureBody, styles.bowlerFigureBody]} />
+                      <View style={styles.figureLegs} />
+                      <View style={styles.bowlingArm} />
+                      <View style={styles.bowlingBall} />
                     </View>
                     <Text style={[
                       styles.tossDecisionText,
@@ -3368,14 +3628,21 @@ export default function MyCricketScreen() {
 
             {/* Bottom Spacing */}
             <View style={{ height: 100 }} />
-          </View>
+          </ScrollView>
         ) : currentView === "playerSelection" ? (
           /* Player Selection Page */
           <ScrollView style={styles.playerSelectionContainer} showsVerticalScrollIndicator={false}>
+            <View style={styles.playerSelectionHero}>
+              <Text style={styles.playerSelectionTitle}>Opening lineup</Text>
+              <Text style={styles.playerSelectionSubtitle}>
+                Confirm the two batters and the bowler before scoring starts.
+              </Text>
+            </View>
+
             {/* Batting Team Section */}
             <View style={styles.playerSection}>
               <Text style={styles.playerSectionTitle}>
-                Batting - {tossDecision === "bat" ? (tossWinner === "A" ? teamAName : teamBName) : (tossWinner === "A" ? teamBName : teamAName)}
+                Batting - {getBattingTeamName()}
               </Text>
               
               {/* Striker Selection */}
@@ -3387,9 +3654,15 @@ export default function MyCricketScreen() {
                     setShowPlayerModal(true);
                   }}
                 >
-                  <View style={styles.playerIconContainer}>
-                    <Ionicons name="baseball" size={40} color="#666" />
-                  </View>
+                  {selectedStriker?.image ? (
+                    <Image source={{ uri: selectedStriker.image }} style={styles.selectionPlayerImage} />
+                  ) : (
+                    <View style={styles.playerRoleFigure}>
+                      <View style={styles.figureHead} />
+                      <View style={styles.figureBody} />
+                      <View style={styles.batHandle} />
+                    </View>
+                  )}
                   <Text style={styles.playerSelectionLabel}>Select Striker</Text>
                   {selectedStriker && (
                     <Text style={styles.selectedPlayerName}>{selectedStriker.name}</Text>
@@ -3403,9 +3676,15 @@ export default function MyCricketScreen() {
                     setShowPlayerModal(true);
                   }}
                 >
-                  <View style={styles.playerIconContainer}>
-                    <Ionicons name="walk" size={40} color="#666" />
-                  </View>
+                  {selectedNonStriker?.image ? (
+                    <Image source={{ uri: selectedNonStriker.image }} style={styles.selectionPlayerImage} />
+                  ) : (
+                    <View style={styles.playerRoleFigure}>
+                      <View style={styles.figureHead} />
+                      <View style={styles.figureBody} />
+                      <View style={styles.figureLegs} />
+                    </View>
+                  )}
                   <Text style={styles.playerSelectionLabel}>Select Non-striker</Text>
                   {selectedNonStriker && (
                     <Text style={styles.selectedPlayerName}>{selectedNonStriker.name}</Text>
@@ -3417,7 +3696,7 @@ export default function MyCricketScreen() {
             {/* Bowling Team Section */}
             <View style={styles.playerSection}>
               <Text style={styles.playerSectionTitle}>
-                Bowling - {tossDecision === "bowl" ? (tossWinner === "A" ? teamAName : teamBName) : (tossWinner === "A" ? teamBName : teamAName)}
+                Bowling - {getBowlingTeamName()}
               </Text>
               
               {/* Bowler Selection */}
@@ -3429,9 +3708,16 @@ export default function MyCricketScreen() {
                     setShowPlayerModal(true);
                   }}
                 >
-                  <View style={styles.playerIconContainer}>
-                    <Ionicons name="fitness" size={40} color="#666" />
-                  </View>
+                  {selectedBowler?.image ? (
+                    <Image source={{ uri: selectedBowler.image }} style={styles.selectionPlayerImage} />
+                  ) : (
+                    <View style={styles.playerRoleFigure}>
+                      <View style={styles.figureHead} />
+                      <View style={[styles.figureBody, styles.bowlerFigureBody]} />
+                      <View style={styles.bowlingArm} />
+                      <View style={styles.bowlingBall} />
+                    </View>
+                  )}
                   <Text style={styles.playerSelectionLabel}>Select Bowler</Text>
                   {selectedBowler && (
                     <Text style={styles.selectedPlayerName}>{selectedBowler.name}</Text>
@@ -3473,6 +3759,18 @@ export default function MyCricketScreen() {
                   }
 
                   // Navigate to scoring page
+                  setCurrentOver(1);
+                  setCurrentBall(1);
+                  setTotalRuns(0);
+                  setTotalWickets(0);
+                  setStrikerRuns(0);
+                  setStrikerBalls(0);
+                  setNonStrikerRuns(0);
+                  setNonStrikerBalls(0);
+                  setBowlerRuns(0);
+                  setBowlerWickets(0);
+                  setBowlerOvers("0.0-0-0-0");
+                  setScoreHistory([]);
                   setCurrentView("scoringPage");
                 }}
               >
@@ -3529,7 +3827,7 @@ export default function MyCricketScreen() {
               </View>
 
               <Text style={styles.settingNote}>
-                *WW and Shot Selection won't be disabled for boundaries and wickets.
+                {"*WW and Shot Selection won't be disabled for boundaries and wickets."}
               </Text>
             </View>
 
@@ -3660,25 +3958,23 @@ export default function MyCricketScreen() {
           <View style={styles.scoringContainer}>
             {/* Match Header */}
             <View style={styles.scoringHeader}>
+              <Text style={styles.scoringTeamName}>{getBattingTeamName()}</Text>
+              <Text style={styles.scoringTotal}>{totalRuns}/{totalWickets}</Text>
               <Text style={styles.matchHeaderText}>
-                {tossDecision === "bat" ? (tossWinner === "A" ? teamAName : teamBName) : (tossWinner === "A" ? teamBName : teamAName)} won the toss and elected to field
+                Overs {getOverLabel(currentOver - 1, currentBall - 1)} / {numberOfOvers || "?"}
               </Text>
             </View>
 
             {/* Batsmen Section */}
             <View style={styles.batsmenSection}>
               <View style={styles.batsmanCard}>
-                <View style={styles.batsmanIcon}>
-                  <Ionicons name="flash" size={16} color="#FF9500" />
-                </View>
+                {selectedStriker?.image && <Image source={{ uri: selectedStriker.image }} style={styles.scoringPlayerImage} />}
                 <Text style={styles.batsmanName}>{selectedStriker?.name || "Aniket"}</Text>
                 <Text style={styles.batsmanScore}>{strikerRuns}({strikerBalls})</Text>
               </View>
 
               <View style={styles.batsmanCard}>
-                <View style={styles.batsmanIcon}>
-                  <Ionicons name="person" size={16} color="#666" />
-                </View>
+                {selectedNonStriker?.image && <Image source={{ uri: selectedNonStriker.image }} style={styles.scoringPlayerImage} />}
                 <Text style={styles.batsmanName}>{selectedNonStriker?.name || "Deepu"}</Text>
                 <Text style={styles.batsmanScore}>{nonStrikerRuns}({nonStrikerBalls})</Text>
               </View>
@@ -3686,9 +3982,7 @@ export default function MyCricketScreen() {
 
             {/* Bowler Section */}
             <View style={styles.bowlerSection}>
-              <View style={styles.bowlerIcon}>
-                <Ionicons name="baseball" size={16} color="#666" />
-              </View>
+              {selectedBowler?.image && <Image source={{ uri: selectedBowler.image }} style={styles.scoringPlayerImage} />}
               <Text style={styles.bowlerName}>{selectedBowler?.name || "Kapil Jangir"}</Text>
               <View style={styles.bowlerStats}>
                 <Ionicons name="stats-chart" size={12} color="#4CAF50" />
@@ -3733,55 +4027,55 @@ export default function MyCricketScreen() {
             <View style={styles.scoringGrid}>
               {/* First Row */}
               <View style={styles.scoringRow}>
-                <TouchableOpacity style={styles.scoreButton} onPress={() => console.log("0 runs")}>
+                <TouchableOpacity style={styles.scoreButton} onPress={() => applyLegalRun(0)}>
                   <Text style={styles.scoreButtonText}>0</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.scoreButton} onPress={() => console.log("1 run")}>
+                <TouchableOpacity style={styles.scoreButton} onPress={() => applyLegalRun(1)}>
                   <Text style={styles.scoreButtonText}>1</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.scoreButton} onPress={() => console.log("2 runs")}>
+                <TouchableOpacity style={styles.scoreButton} onPress={() => applyLegalRun(2)}>
                   <Text style={styles.scoreButtonText}>2</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={[styles.scoreButton, styles.undoButton]} onPress={() => console.log("Undo")}>
+                <TouchableOpacity style={[styles.scoreButton, styles.undoButton]} onPress={undoScore}>
                   <Text style={[styles.scoreButtonText, styles.undoButtonText]}>UNDO</Text>
                 </TouchableOpacity>
               </View>
 
               {/* Second Row */}
               <View style={styles.scoringRow}>
-                <TouchableOpacity style={styles.scoreButton} onPress={() => console.log("3 runs")}>
+                <TouchableOpacity style={styles.scoreButton} onPress={() => applyLegalRun(3)}>
                   <Text style={styles.scoreButtonText}>3</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.scoreButton} onPress={() => console.log("4 runs")}>
+                <TouchableOpacity style={styles.scoreButton} onPress={() => applyLegalRun(4)}>
                   <Text style={styles.scoreButtonText}>4</Text>
                   <Text style={styles.scoreButtonSubText}>FOUR</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.scoreButton} onPress={() => console.log("6 runs")}>
+                <TouchableOpacity style={styles.scoreButton} onPress={() => applyLegalRun(6)}>
                   <Text style={styles.scoreButtonText}>6</Text>
                   <Text style={styles.scoreButtonSubText}>SIX</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.scoreButton} onPress={() => console.log("5,7 runs")}>
+                <TouchableOpacity style={styles.scoreButton} onPress={() => applyLegalRun(5)}>
                   <Text style={styles.scoreButtonText}>5, 7</Text>
                 </TouchableOpacity>
               </View>
 
               {/* Third Row */}
               <View style={styles.scoringRow}>
-                <TouchableOpacity style={styles.scoreButton} onPress={() => console.log("Wide")}>
+                <TouchableOpacity style={styles.scoreButton} onPress={() => applyExtra("WD")}>
                   <Text style={styles.scoreButtonText}>WD</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.scoreButton} onPress={() => console.log("No Ball")}>
+                <TouchableOpacity style={styles.scoreButton} onPress={() => applyExtra("NB")}>
                   <Text style={styles.scoreButtonText}>NB</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.scoreButton} onPress={() => console.log("Bye")}>
+                <TouchableOpacity style={styles.scoreButton} onPress={() => applyExtra("BYE")}>
                   <Text style={styles.scoreButtonText}>BYE</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={[styles.scoreButton, styles.outButton]} onPress={() => console.log("Out")}>
+                <TouchableOpacity style={[styles.scoreButton, styles.outButton]} onPress={applyWicket}>
                   <Text style={[styles.scoreButtonText, styles.outButtonText]}>OUT</Text>
                 </TouchableOpacity>
               </View>
 
-              <TouchableOpacity style={styles.scoreButton} onPress={() => console.log("Leg Bye")}>
+              <TouchableOpacity style={styles.scoreButton} onPress={() => applyExtra("LB")}>
                 <Text style={styles.scoreButtonText}>LB</Text>
               </TouchableOpacity>
             </View>
@@ -5839,9 +6133,13 @@ export default function MyCricketScreen() {
               >
                 <View style={styles.playerItemContent}>
                   <View style={styles.playerAvatar}>
-                    <Text style={styles.playerAvatarText}>
-                      {player.name.split(' ').map((n: string) => n[0]).join('')}
-                    </Text>
+                    {player.image ? (
+                      <Image source={{ uri: player.image }} style={styles.playerAvatarImage} />
+                    ) : (
+                      <Text style={styles.playerAvatarText}>
+                        {player.name.split(' ').map((n: string) => n[0]).join('')}
+                      </Text>
+                    )}
                   </View>
                   <View style={styles.playerInfo}>
                     <Text style={styles.playerName}>{player.name}</Text>
@@ -7585,11 +7883,11 @@ const styles = StyleSheet.create({
   },
   // Match Setup Styles
   matchSetupContainer: {
-    padding: 16,
-    backgroundColor: "#F5F5F5",
+    padding: 14,
+    backgroundColor: "#F7F7F7",
   },
   matchSetupTitle: {
-    fontSize: 20,
+    fontSize: 22,
     fontWeight: "900",
     color: "#333",
     marginBottom: 2,
@@ -7600,10 +7898,10 @@ const styles = StyleSheet.create({
     color: "#666",
     fontWeight: "600",
     textAlign: "center",
-    marginBottom: 16,
+    marginBottom: 14,
   },
   setupSection: {
-    marginBottom: 12,
+    marginBottom: 14,
   },
   setupSectionTitle: {
     fontSize: 14,
@@ -7612,13 +7910,13 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   matchTypeCubeContainer: {
-    borderRadius: 12,
-    padding: 8,
-    shadowColor: "#B91C1C",
+    borderRadius: 10,
+    padding: 6,
+    shadowColor: "#111",
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.15,
-    shadowRadius: 6,
-    elevation: 4,
+    shadowOpacity: 0.06,
+    shadowRadius: 5,
+    elevation: 2,
   },
   matchTypeScroll: {
     flexGrow: 0,
@@ -7935,6 +8233,93 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     color: "#666",
   },
+  realPitchGrid: {
+    flexDirection: "row",
+    justifyContent: "flex-start",
+    flexWrap: "wrap",
+    gap: 12,
+    paddingTop: 2,
+  },
+  realPitchOption: {
+    alignItems: "center",
+    minWidth: 54,
+    paddingVertical: 2,
+  },
+  realPitchOptionSelected: {
+    transform: [{ translateY: -1 }],
+  },
+  pitchSurface: {
+    width: 48,
+    height: 66,
+    borderRadius: 10,
+    alignItems: "center",
+    justifyContent: "center",
+    position: "relative",
+    overflow: "hidden",
+    shadowColor: "#111",
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.18,
+    shadowRadius: 5,
+    elevation: 3,
+  },
+  pitchLane: {
+    width: 22,
+    height: 58,
+    borderRadius: 8,
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingVertical: 6,
+  },
+  pitchCrease: {
+    width: 18,
+    height: 2,
+    borderRadius: 1,
+  },
+  pitchStumpsRow: {
+    flexDirection: "row",
+    gap: 2,
+  },
+  pitchStump: {
+    width: 2,
+    height: 8,
+    borderRadius: 1,
+    backgroundColor: "rgba(255, 255, 255, 0.86)",
+  },
+  pitchCenterLine: {
+    width: 1,
+    flex: 1,
+    backgroundColor: "rgba(255, 255, 255, 0.24)",
+    marginVertical: 2,
+  },
+  pitchMattingLines: {
+    ...StyleSheet.absoluteFillObject,
+    justifyContent: "space-evenly",
+  },
+  pitchMattingLine: {
+    height: 1,
+    backgroundColor: "rgba(255, 255, 255, 0.2)",
+  },
+  pitchSelectedBadge: {
+    position: "absolute",
+    top: 4,
+    right: 4,
+    width: 18,
+    height: 18,
+    borderRadius: 9,
+    backgroundColor: "rgba(0, 0, 0, 0.36)",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  realPitchLabel: {
+    marginTop: 6,
+    fontSize: 11,
+    fontWeight: "700",
+    color: "#555",
+  },
+  realPitchLabelSelected: {
+    color: "#B91C1C",
+    fontWeight: "900",
+  },
   pitchTypeContainer: {
     flexDirection: "row",
     flexWrap: "wrap",
@@ -8049,45 +8434,88 @@ const styles = StyleSheet.create({
   pitchTypeTextActive: {
     color: "#B91C1C",
   },
-  ballTypeContainer: {
+  ballTypeGrid: {
     flexDirection: "row",
-    gap: 8,
     justifyContent: "flex-start",
+    gap: 18,
+    paddingTop: 2,
   },
-  ballTypeCard: {
+  realBallOption: {
     alignItems: "center",
-    gap: 6,
+    justifyContent: "center",
+    minWidth: 58,
+    paddingVertical: 4,
   },
-  ballTypeCardActive: {
-    opacity: 1,
+  realBallOptionSelected: {
+    transform: [{ translateY: -1 }],
   },
-  ballTypeCircle: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-    backgroundColor: "#FFF",
+  realBall: {
+    width: 42,
+    height: 42,
+    borderRadius: 21,
     justifyContent: "center",
     alignItems: "center",
-    borderWidth: 2,
-    borderColor: "#E5E5E5",
+    position: "relative",
+    overflow: "hidden",
     shadowColor: "#000",
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.08,
-    shadowRadius: 3,
-    elevation: 2,
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.22,
+    shadowRadius: 5,
+    elevation: 3,
   },
-  ballTypeCircleActive: {
-    borderColor: "#B91C1C",
-    backgroundColor: "#B91C1C",
+  realBallHighlight: {
+    position: "absolute",
+    top: 7,
+    left: 8,
+    width: 10,
+    height: 7,
+    borderRadius: 8,
+    opacity: 0.38,
   },
-  ballTypeText: {
+  realBallSeamLeft: {
+    position: "absolute",
+    left: 7,
+    width: 17,
+    height: 48,
+    borderRightWidth: 1.4,
+    borderRadius: 20,
+    transform: [{ rotate: "-18deg" }],
+    opacity: 0.9,
+  },
+  realBallSeamRight: {
+    position: "absolute",
+    right: 7,
+    width: 17,
+    height: 48,
+    borderLeftWidth: 1.4,
+    borderRadius: 20,
+    transform: [{ rotate: "-18deg" }],
+    opacity: 0.9,
+  },
+  realBallStitchLine: {
+    position: "absolute",
+    width: 1.4,
+    height: 30,
+    opacity: 0.75,
+    transform: [{ rotate: "-18deg" }],
+  },
+  realBallCheck: {
+    width: 20,
+    height: 20,
+    borderRadius: 10,
+    backgroundColor: "rgba(0, 0, 0, 0.36)",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  realBallLabel: {
+    marginTop: 7,
     fontSize: 11,
-    fontWeight: "600",
-    color: "#666",
-  },
-  ballTypeTextActive: {
-    color: "#B91C1C",
     fontWeight: "700",
+    color: "#555",
+  },
+  realBallLabelSelected: {
+    color: "#B91C1C",
+    fontWeight: "900",
   },
   dateTimeRow: {
     flexDirection: "row",
@@ -8706,21 +9134,56 @@ const styles = StyleSheet.create({
   // Create Tournament Form Styles
   createTournamentFormContainer: {
     padding: 16,
+    backgroundColor: "#F8FAFC",
+  },
+  formHeaderBlock: {
+    marginBottom: 18,
   },
   formTitle: {
-    fontSize: 20,
-    fontWeight: "bold",
-    color: "#333",
-    marginBottom: 20,
+    fontSize: 24,
+    fontWeight: "800",
+    color: "#171717",
+    marginBottom: 6,
+  },
+  formSubtitle: {
+    fontSize: 14,
+    lineHeight: 20,
+    color: "#666",
   },
   formCard: {
     backgroundColor: "#FFF",
-    borderRadius: 12,
-    padding: 16,
+    borderRadius: 10,
+    padding: 14,
+    borderWidth: 1,
+    borderColor: "#ECECEC",
+    shadowColor: "#111",
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.05,
+    shadowRadius: 8,
+    elevation: 2,
   },
   addMediaButton: {
     alignItems: "center",
     marginBottom: 20,
+  },
+  mediaUploadStage: {
+    minHeight: 174,
+    marginBottom: 18,
+  },
+  bannerUploadButton: {
+    width: "100%",
+  },
+  bannerMediaPlaceholder: {
+    width: "100%",
+    height: 128,
+    backgroundColor: "#FFF7F7",
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: "#FECACA",
+    justifyContent: "center",
+    alignItems: "center",
+    position: "relative",
+    overflow: "hidden",
   },
   mediaPlaceholder: {
     width: "100%",
@@ -8729,6 +9192,52 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     position: "relative",
+    overflow: "hidden",
+  },
+  emptyBannerContent: {
+    alignItems: "center",
+    gap: 5,
+  },
+  emptyBannerTitle: {
+    fontSize: 15,
+    fontWeight: "800",
+    color: "#333",
+  },
+  emptyBannerSubtitle: {
+    fontSize: 12,
+    color: "#777",
+  },
+  logoUploadButton: {
+    position: "absolute",
+    left: 14,
+    bottom: 0,
+    alignItems: "center",
+  },
+  logoMediaPlaceholder: {
+    width: 70,
+    height: 70,
+    borderRadius: 35,
+    backgroundColor: "#FFF",
+    borderWidth: 4,
+    borderColor: "#FFF",
+    justifyContent: "center",
+    alignItems: "center",
+    position: "relative",
+    overflow: "hidden",
+    shadowColor: "#111",
+    shadowOffset: { width: 0, height: 5 },
+    shadowOpacity: 0.16,
+    shadowRadius: 10,
+    elevation: 5,
+  },
+  tournamentBannerPreview: {
+    width: "100%",
+    height: "100%",
+  },
+  tournamentLogoPreview: {
+    width: "100%",
+    height: "100%",
+    borderRadius: 35,
   },
   cameraIconBadge: {
     position: "absolute",
@@ -8741,25 +9250,49 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
+  logoCameraBadge: {
+    position: "absolute",
+    bottom: 2,
+    right: 2,
+    width: 26,
+    height: 26,
+    borderRadius: 13,
+    backgroundColor: "#B91C1C",
+    borderWidth: 2,
+    borderColor: "#FFF",
+    justifyContent: "center",
+    alignItems: "center",
+  },
   addMediaText: {
     fontSize: 14,
     color: "#666",
     marginTop: 8,
   },
+  logoUploadText: {
+    marginTop: 5,
+    fontSize: 11,
+    fontWeight: "800",
+    color: "#B91C1C",
+  },
   formGroup: {
-    marginBottom: 20,
+    marginBottom: 16,
   },
   formLabel: {
     fontSize: 13,
-    color: "#666",
+    color: "#555",
     marginBottom: 8,
+    fontWeight: "700",
   },
   formInput: {
-    borderBottomWidth: 1,
-    borderBottomColor: "#E5E5E5",
+    minHeight: 40,
+    borderWidth: 1,
+    borderColor: "#E5E7EB",
+    borderRadius: 8,
+    paddingHorizontal: 12,
     paddingVertical: 8,
-    fontSize: 15,
+    fontSize: 14,
     color: "#333",
+    backgroundColor: "#FAFAFA",
   },
   emailHint: {
     fontSize: 11,
@@ -8767,16 +9300,16 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
   sectionHeading: {
-    fontSize: 16,
-    fontWeight: "600",
-    color: "#333",
-    marginBottom: 12,
-    marginTop: 8,
+    fontSize: 15,
+    fontWeight: "800",
+    color: "#222",
+    marginBottom: 10,
+    marginTop: 4,
   },
   dateRow: {
     flexDirection: "row",
-    gap: 12,
-    marginBottom: 20,
+    gap: 10,
+    marginBottom: 16,
   },
   dateField: {
     flex: 1,
@@ -8784,12 +9317,17 @@ const styles = StyleSheet.create({
   dateInput: {
     flexDirection: "row",
     alignItems: "center",
-    borderBottomWidth: 1,
-    borderBottomColor: "#E5E5E5",
+    minHeight: 40,
+    borderWidth: 1,
+    borderColor: "#E5E7EB",
+    borderRadius: 8,
+    paddingHorizontal: 12,
     paddingVertical: 8,
+    backgroundColor: "#FAFAFA",
   },
   dateInputActive: {
-    borderBottomColor: "#B91C1C",
+    borderColor: "#B91C1C",
+    backgroundColor: "#FFF7F7",
   },
   dateInputText: {
     flex: 1,
@@ -8869,18 +9407,18 @@ const styles = StyleSheet.create({
   chipGrid: {
     flexDirection: "row",
     flexWrap: "wrap",
-    gap: 8,
+    gap: 7,
   },
   chip: {
-    paddingHorizontal: 16,
-    paddingVertical: 10,
-    borderRadius: 8,
-    backgroundColor: "#F5F5F5",
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 999,
+    backgroundColor: "#FAFAFA",
     borderWidth: 1,
-    borderColor: "#E5E5E5",
+    borderColor: "#E5E7EB",
   },
   chipText: {
-    fontSize: 13,
+    fontSize: 12,
     color: "#666",
     fontWeight: "500",
   },
@@ -9802,32 +10340,67 @@ const styles = StyleSheet.create({
   // Toss Page Styles
   tossContainer: {
     flex: 1,
-    padding: 20,
-    backgroundColor: "#F5F5F5",
+    padding: 16,
+    backgroundColor: "#F7F7F7",
+  },
+  tossHero: {
+    alignItems: "center",
+    marginTop: 10,
+    marginBottom: 18,
+  },
+  coinStage: {
+    width: 96,
+    height: 96,
+    borderRadius: 48,
+    backgroundColor: "#FFF7D6",
+    alignItems: "center",
+    justifyContent: "center",
+    marginBottom: 12,
+  },
+  coinOuter: {
+    width: 72,
+    height: 72,
+    borderRadius: 36,
+    backgroundColor: "#B45309",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  coinInner: {
+    width: 58,
+    height: 58,
+    borderRadius: 29,
+    backgroundColor: "#78350F",
+    alignItems: "center",
+    justifyContent: "center",
   },
   tossTitle: {
-    fontSize: 24,
-    fontWeight: "700",
-    color: "#333",
+    fontSize: 25,
+    fontWeight: "900",
+    color: "#171717",
     textAlign: "center",
-    marginBottom: 30,
-    marginTop: 20,
+  },
+  tossSubtitle: {
+    marginTop: 4,
+    fontSize: 13,
+    color: "#666",
+    textAlign: "center",
+    lineHeight: 18,
   },
   tossTeamsContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
-    marginBottom: 40,
-    gap: 16,
+    marginBottom: 24,
+    gap: 12,
   },
   tossTeamCard: {
     flex: 1,
     backgroundColor: "#FFF",
-    borderRadius: 16,
-    padding: 20,
+    borderRadius: 10,
+    padding: 14,
     alignItems: "center",
-    borderWidth: 2,
-    borderColor: "transparent",
-    elevation: 3,
+    borderWidth: 1,
+    borderColor: "#E5E7EB",
+    elevation: 1,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
@@ -9835,23 +10408,34 @@ const styles = StyleSheet.create({
   },
   tossTeamCardSelected: {
     borderColor: "#B91C1C",
-    backgroundColor: "#FEF2F2",
+    backgroundColor: "#FFF7F7",
   },
-  tossTeamIcon: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
+  tossTeamJersey: {
+    width: 58,
+    height: 58,
+    borderRadius: 29,
+    backgroundColor: "#F3F4F6",
     alignItems: "center",
     justifyContent: "center",
-    marginBottom: 12,
+    marginBottom: 10,
+    position: "relative",
   },
-  tossTeamInitial: {
-    fontSize: 32,
-    fontWeight: "700",
+  tossCheckBadge: {
+    position: "absolute",
+    right: -2,
+    bottom: -2,
+    width: 22,
+    height: 22,
+    borderRadius: 11,
+    backgroundColor: "#B91C1C",
+    alignItems: "center",
+    justifyContent: "center",
+    borderWidth: 2,
+    borderColor: "#FFF",
   },
   tossTeamName: {
-    fontSize: 16,
-    fontWeight: "600",
+    fontSize: 14,
+    fontWeight: "800",
     color: "#666",
     textAlign: "center",
   },
@@ -9859,14 +10443,14 @@ const styles = StyleSheet.create({
     color: "#B91C1C",
   },
   tossDecisionSection: {
-    marginBottom: 40,
+    marginBottom: 24,
   },
   tossDecisionTitle: {
-    fontSize: 20,
-    fontWeight: "600",
+    fontSize: 17,
+    fontWeight: "900",
     color: "#333",
     textAlign: "center",
-    marginBottom: 24,
+    marginBottom: 14,
   },
   tossDecisionContainer: {
     flexDirection: "row",
@@ -9876,12 +10460,12 @@ const styles = StyleSheet.create({
   tossDecisionCard: {
     flex: 1,
     backgroundColor: "#FFF",
-    borderRadius: 16,
-    padding: 24,
+    borderRadius: 10,
+    padding: 14,
     alignItems: "center",
-    borderWidth: 2,
-    borderColor: "transparent",
-    elevation: 3,
+    borderWidth: 1,
+    borderColor: "#E5E7EB",
+    elevation: 1,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
@@ -9889,15 +10473,68 @@ const styles = StyleSheet.create({
   },
   tossDecisionCardSelected: {
     borderColor: "#B91C1C",
-    backgroundColor: "#FEF2F2",
+    backgroundColor: "#FFF7F7",
   },
-  tossDecisionIcon: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
+  cricketActionFigure: {
+    width: 78,
+    height: 88,
     alignItems: "center",
     justifyContent: "center",
+    position: "relative",
     marginBottom: 12,
+  },
+  figureHead: {
+    width: 18,
+    height: 18,
+    borderRadius: 9,
+    backgroundColor: "#7F1D1D",
+  },
+  figureBody: {
+    width: 24,
+    height: 32,
+    borderRadius: 10,
+    backgroundColor: "#B91C1C",
+    marginTop: 2,
+  },
+  bowlerFigureBody: {
+    transform: [{ rotate: "-10deg" }],
+  },
+  figureLegs: {
+    width: 32,
+    height: 18,
+    borderLeftWidth: 6,
+    borderRightWidth: 6,
+    borderColor: "#7F1D1D",
+    marginTop: -1,
+  },
+  batHandle: {
+    position: "absolute",
+    right: 12,
+    bottom: 14,
+    width: 8,
+    height: 48,
+    borderRadius: 4,
+    backgroundColor: "#92400E",
+    transform: [{ rotate: "28deg" }],
+  },
+  bowlingArm: {
+    position: "absolute",
+    right: 18,
+    top: 24,
+    width: 8,
+    height: 40,
+    borderRadius: 4,
+    backgroundColor: "#7F1D1D",
+    transform: [{ rotate: "-42deg" }],
+  },
+  bowlingBall: {
+    position: "absolute",
+    right: 8,
+    top: 14,
+    width: 13,
+    height: 13,
+    borderRadius: 7,
+    backgroundColor: "#B91C1C",
   },
   tossDecisionText: {
     fontSize: 18,
@@ -9910,17 +10547,31 @@ const styles = StyleSheet.create({
   // Player Selection Page Styles
   playerSelectionContainer: {
     flex: 1,
-    backgroundColor: "#F5F5F5",
-    padding: 20,
+    backgroundColor: "#F7F7F7",
+    padding: 16,
+  },
+  playerSelectionHero: {
+    marginBottom: 18,
+  },
+  playerSelectionTitle: {
+    fontSize: 24,
+    fontWeight: "900",
+    color: "#171717",
+  },
+  playerSelectionSubtitle: {
+    marginTop: 4,
+    fontSize: 13,
+    lineHeight: 19,
+    color: "#666",
   },
   playerSection: {
-    marginBottom: 30,
+    marginBottom: 22,
   },
   playerSectionTitle: {
-    fontSize: 20,
-    fontWeight: "700",
+    fontSize: 16,
+    fontWeight: "900",
     color: "#333",
-    marginBottom: 20,
+    marginBottom: 12,
   },
   playerSelectionRow: {
     flexDirection: "row",
@@ -9929,12 +10580,12 @@ const styles = StyleSheet.create({
   playerSelectionCard: {
     flex: 1,
     backgroundColor: "#FFF",
-    borderRadius: 16,
-    padding: 20,
+    borderRadius: 10,
+    padding: 12,
     alignItems: "center",
-    borderWidth: 2,
-    borderColor: "#E5E5E5",
-    elevation: 3,
+    borderWidth: 1,
+    borderColor: "#E5E7EB",
+    elevation: 1,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
@@ -9942,7 +10593,7 @@ const styles = StyleSheet.create({
   },
   playerSelectionCardSelected: {
     borderColor: "#B91C1C",
-    backgroundColor: "#FEF2F2",
+    backgroundColor: "#FFF7F7",
   },
   bowlerCard: {
     maxWidth: "48%",
@@ -9950,16 +10601,33 @@ const styles = StyleSheet.create({
   playerIconContainer: {
     marginBottom: 12,
   },
+  selectionPlayerImage: {
+    width: 68,
+    height: 68,
+    borderRadius: 34,
+    marginBottom: 10,
+  },
+  playerRoleFigure: {
+    width: 68,
+    height: 68,
+    borderRadius: 34,
+    backgroundColor: "#FEF2F2",
+    alignItems: "center",
+    justifyContent: "center",
+    position: "relative",
+    marginBottom: 10,
+    overflow: "hidden",
+  },
   playerSelectionLabel: {
-    fontSize: 16,
-    fontWeight: "600",
+    fontSize: 13,
+    fontWeight: "800",
     color: "#666",
     textAlign: "center",
     marginBottom: 8,
   },
   selectedPlayerName: {
-    fontSize: 14,
-    fontWeight: "500",
+    fontSize: 13,
+    fontWeight: "800",
     color: "#B91C1C",
     textAlign: "center",
   },
@@ -10175,7 +10843,7 @@ const styles = StyleSheet.create({
   // Player Selection Modal Styles
   playerModalContainer: {
     flex: 1,
-    backgroundColor: "#FFF",
+    backgroundColor: "#F7F7F7",
   },
   playerModalHeader: {
     flexDirection: "row",
@@ -10199,7 +10867,7 @@ const styles = StyleSheet.create({
   },
   playerItem: {
     backgroundColor: "#FFF",
-    borderRadius: 12,
+    borderRadius: 10,
     marginVertical: 6,
     elevation: 2,
     shadowColor: "#000",
@@ -10208,8 +10876,8 @@ const styles = StyleSheet.create({
     shadowRadius: 2,
   },
   playerItemSelected: {
-    backgroundColor: "#FEF2F2",
-    borderWidth: 2,
+    backgroundColor: "#FFF7F7",
+    borderWidth: 1,
     borderColor: "#B91C1C",
   },
   playerItemContent: {
@@ -10225,6 +10893,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     marginRight: 16,
+    overflow: "hidden",
+  },
+  playerAvatarImage: {
+    width: "100%",
+    height: "100%",
   },
   playerAvatarText: {
     fontSize: 16,
@@ -10247,13 +10920,25 @@ const styles = StyleSheet.create({
   // Cricket Scoring Page Styles
   scoringContainer: {
     flex: 1,
-    backgroundColor: "#2C3E50",
+    backgroundColor: "#111827",
   },
   scoringHeader: {
-    backgroundColor: "#34495E",
-    paddingVertical: 16,
+    backgroundColor: "#1F2937",
+    paddingVertical: 18,
     paddingHorizontal: 20,
     alignItems: "center",
+  },
+  scoringTeamName: {
+    fontSize: 14,
+    fontWeight: "800",
+    color: "#FCA5A5",
+    marginBottom: 4,
+  },
+  scoringTotal: {
+    fontSize: 42,
+    lineHeight: 48,
+    fontWeight: "900",
+    color: "#FFF",
   },
   matchHeaderText: {
     fontSize: 14,
@@ -10263,39 +10948,45 @@ const styles = StyleSheet.create({
   },
   batsmenSection: {
     flexDirection: "row",
-    backgroundColor: "#34495E",
+    backgroundColor: "#1F2937",
     borderBottomWidth: 1,
-    borderBottomColor: "#2C3E50",
+    borderBottomColor: "#111827",
   },
   batsmanCard: {
     flex: 1,
     flexDirection: "row",
     alignItems: "center",
-    paddingVertical: 16,
-    paddingHorizontal: 20,
+    paddingVertical: 12,
+    paddingHorizontal: 12,
     borderRightWidth: 1,
     borderRightColor: "#2C3E50",
   },
   batsmanIcon: {
     marginRight: 8,
   },
+  scoringPlayerImage: {
+    width: 34,
+    height: 34,
+    borderRadius: 17,
+    marginRight: 8,
+  },
   batsmanName: {
-    fontSize: 16,
-    fontWeight: "600",
+    fontSize: 13,
+    fontWeight: "800",
     color: "#FFF",
     flex: 1,
   },
   batsmanScore: {
-    fontSize: 16,
-    fontWeight: "600",
+    fontSize: 14,
+    fontWeight: "900",
     color: "#FFF",
   },
   bowlerSection: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#34495E",
-    paddingVertical: 16,
-    paddingHorizontal: 20,
+    backgroundColor: "#1F2937",
+    paddingVertical: 12,
+    paddingHorizontal: 12,
     borderBottomWidth: 1,
     borderBottomColor: "#2C3E50",
   },
@@ -10303,8 +10994,8 @@ const styles = StyleSheet.create({
     marginRight: 8,
   },
   bowlerName: {
-    fontSize: 16,
-    fontWeight: "600",
+    fontSize: 13,
+    fontWeight: "800",
     color: "#FFF",
     flex: 1,
   },
@@ -10312,24 +11003,24 @@ const styles = StyleSheet.create({
     marginRight: 8,
   },
   bowlerFigures: {
-    fontSize: 16,
-    fontWeight: "600",
+    fontSize: 14,
+    fontWeight: "900",
     color: "#FFF",
   },
   wicketTypeSection: {
     flexDirection: "row",
-    backgroundColor: "#34495E",
-    paddingVertical: 20,
-    paddingHorizontal: 20,
+    backgroundColor: "#111827",
+    paddingVertical: 14,
+    paddingHorizontal: 10,
     justifyContent: "space-between",
   },
   wicketTypeButton: {
     alignItems: "center",
     flex: 1,
-    paddingVertical: 12,
-    borderRadius: 50,
-    borderWidth: 2,
-    borderColor: "#4A5F7A",
+    paddingVertical: 10,
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: "#374151",
     marginHorizontal: 4,
   },
   wicketTypeButtonActive: {
@@ -10347,20 +11038,24 @@ const styles = StyleSheet.create({
   },
   scoringGrid: {
     flex: 1,
-    backgroundColor: "#ECF0F1",
-    padding: 1,
+    backgroundColor: "#F3F4F6",
+    padding: 8,
+    gap: 8,
   },
   scoringRow: {
     flexDirection: "row",
     flex: 1,
+    gap: 8,
   },
   scoreButton: {
     flex: 1,
     backgroundColor: "#FFF",
-    margin: 1,
+    borderRadius: 10,
     alignItems: "center",
     justifyContent: "center",
-    paddingVertical: 20,
+    paddingVertical: 16,
+    borderWidth: 1,
+    borderColor: "#E5E7EB",
   },
   scoreButtonText: {
     fontSize: 24,
@@ -10386,4 +11081,3 @@ const styles = StyleSheet.create({
     color: "#FFF",
   },
 });
-

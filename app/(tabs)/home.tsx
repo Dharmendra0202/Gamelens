@@ -158,11 +158,13 @@ export default function HomeScreen() {
   };
 
   const players = [
-    { id: 1, name: 'Virat Kohli', role: 'Batsman', team: 'India', runs: '25,000+', initials: 'VK', color: '#B91C1C' },
-    { id: 2, name: 'MS Dhoni', role: 'Wicket Keeper', team: 'India', runs: '17,000+', initials: 'MS', color: '#991B1B' },
-    { id: 3, name: 'Rohit Sharma', role: 'Batsman', team: 'India', runs: '18,000+', initials: 'RS', color: '#DC2626' },
-    { id: 4, name: 'Jasprit Bumrah', role: 'Bowler', team: 'India', wickets: '500+', initials: 'JB', color: '#FCA5A5' },
+    { id: 1, name: 'Virat Kohli', role: 'Batsman', team: 'India', runs: '25,000+', initials: 'VK', color: '#B91C1C', image: 'https://images.unsplash.com/photo-1624532227497-856e69d6382b?w=300&h=300&fit=crop' },
+    { id: 2, name: 'MS Dhoni', role: 'Wicket Keeper', team: 'India', runs: '17,000+', initials: 'MS', color: '#991B1B', image: 'https://images.unsplash.com/photo-1566577739112-5180d4bf9390?w=300&h=300&fit=crop' },
+    { id: 3, name: 'Rohit Sharma', role: 'Batsman', team: 'India', runs: '18,000+', initials: 'RS', color: '#DC2626', image: 'https://images.unsplash.com/photo-1543326727-cf6c39e8f84c?w=300&h=300&fit=crop' },
+    { id: 4, name: 'Jasprit Bumrah', role: 'Bowler', team: 'India', wickets: '500+', initials: 'JB', color: '#FCA5A5', image: 'https://images.unsplash.com/photo-1624526267942-ab0ff8a3e972?w=300&h=300&fit=crop' },
   ];
+
+  const bannerImage = 'https://images.unsplash.com/photo-1540747913346-19e32dc3e97e?w=900&h=420&fit=crop';
 
   const products = [
     { id: 1, name: 'India Jersey', price: '₹2,499', image: 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=400&h=400&fit=crop' },
@@ -187,6 +189,7 @@ export default function HomeScreen() {
       id: 1,
       user: 'Rahul Sharma',
       userInitials: 'RS',
+      userImage: 'https://images.unsplash.com/photo-1566577739112-5180d4bf9390?w=240&h=240&fit=crop',
       time: '2 hours ago',
       content: 'Just finished an amazing match! Team won by 6 wickets 🏏🔥',
       likes: 234,
@@ -197,6 +200,7 @@ export default function HomeScreen() {
       id: 2,
       user: 'Priya Patel',
       userInitials: 'PP',
+      userImage: 'https://images.unsplash.com/photo-1544717305-2782549b5136?w=240&h=240&fit=crop',
       time: '5 hours ago',
       content: 'Looking for players for weekend match in Mumbai. Anyone interested?',
       likes: 89,
@@ -342,7 +346,12 @@ export default function HomeScreen() {
 
         {/* Banner */}
         <View style={styles.bannerSection}>
-          <View style={styles.banner}>
+          <ImageBackground
+            source={{ uri: bannerImage }}
+            style={styles.banner}
+            imageStyle={styles.bannerImage}
+          >
+            <View style={styles.bannerOverlay} />
             <View style={styles.bannerContent}>
               <Text style={styles.bannerTitle}>IPL 2024</Text>
               <Text style={styles.bannerSubtitle}>Get your tickets now!</Text>
@@ -353,7 +362,7 @@ export default function HomeScreen() {
             <View style={styles.bannerIcon}>
               <Ionicons name="ticket" size={60} color="#B91C1C" />
             </View>
-          </View>
+          </ImageBackground>
         </View>
 
         {/* Popular Cricketers */}
@@ -377,7 +386,11 @@ export default function HomeScreen() {
                 </View>
                 
                 <View style={[styles.playerAvatarCircle, { backgroundColor: player.color }]}>
-                  <Text style={styles.playerAvatarText}>{player.initials}</Text>
+                  {player.image ? (
+                    <Image source={{ uri: player.image }} style={styles.playerAvatarImage} />
+                  ) : (
+                    <Text style={styles.playerAvatarText}>{player.initials}</Text>
+                  )}
                 </View>
                 
                 <View style={styles.playerInfoColumn}>
@@ -461,7 +474,11 @@ export default function HomeScreen() {
           {/* Create Post */}
           <TouchableOpacity style={styles.createPost} onPress={() => console.log('Create post clicked')}>
             <View style={styles.createPostAvatar}>
-              <Text style={styles.createPostInitials}>ME</Text>
+              {profile.imageUri ? (
+                <Image source={{ uri: profile.imageUri }} style={styles.createPostImage} />
+              ) : (
+                <Text style={styles.createPostInitials}>ME</Text>
+              )}
             </View>
             <Text style={styles.createPostPlaceholder}>{"What's on your mind?"}</Text>
           </TouchableOpacity>
@@ -471,7 +488,11 @@ export default function HomeScreen() {
             <View key={post.id} style={styles.postCard}>
               <View style={styles.postHeader}>
                 <View style={styles.postUserAvatar}>
-                  <Text style={styles.postUserInitials}>{post.userInitials}</Text>
+                  {post.userImage ? (
+                    <Image source={{ uri: post.userImage }} style={styles.postUserImage} />
+                  ) : (
+                    <Text style={styles.postUserInitials}>{post.userInitials}</Text>
+                  )}
                 </View>
                 <View style={styles.postUserInfo}>
                   <Text style={styles.postUserName}>{post.user}</Text>
@@ -524,7 +545,11 @@ export default function HomeScreen() {
             {selectedPlayer && (
               <>
                 <View style={[styles.modalPlayerAvatar, { backgroundColor: selectedPlayer.color }]}>
-                  <Text style={styles.modalPlayerInitials}>{selectedPlayer.initials}</Text>
+                  {selectedPlayer.image ? (
+                    <Image source={{ uri: selectedPlayer.image }} style={styles.modalPlayerImage} />
+                  ) : (
+                    <Text style={styles.modalPlayerInitials}>{selectedPlayer.initials}</Text>
+                  )}
                 </View>
                 <Text style={styles.modalPlayerName}>{selectedPlayer.name}</Text>
                 <Text style={styles.modalPlayerRole}>{selectedPlayer.role}</Text>
@@ -618,7 +643,11 @@ export default function HomeScreen() {
                         }}
                       >
                         <View style={[styles.searchPlayerAvatar, { backgroundColor: player.color }]}>
-                          <Text style={styles.searchPlayerInitials}>{player.initials}</Text>
+                          {player.image ? (
+                            <Image source={{ uri: player.image }} style={styles.searchPlayerImage} />
+                          ) : (
+                            <Text style={styles.searchPlayerInitials}>{player.initials}</Text>
+                          )}
                         </View>
                         <View style={styles.searchPlayerInfo}>
                           <Text style={styles.searchPlayerName}>{player.name}</Text>
@@ -1886,9 +1915,18 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     overflow: 'hidden',
+    minHeight: 148,
+  },
+  bannerImage: {
+    borderRadius: 16,
+  },
+  bannerOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(0, 0, 0, 0.34)',
   },
   bannerContent: {
     flex: 1,
+    zIndex: 1,
   },
   bannerTitle: {
     fontSize: 24,
@@ -1915,6 +1953,13 @@ const styles = StyleSheet.create({
   },
   bannerIcon: {
     marginLeft: 16,
+    zIndex: 1,
+    width: 72,
+    height: 72,
+    borderRadius: 36,
+    backgroundColor: 'rgba(255, 255, 255, 0.88)',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   seeAll: {
     fontSize: 14,
@@ -1953,6 +1998,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderWidth: 2,
     borderColor: '#FFF',
+    overflow: 'hidden',
+  },
+  playerAvatarImage: {
+    width: '100%',
+    height: '100%',
   },
   playerAvatarText: {
     fontSize: 18,
@@ -2118,6 +2168,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 12,
+    overflow: 'hidden',
+  },
+  createPostImage: {
+    width: '100%',
+    height: '100%',
   },
   createPostInitials: {
     fontSize: 14,
@@ -2149,6 +2204,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 12,
+    overflow: 'hidden',
+  },
+  postUserImage: {
+    width: '100%',
+    height: '100%',
   },
   postUserInitials: {
     fontSize: 14,
@@ -2221,6 +2281,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 16,
+    overflow: 'hidden',
+  },
+  modalPlayerImage: {
+    width: '100%',
+    height: '100%',
   },
   modalPlayerInitials: {
     fontSize: 36,
@@ -2684,6 +2749,11 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     alignItems: 'center',
     justifyContent: 'center',
+    overflow: 'hidden',
+  },
+  searchPlayerImage: {
+    width: '100%',
+    height: '100%',
   },
   searchPlayerInitials: {
     fontSize: 14,
