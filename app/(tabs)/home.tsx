@@ -228,7 +228,7 @@ export default function HomeScreen() {
             <Ionicons name="menu" size={28} color="#FFF" />
           </TouchableOpacity>
           <Text style={styles.headerTitle}>
-            CRICK<Text style={styles.headerTitleOrange}>BUZ</Text>
+            GAME<Text style={styles.headerTitleOrange}>LENS</Text>
           </Text>
         </View>
         <View style={styles.headerRight}>
@@ -1521,9 +1521,9 @@ export default function HomeScreen() {
             </View>
             {[
               { icon: 'call', label: 'Phone Support', value: '+91 98765 43210', sub: 'Mon-Sat, 9AM - 6PM' },
-              { icon: 'mail', label: 'Email Support', value: 'support@crickbuz.com', sub: 'Response within 24 hours' },
+              { icon: 'mail', label: 'Email Support', value: 'support@gamelens.com', sub: 'Response within 24 hours' },
               { icon: 'logo-whatsapp', label: 'WhatsApp', value: '+91 98765 43210', sub: 'Quick responses' },
-              { icon: 'location', label: 'Office Address', value: 'CrickBuz HQ, Mumbai', sub: 'Maharashtra, India - 400001' },
+              { icon: 'location', label: 'Office Address', value: 'GameLens HQ, Mumbai', sub: 'Maharashtra, India - 400001' },
             ].map((item, i) => (
               <TouchableOpacity key={i} style={styles.contactCard} activeOpacity={0.85}>
                 <View style={styles.contactIconCircle}>
@@ -1570,12 +1570,12 @@ export default function HomeScreen() {
                 <Text style={styles.shareAppIconText}>{"CRICK\nBUZ"}</Text>
               </View>
               <Text style={styles.shareHeroTitle}>Invite Your Friends!</Text>
-              <Text style={styles.shareHeroSub}>Share CrickBuz and earn rewards for every friend who joins</Text>
+              <Text style={styles.shareHeroSub}>Share GameLens and earn rewards for every friend who joins</Text>
             </View>
             <View style={styles.shareReferralBox}>
               <Text style={styles.shareReferralLabel}>Your Referral Code</Text>
               <View style={styles.shareReferralCodeRow}>
-                <Text style={styles.shareReferralCode}>CRICK2024</Text>
+                <Text style={styles.shareReferralCode}>GAME2024</Text>
                 <TouchableOpacity style={styles.shareCopyBtn}>
                   <Ionicons name="copy" size={18} color="#B91C1C" />
                   <Text style={styles.shareCopyText}>Copy</Text>
@@ -1604,7 +1604,7 @@ export default function HomeScreen() {
               <Ionicons name="gift" size={28} color="#F59E0B" />
               <View style={{ flex: 1, marginLeft: 12 }}>
                 <Text style={styles.shareRewardTitle}>Earn Rewards</Text>
-                <Text style={styles.shareRewardText}>Get 50 CrickCoins for every friend who signs up using your code!</Text>
+                <Text style={styles.shareRewardText}>Get 50 GameCoins for every friend who signs up using your code!</Text>
               </View>
             </View>
             <View style={{ height: 40 }} />
@@ -1627,7 +1627,7 @@ export default function HomeScreen() {
               <View style={styles.ratingThanksBox}>
                 <Ionicons name="checkmark-circle" size={72} color="#22C55E" />
                 <Text style={styles.ratingThanksTitle}>Thank You!</Text>
-                <Text style={styles.ratingThanksSub}>Your feedback means a lot to us. We will keep improving CrickBuz for you!</Text>
+                <Text style={styles.ratingThanksSub}>Your feedback means a lot to us. We will keep improving GameLens for you!</Text>
                 <TouchableOpacity style={styles.ratingDoneBtn} onPress={() => { setShowRateModal(false); setRatingSubmitted(false); setSelectedRating(0); }}>
                   <Text style={styles.ratingDoneBtnText}>Done</Text>
                 </TouchableOpacity>
@@ -1636,7 +1636,7 @@ export default function HomeScreen() {
               <>
                 <View style={styles.rateHero}>
                   <Ionicons name="star" size={56} color="#F59E0B" />
-                  <Text style={styles.rateHeroTitle}>Enjoying CrickBuz?</Text>
+                  <Text style={styles.rateHeroTitle}>Enjoying GameLens?</Text>
                   <Text style={styles.rateHeroSub}>Your rating helps us improve and reach more cricket fans</Text>
                 </View>
                 <View style={styles.rateStarsRow}>

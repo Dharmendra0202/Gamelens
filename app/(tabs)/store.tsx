@@ -49,7 +49,7 @@ export default function StoreScreen() {
         style={styles.header}
       >
         <Text style={styles.headerTitle}>
-          CRICK<Text style={styles.headerTitleOrange}>STORE</Text>
+          GAME<Text style={styles.headerTitleOrange}>LENS STORE</Text>
         </Text>
         <View style={styles.headerRight}>
           <TouchableOpacity style={styles.iconButton}>

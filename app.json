@@ -1,11 +1,11 @@
 {
   "expo": {
-    "name": "crickbuz",
-    "slug": "crickbuz",
+    "name": "gamelens",
+    "slug": "gamelens",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "crickbuz",
+    "scheme": "gamelens",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "android": {
