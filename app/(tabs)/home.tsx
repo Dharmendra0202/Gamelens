@@ -158,10 +158,10 @@ export default function HomeScreen() {
   };
 
   const players = [
-    { id: 1, name: 'Virat Kohli', role: 'Batsman', team: 'India', runs: '25,000+', initials: 'VK', color: '#B91C1C', image: 'https://images.unsplash.com/photo-1624532227497-856e69d6382b?w=300&h=300&fit=crop' },
-    { id: 2, name: 'MS Dhoni', role: 'Wicket Keeper', team: 'India', runs: '17,000+', initials: 'MS', color: '#991B1B', image: 'https://images.unsplash.com/photo-1566577739112-5180d4bf9390?w=300&h=300&fit=crop' },
-    { id: 3, name: 'Rohit Sharma', role: 'Batsman', team: 'India', runs: '18,000+', initials: 'RS', color: '#DC2626', image: 'https://images.unsplash.com/photo-1543326727-cf6c39e8f84c?w=300&h=300&fit=crop' },
-    { id: 4, name: 'Jasprit Bumrah', role: 'Bowler', team: 'India', wickets: '500+', initials: 'JB', color: '#FCA5A5', image: 'https://images.unsplash.com/photo-1624526267942-ab0ff8a3e972?w=300&h=300&fit=crop' },
+    { id: 1, name: 'Virat Kohli', role: 'Batsman', team: 'India', runs: '25,000+', initials: 'VK', color: '#00A66A', image: 'https://images.unsplash.com/photo-1624532227497-856e69d6382b?w=300&h=300&fit=crop' },
+    { id: 2, name: 'MS Dhoni', role: 'Wicket Keeper', team: 'India', runs: '17,000+', initials: 'MS', color: '#0F766E', image: 'https://images.unsplash.com/photo-1566577739112-5180d4bf9390?w=300&h=300&fit=crop' },
+    { id: 3, name: 'Rohit Sharma', role: 'Batsman', team: 'India', runs: '18,000+', initials: 'RS', color: '#059669', image: 'https://images.unsplash.com/photo-1543326727-cf6c39e8f84c?w=300&h=300&fit=crop' },
+    { id: 4, name: 'Jasprit Bumrah', role: 'Bowler', team: 'India', wickets: '500+', initials: 'JB', color: '#6EE7B7', image: 'https://images.unsplash.com/photo-1624526267942-ab0ff8a3e972?w=300&h=300&fit=crop' },
   ];
 
   const bannerImage = 'https://images.unsplash.com/photo-1540747913346-19e32dc3e97e?w=900&h=420&fit=crop';
@@ -218,7 +218,7 @@ export default function HomeScreen() {
     <View style={styles.container}>
       {/* Header */}
       <LinearGradient
-        colors={["#B91C1C", "#991B1B", "#7F1D1D"]}
+        colors={["#00A66A", "#0F766E", "#064E3B"]}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
         style={styles.header}
@@ -266,7 +266,7 @@ export default function HomeScreen() {
               </Text>
             </View>
             <View style={styles.viewProfileButton}>
-              <Ionicons name="chevron-forward" size={20} color="#B91C1C" />
+              <Ionicons name="chevron-forward" size={20} color="#00A66A" />
             </View>
           </TouchableOpacity>
         </View>
@@ -276,7 +276,7 @@ export default function HomeScreen() {
           <View style={styles.sectionHeader}>
             <Text style={styles.sectionTitle}>Matches Nearby</Text>
             <TouchableOpacity style={styles.locationButton} onPress={() => console.log('Location clicked')}>
-              <Ionicons name="location" size={16} color="#B91C1C" />
+              <Ionicons name="location" size={16} color="#00A66A" />
               <Text style={styles.locationText}>Mumbai</Text>
             </TouchableOpacity>
           </View>
@@ -360,7 +360,7 @@ export default function HomeScreen() {
               </TouchableOpacity>
             </View>
             <View style={styles.bannerIcon}>
-              <Ionicons name="ticket" size={60} color="#B91C1C" />
+              <Ionicons name="ticket" size={60} color="#00A66A" />
             </View>
           </ImageBackground>
         </View>
@@ -409,7 +409,7 @@ export default function HomeScreen() {
                 </View>
 
                 <TouchableOpacity style={styles.playerFollowBtn}>
-                  <Ionicons name="person-add-outline" size={18} color="#B91C1C" />
+                  <Ionicons name="person-add-outline" size={18} color="#00A66A" />
                 </TouchableOpacity>
               </TouchableOpacity>
             ))}
@@ -420,7 +420,7 @@ export default function HomeScreen() {
                 onPress={() => setShowAllPlayers(true)}
               >
                 <Text style={styles.seeMoreText}>See More Cricketers</Text>
-                <Ionicons name="chevron-down" size={20} color="#B91C1C" />
+                <Ionicons name="chevron-down" size={20} color="#00A66A" />
               </TouchableOpacity>
             )}
           </View>
@@ -752,7 +752,7 @@ export default function HomeScreen() {
             </TouchableOpacity>
             <Text style={styles.chatModalTitle}>Messages</Text>
             <TouchableOpacity>
-              <Ionicons name="create-outline" size={24} color="#B91C1C" />
+              <Ionicons name="create-outline" size={24} color="#00A66A" />
             </TouchableOpacity>
           </View>
 
@@ -774,7 +774,7 @@ export default function HomeScreen() {
             </TouchableOpacity>
 
             <TouchableOpacity style={styles.chatItem}>
-              <View style={[styles.chatAvatar, { backgroundColor: '#DC2626' }]}>
+              <View style={[styles.chatAvatar, { backgroundColor: '#059669' }]}>
                 <Text style={styles.chatAvatarText}>PP</Text>
               </View>
               <View style={styles.chatInfo}>
@@ -787,7 +787,7 @@ export default function HomeScreen() {
             </TouchableOpacity>
 
             <TouchableOpacity style={styles.chatItem}>
-              <View style={[styles.chatAvatar, { backgroundColor: '#991B1B' }]}>
+              <View style={[styles.chatAvatar, { backgroundColor: '#0F766E' }]}>
                 <Text style={styles.chatAvatarText}>TW</Text>
               </View>
               <View style={styles.chatInfo}>
@@ -941,7 +941,7 @@ export default function HomeScreen() {
               </View>
 
               <TouchableOpacity style={styles.clearPhotoButton} onPress={() => updateProfileDraft('imageUri', '')}>
-                <Ionicons name="trash-outline" size={18} color="#B91C1C" />
+                <Ionicons name="trash-outline" size={18} color="#00A66A" />
                 <Text style={styles.clearPhotoText}>Remove profile picture</Text>
               </TouchableOpacity>
             </ScrollView>
@@ -1062,7 +1062,7 @@ export default function HomeScreen() {
                   <Ionicons name="baseball" size={20} color="#666" />
                 </View>
                 <Text style={styles.drawerMenuText}>My Cricket</Text>
-                <Ionicons name="chevron-forward" size={16} color="#B91C1C" style={{ marginLeft: 'auto' }} />
+                <Ionicons name="chevron-forward" size={16} color="#00A66A" style={{ marginLeft: 'auto' }} />
               </TouchableOpacity>
 
               <TouchableOpacity
@@ -1105,7 +1105,7 @@ export default function HomeScreen() {
                   <Ionicons name="bag-outline" size={20} color="#666" />
                 </View>
                 <Text style={styles.drawerMenuText}>CricHeroes Store</Text>
-                <Ionicons name="chevron-forward" size={16} color="#B91C1C" style={{ marginLeft: 'auto' }} />
+                <Ionicons name="chevron-forward" size={16} color="#00A66A" style={{ marginLeft: 'auto' }} />
               </TouchableOpacity>
 
               <TouchableOpacity
@@ -1116,7 +1116,7 @@ export default function HomeScreen() {
                   <Ionicons name="podium-outline" size={20} color="#666" />
                 </View>
                 <Text style={styles.drawerMenuText}>Leaderboards</Text>
-                <Ionicons name="chevron-forward" size={16} color="#B91C1C" style={{ marginLeft: 'auto' }} />
+                <Ionicons name="chevron-forward" size={16} color="#00A66A" style={{ marginLeft: 'auto' }} />
               </TouchableOpacity>
 
               <TouchableOpacity
@@ -1127,7 +1127,7 @@ export default function HomeScreen() {
                   <Ionicons name="ribbon-outline" size={20} color="#666" />
                 </View>
                 <Text style={styles.drawerMenuText}>CricHeroes Awards</Text>
-                <Ionicons name="chevron-forward" size={16} color="#B91C1C" style={{ marginLeft: 'auto' }} />
+                <Ionicons name="chevron-forward" size={16} color="#00A66A" style={{ marginLeft: 'auto' }} />
               </TouchableOpacity>
 
               <TouchableOpacity
@@ -1138,7 +1138,7 @@ export default function HomeScreen() {
                   <Ionicons name="people-outline" size={20} color="#666" />
                 </View>
                 <Text style={styles.drawerMenuText}>Associations</Text>
-                <Ionicons name="chevron-forward" size={16} color="#B91C1C" style={{ marginLeft: 'auto' }} />
+                <Ionicons name="chevron-forward" size={16} color="#00A66A" style={{ marginLeft: 'auto' }} />
               </TouchableOpacity>
 
               <TouchableOpacity
@@ -1149,7 +1149,7 @@ export default function HomeScreen() {
                   <Ionicons name="business-outline" size={20} color="#666" />
                 </View>
                 <Text style={styles.drawerMenuText}>Clubs</Text>
-                <Ionicons name="chevron-forward" size={16} color="#B91C1C" style={{ marginLeft: 'auto' }} />
+                <Ionicons name="chevron-forward" size={16} color="#00A66A" style={{ marginLeft: 'auto' }} />
               </TouchableOpacity>
 
               <TouchableOpacity
@@ -1160,7 +1160,7 @@ export default function HomeScreen() {
                   <Ionicons name="call-outline" size={20} color="#666" />
                 </View>
                 <Text style={styles.drawerMenuText}>Contact</Text>
-                <Ionicons name="chevron-forward" size={16} color="#B91C1C" style={{ marginLeft: 'auto' }} />
+                <Ionicons name="chevron-forward" size={16} color="#00A66A" style={{ marginLeft: 'auto' }} />
               </TouchableOpacity>
 
               <TouchableOpacity
@@ -1171,7 +1171,7 @@ export default function HomeScreen() {
                   <Ionicons name="share-social-outline" size={20} color="#666" />
                 </View>
                 <Text style={styles.drawerMenuText}>Share the app</Text>
-                <Ionicons name="chevron-forward" size={16} color="#B91C1C" style={{ marginLeft: 'auto' }} />
+                <Ionicons name="chevron-forward" size={16} color="#00A66A" style={{ marginLeft: 'auto' }} />
               </TouchableOpacity>
 
               <TouchableOpacity
@@ -1182,7 +1182,7 @@ export default function HomeScreen() {
                   <Ionicons name="star-outline" size={20} color="#666" />
                 </View>
                 <Text style={styles.drawerMenuText}>Rate us</Text>
-                <Ionicons name="chevron-forward" size={16} color="#B91C1C" style={{ marginLeft: 'auto' }} />
+                <Ionicons name="chevron-forward" size={16} color="#00A66A" style={{ marginLeft: 'auto' }} />
               </TouchableOpacity>
             </ScrollView>
           </TouchableOpacity>
@@ -1217,7 +1217,7 @@ export default function HomeScreen() {
               activeOpacity={0.9}
             >
               <LinearGradient
-                colors={["#B91C1C", "#991B1B", "#7F1D1D"]}
+                colors={["#00A66A", "#0F766E", "#064E3B"]}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 1 }}
                 style={styles.matchOptionGradient}
@@ -1248,7 +1248,7 @@ export default function HomeScreen() {
               activeOpacity={0.9}
             >
               <LinearGradient
-                colors={["#B91C1C", "#991B1B", "#7F1D1D"]}
+                colors={["#00A66A", "#0F766E", "#064E3B"]}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 1 }}
                 style={styles.matchOptionGradient}
@@ -1272,7 +1272,7 @@ export default function HomeScreen() {
       {/* ===== CricHeroes Store Modal ===== */}
       <Modal visible={showStoreModal} transparent animationType="slide" onRequestClose={() => setShowStoreModal(false)}>
         <View style={styles.fullModalContainer}>
-          <LinearGradient colors={["#B91C1C", "#991B1B", "#7F1D1D"]} style={styles.fullModalHeader}>
+          <LinearGradient colors={["#00A66A", "#0F766E", "#064E3B"]} style={styles.fullModalHeader}>
             <TouchableOpacity onPress={() => setShowStoreModal(false)} style={styles.fullModalBack}>
               <Ionicons name="arrow-back" size={24} color="#FFF" />
             </TouchableOpacity>
@@ -1281,7 +1281,7 @@ export default function HomeScreen() {
           </LinearGradient>
           <ScrollView style={styles.fullModalBody} showsVerticalScrollIndicator={false}>
             <View style={styles.storeHeroBanner}>
-              <Ionicons name="bag" size={48} color="#B91C1C" />
+              <Ionicons name="bag" size={48} color="#00A66A" />
               <Text style={styles.storeHeroTitle}>Official Cricket Gear</Text>
               <Text style={styles.storeHeroSubtitle}>Premium equipment for every cricketer</Text>
             </View>
@@ -1295,7 +1295,7 @@ export default function HomeScreen() {
             ].map(item => (
               <TouchableOpacity key={item.id} style={styles.storeProductCard} activeOpacity={0.85}>
                 <View style={styles.storeProductImageBox}>
-                  <Ionicons name="bag-handle" size={36} color="#B91C1C" />
+                  <Ionicons name="bag-handle" size={36} color="#00A66A" />
                   {item.badge && <View style={styles.storeBadge}><Text style={styles.storeBadgeText}>{item.badge}</Text></View>}
                 </View>
                 <View style={styles.storeProductInfo}>
@@ -1324,7 +1324,7 @@ export default function HomeScreen() {
       {/* ===== Leaderboards Modal ===== */}
       <Modal visible={showLeaderboardModal} transparent animationType="slide" onRequestClose={() => setShowLeaderboardModal(false)}>
         <View style={styles.fullModalContainer}>
-          <LinearGradient colors={["#B91C1C", "#991B1B", "#7F1D1D"]} style={styles.fullModalHeader}>
+          <LinearGradient colors={["#00A66A", "#0F766E", "#064E3B"]} style={styles.fullModalHeader}>
             <TouchableOpacity onPress={() => setShowLeaderboardModal(false)} style={styles.fullModalBack}>
               <Ionicons name="arrow-back" size={24} color="#FFF" />
             </TouchableOpacity>
@@ -1340,14 +1340,14 @@ export default function HomeScreen() {
               ))}
             </View>
             {[
-              { rank: 1, name: 'Virat Kohli', team: 'India', stat: '892 pts', initials: 'VK', color: '#B91C1C' },
-              { rank: 2, name: 'Rohit Sharma', team: 'India', stat: '845 pts', initials: 'RS', color: '#991B1B' },
-              { rank: 3, name: 'Steve Smith', team: 'Australia', stat: '820 pts', initials: 'SS', color: '#DC2626' },
-              { rank: 4, name: 'Kane Williamson', team: 'New Zealand', stat: '798 pts', initials: 'KW', color: '#EF4444' },
-              { rank: 5, name: 'Joe Root', team: 'England', stat: '776 pts', initials: 'JR', color: '#F87171' },
-              { rank: 6, name: 'Babar Azam', team: 'Pakistan', stat: '754 pts', initials: 'BA', color: '#FCA5A5' },
-              { rank: 7, name: 'David Warner', team: 'Australia', stat: '731 pts', initials: 'DW', color: '#B91C1C' },
-              { rank: 8, name: 'KL Rahul', team: 'India', stat: '718 pts', initials: 'KR', color: '#991B1B' },
+              { rank: 1, name: 'Virat Kohli', team: 'India', stat: '892 pts', initials: 'VK', color: '#00A66A' },
+              { rank: 2, name: 'Rohit Sharma', team: 'India', stat: '845 pts', initials: 'RS', color: '#0F766E' },
+              { rank: 3, name: 'Steve Smith', team: 'Australia', stat: '820 pts', initials: 'SS', color: '#059669' },
+              { rank: 4, name: 'Kane Williamson', team: 'New Zealand', stat: '798 pts', initials: 'KW', color: '#10B981' },
+              { rank: 5, name: 'Joe Root', team: 'England', stat: '776 pts', initials: 'JR', color: '#34D399' },
+              { rank: 6, name: 'Babar Azam', team: 'Pakistan', stat: '754 pts', initials: 'BA', color: '#6EE7B7' },
+              { rank: 7, name: 'David Warner', team: 'Australia', stat: '731 pts', initials: 'DW', color: '#00A66A' },
+              { rank: 8, name: 'KL Rahul', team: 'India', stat: '718 pts', initials: 'KR', color: '#0F766E' },
             ].map(player => (
               <View key={player.rank} style={[styles.lbRow, player.rank <= 3 && styles.lbRowTop]}>
                 <View style={[styles.lbRankBadge, player.rank === 1 && { backgroundColor: '#F59E0B' }, player.rank === 2 && { backgroundColor: '#9CA3AF' }, player.rank === 3 && { backgroundColor: '#D97706' }]}>
@@ -1371,7 +1371,7 @@ export default function HomeScreen() {
       {/* ===== CricHeroes Awards Modal ===== */}
       <Modal visible={showAwardsModal} transparent animationType="slide" onRequestClose={() => setShowAwardsModal(false)}>
         <View style={styles.fullModalContainer}>
-          <LinearGradient colors={["#B91C1C", "#991B1B", "#7F1D1D"]} style={styles.fullModalHeader}>
+          <LinearGradient colors={["#00A66A", "#0F766E", "#064E3B"]} style={styles.fullModalHeader}>
             <TouchableOpacity onPress={() => setShowAwardsModal(false)} style={styles.fullModalBack}>
               <Ionicons name="arrow-back" size={24} color="#FFF" />
             </TouchableOpacity>
@@ -1386,12 +1386,12 @@ export default function HomeScreen() {
             </View>
             {[
               { award: 'Player of the Year', winner: 'Virat Kohli', team: 'India', icon: 'trophy', color: '#F59E0B' },
-              { award: 'Best Batsman', winner: 'Rohit Sharma', team: 'India', icon: 'baseball', color: '#B91C1C' },
-              { award: 'Best Bowler', winner: 'Jasprit Bumrah', team: 'India', icon: 'radio-button-on', color: '#991B1B' },
-              { award: 'Best All-Rounder', winner: 'Hardik Pandya', team: 'India', icon: 'star', color: '#DC2626' },
-              { award: 'Best Wicket Keeper', winner: 'MS Dhoni', team: 'India', icon: 'shield', color: '#EF4444' },
-              { award: 'Emerging Player', winner: 'Shubman Gill', team: 'India', icon: 'flash', color: '#F87171' },
-              { award: 'Best Captain', winner: 'Rohit Sharma', team: 'India', icon: 'ribbon', color: '#B91C1C' },
+              { award: 'Best Batsman', winner: 'Rohit Sharma', team: 'India', icon: 'baseball', color: '#00A66A' },
+              { award: 'Best Bowler', winner: 'Jasprit Bumrah', team: 'India', icon: 'radio-button-on', color: '#0F766E' },
+              { award: 'Best All-Rounder', winner: 'Hardik Pandya', team: 'India', icon: 'star', color: '#059669' },
+              { award: 'Best Wicket Keeper', winner: 'MS Dhoni', team: 'India', icon: 'shield', color: '#10B981' },
+              { award: 'Emerging Player', winner: 'Shubman Gill', team: 'India', icon: 'flash', color: '#34D399' },
+              { award: 'Best Captain', winner: 'Rohit Sharma', team: 'India', icon: 'ribbon', color: '#00A66A' },
             ].map((item, i) => (
               <View key={i} style={styles.awardCard}>
                 <View style={[styles.awardIconCircle, { backgroundColor: item.color + '20' }]}>
@@ -1413,7 +1413,7 @@ export default function HomeScreen() {
       {/* ===== Associations Modal ===== */}
       <Modal visible={showAssociationsModal} transparent animationType="slide" onRequestClose={() => setShowAssociationsModal(false)}>
         <View style={styles.fullModalContainer}>
-          <LinearGradient colors={["#B91C1C", "#991B1B", "#7F1D1D"]} style={styles.fullModalHeader}>
+          <LinearGradient colors={["#00A66A", "#0F766E", "#064E3B"]} style={styles.fullModalHeader}>
             <TouchableOpacity onPress={() => setShowAssociationsModal(false)} style={styles.fullModalBack}>
               <Ionicons name="arrow-back" size={24} color="#FFF" />
             </TouchableOpacity>
@@ -1457,7 +1457,7 @@ export default function HomeScreen() {
       {/* ===== Clubs Modal ===== */}
       <Modal visible={showClubsModal} transparent animationType="slide" onRequestClose={() => setShowClubsModal(false)}>
         <View style={styles.fullModalContainer}>
-          <LinearGradient colors={["#B91C1C", "#991B1B", "#7F1D1D"]} style={styles.fullModalHeader}>
+          <LinearGradient colors={["#00A66A", "#0F766E", "#064E3B"]} style={styles.fullModalHeader}>
             <TouchableOpacity onPress={() => setShowClubsModal(false)} style={styles.fullModalBack}>
               <Ionicons name="arrow-back" size={24} color="#FFF" />
             </TouchableOpacity>
@@ -1466,18 +1466,18 @@ export default function HomeScreen() {
           </LinearGradient>
           <ScrollView style={styles.fullModalBody} showsVerticalScrollIndicator={false}>
             <TouchableOpacity style={styles.createClubBtn}>
-              <LinearGradient colors={["#B91C1C", "#991B1B"]} style={styles.createClubGradient}>
+              <LinearGradient colors={["#00A66A", "#0F766E"]} style={styles.createClubGradient}>
                 <Ionicons name="add-circle" size={22} color="#FFF" />
                 <Text style={styles.createClubText}>Create a New Club</Text>
               </LinearGradient>
             </TouchableOpacity>
             <Text style={styles.sectionSubHeader}>Popular Clubs Near You</Text>
             {[
-              { name: 'Mumbai Warriors CC', members: 24, wins: 18, matches: 25, founded: '2018', initials: 'MW', color: '#B91C1C' },
-              { name: 'Delhi Strikers Club', members: 18, wins: 12, matches: 20, founded: '2019', initials: 'DS', color: '#991B1B' },
-              { name: 'Bangalore Challengers', members: 22, wins: 15, matches: 22, founded: '2017', initials: 'BC', color: '#DC2626' },
-              { name: 'Chennai Kings CC', members: 20, wins: 10, matches: 18, founded: '2020', initials: 'CK', color: '#EF4444' },
-              { name: 'Kolkata Knights Club', members: 16, wins: 8, matches: 15, founded: '2021', initials: 'KK', color: '#F87171' },
+              { name: 'Mumbai Warriors CC', members: 24, wins: 18, matches: 25, founded: '2018', initials: 'MW', color: '#00A66A' },
+              { name: 'Delhi Strikers Club', members: 18, wins: 12, matches: 20, founded: '2019', initials: 'DS', color: '#0F766E' },
+              { name: 'Bangalore Challengers', members: 22, wins: 15, matches: 22, founded: '2017', initials: 'BC', color: '#059669' },
+              { name: 'Chennai Kings CC', members: 20, wins: 10, matches: 18, founded: '2020', initials: 'CK', color: '#10B981' },
+              { name: 'Kolkata Knights Club', members: 16, wins: 8, matches: 15, founded: '2021', initials: 'KK', color: '#34D399' },
             ].map((club, i) => (
               <TouchableOpacity key={i} style={styles.clubCard} activeOpacity={0.85}>
                 <View style={[styles.clubAvatar, { backgroundColor: club.color }]}>
@@ -1506,7 +1506,7 @@ export default function HomeScreen() {
       {/* ===== Contact Modal ===== */}
       <Modal visible={showContactModal} transparent animationType="slide" onRequestClose={() => setShowContactModal(false)}>
         <View style={styles.fullModalContainer}>
-          <LinearGradient colors={["#B91C1C", "#991B1B", "#7F1D1D"]} style={styles.fullModalHeader}>
+          <LinearGradient colors={["#00A66A", "#0F766E", "#064E3B"]} style={styles.fullModalHeader}>
             <TouchableOpacity onPress={() => setShowContactModal(false)} style={styles.fullModalBack}>
               <Ionicons name="arrow-back" size={24} color="#FFF" />
             </TouchableOpacity>
@@ -1515,7 +1515,7 @@ export default function HomeScreen() {
           </LinearGradient>
           <ScrollView style={styles.fullModalBody} showsVerticalScrollIndicator={false}>
             <View style={styles.contactHero}>
-              <Ionicons name="headset" size={56} color="#B91C1C" />
+              <Ionicons name="headset" size={56} color="#00A66A" />
               <Text style={styles.contactHeroTitle}>We are here to help!</Text>
               <Text style={styles.contactHeroSub}>Reach out to us anytime</Text>
             </View>
@@ -1527,14 +1527,14 @@ export default function HomeScreen() {
             ].map((item, i) => (
               <TouchableOpacity key={i} style={styles.contactCard} activeOpacity={0.85}>
                 <View style={styles.contactIconCircle}>
-                  <Ionicons name={item.icon as any} size={24} color="#B91C1C" />
+                  <Ionicons name={item.icon as any} size={24} color="#00A66A" />
                 </View>
                 <View style={styles.contactInfo}>
                   <Text style={styles.contactLabel}>{item.label}</Text>
                   <Text style={styles.contactValue}>{item.value}</Text>
                   <Text style={styles.contactSub}>{item.sub}</Text>
                 </View>
-                <Ionicons name="chevron-forward" size={20} color="#B91C1C" />
+                <Ionicons name="chevron-forward" size={20} color="#00A66A" />
               </TouchableOpacity>
             ))}
             <View style={styles.contactFormSection}>
@@ -1543,7 +1543,7 @@ export default function HomeScreen() {
               <TextInput style={styles.contactInput} placeholder="Your email" placeholderTextColor="#999" keyboardType="email-address" />
               <TextInput style={[styles.contactInput, { height: 100, textAlignVertical: 'top' }]} placeholder="Your message..." placeholderTextColor="#999" multiline />
               <TouchableOpacity style={styles.contactSendBtn}>
-                <LinearGradient colors={["#B91C1C", "#991B1B"]} style={styles.contactSendGradient}>
+                <LinearGradient colors={["#00A66A", "#0F766E"]} style={styles.contactSendGradient}>
                   <Ionicons name="send" size={18} color="#FFF" />
                   <Text style={styles.contactSendText}>Send Message</Text>
                 </LinearGradient>
@@ -1557,7 +1557,7 @@ export default function HomeScreen() {
       {/* ===== Share the App Modal ===== */}
       <Modal visible={showShareModal} transparent animationType="slide" onRequestClose={() => setShowShareModal(false)}>
         <View style={styles.fullModalContainer}>
-          <LinearGradient colors={["#B91C1C", "#991B1B", "#7F1D1D"]} style={styles.fullModalHeader}>
+          <LinearGradient colors={["#00A66A", "#0F766E", "#064E3B"]} style={styles.fullModalHeader}>
             <TouchableOpacity onPress={() => setShowShareModal(false)} style={styles.fullModalBack}>
               <Ionicons name="arrow-back" size={24} color="#FFF" />
             </TouchableOpacity>
@@ -1577,7 +1577,7 @@ export default function HomeScreen() {
               <View style={styles.shareReferralCodeRow}>
                 <Text style={styles.shareReferralCode}>GAME2024</Text>
                 <TouchableOpacity style={styles.shareCopyBtn}>
-                  <Ionicons name="copy" size={18} color="#B91C1C" />
+                  <Ionicons name="copy" size={18} color="#00A66A" />
                   <Text style={styles.shareCopyText}>Copy</Text>
                 </TouchableOpacity>
               </View>
@@ -1588,7 +1588,7 @@ export default function HomeScreen() {
                 { icon: 'logo-whatsapp', label: 'WhatsApp', color: '#25D366' },
                 { icon: 'logo-facebook', label: 'Facebook', color: '#1877F2' },
                 { icon: 'logo-twitter', label: 'Twitter', color: '#1DA1F2' },
-                { icon: 'mail', label: 'Email', color: '#B91C1C' },
+                { icon: 'mail', label: 'Email', color: '#00A66A' },
                 { icon: 'logo-instagram', label: 'Instagram', color: '#E1306C' },
                 { icon: 'share-social', label: 'More', color: '#666' },
               ].map((opt, i) => (
@@ -1615,7 +1615,7 @@ export default function HomeScreen() {
       {/* ===== Rate Us Modal ===== */}
       <Modal visible={showRateModal} transparent animationType="slide" onRequestClose={() => setShowRateModal(false)}>
         <View style={styles.fullModalContainer}>
-          <LinearGradient colors={["#B91C1C", "#991B1B", "#7F1D1D"]} style={styles.fullModalHeader}>
+          <LinearGradient colors={["#00A66A", "#0F766E", "#064E3B"]} style={styles.fullModalHeader}>
             <TouchableOpacity onPress={() => setShowRateModal(false)} style={styles.fullModalBack}>
               <Ionicons name="arrow-back" size={24} color="#FFF" />
             </TouchableOpacity>
@@ -1656,7 +1656,7 @@ export default function HomeScreen() {
                   { title: 'Good community', icon: 'people' },
                 ].map((tag, i) => (
                   <View key={i} style={styles.rateTagRow}>
-                    <Ionicons name={tag.icon as any} size={18} color="#B91C1C" />
+                    <Ionicons name={tag.icon as any} size={18} color="#00A66A" />
                     <Text style={styles.rateTagText}>{tag.title}</Text>
                   </View>
                 ))}
@@ -1665,7 +1665,7 @@ export default function HomeScreen() {
                   disabled={selectedRating === 0}
                   onPress={() => setRatingSubmitted(true)}
                 >
-                  <LinearGradient colors={["#B91C1C", "#991B1B"]} style={styles.rateSubmitGradient}>
+                  <LinearGradient colors={["#00A66A", "#0F766E"]} style={styles.rateSubmitGradient}>
                     <Text style={styles.rateSubmitText}>Submit Rating</Text>
                   </LinearGradient>
                 </TouchableOpacity>
@@ -1686,7 +1686,7 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FEF2F2',
+    backgroundColor: '#F0F7F4',
   },
   header: {
     flexDirection: 'row',
@@ -1715,7 +1715,7 @@ const styles = StyleSheet.create({
     color: '#FFF',
   },
   headerTitleOrange: {
-    color: '#FCA5A5',
+    color: '#6EE7B7',
   },
   headerRight: {
     flexDirection: 'row',
@@ -1742,7 +1742,7 @@ const styles = StyleSheet.create({
     width: 45,
     height: 45,
     borderRadius: 22.5,
-    backgroundColor: '#B91C1C',
+    backgroundColor: '#00A66A',
     justifyContent: 'center',
     alignItems: 'center',
     overflow: 'hidden',
@@ -1795,12 +1795,12 @@ const styles = StyleSheet.create({
     gap: 4,
     paddingHorizontal: 12,
     paddingVertical: 6,
-    backgroundColor: '#FEE2E2',
+    backgroundColor: '#D1FAE5',
     borderRadius: 16,
   },
   locationText: {
     fontSize: 14,
-    color: '#B91C1C',
+    color: '#00A66A',
     fontWeight: '600',
   },
   matchScrollContent: {
@@ -1833,7 +1833,7 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   matchBadge: {
-    backgroundColor: '#B91C1C',
+    backgroundColor: '#00A66A',
     paddingHorizontal: 12,
     paddingVertical: 4,
     borderRadius: 12,
@@ -1861,7 +1861,7 @@ const styles = StyleSheet.create({
   },
   matchVs: {
     fontSize: 14,
-    color: '#B91C1C',
+    color: '#00A66A',
     marginHorizontal: 12,
   },
   matchLocation: {
@@ -1876,7 +1876,7 @@ const styles = StyleSheet.create({
     color: '#FFF',
   },
   joinMatchButton: {
-    backgroundColor: '#B91C1C',
+    backgroundColor: '#00A66A',
     paddingVertical: 12,
     borderRadius: 8,
     alignItems: 'center',
@@ -1897,18 +1897,18 @@ const styles = StyleSheet.create({
     width: 8,
     height: 8,
     borderRadius: 4,
-    backgroundColor: '#FCA5A5',
+    backgroundColor: '#6EE7B7',
   },
   activeDot: {
     width: 24,
-    backgroundColor: '#B91C1C',
+    backgroundColor: '#00A66A',
   },
   bannerSection: {
     paddingHorizontal: 16,
     marginBottom: 8,
   },
   banner: {
-    backgroundColor: '#991B1B',
+    backgroundColor: '#0F766E',
     borderRadius: 16,
     padding: 20,
     flexDirection: 'row',
@@ -1936,11 +1936,11 @@ const styles = StyleSheet.create({
   },
   bannerSubtitle: {
     fontSize: 14,
-    color: '#FCA5A5',
+    color: '#6EE7B7',
     marginBottom: 12,
   },
   bannerButton: {
-    backgroundColor: '#FCA5A5',
+    backgroundColor: '#6EE7B7',
     paddingHorizontal: 20,
     paddingVertical: 8,
     borderRadius: 20,
@@ -1949,7 +1949,7 @@ const styles = StyleSheet.create({
   bannerButtonText: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#991B1B',
+    color: '#0F766E',
   },
   bannerIcon: {
     marginLeft: 16,
@@ -1963,7 +1963,7 @@ const styles = StyleSheet.create({
   },
   seeAll: {
     fontSize: 14,
-    color: '#B91C1C',
+    color: '#00A66A',
     fontWeight: '600',
   },
   playersListContainer: {
@@ -1972,7 +1972,7 @@ const styles = StyleSheet.create({
   playerListItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#FEF2F2',
+    backgroundColor: '#F0F7F4',
     borderRadius: 12,
     padding: 12,
     gap: 12,
@@ -1981,7 +1981,7 @@ const styles = StyleSheet.create({
     width: 28,
     height: 28,
     borderRadius: 14,
-    backgroundColor: '#B91C1C',
+    backgroundColor: '#00A66A',
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -2025,7 +2025,7 @@ const styles = StyleSheet.create({
   },
   playerListRole: {
     fontSize: 12,
-    color: '#B91C1C',
+    color: '#00A66A',
     fontWeight: '600',
   },
   playerDivider: {
@@ -2048,24 +2048,24 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: '#B91C1C',
+    borderColor: '#00A66A',
   },
   seeMoreButton: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#FEF2F2',
+    backgroundColor: '#F0F7F4',
     borderRadius: 12,
     padding: 14,
     gap: 8,
     borderWidth: 1,
-    borderColor: '#FCA5A5',
+    borderColor: '#6EE7B7',
     borderStyle: 'dashed',
   },
   seeMoreText: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#B91C1C',
+    color: '#00A66A',
   },
   playerCard: {
     alignItems: 'center',
@@ -2137,17 +2137,17 @@ const styles = StyleSheet.create({
   productPrice: {
     fontSize: 14,
     fontWeight: 'bold',
-    color: '#B91C1C',
+    color: '#00A66A',
   },
   addToCartButton: {
-    backgroundColor: '#B91C1C',
+    backgroundColor: '#00A66A',
     width: 32,
     height: 32,
     borderRadius: 16,
     justifyContent: 'center',
     alignItems: 'center',
     elevation: 2,
-    shadowColor: '#B91C1C',
+    shadowColor: '#00A66A',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.3,
     shadowRadius: 3,
@@ -2155,7 +2155,7 @@ const styles = StyleSheet.create({
   createPost: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#FEE2E2',
+    backgroundColor: '#D1FAE5',
     borderRadius: 24,
     padding: 12,
     marginBottom: 16,
@@ -2164,7 +2164,7 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: '#B91C1C',
+    backgroundColor: '#00A66A',
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 12,
@@ -2200,7 +2200,7 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: '#DC2626',
+    backgroundColor: '#059669',
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 12,
@@ -2314,7 +2314,7 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   followButton: {
-    backgroundColor: '#B91C1C',
+    backgroundColor: '#00A66A',
     paddingHorizontal: 40,
     paddingVertical: 12,
     borderRadius: 24,
@@ -2346,7 +2346,7 @@ const styles = StyleSheet.create({
   searchInputContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#FEE2E2',
+    backgroundColor: '#D1FAE5',
     margin: 16,
     paddingHorizontal: 16,
     paddingVertical: 12,
@@ -2410,7 +2410,7 @@ const styles = StyleSheet.create({
     width: 50,
     height: 50,
     borderRadius: 25,
-    backgroundColor: '#B91C1C',
+    backgroundColor: '#00A66A',
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 12,
@@ -2442,7 +2442,7 @@ const styles = StyleSheet.create({
     color: '#999',
   },
   chatBadge: {
-    backgroundColor: '#B91C1C',
+    backgroundColor: '#00A66A',
     borderRadius: 10,
     paddingHorizontal: 6,
     paddingVertical: 2,
@@ -2483,7 +2483,7 @@ const styles = StyleSheet.create({
   profileSaveText: {
     fontSize: 15,
     fontWeight: '800',
-    color: '#B91C1C',
+    color: '#00A66A',
   },
   profileEditorBody: {
     padding: 16,
@@ -2496,7 +2496,7 @@ const styles = StyleSheet.create({
     width: 96,
     height: 96,
     borderRadius: 48,
-    backgroundColor: '#B91C1C',
+    backgroundColor: '#00A66A',
     justifyContent: 'center',
     alignItems: 'center',
     overflow: 'hidden',
@@ -2525,7 +2525,7 @@ const styles = StyleSheet.create({
     minHeight: 40,
     marginTop: 12,
     borderRadius: 8,
-    backgroundColor: '#B91C1C',
+    backgroundColor: '#00A66A',
     paddingHorizontal: 16,
     flexDirection: 'row',
     alignItems: 'center',
@@ -2566,14 +2566,14 @@ const styles = StyleSheet.create({
     marginTop: 16,
     marginBottom: 28,
     borderRadius: 8,
-    backgroundColor: '#FEF2F2',
+    backgroundColor: '#F0F7F4',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     gap: 8,
   },
   clearPhotoText: {
-    color: '#B91C1C',
+    color: '#00A66A',
     fontSize: 14,
     fontWeight: '800',
   },
@@ -2598,7 +2598,7 @@ const styles = StyleSheet.create({
     width: 60,
     height: 60,
     borderRadius: 30,
-    backgroundColor: '#B91C1C',
+    backgroundColor: '#00A66A',
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 12,
@@ -2645,7 +2645,7 @@ const styles = StyleSheet.create({
   progressFill: {
     width: '50%',
     height: '100%',
-    backgroundColor: '#B91C1C',
+    backgroundColor: '#00A66A',
   },
   progressText: {
     fontSize: 14,
@@ -2776,7 +2776,7 @@ const styles = StyleSheet.create({
   },
   searchPlayerStats: {
     fontSize: 12,
-    color: '#B91C1C',
+    color: '#00A66A',
     fontWeight: '500',
   },
   searchMatchItem: {
@@ -2791,7 +2791,7 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   searchMatchBadge: {
-    backgroundColor: '#B91C1C',
+    backgroundColor: '#00A66A',
     paddingHorizontal: 8,
     paddingVertical: 2,
     borderRadius: 8,
@@ -2840,7 +2840,7 @@ const styles = StyleSheet.create({
   },
   searchProductPrice: {
     fontSize: 14,
-    color: '#B91C1C',
+    color: '#00A66A',
     fontWeight: '600',
   },
   noResultsContainer: {
@@ -2939,7 +2939,7 @@ const styles = StyleSheet.create({
   storeProductImageBox: {
     width: 100,
     height: 120,
-    backgroundColor: '#FEE2E2',
+    backgroundColor: '#D1FAE5',
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -2947,7 +2947,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 8,
     left: 0,
-    backgroundColor: '#B91C1C',
+    backgroundColor: '#00A66A',
     paddingHorizontal: 6,
     paddingVertical: 2,
     borderTopRightRadius: 6,
@@ -2964,7 +2964,7 @@ const styles = StyleSheet.create({
   },
   storeProductCategory: {
     fontSize: 11,
-    color: '#B91C1C',
+    color: '#00A66A',
     fontWeight: '600',
     textTransform: 'uppercase',
     marginBottom: 2,
@@ -2995,7 +2995,7 @@ const styles = StyleSheet.create({
   storePrice: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#B91C1C',
+    color: '#00A66A',
   },
   storeOriginalPrice: {
     fontSize: 13,
@@ -3005,7 +3005,7 @@ const styles = StyleSheet.create({
   storeAddCartBtn: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#B91C1C',
+    backgroundColor: '#00A66A',
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 8,
@@ -3038,7 +3038,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
   lbTabActive: {
-    backgroundColor: '#B91C1C',
+    backgroundColor: '#00A66A',
   },
   lbTabText: {
     fontSize: 14,
@@ -3108,7 +3108,7 @@ const styles = StyleSheet.create({
   lbStat: {
     fontSize: 15,
     fontWeight: 'bold',
-    color: '#B91C1C',
+    color: '#00A66A',
   },
 
   // ===== Awards Styles =====
@@ -3174,7 +3174,7 @@ const styles = StyleSheet.create({
   },
   awardTeam: {
     fontSize: 13,
-    color: '#B91C1C',
+    color: '#00A66A',
     marginTop: 2,
   },
 
@@ -3196,7 +3196,7 @@ const styles = StyleSheet.create({
     width: 52,
     height: 52,
     borderRadius: 26,
-    backgroundColor: '#B91C1C',
+    backgroundColor: '#00A66A',
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 12,
@@ -3217,7 +3217,7 @@ const styles = StyleSheet.create({
   },
   assocCity: {
     fontSize: 12,
-    color: '#B91C1C',
+    color: '#00A66A',
     marginBottom: 4,
   },
   assocStats: {
@@ -3230,17 +3230,17 @@ const styles = StyleSheet.create({
     marginLeft: 4,
   },
   assocJoinBtn: {
-    backgroundColor: '#FEE2E2',
+    backgroundColor: '#D1FAE5',
     paddingHorizontal: 14,
     paddingVertical: 7,
     borderRadius: 20,
     borderWidth: 1,
-    borderColor: '#B91C1C',
+    borderColor: '#00A66A',
   },
   assocJoinText: {
     fontSize: 13,
     fontWeight: '600',
-    color: '#B91C1C',
+    color: '#00A66A',
   },
 
   // ===== Clubs Styles =====
@@ -3316,17 +3316,17 @@ const styles = StyleSheet.create({
     marginLeft: 4,
   },
   clubJoinBtn: {
-    backgroundColor: '#FEE2E2',
+    backgroundColor: '#D1FAE5',
     paddingHorizontal: 14,
     paddingVertical: 7,
     borderRadius: 20,
     borderWidth: 1,
-    borderColor: '#B91C1C',
+    borderColor: '#00A66A',
   },
   clubJoinText: {
     fontSize: 13,
     fontWeight: '600',
-    color: '#B91C1C',
+    color: '#00A66A',
   },
 
   // ===== Contact Styles =====
@@ -3370,7 +3370,7 @@ const styles = StyleSheet.create({
     width: 48,
     height: 48,
     borderRadius: 24,
-    backgroundColor: '#FEE2E2',
+    backgroundColor: '#D1FAE5',
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 14,
@@ -3459,7 +3459,7 @@ const styles = StyleSheet.create({
     width: 80,
     height: 80,
     borderRadius: 20,
-    backgroundColor: '#B91C1C',
+    backgroundColor: '#00A66A',
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 12,
@@ -3506,7 +3506,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    backgroundColor: '#FEE2E2',
+    backgroundColor: '#D1FAE5',
     borderRadius: 10,
     paddingHorizontal: 16,
     paddingVertical: 12,
@@ -3517,7 +3517,7 @@ const styles = StyleSheet.create({
   shareReferralCode: {
     fontSize: 22,
     fontWeight: 'bold',
-    color: '#B91C1C',
+    color: '#00A66A',
     letterSpacing: 2,
   },
   shareCopyBtn: {
@@ -3528,7 +3528,7 @@ const styles = StyleSheet.create({
   shareCopyText: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#B91C1C',
+    color: '#00A66A',
   },
   shareViaLabel: {
     fontSize: 14,
@@ -3620,7 +3620,7 @@ const styles = StyleSheet.create({
   rateLabel: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#B91C1C',
+    color: '#00A66A',
     textAlign: 'center',
     marginBottom: 20,
     minHeight: 24,
@@ -3688,7 +3688,7 @@ const styles = StyleSheet.create({
     marginBottom: 32,
   },
   ratingDoneBtn: {
-    backgroundColor: '#B91C1C',
+    backgroundColor: '#00A66A',
     paddingHorizontal: 48,
     paddingVertical: 14,
     borderRadius: 28,
