@@ -261,9 +261,21 @@ export default function HomeScreen() {
             </View>
             <View style={styles.myProfileInfo}>
               <Text style={styles.myProfileName}>{profile.name}</Text>
-              <Text style={styles.myProfileStats}>
-                {profile.role} - {profile.friends} Friends - {profile.posts} Posts
-              </Text>
+              <View style={styles.profileRoleContainer}>
+                <Ionicons name="ribbon-outline" size={14} color="#00A66A" />
+                <Text style={styles.profileRoleText}>{profile.role}</Text>
+              </View>
+              <View style={styles.profileStatsRow}>
+                <View style={styles.profileStatItem}>
+                  <Text style={styles.profileStatVal}>{profile.friends}</Text>
+                  <Text style={styles.profileStatLbl}>Friends</Text>
+                </View>
+                <View style={styles.profileStatDivider} />
+                <View style={styles.profileStatItem}>
+                  <Text style={styles.profileStatVal}>{profile.posts}</Text>
+                  <Text style={styles.profileStatLbl}>Posts</Text>
+                </View>
+              </View>
             </View>
             <View style={styles.viewProfileButton}>
               <Ionicons name="chevron-forward" size={20} color="#00A66A" />
@@ -271,13 +283,34 @@ export default function HomeScreen() {
           </TouchableOpacity>
         </View>
 
-        {/* Matches Nearby */}
+        {/* Quick Actions Bar */}
+        <View style={styles.quickActionsBar}>
+          {[
+            { icon: 'baseball-outline' as const, label: 'Start Match', color: '#00A66A', action: () => { router.push({ pathname: '/(tabs)/my-cricket', params: { action: 'startMatch' } }); } },
+            { icon: 'trophy-outline' as const, label: 'New Tourney', color: '#0F766E', action: () => { router.push({ pathname: '/(tabs)/my-cricket', params: { action: 'createTournament' } }); } },
+            { icon: 'search-outline' as const, label: 'Find Players', color: '#0EA5E9', action: () => setShowSearchModal(true) },
+            { icon: 'bag-handle-outline' as const, label: 'Store', color: '#EF4444', action: () => setShowStoreModal(true) },
+          ].map((item, i) => (
+            <TouchableOpacity key={i} style={styles.quickActionItem} onPress={item.action} activeOpacity={0.8}>
+              <View style={[styles.quickActionIconBg, { backgroundColor: `${item.color}12` }]}>
+                <Ionicons name={item.icon} size={22} color={item.color} />
+              </View>
+              <Text style={styles.quickActionLabel}>{item.label}</Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+
+        {/* Matches Discovery */}
         <View style={styles.section}>
           <View style={styles.sectionHeader}>
-            <Text style={styles.sectionTitle}>Matches Nearby</Text>
+            <View>
+              <Text style={styles.sectionTitle}>Live & Upcoming Matches</Text>
+              <Text style={styles.sectionSubtitle}>Matches scheduled near you</Text>
+            </View>
             <TouchableOpacity style={styles.locationButton} onPress={() => console.log('Location clicked')}>
-              <Ionicons name="location" size={16} color="#00A66A" />
+              <Ionicons name="location" size={14} color="#00A66A" />
               <Text style={styles.locationText}>Mumbai</Text>
+              <Ionicons name="chevron-down" size={12} color="#00A66A" />
             </TouchableOpacity>
           </View>
 
@@ -299,33 +332,62 @@ export default function HomeScreen() {
                 key={match.id}
                 style={styles.matchCardContainer}
                 onPress={() => console.log(`Viewing ${match.team1} vs ${match.team2}`)}
+                activeOpacity={0.95}
               >
-                <ImageBackground
-                  source={{ uri: match.image }}
-                  style={styles.matchCard}
-                  imageStyle={styles.matchCardImage}
-                >
-                  <View style={styles.matchCardOverlay}>
-                    <View style={styles.matchHeader}>
-                      <View style={styles.matchBadge}>
-                        <Text style={styles.matchBadgeText}>{match.badge}</Text>
+                <View style={styles.matchCard}>
+                  {/* Card Header */}
+                  <View style={styles.matchCardHeader}>
+                    <View style={[styles.statusBadge, match.badge === 'LIVE' ? styles.statusBadgeLive : styles.statusBadgeUpcoming]}>
+                      <View style={match.badge === 'LIVE' ? styles.livePulseDot : styles.upcomingDot} />
+                      <Text style={[styles.statusBadgeText, match.badge === 'LIVE' ? styles.statusBadgeTextLive : styles.statusBadgeTextUpcoming]}>
+                        {match.badge}
+                      </Text>
+                    </View>
+                    <Text style={styles.matchTimeText}>{match.time}</Text>
+                  </View>
+
+                  {/* Team 1 Details */}
+                  <View style={styles.matchTeamRow}>
+                    <View style={styles.matchTeamLeft}>
+                      <View style={styles.teamLogoWrapper}>
+                        <Text style={styles.teamLogoText}>{match.team1.split(' ').map(n => n[0]).join('')}</Text>
                       </View>
-                      <Text style={styles.matchTime}>{match.time}</Text>
+                      <Text style={styles.teamNameText} numberOfLines={1}>{match.team1}</Text>
                     </View>
-                    <View style={styles.matchTeams}>
-                      <Text style={styles.matchTeam}>{match.team1}</Text>
-                      <Text style={styles.matchVs}>VS</Text>
-                      <Text style={styles.matchTeam}>{match.team2}</Text>
+                    <Text style={styles.teamScoreText}>{match.badge === 'LIVE' ? '124/4 (14.2)' : 'Yet to bat'}</Text>
+                  </View>
+
+                  {/* Team 2 Details */}
+                  <View style={styles.matchTeamRow}>
+                    <View style={styles.matchTeamLeft}>
+                      <View style={[styles.teamLogoWrapper, { backgroundColor: '#0EA5E9' }]}>
+                        <Text style={styles.teamLogoText}>{match.team2.split(' ').map(n => n[0]).join('')}</Text>
+                      </View>
+                      <Text style={styles.teamNameText} numberOfLines={1}>{match.team2}</Text>
                     </View>
-                    <View style={styles.matchLocation}>
-                      <Ionicons name="location-outline" size={16} color="#FFF" />
-                      <Text style={styles.matchLocationText}>{match.location}</Text>
+                    <Text style={styles.teamScoreText}>{match.badge === 'LIVE' ? '92/2 (11.0)' : 'Yet to bat'}</Text>
+                  </View>
+
+                  <View style={styles.cardDivider} />
+
+                  {/* Card Footer: Location + Distance + Action */}
+                  <View style={styles.matchCardFooter}>
+                    <View style={styles.venueInfo}>
+                      <Ionicons name="compass-outline" size={14} color="#666" />
+                      <Text style={styles.venueText} numberOfLines={1}>
+                        {match.location}
+                      </Text>
                     </View>
-                    <TouchableOpacity style={styles.joinMatchButton} onPress={() => console.log('View match details clicked')}>
-                      <Text style={styles.joinMatchText}>View Details</Text>
+                    
+                    <TouchableOpacity 
+                      style={styles.cardActionButton} 
+                      onPress={() => console.log('Card action clicked')}
+                    >
+                      <Text style={styles.cardActionText}>Details</Text>
+                      <Ionicons name="chevron-forward-circle-sharp" size={16} color="#00A66A" />
                     </TouchableOpacity>
                   </View>
-                </ImageBackground>
+                </View>
               </TouchableOpacity>
             ))}
           </ScrollView>
@@ -351,16 +413,28 @@ export default function HomeScreen() {
             style={styles.banner}
             imageStyle={styles.bannerImage}
           >
-            <View style={styles.bannerOverlay} />
+            <LinearGradient
+              colors={['rgba(11,21,33,0.85)', 'rgba(0,166,110,0.55)']}
+              style={StyleSheet.absoluteFillObject}
+            />
             <View style={styles.bannerContent}>
-              <Text style={styles.bannerTitle}>IPL 2024</Text>
-              <Text style={styles.bannerSubtitle}>Get your tickets now!</Text>
-              <TouchableOpacity style={styles.bannerButton} onPress={() => console.log('Book tickets clicked')}>
-                <Text style={styles.bannerButtonText}>Book Now</Text>
+              <View style={styles.bannerTag}>
+                <Ionicons name="sparkles" size={12} color="#FFF" />
+                <Text style={styles.bannerTagText}>Featured Match Passes</Text>
+              </View>
+              <Text style={styles.bannerTitle}>IPL 2024 Carnival</Text>
+              <Text style={styles.bannerSubtitle}>Get tickets, match passes & rewards</Text>
+              <TouchableOpacity 
+                style={styles.bannerButton} 
+                onPress={() => console.log('Book tickets clicked')}
+                activeOpacity={0.9}
+              >
+                <Text style={styles.bannerButtonText}>Book Tickets</Text>
+                <Ionicons name="arrow-forward" size={14} color="#0F766E" />
               </TouchableOpacity>
             </View>
             <View style={styles.bannerIcon}>
-              <Ionicons name="ticket" size={60} color="#00A66A" />
+              <Ionicons name="ticket" size={44} color="#FFF" />
             </View>
           </ImageBackground>
         </View>
@@ -368,7 +442,10 @@ export default function HomeScreen() {
         {/* Popular Cricketers */}
         <View style={styles.section}>
           <View style={styles.sectionHeader}>
-            <Text style={styles.sectionTitle}>Popular Cricketers</Text>
+            <View>
+              <Text style={styles.sectionTitle}>Popular Cricketers</Text>
+              <Text style={styles.sectionSubtitle}>Top trending players around you</Text>
+            </View>
             <TouchableOpacity onPress={() => setShowAllPlayers(!showAllPlayers)}>
               <Text style={styles.seeAll}>{showAllPlayers ? 'See Less' : 'See All'}</Text>
             </TouchableOpacity>
@@ -380,9 +457,10 @@ export default function HomeScreen() {
                 key={player.id}
                 style={styles.playerListItem}
                 onPress={() => handlePlayerPress(player)}
+                activeOpacity={0.8}
               >
-                <View style={styles.playerRank}>
-                  <Text style={styles.playerRankNumber}>{index + 1}</Text>
+                <View style={[styles.playerRank, index === 0 ? styles.rank1Bg : index === 1 ? styles.rank2Bg : {}]}>
+                  <Text style={[styles.playerRankNumber, index < 2 ? styles.rankWhiteText : {}]}>{index + 1}</Text>
                 </View>
                 
                 <View style={[styles.playerAvatarCircle, { backgroundColor: player.color }]}>
@@ -396,20 +474,28 @@ export default function HomeScreen() {
                 <View style={styles.playerInfoColumn}>
                   <Text style={styles.playerListName}>{player.name}</Text>
                   <View style={styles.playerMetaRow}>
-                    <Text style={styles.playerListRole}>{player.role}</Text>
+                    <View style={styles.playerRoleTag}>
+                      <Text style={styles.playerRoleTagText}>{player.role}</Text>
+                    </View>
                     <Text style={styles.playerDivider}>•</Text>
                     <Text style={styles.playerListTeam}>{player.team}</Text>
                   </View>
-                  {player.runs && (
-                    <Text style={styles.playerListStats}>🏏 {player.runs}</Text>
-                  )}
-                  {player.wickets && (
-                    <Text style={styles.playerListStats}>🎯 {player.wickets}</Text>
-                  )}
+                  <View style={styles.playerStatsRowSmall}>
+                    {player.runs && (
+                      <View style={styles.miniStatItem}>
+                        <Text style={styles.playerListStats}>🏏 {player.runs}</Text>
+                      </View>
+                    )}
+                    {player.wickets && (
+                      <View style={styles.miniStatItem}>
+                        <Text style={styles.playerListStats}>🎯 {player.wickets}</Text>
+                      </View>
+                    )}
+                  </View>
                 </View>
 
-                <TouchableOpacity style={styles.playerFollowBtn}>
-                  <Ionicons name="person-add-outline" size={18} color="#00A66A" />
+                <TouchableOpacity style={styles.playerFollowBtn} activeOpacity={0.7}>
+                  <Ionicons name="person-add" size={16} color="#00A66A" />
                 </TouchableOpacity>
               </TouchableOpacity>
             ))}
@@ -418,61 +504,72 @@ export default function HomeScreen() {
               <TouchableOpacity 
                 style={styles.seeMoreButton}
                 onPress={() => setShowAllPlayers(true)}
+                activeOpacity={0.8}
               >
                 <Text style={styles.seeMoreText}>See More Cricketers</Text>
-                <Ionicons name="chevron-down" size={20} color="#00A66A" />
+                <Ionicons name="chevron-down" size={18} color="#00A66A" />
               </TouchableOpacity>
             )}
           </View>
         </View>
 
-        {/* Shopping Section */}
+        {/* Cricket Store */}
         <View style={styles.section}>
           <View style={styles.sectionHeader}>
-            <Text style={styles.sectionTitle}>Cricket Store</Text>
-            <TouchableOpacity>
-              <Text style={styles.seeAll}>View Store</Text>
+            <View>
+              <Text style={styles.sectionTitle}>Cricket Store</Text>
+              <Text style={styles.sectionSubtitle}>Official gear, bats & jerseys</Text>
+            </View>
+            <TouchableOpacity onPress={() => setShowStoreModal(true)}>
+              <Text style={styles.seeAll}>View All</Text>
             </TouchableOpacity>
           </View>
 
-          <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.storeScrollContent}>
             {products.map((product) => (
               <TouchableOpacity
                 key={product.id}
                 style={styles.productCard}
                 onPress={() => console.log(`Viewing ${product.name}`)}
+                activeOpacity={0.9}
               >
                 <ImageBackground
                   source={{ uri: product.image }}
                   style={styles.productImageBackground}
                   imageStyle={styles.productImageStyle}
                 >
-                  <View style={styles.productOverlay}>
+                  <LinearGradient
+                    colors={['transparent', 'rgba(0, 0, 0, 0.85)']}
+                    style={styles.productOverlay}
+                  >
                     <View style={styles.productInfo}>
-                      <Text style={styles.productName}>{product.name}</Text>
+                      <Text style={styles.productName} numberOfLines={1}>{product.name}</Text>
                       <Text style={styles.productPrice}>{product.price}</Text>
                     </View>
                     <TouchableOpacity
                       style={styles.addToCartButton}
                       onPress={() => console.log(`Added ${product.name} to cart`)}
                     >
-                      <Ionicons name="cart" size={14} color="#FFF" />
+                      <Ionicons name="cart" size={12} color="#FFF" />
                     </TouchableOpacity>
-                  </View>
+                  </LinearGradient>
                 </ImageBackground>
               </TouchableOpacity>
             ))}
           </ScrollView>
         </View>
 
-        {/* Social Feed */}
+        {/* Community Feed */}
         <View style={styles.section}>
           <View style={styles.sectionHeader}>
-            <Text style={styles.sectionTitle}>Feed</Text>
+            <View>
+              <Text style={styles.sectionTitle}>Community Feed</Text>
+              <Text style={styles.sectionSubtitle}>What fellow cricketers are saying</Text>
+            </View>
           </View>
 
           {/* Create Post */}
-          <TouchableOpacity style={styles.createPost} onPress={() => console.log('Create post clicked')}>
+          <TouchableOpacity style={styles.createPost} onPress={() => console.log('Create post clicked')} activeOpacity={0.8}>
             <View style={styles.createPostAvatar}>
               {profile.imageUri ? (
                 <Image source={{ uri: profile.imageUri }} style={styles.createPostImage} />
@@ -480,7 +577,8 @@ export default function HomeScreen() {
                 <Text style={styles.createPostInitials}>ME</Text>
               )}
             </View>
-            <Text style={styles.createPostPlaceholder}>{"What's on your mind?"}</Text>
+            <Text style={styles.createPostPlaceholder}>Share your match updates or tips...</Text>
+            <Ionicons name="image-outline" size={20} color="#00A66A" style={{ marginLeft: 'auto' }} />
           </TouchableOpacity>
 
           {/* Posts */}
@@ -498,29 +596,34 @@ export default function HomeScreen() {
                   <Text style={styles.postUserName}>{post.user}</Text>
                   <Text style={styles.postTime}>{post.time}</Text>
                 </View>
-                <TouchableOpacity>
-                  <Ionicons name="ellipsis-horizontal" size={20} color="#666" />
+                <TouchableOpacity style={styles.postMoreButton}>
+                  <Ionicons name="ellipsis-horizontal" size={18} color="#999" />
                 </TouchableOpacity>
               </View>
 
               <Text style={styles.postContent}>{post.content}</Text>
 
               <View style={styles.postStats}>
-                <Text style={styles.postStatsText}>{post.likes} likes</Text>
+                <View style={styles.postStatLikes}>
+                  <View style={styles.likeIconBg}>
+                    <Ionicons name="heart" size={10} color="#FFF" />
+                  </View>
+                  <Text style={styles.postStatsText}>{post.likes} likes</Text>
+                </View>
                 <Text style={styles.postStatsText}>{post.comments} comments • {post.shares} shares</Text>
               </View>
 
               <View style={styles.postActions}>
-                <TouchableOpacity style={styles.postAction} onPress={() => console.log('Like clicked')}>
-                  <Ionicons name="heart-outline" size={22} color="#666" />
+                <TouchableOpacity style={styles.postAction} onPress={() => console.log('Like clicked')} activeOpacity={0.7}>
+                  <Ionicons name="heart-outline" size={20} color="#666" />
                   <Text style={styles.postActionText}>Like</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.postAction} onPress={() => console.log('Comment clicked')}>
-                  <Ionicons name="chatbubble-outline" size={22} color="#666" />
+                <TouchableOpacity style={styles.postAction} onPress={() => console.log('Comment clicked')} activeOpacity={0.7}>
+                  <Ionicons name="chatbubble-outline" size={20} color="#666" />
                   <Text style={styles.postActionText}>Comment</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.postAction} onPress={() => console.log('Share clicked')}>
-                  <Ionicons name="share-social-outline" size={22} color="#666" />
+                <TouchableOpacity style={styles.postAction} onPress={() => console.log('Share clicked')} activeOpacity={0.7}>
+                  <Ionicons name="share-social-outline" size={20} color="#666" />
                   <Text style={styles.postActionText}>Share</Text>
                 </TouchableOpacity>
               </View>
@@ -1809,15 +1912,19 @@ const styles = StyleSheet.create({
   matchCardContainer: {
     marginRight: CARD_MARGIN,
     width: CARD_WIDTH,
+    paddingVertical: 4,
   },
   matchCard: {
-    borderRadius: 12,
-    overflow: 'hidden',
-    elevation: 4,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 16,
+    padding: 16,
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    elevation: 3,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
+    shadowOpacity: 0.08,
+    shadowRadius: 6,
   },
   matchCardImage: {
     borderRadius: 12,
@@ -1860,9 +1967,10 @@ const styles = StyleSheet.create({
     color: '#FFF',
   },
   matchVs: {
-    fontSize: 14,
-    color: '#00A66A',
-    marginHorizontal: 12,
+    fontSize: 12,
+    fontWeight: 'bold',
+    color: '#94A3B8',
+    marginHorizontal: 10,
   },
   matchLocation: {
     flexDirection: 'row',
@@ -3697,5 +3805,253 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
     color: '#FFF',
+  },
+
+  // ===== Redesign Styles =====
+  profileRoleContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    marginTop: 2,
+    marginBottom: 6,
+  },
+  profileRoleText: {
+    fontSize: 13,
+    color: '#00A66A',
+    fontWeight: '600',
+  },
+  profileStatsRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+  },
+  profileStatItem: {
+    flexDirection: 'column',
+    alignItems: 'flex-start',
+  },
+  profileStatVal: {
+    fontSize: 15,
+    fontWeight: 'bold',
+    color: '#333',
+  },
+  profileStatLbl: {
+    fontSize: 11,
+    color: '#666',
+  },
+  profileStatDivider: {
+    width: 1,
+    height: 20,
+    backgroundColor: '#E2E8F0',
+  },
+  quickActionsBar: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    backgroundColor: '#FFF',
+    paddingVertical: 14,
+    paddingHorizontal: 16,
+    marginBottom: 8,
+  },
+  quickActionItem: {
+    alignItems: 'center',
+    width: '22%',
+  },
+  quickActionIconBg: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 6,
+  },
+  quickActionLabel: {
+    fontSize: 11,
+    fontWeight: '600',
+    color: '#333',
+    textAlign: 'center',
+  },
+  sectionSubtitle: {
+    fontSize: 13,
+    color: '#666',
+    marginTop: 2,
+  },
+  matchCardHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 14,
+  },
+  statusBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 12,
+    gap: 4,
+  },
+  statusBadgeLive: {
+    backgroundColor: '#FEE2E2',
+  },
+  statusBadgeUpcoming: {
+    backgroundColor: '#F3F4F6',
+  },
+  livePulseDot: {
+    width: 6,
+    height: 6,
+    borderRadius: 3,
+    backgroundColor: '#EF4444',
+  },
+  upcomingDot: {
+    width: 6,
+    height: 6,
+    borderRadius: 3,
+    backgroundColor: '#9CA3AF',
+  },
+  statusBadgeText: {
+    fontSize: 10,
+    fontWeight: 'bold',
+  },
+  statusBadgeTextLive: {
+    color: '#EF4444',
+  },
+  statusBadgeTextUpcoming: {
+    color: '#6B7280',
+  },
+  matchTimeText: {
+    fontSize: 12,
+    color: '#666',
+    fontWeight: '500',
+  },
+  matchTeamRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  matchTeamLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+    flex: 1,
+  },
+  teamLogoWrapper: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: '#00A66A',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  teamLogoText: {
+    fontSize: 12,
+    fontWeight: 'bold',
+    color: '#FFF',
+  },
+  teamNameText: {
+    fontSize: 15,
+    fontWeight: '600',
+    color: '#333',
+    flex: 1,
+  },
+  teamScoreText: {
+    fontSize: 13,
+    fontWeight: '500',
+    color: '#666',
+  },
+  cardDivider: {
+    height: 1,
+    backgroundColor: '#F1F5F9',
+    marginVertical: 12,
+  },
+  matchCardFooter: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  venueInfo: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    flex: 1,
+    marginRight: 8,
+  },
+  venueText: {
+    fontSize: 12,
+    color: '#666',
+  },
+  cardActionButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+  },
+  cardActionText: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: '#00A66A',
+  },
+  bannerTag: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 10,
+    gap: 4,
+    alignSelf: 'flex-start',
+    marginBottom: 6,
+  },
+  bannerTagText: {
+    fontSize: 10,
+    fontWeight: 'bold',
+    color: '#FFF',
+  },
+  rank1Bg: {
+    backgroundColor: '#F59E0B',
+  },
+  rank2Bg: {
+    backgroundColor: '#94A3B8',
+  },
+  rankWhiteText: {
+    color: '#FFF',
+  },
+  playerRoleTag: {
+    backgroundColor: '#E2E8F0',
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+    borderRadius: 8,
+  },
+  playerRoleTagText: {
+    fontSize: 10,
+    fontWeight: '600',
+    color: '#475569',
+  },
+  playerStatsRowSmall: {
+    flexDirection: 'row',
+    gap: 8,
+    marginTop: 4,
+  },
+  miniStatItem: {
+    backgroundColor: '#F1F5F9',
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    borderRadius: 6,
+  },
+  storeScrollContent: {
+    paddingRight: 16,
+  },
+  postMoreButton: {
+    padding: 4,
+  },
+  postStatLikes: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+  },
+  likeIconBg: {
+    width: 16,
+    height: 16,
+    borderRadius: 8,
+    backgroundColor: '#EF4444',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
