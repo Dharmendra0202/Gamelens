@@ -397,23 +397,31 @@ export default function AuthScreen() {
   const [signupPassword, setSignupPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
-  // Screen transition
+  // Screen transition — fade + slide + subtle scale for premium feel
   const screenOpacity = useRef(new Animated.Value(0)).current;
   const screenY = useRef(new Animated.Value(30)).current;
+  const screenScale = useRef(new Animated.Value(0.97)).current;
 
   const fadeIn = () => {
     screenOpacity.setValue(0);
-    screenY.setValue(24);
+    screenY.setValue(20);
+    screenScale.setValue(0.97);
     Animated.parallel([
       Animated.timing(screenOpacity, {
         toValue: 1,
-        duration: 500,
+        duration: 400,
         easing: Easing.out(Easing.quad),
         useNativeDriver: true,
       }),
       Animated.timing(screenY, {
         toValue: 0,
-        duration: 500,
+        duration: 400,
+        easing: Easing.out(Easing.cubic),
+        useNativeDriver: true,
+      }),
+      Animated.timing(screenScale, {
+        toValue: 1,
+        duration: 400,
         easing: Easing.out(Easing.cubic),
         useNativeDriver: true,
       }),
@@ -421,11 +429,26 @@ export default function AuthScreen() {
   };
 
   const switchScreen = (next: ScreenType) => {
-    Animated.timing(screenOpacity, {
-      toValue: 0,
-      duration: 220,
-      useNativeDriver: true,
-    }).start(() => {
+    Animated.parallel([
+      Animated.timing(screenOpacity, {
+        toValue: 0,
+        duration: 200,
+        easing: Easing.in(Easing.quad),
+        useNativeDriver: true,
+      }),
+      Animated.timing(screenY, {
+        toValue: -8,
+        duration: 200,
+        easing: Easing.in(Easing.quad),
+        useNativeDriver: true,
+      }),
+      Animated.timing(screenScale, {
+        toValue: 0.98,
+        duration: 200,
+        easing: Easing.in(Easing.quad),
+        useNativeDriver: true,
+      }),
+    ]).start(() => {
       setCurrentScreen(next);
       fadeIn();
     });
@@ -461,7 +484,7 @@ export default function AuthScreen() {
           <Animated.View
             style={[
               styles.authContent,
-              { opacity: screenOpacity, transform: [{ translateY: screenY }] },
+              { opacity: screenOpacity, transform: [{ translateY: screenY }, { scale: screenScale }] },
             ]}
           >
             {/* Logo + brand */}
@@ -613,7 +636,7 @@ export default function AuthScreen() {
         <Animated.View
           style={[
             styles.authContent,
-            { opacity: screenOpacity, transform: [{ translateY: screenY }] },
+            { opacity: screenOpacity, transform: [{ translateY: screenY }, { scale: screenScale }] },
           ]}
         >
           <View style={styles.heroBanner}>

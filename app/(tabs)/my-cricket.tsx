@@ -19,6 +19,8 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import { AnimatedViewTransition } from "@/components/ui/animated-view-transition";
+import { TabScreenWrapper } from "@/components/ui/tab-screen-wrapper";
 
 export default function MyCricketScreen() {
   const router = useRouter();
@@ -1499,7 +1501,8 @@ export default function MyCricketScreen() {
   };
 
   return (
-    <View style={styles.container}>
+    <TabScreenWrapper>
+      <View style={styles.container}>
       {/* Header - Always show except when specified */}
       <Animated.View style={{ opacity: fadeAnim }}>
           <LinearGradient
@@ -1621,6 +1624,7 @@ export default function MyCricketScreen() {
         style={styles.content} 
         showsVerticalScrollIndicator={false}
       >
+        <AnimatedViewTransition transitionKey={currentView} type="slideUp">
         {/* Main Content Based on Current View */}
         {currentView === "createTournament" ? (
           /* Create Tournament Form View */
@@ -5725,6 +5729,7 @@ export default function MyCricketScreen() {
             )}
           </>
         )}
+        </AnimatedViewTransition>
       </ScrollView>
 
       {/* ───── Tournament Settings Bottom Sheet Modal ───── */}
@@ -6156,7 +6161,8 @@ export default function MyCricketScreen() {
           </ScrollView>
         </View>
       </Modal>
-    </View>
+      </View>
+    </TabScreenWrapper>
   );
 }
 

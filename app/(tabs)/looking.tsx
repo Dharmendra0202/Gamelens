@@ -1,7 +1,9 @@
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
+  Animated,
+  Easing,
   ScrollView,
   StyleSheet,
   Text,
@@ -9,6 +11,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import { TabScreenWrapper } from '@/components/ui/tab-screen-wrapper';
 
 const quickActions = [
   {
@@ -101,6 +104,19 @@ export default function LookingScreen() {
   const [feedPosts, setFeedPosts] = useState<Post[]>(initialPosts);
   const [contactedPostIds, setContactedPostIds] = useState<number[]>([]);
 
+  // Entrance animations
+  const composerAnim = useRef(new Animated.Value(0)).current;
+  const actionsAnim = useRef(new Animated.Value(0)).current;
+  const feedAnim = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    Animated.stagger(120, [
+      Animated.timing(composerAnim, { toValue: 1, duration: 380, easing: Easing.out(Easing.cubic), useNativeDriver: true }),
+      Animated.timing(actionsAnim, { toValue: 1, duration: 380, easing: Easing.out(Easing.cubic), useNativeDriver: true }),
+      Animated.timing(feedAnim, { toValue: 1, duration: 380, easing: Easing.out(Easing.cubic), useNativeDriver: true }),
+    ]).start();
+  }, []);
+
   const selectAction = (actionId: QuickActionId) => {
     setSelectedAction(actionId);
     setDraft(actionTemplates[actionId]);
@@ -145,7 +161,8 @@ export default function LookingScreen() {
   };
 
   return (
-    <View style={styles.container}>
+    <TabScreenWrapper>
+      <View style={styles.container}>
       <LinearGradient
         colors={['#B91C1C', '#991B1B', '#7F1D1D']}
         start={{ x: 0, y: 0 }}
@@ -160,6 +177,10 @@ export default function LookingScreen() {
         contentContainerStyle={styles.content}
         showsVerticalScrollIndicator={false}
       >
+        <Animated.View style={{
+          opacity: composerAnim,
+          transform: [{ translateY: composerAnim.interpolate({ inputRange: [0, 1], outputRange: [16, 0] }) }],
+        }}>
         <View style={styles.composer}>
           <View style={styles.composerTop}>
             <View style={styles.avatar}>
@@ -204,102 +225,114 @@ export default function LookingScreen() {
             </TouchableOpacity>
           </View>
         </View>
+      </Animated.View>
 
-        <View style={styles.quickActionList}>
-          {quickActions.map((action) => (
-            <TouchableOpacity
-              key={action.id}
-              style={[
-                styles.quickActionCard,
-                selectedAction === action.id && styles.activeQuickActionCard,
-              ]}
-              onPress={() => selectAction(action.id)}
-            >
-              <View style={styles.quickActionIcon}>
-                <Ionicons name={action.icon} size={22} color="#B91C1C" />
-              </View>
-              <View style={styles.quickActionText}>
-                <Text style={styles.quickActionTitle}>{action.title}</Text>
-                <Text style={styles.quickActionSubtitle}>{action.subtitle}</Text>
-              </View>
-              <Ionicons name="chevron-forward" size={20} color="#B8B8B8" />
-            </TouchableOpacity>
-          ))}
-        </View>
-
-        <View style={styles.feedHeader}>
-          <Text style={styles.feedTitle}>Community posts</Text>
-          <Text style={styles.feedSubtitle}>Live requests from players and clubs</Text>
-        </View>
-
-        {feedPosts.map((post) => {
-          const hasContacted = contactedPostIds.includes(post.id);
-
-          return (
-          <View key={post.id} style={styles.postCard}>
-            <View style={styles.postHeader}>
-              <View style={styles.postAvatar}>
-                <Text style={styles.postAvatarText}>
-                  {post.name
-                    .split(' ')
-                    .map((word) => word[0])
-                    .join('')
-                    .slice(0, 2)}
-                </Text>
-              </View>
-              <View style={styles.postIdentity}>
-                <Text style={styles.postName}>{post.name}</Text>
-                <Text style={styles.postRole}>
-                  {post.role} - {post.time}
-                </Text>
-              </View>
-              <View style={styles.postTag}>
-                <Text style={styles.postTagText}>{post.tag}</Text>
-              </View>
-            </View>
-
-            <Text style={styles.postMessage}>{post.message}</Text>
-
-            <View style={styles.metaList}>
-              {post.meta.map((item) => (
-                <View key={item} style={styles.metaPill}>
-                  <Text style={styles.metaText}>{item}</Text>
+        <Animated.View style={{
+          opacity: actionsAnim,
+          transform: [{ translateY: actionsAnim.interpolate({ inputRange: [0, 1], outputRange: [20, 0] }) }],
+        }}>
+          <View style={styles.quickActionList}>
+            {quickActions.map((action) => (
+              <TouchableOpacity
+                key={action.id}
+                style={[
+                  styles.quickActionCard,
+                  selectedAction === action.id && styles.activeQuickActionCard,
+                ]}
+                onPress={() => selectAction(action.id)}
+              >
+                <View style={styles.quickActionIcon}>
+                  <Ionicons name={action.icon} size={22} color="#B91C1C" />
                 </View>
-              ))}
-            </View>
-
-            <View style={styles.postFooter}>
-              <TouchableOpacity
-                style={styles.footerAction}
-                onPress={() => addReply(post.id)}
-              >
-                <Ionicons name="chatbubble-outline" size={18} color="#666" />
-                <Text style={styles.footerActionText}>{post.replies} replies</Text>
+                <View style={styles.quickActionText}>
+                  <Text style={styles.quickActionTitle}>{action.title}</Text>
+                  <Text style={styles.quickActionSubtitle}>{action.subtitle}</Text>
+                </View>
+                <Ionicons name="chevron-forward" size={20} color="#B8B8B8" />
               </TouchableOpacity>
-              <TouchableOpacity
-                style={[styles.footerAction, hasContacted && styles.activeFooterAction]}
-                onPress={() => toggleMessage(post.id)}
-              >
-                <Ionicons
-                  name={hasContacted ? 'checkmark-circle' : 'send-outline'}
-                  size={18}
-                  color={hasContacted ? '#B91C1C' : '#666'}
-                />
-                <Text
-                  style={[
-                    styles.footerActionText,
-                    hasContacted && styles.activeFooterActionText,
-                  ]}
-                >
-                  {hasContacted ? 'Messaged' : 'Message'}
-                </Text>
-              </TouchableOpacity>
-            </View>
+            ))}
           </View>
-          );
-        })}
+        </Animated.View>
+
+        <Animated.View style={{
+          opacity: feedAnim,
+          transform: [{ translateY: feedAnim.interpolate({ inputRange: [0, 1], outputRange: [20, 0] }) }],
+        }}>
+          <View style={styles.feedHeader}>
+            <Text style={styles.feedTitle}>Community posts</Text>
+            <Text style={styles.feedSubtitle}>Live requests from players and clubs</Text>
+          </View>
+
+          {feedPosts.map((post) => {
+            const hasContacted = contactedPostIds.includes(post.id);
+
+            return (
+            <View key={post.id} style={styles.postCard}>
+              <View style={styles.postHeader}>
+                <View style={styles.postAvatar}>
+                  <Text style={styles.postAvatarText}>
+                    {post.name
+                      .split(' ')
+                      .map((word) => word[0])
+                      .join('')
+                      .slice(0, 2)}
+                  </Text>
+                </View>
+                <View style={styles.postIdentity}>
+                  <Text style={styles.postName}>{post.name}</Text>
+                  <Text style={styles.postRole}>
+                    {post.role} - {post.time}
+                  </Text>
+                </View>
+                <View style={styles.postTag}>
+                  <Text style={styles.postTagText}>{post.tag}</Text>
+                </View>
+              </View>
+
+              <Text style={styles.postMessage}>{post.message}</Text>
+
+              <View style={styles.metaList}>
+                {post.meta.map((item) => (
+                  <View key={item} style={styles.metaPill}>
+                    <Text style={styles.metaText}>{item}</Text>
+                  </View>
+                ))}
+              </View>
+
+              <View style={styles.postFooter}>
+                <TouchableOpacity
+                  style={styles.footerAction}
+                  onPress={() => addReply(post.id)}
+                >
+                  <Ionicons name="chatbubble-outline" size={18} color="#666" />
+                  <Text style={styles.footerActionText}>{post.replies} replies</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={[styles.footerAction, hasContacted && styles.activeFooterAction]}
+                  onPress={() => toggleMessage(post.id)}
+                >
+                  <Ionicons
+                    name={hasContacted ? 'checkmark-circle' : 'send-outline'}
+                    size={18}
+                    color={hasContacted ? '#B91C1C' : '#666'}
+                  />
+                  <Text
+                    style={[
+                      styles.footerActionText,
+                      hasContacted && styles.activeFooterActionText,
+                      ]}
+                    >
+                      {hasContacted ? 'Messaged' : 'Message'}
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            );
+          })}
+        </Animated.View>
       </ScrollView>
-    </View>
+      </View>
+    </TabScreenWrapper>
   );
 }
 

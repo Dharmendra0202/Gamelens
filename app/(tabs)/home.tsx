@@ -17,6 +17,7 @@ import {
   TouchableOpacity,
   View
 } from 'react-native';
+import { TabScreenWrapper } from '@/components/ui/tab-screen-wrapper';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 const CARD_WIDTH = SCREEN_WIDTH - 48;
@@ -228,7 +229,8 @@ export default function HomeScreen() {
   }, []);
 
   return (
-    <View style={styles.container}>
+    <TabScreenWrapper>
+      <View style={styles.container}>
       {/* Header */}
       <LinearGradient
         colors={["#00A66A", "#0F766E", "#064E3B"]}
@@ -1800,7 +1802,8 @@ export default function HomeScreen() {
         </View>
       </Modal>
 
-    </View>
+      </View>
+    </TabScreenWrapper>
   );
 }
 

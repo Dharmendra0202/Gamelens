@@ -1,13 +1,9 @@
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import React, { useState } from 'react';
-import {
-    ScrollView,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View
-} from 'react-native';
+import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { AnimatedViewTransition } from '@/components/ui/animated-view-transition';
+import { TabScreenWrapper } from '@/components/ui/tab-screen-wrapper';
 
 export default function CommunityScreen() {
   const [activeTab, setActiveTab] = useState('feed');
@@ -55,7 +51,8 @@ export default function CommunityScreen() {
   ];
 
   return (
-    <View style={styles.container}>
+    <TabScreenWrapper>
+      <View style={styles.container}>
       {/* Header */}
       <LinearGradient
         colors={["#B91C1C", "#991B1B", "#7F1D1D"]}
@@ -118,168 +115,171 @@ export default function CommunityScreen() {
       </View>
 
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
-        {activeTab === 'feed' && (
-          <>
-            {/* Create Post */}
-            <View style={styles.createPostSection}>
-              <TouchableOpacity style={styles.createPost}>
-                <View style={styles.createPostAvatar}>
-                  <Text style={styles.createPostInitials}>ME</Text>
+        <AnimatedViewTransition transitionKey={activeTab} type="slideUp">
+          {activeTab === 'feed' && (
+            <>
+              {/* Create Post */}
+              <View style={styles.createPostSection}>
+                <TouchableOpacity style={styles.createPost}>
+                  <View style={styles.createPostAvatar}>
+                    <Text style={styles.createPostInitials}>ME</Text>
+                  </View>
+                  <Text style={styles.createPostPlaceholder}>{"What's on your mind?"}</Text>
+                </TouchableOpacity>
+                <View style={styles.createPostActions}>
+                  <TouchableOpacity style={styles.createPostAction}>
+                    <Ionicons name="image-outline" size={20} color="#B91C1C" />
+                    <Text style={styles.createPostActionText}>Photo</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity style={styles.createPostAction}>
+                    <Ionicons name="videocam-outline" size={20} color="#B91C1C" />
+                    <Text style={styles.createPostActionText}>Video</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity style={styles.createPostAction}>
+                    <Ionicons name="location-outline" size={20} color="#B91C1C" />
+                    <Text style={styles.createPostActionText}>Location</Text>
+                  </TouchableOpacity>
                 </View>
-                <Text style={styles.createPostPlaceholder}>{"What's on your mind?"}</Text>
+              </View>
+
+              {/* Posts */}
+              {posts.map((post) => (
+                <View key={post.id} style={styles.postCard}>
+                  <View style={styles.postHeader}>
+                    <View style={[styles.postUserAvatar, { backgroundColor: post.color }]}>
+                      <Text style={styles.postUserInitials}>{post.userInitials}</Text>
+                    </View>
+                    <View style={styles.postUserInfo}>
+                      <Text style={styles.postUserName}>{post.user}</Text>
+                      <Text style={styles.postTime}>{post.time}</Text>
+                    </View>
+                    <TouchableOpacity>
+                      <Ionicons name="ellipsis-horizontal" size={20} color="#666" />
+                    </TouchableOpacity>
+                  </View>
+
+                  <Text style={styles.postContent}>{post.content}</Text>
+
+                  <View style={styles.postStats}>
+                    <Text style={styles.postStatsText}>{post.likes} likes</Text>
+                    <Text style={styles.postStatsText}>
+                      {post.comments} comments • {post.shares} shares
+                    </Text>
+                  </View>
+
+                  <View style={styles.postActions}>
+                    <TouchableOpacity style={styles.postAction}>
+                      <Ionicons name="heart-outline" size={22} color="#666" />
+                      <Text style={styles.postActionText}>Like</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.postAction}>
+                      <Ionicons name="chatbubble-outline" size={22} color="#666" />
+                      <Text style={styles.postActionText}>Comment</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.postAction}>
+                      <Ionicons name="share-social-outline" size={22} color="#666" />
+                      <Text style={styles.postActionText}>Share</Text>
+                    </TouchableOpacity>
+                  </View>
+                </View>
+              ))}
+            </>
+          )}
+
+          {activeTab === 'groups' && (
+            <View style={styles.groupsSection}>
+              <TouchableOpacity style={styles.createGroupButton}>
+                <Ionicons name="add-circle" size={24} color="#B91C1C" />
+                <Text style={styles.createGroupText}>Create New Group</Text>
               </TouchableOpacity>
-              <View style={styles.createPostActions}>
-                <TouchableOpacity style={styles.createPostAction}>
-                  <Ionicons name="image-outline" size={20} color="#B91C1C" />
-                  <Text style={styles.createPostActionText}>Photo</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.createPostAction}>
-                  <Ionicons name="videocam-outline" size={20} color="#B91C1C" />
-                  <Text style={styles.createPostActionText}>Video</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.createPostAction}>
-                  <Ionicons name="location-outline" size={20} color="#B91C1C" />
-                  <Text style={styles.createPostActionText}>Location</Text>
-                </TouchableOpacity>
-              </View>
-            </View>
 
-            {/* Posts */}
-            {posts.map((post) => (
-              <View key={post.id} style={styles.postCard}>
-                <View style={styles.postHeader}>
-                  <View style={[styles.postUserAvatar, { backgroundColor: post.color }]}>
-                    <Text style={styles.postUserInitials}>{post.userInitials}</Text>
+              <Text style={styles.sectionTitle}>Your Groups</Text>
+              {groups.map((group) => (
+                <TouchableOpacity key={group.id} style={styles.groupCard}>
+                  <View style={styles.groupIcon}>
+                    <Text style={styles.groupIconText}>{group.icon}</Text>
                   </View>
-                  <View style={styles.postUserInfo}>
-                    <Text style={styles.postUserName}>{post.user}</Text>
-                    <Text style={styles.postTime}>{post.time}</Text>
+                  <View style={styles.groupInfo}>
+                    <Text style={styles.groupName}>{group.name}</Text>
+                    <Text style={styles.groupMembers}>{group.members} members</Text>
                   </View>
-                  <TouchableOpacity>
-                    <Ionicons name="ellipsis-horizontal" size={20} color="#666" />
-                  </TouchableOpacity>
-                </View>
+                  <Ionicons name="chevron-forward" size={20} color="#999" />
+                </TouchableOpacity>
+              ))}
 
-                <Text style={styles.postContent}>{post.content}</Text>
-
-                <View style={styles.postStats}>
-                  <Text style={styles.postStatsText}>{post.likes} likes</Text>
-                  <Text style={styles.postStatsText}>
-                    {post.comments} comments • {post.shares} shares
-                  </Text>
-                </View>
-
-                <View style={styles.postActions}>
-                  <TouchableOpacity style={styles.postAction}>
-                    <Ionicons name="heart-outline" size={22} color="#666" />
-                    <Text style={styles.postActionText}>Like</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity style={styles.postAction}>
-                    <Ionicons name="chatbubble-outline" size={22} color="#666" />
-                    <Text style={styles.postActionText}>Comment</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity style={styles.postAction}>
-                    <Ionicons name="share-social-outline" size={22} color="#666" />
-                    <Text style={styles.postActionText}>Share</Text>
-                  </TouchableOpacity>
-                </View>
-              </View>
-            ))}
-          </>
-        )}
-
-        {activeTab === 'groups' && (
-          <View style={styles.groupsSection}>
-            <TouchableOpacity style={styles.createGroupButton}>
-              <Ionicons name="add-circle" size={24} color="#B91C1C" />
-              <Text style={styles.createGroupText}>Create New Group</Text>
-            </TouchableOpacity>
-
-            <Text style={styles.sectionTitle}>Your Groups</Text>
-            {groups.map((group) => (
-              <TouchableOpacity key={group.id} style={styles.groupCard}>
+              <Text style={styles.sectionTitle}>Suggested Groups</Text>
+              <TouchableOpacity style={styles.groupCard}>
                 <View style={styles.groupIcon}>
-                  <Text style={styles.groupIconText}>{group.icon}</Text>
+                  <Text style={styles.groupIconText}>🏆</Text>
                 </View>
                 <View style={styles.groupInfo}>
-                  <Text style={styles.groupName}>{group.name}</Text>
-                  <Text style={styles.groupMembers}>{group.members} members</Text>
+                  <Text style={styles.groupName}>IPL Fans United</Text>
+                  <Text style={styles.groupMembers}>12.5K members</Text>
                 </View>
-                <Ionicons name="chevron-forward" size={20} color="#999" />
+                <TouchableOpacity style={styles.joinButton}>
+                  <Text style={styles.joinButtonText}>Join</Text>
+                </TouchableOpacity>
               </TouchableOpacity>
-            ))}
+            </View>
+          )}
 
-            <Text style={styles.sectionTitle}>Suggested Groups</Text>
-            <TouchableOpacity style={styles.groupCard}>
-              <View style={styles.groupIcon}>
-                <Text style={styles.groupIconText}>🏆</Text>
-              </View>
-              <View style={styles.groupInfo}>
-                <Text style={styles.groupName}>IPL Fans United</Text>
-                <Text style={styles.groupMembers}>12.5K members</Text>
-              </View>
-              <TouchableOpacity style={styles.joinButton}>
-                <Text style={styles.joinButtonText}>Join</Text>
+          {activeTab === 'events' && (
+            <View style={styles.eventsSection}>
+              <TouchableOpacity style={styles.createEventButton}>
+                <Ionicons name="add-circle" size={24} color="#B91C1C" />
+                <Text style={styles.createEventText}>Create Event</Text>
               </TouchableOpacity>
-            </TouchableOpacity>
-          </View>
-        )}
 
-        {activeTab === 'events' && (
-          <View style={styles.eventsSection}>
-            <TouchableOpacity style={styles.createEventButton}>
-              <Ionicons name="add-circle" size={24} color="#B91C1C" />
-              <Text style={styles.createEventText}>Create Event</Text>
-            </TouchableOpacity>
+              <Text style={styles.sectionTitle}>Upcoming Events</Text>
+              <TouchableOpacity style={styles.eventCard}>
+                <View style={styles.eventDate}>
+                  <Text style={styles.eventDay}>15</Text>
+                  <Text style={styles.eventMonth}>MAY</Text>
+                </View>
+                <View style={styles.eventInfo}>
+                  <Text style={styles.eventName}>Weekend Cricket Tournament</Text>
+                  <View style={styles.eventDetail}>
+                    <Ionicons name="location-outline" size={16} color="#666" />
+                    <Text style={styles.eventDetailText}>Wankhede Stadium</Text>
+                  </View>
+                  <View style={styles.eventDetail}>
+                    <Ionicons name="time-outline" size={16} color="#666" />
+                    <Text style={styles.eventDetailText}>10:00 AM - 6:00 PM</Text>
+                  </View>
+                  <View style={styles.eventDetail}>
+                    <Ionicons name="people-outline" size={16} color="#666" />
+                    <Text style={styles.eventDetailText}>45 attending</Text>
+                  </View>
+                </View>
+              </TouchableOpacity>
 
-            <Text style={styles.sectionTitle}>Upcoming Events</Text>
-            <TouchableOpacity style={styles.eventCard}>
-              <View style={styles.eventDate}>
-                <Text style={styles.eventDay}>15</Text>
-                <Text style={styles.eventMonth}>MAY</Text>
-              </View>
-              <View style={styles.eventInfo}>
-                <Text style={styles.eventName}>Weekend Cricket Tournament</Text>
-                <View style={styles.eventDetail}>
-                  <Ionicons name="location-outline" size={16} color="#666" />
-                  <Text style={styles.eventDetailText}>Wankhede Stadium</Text>
+              <TouchableOpacity style={styles.eventCard}>
+                <View style={styles.eventDate}>
+                  <Text style={styles.eventDay}>22</Text>
+                  <Text style={styles.eventMonth}>MAY</Text>
                 </View>
-                <View style={styles.eventDetail}>
-                  <Ionicons name="time-outline" size={16} color="#666" />
-                  <Text style={styles.eventDetailText}>10:00 AM - 6:00 PM</Text>
+                <View style={styles.eventInfo}>
+                  <Text style={styles.eventName}>Cricket Coaching Camp</Text>
+                  <View style={styles.eventDetail}>
+                    <Ionicons name="location-outline" size={16} color="#666" />
+                    <Text style={styles.eventDetailText}>Brabourne Stadium</Text>
+                  </View>
+                  <View style={styles.eventDetail}>
+                    <Ionicons name="time-outline" size={16} color="#666" />
+                    <Text style={styles.eventDetailText}>8:00 AM - 12:00 PM</Text>
+                  </View>
+                  <View style={styles.eventDetail}>
+                    <Ionicons name="people-outline" size={16} color="#666" />
+                    <Text style={styles.eventDetailText}>23 attending</Text>
+                  </View>
                 </View>
-                <View style={styles.eventDetail}>
-                  <Ionicons name="people-outline" size={16} color="#666" />
-                  <Text style={styles.eventDetailText}>45 attending</Text>
-                </View>
-              </View>
-            </TouchableOpacity>
-
-            <TouchableOpacity style={styles.eventCard}>
-              <View style={styles.eventDate}>
-                <Text style={styles.eventDay}>22</Text>
-                <Text style={styles.eventMonth}>MAY</Text>
-              </View>
-              <View style={styles.eventInfo}>
-                <Text style={styles.eventName}>Cricket Coaching Camp</Text>
-                <View style={styles.eventDetail}>
-                  <Ionicons name="location-outline" size={16} color="#666" />
-                  <Text style={styles.eventDetailText}>Brabourne Stadium</Text>
-                </View>
-                <View style={styles.eventDetail}>
-                  <Ionicons name="time-outline" size={16} color="#666" />
-                  <Text style={styles.eventDetailText}>8:00 AM - 12:00 PM</Text>
-                </View>
-                <View style={styles.eventDetail}>
-                  <Ionicons name="people-outline" size={16} color="#666" />
-                  <Text style={styles.eventDetailText}>23 attending</Text>
-                </View>
-              </View>
-            </TouchableOpacity>
-          </View>
-        )}
+              </TouchableOpacity>
+            </View>
+          )}
+        </AnimatedViewTransition>
       </ScrollView>
-    </View>
+      </View>
+    </TabScreenWrapper>
   );
 }
 

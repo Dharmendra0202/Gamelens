@@ -10,6 +10,8 @@ import {
     TouchableOpacity,
     View
 } from 'react-native';
+import { AnimatedViewTransition } from '@/components/ui/animated-view-transition';
+import { TabScreenWrapper } from '@/components/ui/tab-screen-wrapper';
 
 export default function StoreScreen() {
   const [activeCategory, setActiveCategory] = useState('all');
@@ -40,7 +42,8 @@ export default function StoreScreen() {
   ];
 
   return (
-    <View style={styles.container}>
+    <TabScreenWrapper>
+      <View style={styles.container}>
       {/* Header */}
       <LinearGradient
         colors={["#B91C1C", "#991B1B", "#7F1D1D"]}
@@ -140,48 +143,53 @@ export default function StoreScreen() {
             </TouchableOpacity>
           </View>
 
-          <View style={styles.productsGrid}>
-            {products.map((product) => (
-              <TouchableOpacity key={product.id} style={styles.productCard}>
-                <ImageBackground
-                  source={{ uri: product.image }}
-                  style={styles.productImage}
-                  imageStyle={styles.productImageStyle}
-                >
-                  <View style={styles.discountBadge}>
-                    <Text style={styles.discountText}>{product.discount}</Text>
-                  </View>
-                  <TouchableOpacity style={styles.wishlistButton}>
-                    <Ionicons name="heart-outline" size={20} color="#FFF" />
-                  </TouchableOpacity>
-                </ImageBackground>
+          <AnimatedViewTransition transitionKey={activeCategory} type="slideUp">
+            <View style={styles.productsGrid}>
+              {products
+                .filter((p) => activeCategory === 'all' || p.category === activeCategory)
+                .map((product) => (
+                  <TouchableOpacity key={product.id} style={styles.productCard}>
+                    <ImageBackground
+                      source={{ uri: product.image }}
+                      style={styles.productImage}
+                      imageStyle={styles.productImageStyle}
+                    >
+                      <View style={styles.discountBadge}>
+                        <Text style={styles.discountText}>{product.discount}</Text>
+                      </View>
+                      <TouchableOpacity style={styles.wishlistButton}>
+                        <Ionicons name="heart-outline" size={20} color="#FFF" />
+                      </TouchableOpacity>
+                    </ImageBackground>
 
-                <View style={styles.productInfo}>
-                  <Text style={styles.productName} numberOfLines={2}>
-                    {product.name}
-                  </Text>
-                  <View style={styles.ratingContainer}>
-                    <Ionicons name="star" size={14} color="#B91C1C" />
-                    <Text style={styles.ratingText}>{product.rating}</Text>
-                  </View>
-                  <View style={styles.priceContainer}>
-                    <Text style={styles.productPrice}>{product.price}</Text>
-                    <Text style={styles.originalPrice}>{product.originalPrice}</Text>
-                  </View>
-                  <TouchableOpacity style={styles.addToCartButton}>
-                    <Ionicons name="cart" size={16} color="#FFF" />
-                    <Text style={styles.addToCartText}>Add to Cart</Text>
+                    <View style={styles.productInfo}>
+                      <Text style={styles.productName} numberOfLines={2}>
+                        {product.name}
+                      </Text>
+                      <View style={styles.ratingContainer}>
+                        <Ionicons name="star" size={14} color="#B91C1C" />
+                        <Text style={styles.ratingText}>{product.rating}</Text>
+                      </View>
+                      <View style={styles.priceContainer}>
+                        <Text style={styles.productPrice}>{product.price}</Text>
+                        <Text style={styles.originalPrice}>{product.originalPrice}</Text>
+                      </View>
+                      <TouchableOpacity style={styles.addToCartButton}>
+                        <Ionicons name="cart" size={16} color="#FFF" />
+                        <Text style={styles.addToCartText}>Add to Cart</Text>
+                      </TouchableOpacity>
+                    </View>
                   </TouchableOpacity>
-                </View>
-              </TouchableOpacity>
-            ))}
-          </View>
+                ))}
+            </View>
+          </AnimatedViewTransition>
         </View>
 
         {/* Bottom Spacing */}
         <View style={{ height: 80 }} />
       </ScrollView>
-    </View>
+      </View>
+    </TabScreenWrapper>
   );
 }
 
