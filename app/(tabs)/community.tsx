@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { AnimatedViewTransition } from '@/components/ui/animated-view-transition';
 import { TabScreenWrapper } from '@/components/ui/tab-screen-wrapper';
+import { shareContent } from '@/utils/share';
 
 export default function CommunityScreen() {
   const [activeTab, setActiveTab] = useState('feed');
@@ -176,7 +177,15 @@ export default function CommunityScreen() {
                       <Ionicons name="chatbubble-outline" size={22} color="#666" />
                       <Text style={styles.postActionText}>Comment</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={styles.postAction}>
+                    <TouchableOpacity
+                      style={styles.postAction}
+                      onPress={() => shareContent({
+                        title: `Post by ${post.user}`,
+                        message: post.content,
+                        type: 'post',
+                        id: post.id,
+                      })}
+                    >
                       <Ionicons name="share-social-outline" size={22} color="#666" />
                       <Text style={styles.postActionText}>Share</Text>
                     </TouchableOpacity>

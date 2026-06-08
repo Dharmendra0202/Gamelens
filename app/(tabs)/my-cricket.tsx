@@ -21,6 +21,7 @@ import {
 } from "react-native";
 import { AnimatedViewTransition } from "@/components/ui/animated-view-transition";
 import { TabScreenWrapper } from "@/components/ui/tab-screen-wrapper";
+import { shareContent } from "@/utils/share";
 
 export default function MyCricketScreen() {
   const router = useRouter();
@@ -5590,14 +5591,12 @@ export default function MyCricketScreen() {
                           style={[styles.tournamentButton, { flex: 1 }]}
                           onPress={(e) => {
                             e.stopPropagation();
-                            Alert.alert(
-                              "Share Tournament",
-                              `Share ${tournament.name} with others`,
-                              [
-                                { text: "Cancel", style: "cancel" },
-                                { text: "Share", onPress: () => console.log("Shared tournament") }
-                              ]
-                            );
+                            shareContent({
+                              title: tournament.name,
+                              message: `Join and follow the tournament ${tournament.name} on GameLens!`,
+                              type: 'match',
+                              id: tournament.id,
+                            });
                           }}
                         >
                           <LinearGradient
