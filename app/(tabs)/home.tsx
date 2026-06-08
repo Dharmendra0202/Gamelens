@@ -2,9 +2,11 @@ import { Ionicons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
+  Animated,
   Dimensions,
+  Easing,
   Image,
   ImageBackground,
   Modal,
@@ -17,11 +19,9 @@ import {
 } from 'react-native';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
-const CARD_WIDTH = 300;
-const CARD_MARGIN = 16;
-const SECTION_PADDING = 16;
+const CARD_WIDTH = SCREEN_WIDTH - 48;
+const CARD_MARGIN = 12;
 const CARD_SPACING = CARD_WIDTH + CARD_MARGIN;
-const SIDE_PADDING = (SCREEN_WIDTH - CARD_WIDTH - (SECTION_PADDING * 2)) / 2;
 
 type Profile = {
   name: string;
@@ -214,6 +214,19 @@ export default function HomeScreen() {
     setShowPlayerModal(true);
   };
 
+  // entrance animations
+  const profileAnim = useRef(new Animated.Value(0)).current;
+  const matchesAnim = useRef(new Animated.Value(0)).current;
+  const playersAnim = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    Animated.stagger(120, [
+      Animated.timing(profileAnim, { toValue: 1, duration: 420, easing: Easing.out(Easing.cubic), useNativeDriver: true }),
+      Animated.timing(matchesAnim, { toValue: 1, duration: 420, easing: Easing.out(Easing.cubic), useNativeDriver: true }),
+      Animated.timing(playersAnim, { toValue: 1, duration: 420, easing: Easing.out(Easing.cubic), useNativeDriver: true }),
+    ]).start();
+  }, []);
+
   return (
     <View style={styles.container}>
       {/* Header */}
@@ -225,7 +238,7 @@ export default function HomeScreen() {
       >
         <View style={styles.headerLeft}>
           <TouchableOpacity style={styles.menuButton} onPress={() => setShowMenuDrawer(true)}>
-            <Ionicons name="menu" size={28} color="#FFF" />
+            <Ionicons name="menu" size={26} color="#FFF" />
           </TouchableOpacity>
           <Text style={styles.headerTitle}>
             GAME<Text style={styles.headerTitleOrange}>LENS</Text>
@@ -233,178 +246,169 @@ export default function HomeScreen() {
         </View>
         <View style={styles.headerRight}>
           <TouchableOpacity style={styles.iconButton} onPress={() => setShowSearchModal(true)}>
-            <Ionicons name="search" size={24} color="#FFF" />
+            <Ionicons name="search" size={22} color="#FFF" />
           </TouchableOpacity>
           <TouchableOpacity style={styles.iconButton} onPress={() => setShowChatModal(true)}>
-            <Ionicons name="chatbubble-outline" size={24} color="#FFF" />
+            <Ionicons name="chatbubble-outline" size={22} color="#FFF" />
           </TouchableOpacity>
           <TouchableOpacity style={styles.iconButton} onPress={() => console.log('Notifications clicked')}>
-            <Ionicons name="notifications-outline" size={24} color="#FFF" />
+            <Ionicons name="notifications-outline" size={22} color="#FFF" />
           </TouchableOpacity>
         </View>
       </LinearGradient>
 
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
-        {/* Profile Section */}
-        <View style={styles.profileSection}>
-          <TouchableOpacity
-            style={styles.myProfile}
-            onPress={openProfileEditor}
-            activeOpacity={0.85}
-          >
-            <View style={styles.myProfileAvatar}>
-              {profile.imageUri ? (
-                <Image source={{ uri: profile.imageUri }} style={styles.myProfileImage} />
-              ) : (
-                <Text style={styles.myProfileInitials}>{profileInitials}</Text>
-              )}
-            </View>
-            <View style={styles.myProfileInfo}>
-              <Text style={styles.myProfileName}>{profile.name}</Text>
-              <View style={styles.profileRoleContainer}>
-                <Ionicons name="ribbon-outline" size={14} color="#00A66A" />
-                <Text style={styles.profileRoleText}>{profile.role}</Text>
-              </View>
-              <View style={styles.profileStatsRow}>
-                <View style={styles.profileStatItem}>
-                  <Text style={styles.profileStatVal}>{profile.friends}</Text>
-                  <Text style={styles.profileStatLbl}>Friends</Text>
+        {/* ── Premium Profile Card ── */}
+        <Animated.View style={{
+          opacity: profileAnim,
+          transform: [{ translateY: profileAnim.interpolate({ inputRange: [0,1], outputRange: [16,0] }) }]
+        }}>
+          <TouchableOpacity style={styles.profileCard} onPress={openProfileEditor} activeOpacity={0.88}>
+            <LinearGradient colors={['#064E3B','#0F766E','#00A66A']} start={{x:0,y:0}} end={{x:1,y:1}} style={styles.profileCardGradient}>
+              {/* Avatar */}
+              <View style={styles.profileAvatarWrap}>
+                <View style={styles.profileAvatarRing}>
+                  <View style={styles.profileAvatarInner}>
+                    {profile.imageUri
+                      ? <Image source={{ uri: profile.imageUri }} style={styles.profileAvatarImg} />
+                      : <Text style={styles.profileAvatarInitials}>{profileInitials}</Text>}
+                  </View>
                 </View>
-                <View style={styles.profileStatDivider} />
-                <View style={styles.profileStatItem}>
-                  <Text style={styles.profileStatVal}>{profile.posts}</Text>
-                  <Text style={styles.profileStatLbl}>Posts</Text>
+                <View style={styles.profileOnlineDot} />
+              </View>
+              {/* Info */}
+              <View style={styles.profileCardInfo}>
+                <Text style={styles.profileCardName} numberOfLines={1}>{profile.name}</Text>
+                <View style={styles.profileCardRole}>
+                  <Ionicons name="ribbon" size={11} color="#6EE7B7" />
+                  <Text style={styles.profileCardRoleTxt}>{profile.role} · {profile.location}</Text>
+                </View>
+                <View style={styles.profileCardStats}>
+                  <View style={styles.profileCardStat}>
+                    <Text style={styles.profileCardStatVal}>{profile.friends}</Text>
+                    <Text style={styles.profileCardStatLbl}>Friends</Text>
+                  </View>
+                  <View style={styles.profileCardStatDiv} />
+                  <View style={styles.profileCardStat}>
+                    <Text style={styles.profileCardStatVal}>{profile.posts}</Text>
+                    <Text style={styles.profileCardStatLbl}>Posts</Text>
+                  </View>
+                  <View style={styles.profileCardStatDiv} />
+                  <View style={styles.profileCardStat}>
+                    <Text style={styles.profileCardStatVal}>47</Text>
+                    <Text style={styles.profileCardStatLbl}>Matches</Text>
+                  </View>
                 </View>
               </View>
-            </View>
-            <View style={styles.viewProfileButton}>
-              <Ionicons name="chevron-forward" size={20} color="#00A66A" />
-            </View>
+              {/* Edit badge */}
+              <View style={styles.profileEditBadge}>
+                <Ionicons name="pencil" size={13} color="#FFF" />
+              </View>
+            </LinearGradient>
           </TouchableOpacity>
-        </View>
+        </Animated.View>
 
-        {/* Quick Actions Bar */}
-        <View style={styles.quickActionsBar}>
-          {[
-            { icon: 'baseball-outline' as const, label: 'Start Match', color: '#00A66A', action: () => { router.push({ pathname: '/(tabs)/my-cricket', params: { action: 'startMatch' } }); } },
-            { icon: 'trophy-outline' as const, label: 'New Tourney', color: '#0F766E', action: () => { router.push({ pathname: '/(tabs)/my-cricket', params: { action: 'createTournament' } }); } },
-            { icon: 'search-outline' as const, label: 'Find Players', color: '#0EA5E9', action: () => setShowSearchModal(true) },
-            { icon: 'bag-handle-outline' as const, label: 'Store', color: '#EF4444', action: () => setShowStoreModal(true) },
-          ].map((item, i) => (
-            <TouchableOpacity key={i} style={styles.quickActionItem} onPress={item.action} activeOpacity={0.8}>
-              <View style={[styles.quickActionIconBg, { backgroundColor: `${item.color}12` }]}>
-                <Ionicons name={item.icon} size={22} color={item.color} />
+        {/* ── Live & Upcoming Matches (replaces Quick Actions position) ── */}
+        <Animated.View style={{
+          opacity: matchesAnim,
+          transform: [{ translateY: matchesAnim.interpolate({ inputRange: [0,1], outputRange: [20,0] }) }]
+        }}>
+          <View style={styles.matchesSection}>
+            <View style={styles.matchesSectionHeader}>
+              <View>
+                <Text style={styles.matchesSectionTitle}>Live & Upcoming</Text>
+                <Text style={styles.matchesSectionSub}>Matches scheduled near you</Text>
               </View>
-              <Text style={styles.quickActionLabel}>{item.label}</Text>
-            </TouchableOpacity>
-          ))}
-        </View>
-
-        {/* Matches Discovery */}
-        <View style={styles.section}>
-          <View style={styles.sectionHeader}>
-            <View>
-              <Text style={styles.sectionTitle}>Live & Upcoming Matches</Text>
-              <Text style={styles.sectionSubtitle}>Matches scheduled near you</Text>
-            </View>
-            <TouchableOpacity style={styles.locationButton} onPress={() => console.log('Location clicked')}>
-              <Ionicons name="location" size={14} color="#00A66A" />
-              <Text style={styles.locationText}>Mumbai</Text>
-              <Ionicons name="chevron-down" size={12} color="#00A66A" />
-            </TouchableOpacity>
-          </View>
-
-          <ScrollView 
-            horizontal 
-            showsHorizontalScrollIndicator={false}
-            snapToInterval={CARD_SPACING}
-            decelerationRate="fast"
-            contentContainerStyle={styles.matchScrollContent}
-            onScroll={(event) => {
-              const scrollPosition = event.nativeEvent.contentOffset.x;
-              const index = Math.round(scrollPosition / CARD_SPACING);
-              setActiveMatchIndex(index);
-            }}
-            scrollEventThrottle={16}
-          >
-            {matches.map((match) => (
-              <TouchableOpacity
-                key={match.id}
-                style={styles.matchCardContainer}
-                onPress={() => console.log(`Viewing ${match.team1} vs ${match.team2}`)}
-                activeOpacity={0.95}
-              >
-                <View style={styles.matchCard}>
-                  {/* Card Header */}
-                  <View style={styles.matchCardHeader}>
-                    <View style={[styles.statusBadge, match.badge === 'LIVE' ? styles.statusBadgeLive : styles.statusBadgeUpcoming]}>
-                      <View style={match.badge === 'LIVE' ? styles.livePulseDot : styles.upcomingDot} />
-                      <Text style={[styles.statusBadgeText, match.badge === 'LIVE' ? styles.statusBadgeTextLive : styles.statusBadgeTextUpcoming]}>
-                        {match.badge}
-                      </Text>
-                    </View>
-                    <Text style={styles.matchTimeText}>{match.time}</Text>
-                  </View>
-
-                  {/* Team 1 Details */}
-                  <View style={styles.matchTeamRow}>
-                    <View style={styles.matchTeamLeft}>
-                      <View style={styles.teamLogoWrapper}>
-                        <Text style={styles.teamLogoText}>{match.team1.split(' ').map(n => n[0]).join('')}</Text>
-                      </View>
-                      <Text style={styles.teamNameText} numberOfLines={1}>{match.team1}</Text>
-                    </View>
-                    <Text style={styles.teamScoreText}>{match.badge === 'LIVE' ? '124/4 (14.2)' : 'Yet to bat'}</Text>
-                  </View>
-
-                  {/* Team 2 Details */}
-                  <View style={styles.matchTeamRow}>
-                    <View style={styles.matchTeamLeft}>
-                      <View style={[styles.teamLogoWrapper, { backgroundColor: '#0EA5E9' }]}>
-                        <Text style={styles.teamLogoText}>{match.team2.split(' ').map(n => n[0]).join('')}</Text>
-                      </View>
-                      <Text style={styles.teamNameText} numberOfLines={1}>{match.team2}</Text>
-                    </View>
-                    <Text style={styles.teamScoreText}>{match.badge === 'LIVE' ? '92/2 (11.0)' : 'Yet to bat'}</Text>
-                  </View>
-
-                  <View style={styles.cardDivider} />
-
-                  {/* Card Footer: Location + Distance + Action */}
-                  <View style={styles.matchCardFooter}>
-                    <View style={styles.venueInfo}>
-                      <Ionicons name="compass-outline" size={14} color="#666" />
-                      <Text style={styles.venueText} numberOfLines={1}>
-                        {match.location}
-                      </Text>
-                    </View>
-                    
-                    <TouchableOpacity 
-                      style={styles.cardActionButton} 
-                      onPress={() => console.log('Card action clicked')}
-                    >
-                      <Text style={styles.cardActionText}>Details</Text>
-                      <Ionicons name="chevron-forward-circle-sharp" size={16} color="#00A66A" />
-                    </TouchableOpacity>
-                  </View>
-                </View>
+              <TouchableOpacity style={styles.locationPill} onPress={() => console.log('Location clicked')}>
+                <Ionicons name="location" size={12} color="#00A66A" />
+                <Text style={styles.locationPillTxt}>Mumbai</Text>
+                <Ionicons name="chevron-down" size={11} color="#00A66A" />
               </TouchableOpacity>
-            ))}
-          </ScrollView>
+            </View>
 
-          {/* Pagination Dots */}
-          <View style={styles.paginationDots}>
-            {matches.map((_, index) => (
-              <View
-                key={index}
-                style={[
-                  styles.dot,
-                  activeMatchIndex === index && styles.activeDot
-                ]}
-              />
-            ))}
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              snapToInterval={CARD_SPACING}
+              decelerationRate="fast"
+              contentContainerStyle={styles.matchScrollContent}
+              onScroll={(event) => {
+                const scrollPosition = event.nativeEvent.contentOffset.x;
+                const index = Math.round(scrollPosition / CARD_SPACING);
+                setActiveMatchIndex(index);
+              }}
+              scrollEventThrottle={16}
+            >
+              {matches.map((match) => (
+                <TouchableOpacity
+                  key={match.id}
+                  style={styles.matchCardContainer}
+                  onPress={() => console.log(`Viewing ${match.team1} vs ${match.team2}`)}
+                  activeOpacity={0.92}
+                >
+                  <LinearGradient
+                    colors={match.badge === 'LIVE' ? ['#064E3B','#0F766E'] : ['#FFF','#F8FAFB']}
+                    style={styles.matchCard}
+                  >
+                    {/* Card Header */}
+                    <View style={styles.matchCardHeader}>
+                      <View style={[styles.statusBadge, match.badge === 'LIVE' ? styles.statusBadgeLive : styles.statusBadgeUpcoming]}>
+                        <View style={match.badge === 'LIVE' ? styles.livePulseDot : styles.upcomingDot} />
+                        <Text style={[styles.statusBadgeText, match.badge === 'LIVE' ? styles.statusBadgeTextLive : styles.statusBadgeTextUpcoming]}>
+                          {match.badge}
+                        </Text>
+                      </View>
+                      <Text style={[styles.matchTimeText, match.badge === 'LIVE' && { color: '#6EE7B7' }]}>{match.time}</Text>
+                    </View>
+
+                    {/* Team 1 */}
+                    <View style={styles.matchTeamRow}>
+                      <View style={styles.matchTeamLeft}>
+                        <View style={styles.teamLogoWrapper}>
+                          <Text style={styles.teamLogoText}>{match.team1.split(' ').map((n:string) => n[0]).join('')}</Text>
+                        </View>
+                        <Text style={[styles.teamNameText, match.badge === 'LIVE' && { color: '#FFF' }]} numberOfLines={1}>{match.team1}</Text>
+                      </View>
+                      <Text style={[styles.teamScoreText, match.badge === 'LIVE' && { color: '#6EE7B7', fontWeight: '700' }]}>{match.badge === 'LIVE' ? '124/4 (14.2)' : 'Yet to bat'}</Text>
+                    </View>
+
+                    {/* Team 2 */}
+                    <View style={styles.matchTeamRow}>
+                      <View style={styles.matchTeamLeft}>
+                        <View style={[styles.teamLogoWrapper, { backgroundColor: '#0EA5E9' }]}>
+                          <Text style={styles.teamLogoText}>{match.team2.split(' ').map((n:string) => n[0]).join('')}</Text>
+                        </View>
+                        <Text style={[styles.teamNameText, match.badge === 'LIVE' && { color: '#E2E8F0' }]} numberOfLines={1}>{match.team2}</Text>
+                      </View>
+                      <Text style={[styles.teamScoreText, match.badge === 'LIVE' && { color: '#CBD5E1' }]}>{match.badge === 'LIVE' ? '92/2 (11.0)' : 'Yet to bat'}</Text>
+                    </View>
+
+                    <View style={[styles.cardDivider, match.badge === 'LIVE' && { backgroundColor: 'rgba(255,255,255,0.15)' }]} />
+
+                    {/* Card Footer */}
+                    <View style={styles.matchCardFooter}>
+                      <View style={styles.venueInfo}>
+                        <Ionicons name="compass-outline" size={13} color={match.badge === 'LIVE' ? '#6EE7B7' : '#666'} />
+                        <Text style={[styles.venueText, match.badge === 'LIVE' && { color: '#A7F3D0' }]} numberOfLines={1}>{match.location}</Text>
+                      </View>
+                      <TouchableOpacity style={[styles.cardActionButton, match.badge === 'LIVE' && styles.cardActionButtonLive]} onPress={() => console.log('Card action clicked')}>
+                        <Text style={[styles.cardActionText, match.badge === 'LIVE' && { color: '#064E3B' }]}>Details</Text>
+                        <Ionicons name="chevron-forward" size={14} color={match.badge === 'LIVE' ? '#064E3B' : '#00A66A'} />
+                      </TouchableOpacity>
+                    </View>
+                  </LinearGradient>
+                </TouchableOpacity>
+              ))}
+            </ScrollView>
+
+            {/* Pagination Dots */}
+            <View style={styles.paginationDots}>
+              {matches.map((_, index) => (
+                <View key={index} style={[styles.dot, activeMatchIndex === index && styles.activeDot]} />
+              ))}
+            </View>
           </View>
-        </View>
+        </Animated.View>
 
         {/* Banner */}
         <View style={styles.bannerSection}>
@@ -439,79 +443,93 @@ export default function HomeScreen() {
           </ImageBackground>
         </View>
 
-        {/* Popular Cricketers */}
-        <View style={styles.section}>
-          <View style={styles.sectionHeader}>
-            <View>
-              <Text style={styles.sectionTitle}>Popular Cricketers</Text>
-              <Text style={styles.sectionSubtitle}>Top trending players around you</Text>
+        {/* ── Cricket Profiles ── */}
+        <Animated.View style={{
+          opacity: playersAnim,
+          transform: [{ translateY: playersAnim.interpolate({ inputRange: [0,1], outputRange: [20,0] }) }]
+        }}>
+          <View style={styles.profilesSection}>
+            <View style={styles.profilesSectionHeader}>
+              <View>
+                <Text style={styles.profilesSectionTitle}>Cricket Profiles</Text>
+                <Text style={styles.profilesSectionSub}>Top trending players around you</Text>
+              </View>
+              <TouchableOpacity onPress={() => setShowAllPlayers(!showAllPlayers)}>
+                <Text style={styles.seeAll}>{showAllPlayers ? 'See Less' : 'See All'}</Text>
+              </TouchableOpacity>
             </View>
-            <TouchableOpacity onPress={() => setShowAllPlayers(!showAllPlayers)}>
-              <Text style={styles.seeAll}>{showAllPlayers ? 'See Less' : 'See All'}</Text>
-            </TouchableOpacity>
-          </View>
 
-          <View style={styles.playersListContainer}>
-            {players.slice(0, showAllPlayers ? players.length : 2).map((player, index) => (
-              <TouchableOpacity
-                key={player.id}
-                style={styles.playerListItem}
-                onPress={() => handlePlayerPress(player)}
-                activeOpacity={0.8}
-              >
-                <View style={[styles.playerRank, index === 0 ? styles.rank1Bg : index === 1 ? styles.rank2Bg : {}]}>
-                  <Text style={[styles.playerRankNumber, index < 2 ? styles.rankWhiteText : {}]}>{index + 1}</Text>
-                </View>
-                
-                <View style={[styles.playerAvatarCircle, { backgroundColor: player.color }]}>
-                  {player.image ? (
-                    <Image source={{ uri: player.image }} style={styles.playerAvatarImage} />
-                  ) : (
-                    <Text style={styles.playerAvatarText}>{player.initials}</Text>
-                  )}
-                </View>
-                
-                <View style={styles.playerInfoColumn}>
-                  <Text style={styles.playerListName}>{player.name}</Text>
-                  <View style={styles.playerMetaRow}>
-                    <View style={styles.playerRoleTag}>
-                      <Text style={styles.playerRoleTagText}>{player.role}</Text>
+            <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.playerCardsScroll}>
+              {players.slice(0, showAllPlayers ? players.length : 4).map((player, index) => (
+                <TouchableOpacity
+                  key={player.id}
+                  style={styles.playerCard}
+                  onPress={() => handlePlayerPress(player)}
+                  activeOpacity={0.88}
+                >
+                  {/* Card background gradient */}
+                  <LinearGradient
+                    colors={[player.color + 'EE', player.color + '99', '#0A2416']}
+                    start={{ x: 0, y: 0 }} end={{ x: 0.4, y: 1 }}
+                    style={styles.playerCardGradient}
+                  >
+                    {/* Rank badge */}
+                    <View style={[styles.playerCardRank,
+                      index === 0 && { backgroundColor: '#F59E0B' },
+                      index === 1 && { backgroundColor: '#94A3B8' },
+                      index === 2 && { backgroundColor: '#D97706' },
+                    ]}>
+                      <Text style={styles.playerCardRankTxt}>#{index + 1}</Text>
                     </View>
-                    <Text style={styles.playerDivider}>•</Text>
-                    <Text style={styles.playerListTeam}>{player.team}</Text>
-                  </View>
-                  <View style={styles.playerStatsRowSmall}>
-                    {player.runs && (
-                      <View style={styles.miniStatItem}>
-                        <Text style={styles.playerListStats}>🏏 {player.runs}</Text>
-                      </View>
-                    )}
-                    {player.wickets && (
-                      <View style={styles.miniStatItem}>
-                        <Text style={styles.playerListStats}>🎯 {player.wickets}</Text>
-                      </View>
-                    )}
-                  </View>
-                </View>
 
-                <TouchableOpacity style={styles.playerFollowBtn} activeOpacity={0.7}>
-                  <Ionicons name="person-add" size={16} color="#00A66A" />
+                    {/* Avatar */}
+                    <View style={styles.playerCardAvatarWrap}>
+                      {player.image
+                        ? <Image source={{ uri: player.image }} style={styles.playerCardAvatar} />
+                        : <View style={[styles.playerCardAvatarFallback, { backgroundColor: player.color }]}>
+                            <Text style={styles.playerCardAvatarInitials}>{player.initials}</Text>
+                          </View>
+                      }
+                    </View>
+
+                    {/* Info */}
+                    <Text style={styles.playerCardName} numberOfLines={1}>{player.name}</Text>
+                    <View style={styles.playerCardRolePill}>
+                      <Text style={styles.playerCardRoleTxt}>{player.role}</Text>
+                    </View>
+                    <Text style={styles.playerCardTeam}>{player.team}</Text>
+
+                    {/* Stats row */}
+                    <View style={styles.playerCardStats}>
+                      {player.runs && (
+                        <View style={styles.playerCardStat}>
+                          <Text style={styles.playerCardStatVal}>{player.runs}</Text>
+                          <Text style={styles.playerCardStatLbl}>Runs</Text>
+                        </View>
+                      )}
+                      {player.wickets && (
+                        <View style={styles.playerCardStat}>
+                          <Text style={styles.playerCardStatVal}>{player.wickets}</Text>
+                          <Text style={styles.playerCardStatLbl}>Wkts</Text>
+                        </View>
+                      )}
+                      <View style={styles.playerCardStat}>
+                        <Text style={styles.playerCardStatVal}>47</Text>
+                        <Text style={styles.playerCardStatLbl}>Matches</Text>
+                      </View>
+                    </View>
+
+                    {/* Follow button */}
+                    <TouchableOpacity style={styles.playerCardFollowBtn} activeOpacity={0.8}>
+                      <Ionicons name="person-add" size={13} color="#00A66A" />
+                      <Text style={styles.playerCardFollowTxt}>Follow</Text>
+                    </TouchableOpacity>
+                  </LinearGradient>
                 </TouchableOpacity>
-              </TouchableOpacity>
-            ))}
-            
-            {!showAllPlayers && players.length > 2 && (
-              <TouchableOpacity 
-                style={styles.seeMoreButton}
-                onPress={() => setShowAllPlayers(true)}
-                activeOpacity={0.8}
-              >
-                <Text style={styles.seeMoreText}>See More Cricketers</Text>
-                <Ionicons name="chevron-down" size={18} color="#00A66A" />
-              </TouchableOpacity>
-            )}
+              ))}
+            </ScrollView>
           </View>
-        </View>
+        </Animated.View>
 
         {/* Cricket Store */}
         <View style={styles.section}>
@@ -1791,90 +1809,8 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#F0F7F4',
   },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingHorizontal: 16,
-    paddingTop: 35,
-    paddingBottom: 12,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 8,
-    elevation: 8,
-  },
-  headerLeft: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 12,
-  },
-  menuButton: {
-    padding: 4,
-  },
-  headerTitle: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#FFF',
-  },
-  headerTitleOrange: {
-    color: '#6EE7B7',
-  },
-  headerRight: {
-    flexDirection: 'row',
-    gap: 12,
-  },
-  iconButton: {
-    padding: 8,
-  },
   content: {
     flex: 1,
-  },
-  profileSection: {
-    backgroundColor: '#FFFFFF',
-    padding: 12,
-    marginBottom: 8,
-  },
-  myProfile: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingBottom: 0,
-    borderBottomWidth: 0,
-  },
-  myProfileAvatar: {
-    width: 45,
-    height: 45,
-    borderRadius: 22.5,
-    backgroundColor: '#00A66A',
-    justifyContent: 'center',
-    alignItems: 'center',
-    overflow: 'hidden',
-  },
-  myProfileImage: {
-    width: '100%',
-    height: '100%',
-  },
-  myProfileInitials: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#FFF',
-  },
-  myProfileInfo: {
-    flex: 1,
-    marginLeft: 10,
-  },
-  myProfileName: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#333',
-    marginBottom: 2,
-  },
-  myProfileStats: {
-    fontSize: 12,
-    color: '#666',
-  },
-  viewProfileButton: {
-    padding: 8,
   },
   section: {
     backgroundColor: '#FFFFFF',
@@ -1905,26 +1841,6 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#00A66A',
     fontWeight: '600',
-  },
-  matchScrollContent: {
-    paddingHorizontal: SIDE_PADDING,
-  },
-  matchCardContainer: {
-    marginRight: CARD_MARGIN,
-    width: CARD_WIDTH,
-    paddingVertical: 4,
-  },
-  matchCard: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 16,
-    padding: 16,
-    borderWidth: 1,
-    borderColor: '#E2E8F0',
-    elevation: 3,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.08,
-    shadowRadius: 6,
   },
   matchCardImage: {
     borderRadius: 12,
@@ -2174,11 +2090,6 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: '600',
     color: '#00A66A',
-  },
-  playerCard: {
-    alignItems: 'center',
-    marginRight: 16,
-    width: 100,
   },
   playerAvatar: {
     width: 80,
@@ -3843,32 +3754,6 @@ const styles = StyleSheet.create({
     height: 20,
     backgroundColor: '#E2E8F0',
   },
-  quickActionsBar: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    backgroundColor: '#FFF',
-    paddingVertical: 14,
-    paddingHorizontal: 16,
-    marginBottom: 8,
-  },
-  quickActionItem: {
-    alignItems: 'center',
-    width: '22%',
-  },
-  quickActionIconBg: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: 6,
-  },
-  quickActionLabel: {
-    fontSize: 11,
-    fontWeight: '600',
-    color: '#333',
-    textAlign: 'center',
-  },
   sectionSubtitle: {
     fontSize: 13,
     color: '#666',
@@ -4054,4 +3939,243 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+
+  // ── Header ──────────────────────────────────────────────────────
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 14,
+    paddingTop: 44,
+    paddingBottom: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.25,
+    shadowRadius: 6,
+    elevation: 6,
+  },
+  headerLeft: { flexDirection: 'row', alignItems: 'center', gap: 10 },
+  menuButton: { padding: 4 },
+  headerTitle: { fontSize: 22, fontWeight: '800', color: '#FFF', letterSpacing: 1 },
+  headerTitleOrange: { color: '#6EE7B7' },
+  headerRight: { flexDirection: 'row', gap: 6, marginRight: -2 },
+  iconButton: { padding: 7 },
+
+  // ── Premium Profile Card ─────────────────────────────────────────
+  profileCard: {
+    marginHorizontal: 14,
+    marginTop: 12,
+    marginBottom: 10,
+    borderRadius: 20,
+    overflow: 'hidden',
+    elevation: 6,
+    shadowColor: '#00A66A',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.25,
+    shadowRadius: 12,
+  },
+  profileCardGradient: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 16,
+    paddingVertical: 14,
+    gap: 14,
+  },
+  profileAvatarWrap: { position: 'relative' },
+  profileAvatarRing: {
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    borderWidth: 2,
+    borderColor: 'rgba(110,231,183,0.6)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  profileAvatarInner: {
+    width: 52,
+    height: 52,
+    borderRadius: 26,
+    overflow: 'hidden',
+    backgroundColor: 'rgba(255,255,255,0.15)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  profileAvatarImg: { width: '100%', height: '100%' },
+  profileAvatarInitials: { fontSize: 20, fontWeight: '800', color: '#FFF' },
+  profileOnlineDot: {
+    position: 'absolute',
+    bottom: 1,
+    right: 1,
+    width: 12,
+    height: 12,
+    borderRadius: 6,
+    backgroundColor: '#4ADE80',
+    borderWidth: 2,
+    borderColor: '#0A2416',
+  },
+  profileCardInfo: { flex: 1 },
+  profileCardName: { fontSize: 16, fontWeight: '800', color: '#FFF', marginBottom: 3 },
+  profileCardRole: { flexDirection: 'row', alignItems: 'center', gap: 5, marginBottom: 8 },
+  profileCardRoleTxt: { fontSize: 12, color: '#A7F3D0', fontWeight: '500' },
+  profileCardStats: { flexDirection: 'row', alignItems: 'center', gap: 12 },
+  profileCardStat: { alignItems: 'center' },
+  profileCardStatVal: { fontSize: 15, fontWeight: '800', color: '#FFF' },
+  profileCardStatLbl: { fontSize: 10, color: '#6EE7B7', fontWeight: '500' },
+  profileCardStatDiv: { width: 1, height: 24, backgroundColor: 'rgba(255,255,255,0.2)' },
+  profileEditBadge: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: 'rgba(255,255,255,0.18)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+
+  // ── Matches Section ──────────────────────────────────────────────
+  matchesSection: {
+    backgroundColor: '#FFF',
+    paddingTop: 16,
+    paddingBottom: 16,
+    marginBottom: 10,
+  },
+  matchesSectionHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 16,
+    marginBottom: 14,
+  },
+  matchesSectionTitle: { fontSize: 17, fontWeight: '800', color: '#0A2416' },
+  matchesSectionSub: { fontSize: 12, color: '#64748B', marginTop: 2 },
+  locationPill: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    backgroundColor: '#D1FAE5',
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 20,
+  },
+  locationPillTxt: { fontSize: 12, color: '#00A66A', fontWeight: '700' },
+  matchScrollContent: { paddingHorizontal: 16 },
+  matchCardContainer: { marginRight: CARD_MARGIN, width: CARD_WIDTH },
+  matchCard: {
+    borderRadius: 16,
+    padding: 15,
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    elevation: 3,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.07,
+    shadowRadius: 6,
+  },
+  cardActionButtonLive: {
+    backgroundColor: '#6EE7B7',
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 20,
+  },
+
+  // ── Cricket Profiles Section ────────────────────────────────────
+  profilesSection: {
+    backgroundColor: '#FFF',
+    paddingTop: 16,
+    paddingBottom: 16,
+    marginBottom: 10,
+  },
+  profilesSectionHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 16,
+    marginBottom: 14,
+  },
+  profilesSectionTitle: { fontSize: 17, fontWeight: '800', color: '#0A2416' },
+  profilesSectionSub: { fontSize: 12, color: '#64748B', marginTop: 2 },
+  playerCardsScroll: { paddingHorizontal: 16, gap: 12 },
+  playerCard: {
+    width: 148,
+    borderRadius: 18,
+    overflow: 'hidden',
+    elevation: 5,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.15,
+    shadowRadius: 8,
+  },
+  playerCardGradient: {
+    paddingTop: 12,
+    paddingBottom: 14,
+    paddingHorizontal: 12,
+    alignItems: 'center',
+    minHeight: 220,
+  },
+  playerCardRank: {
+    alignSelf: 'flex-start',
+    paddingHorizontal: 7,
+    paddingVertical: 3,
+    borderRadius: 10,
+    backgroundColor: '#6B7280',
+    marginBottom: 8,
+  },
+  playerCardRankTxt: { fontSize: 10, fontWeight: '800', color: '#FFF' },
+  playerCardAvatarWrap: {
+    width: 72,
+    height: 72,
+    borderRadius: 36,
+    overflow: 'hidden',
+    borderWidth: 2.5,
+    borderColor: 'rgba(255,255,255,0.5)',
+    marginBottom: 10,
+  },
+  playerCardAvatar: { width: '100%', height: '100%' },
+  playerCardAvatarFallback: {
+    width: '100%',
+    height: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  playerCardAvatarInitials: { fontSize: 22, fontWeight: '800', color: '#FFF' },
+  playerCardName: {
+    fontSize: 13,
+    fontWeight: '800',
+    color: '#FFF',
+    textAlign: 'center',
+    marginBottom: 5,
+  },
+  playerCardRolePill: {
+    backgroundColor: 'rgba(255,255,255,0.2)',
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+    borderRadius: 12,
+    marginBottom: 4,
+  },
+  playerCardRoleTxt: { fontSize: 10, color: '#E2E8F0', fontWeight: '600' },
+  playerCardTeam: {
+    fontSize: 11,
+    color: 'rgba(255,255,255,0.65)',
+    marginBottom: 10,
+    fontWeight: '500',
+  },
+  playerCardStats: {
+    flexDirection: 'row',
+    gap: 8,
+    marginBottom: 10,
+    justifyContent: 'center',
+    flexWrap: 'wrap',
+  },
+  playerCardStat: { alignItems: 'center' },
+  playerCardStatVal: { fontSize: 13, fontWeight: '800', color: '#FFF' },
+  playerCardStatLbl: { fontSize: 9, color: 'rgba(255,255,255,0.65)', fontWeight: '500' },
+  playerCardFollowBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    backgroundColor: '#FFF',
+    paddingHorizontal: 14,
+    paddingVertical: 6,
+    borderRadius: 20,
+  },
+  playerCardFollowTxt: { fontSize: 11, fontWeight: '700', color: '#00A66A' },
 });
