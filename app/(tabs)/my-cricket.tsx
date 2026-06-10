@@ -2,12 +2,12 @@ import { AnimatedViewTransition } from "@/components/ui/animated-view-transition
 import { TabScreenWrapper } from "@/components/ui/tab-screen-wrapper";
 import { shareContent } from "@/utils/share";
 import { Ionicons } from "@expo/vector-icons";
-import { useFocusEffect } from "@react-navigation/native";
+
 import * as ImagePicker from "expo-image-picker";
 import { LinearGradient } from "expo-linear-gradient";
 import * as Location from "expo-location";
 import { useLocalSearchParams, useRouter } from "expo-router";
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   Alert,
   Animated,
@@ -21,7 +21,10 @@ import {
   TextInput,
   TouchableOpacity,
   View,
+  Dimensions,
 } from "react-native";
+
+const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
 export default function MyCricketScreen() {
   const router = useRouter();
@@ -703,6 +706,42 @@ export default function MyCricketScreen() {
   const slideAnim = useRef(new Animated.Value(50)).current;
   const modalAnim = useRef(new Animated.Value(0)).current;
   const scrollViewRef = useRef<ScrollView>(null);
+  const horizontalScrollRef = useRef<ScrollView>(null);
+  const tournamentDetailHorizontalScrollRef = useRef<ScrollView>(null);
+
+  const handleTabPress = (tabName: string) => {
+    setActiveTab(tabName);
+    const tabs = ["matches", "tournaments", "teams"];
+    const index = tabs.indexOf(tabName);
+    if (index !== -1) {
+      horizontalScrollRef.current?.scrollTo({ x: index * SCREEN_WIDTH, animated: true });
+    }
+  };
+
+  const handleHorizontalScrollEnd = (e: any) => {
+    const pageIndex = Math.round(e.nativeEvent.contentOffset.x / SCREEN_WIDTH);
+    const tabs = ["matches", "tournaments", "teams"];
+    if (pageIndex >= 0 && pageIndex < tabs.length) {
+      setActiveTab(tabs[pageIndex]);
+    }
+  };
+
+  const handleTournamentDetailTabPress = (tabName: string) => {
+    setActiveTournamentDetailTab(tabName);
+    const tabs = ["matches", "points", "leaderboard", "teams"];
+    const index = tabs.indexOf(tabName);
+    if (index !== -1) {
+      tournamentDetailHorizontalScrollRef.current?.scrollTo({ x: index * SCREEN_WIDTH, animated: true });
+    }
+  };
+
+  const handleTournamentDetailHorizontalScrollEnd = (e: any) => {
+    const pageIndex = Math.round(e.nativeEvent.contentOffset.x / SCREEN_WIDTH);
+    const tabs = ["matches", "points", "leaderboard", "teams"];
+    if (pageIndex >= 0 && pageIndex < tabs.length) {
+      setActiveTournamentDetailTab(tabs[pageIndex]);
+    }
+  };
   const vsTeamAnim = useRef(new Animated.Value(0)).current;
   const vsTeamBanim = useRef(new Animated.Value(0)).current;
   const vsTextAnim = useRef(new Animated.Value(0)).current;
@@ -762,120 +801,108 @@ export default function MyCricketScreen() {
     ).start();
   }, []);
 
-  // Handle navigation parameters from home screen
-  useFocusEffect(
-    useCallback(() => {
-      if (params.source === 'drawer') {
-        // Coming from drawer menu - show individual pages
-        console.log("Coming from drawer - showing individual pages");
-        setCurrentView('matches');
-      } else if (params.action === 'createTournament') {
-        setActiveTab('tournaments');
-        setCurrentView('matches');
-      } else if (params.action === 'startMatch') {
-        setActiveTab('matches');
-        setCurrentView('teamSelection');
-        setShowTeamSelection(true);
-      } else if (params.tab === 'tournaments') {
-        setActiveTab('tournaments');
-        setCurrentView('matches');
-      } else if (params.tab === 'matches') {
-        setActiveTab('matches');
-        setCurrentView('matches');
-      } else if (params.tab === 'teams') {
-        setActiveTab('teams');
-        setCurrentView('matches');
-      } else {
-        // Default: coming from footer tab - show individual pages directly
-        setCurrentView('matches');
-      }
-    }, [params.action, params.tab, params.section, params.source])
-  );
+  // Handle navigation parameters
+  useEffect(() => {
+    if (params.source === 'drawer') {
+      console.log("Coming from drawer - showing individual pages");
+      setCurrentView('matches');
+    } else if (params.action === 'createTournament') {
+      setActiveTab('tournaments');
+      setCurrentView('matches');
+    } else if (params.action === 'startMatch') {
+      setActiveTab('matches');
+      setCurrentView('teamSelection');
+      setShowTeamSelection(true);
+    } else if (params.tab === 'tournaments') {
+      setActiveTab('tournaments');
+      setCurrentView('matches');
+    } else if (params.tab === 'matches') {
+      setActiveTab('matches');
+      setCurrentView('matches');
+    } else if (params.tab === 'teams') {
+      setActiveTab('teams');
+      setCurrentView('matches');
+    }
+  }, [params.action, params.tab, params.section, params.source]);
 
   // Handle hardware back button
-  useFocusEffect(
-    useCallback(() => {
-      const onBackPress = () => {
-        if (currentView === "scoringPage") {
-          setCurrentView("playerSelection");
-          return true;
-        }
-        if (currentView === "matchSettings") {
-          setCurrentView("playerSelection");
-          return true;
-        }
-        if (currentView === "playerSelection") {
-          setCurrentView("tossPage");
-          return true;
-        }
-        if (currentView === "tossPage") {
-          setCurrentView("matchSetup");
-          return true;
-        }
-        if (currentView === "matchSetup") {
+  useEffect(() => {
+    const onBackPress = () => {
+      if (currentView === "scoringPage") {
+        setCurrentView("playerSelection");
+        return true;
+      }
+      if (currentView === "matchSettings") {
+        setCurrentView("playerSelection");
+        return true;
+      }
+      if (currentView === "playerSelection") {
+        setCurrentView("tossPage");
+        return true;
+      }
+      if (currentView === "tossPage") {
+        setCurrentView("matchSetup");
+        return true;
+      }
+      if (currentView === "matchSetup") {
+        setCurrentView("teamSelection");
+        vsTeamAnim.setValue(0);
+        vsTeamBanim.setValue(0);
+        vsTextAnim.setValue(0);
+        return true;
+      }
+      if (currentView === "selectTeam" || currentView === "createTeam") {
+        setCurrentView("teamSelection");
+        setShowAddPlayerModal(false);
+        return true;
+      }
+      if (currentView === "teamSelection") {
+        setCurrentView("matches");
+        setShowTeamSelection(false);
+        setSelectedTeam(null);
+        return true;
+      }
+      if (currentView === "createTournament") {
+        setCurrentView("matches");
+        return true;
+      }
+      if (currentView === "teamsSelection") {
+        setCurrentView("matches");
+        return true;
+      }
+      if (currentView === "addTeamsPlayers") {
+        setCurrentView("tournamentDetail");
+        return true;
+      }
+      if ((currentView as string) === "createTeam") {
+        if (teamSlot) {
           setCurrentView("teamSelection");
-          vsTeamAnim.setValue(0);
-          vsTeamBanim.setValue(0);
-          vsTextAnim.setValue(0);
-          return true;
+        } else {
+          setCurrentView("addTeamsPlayers");
         }
-        if (currentView === "selectTeam" || currentView === "createTeam") {
-          setCurrentView("teamSelection");
-          setShowAddPlayerModal(false);
-          return true;
-        }
-        if (currentView === "teamSelection") {
-          setCurrentView("matches");
-          setShowTeamSelection(false);
-          setSelectedTeam(null);
-          return true;
-        }
-        if (currentView === "createTournament") {
-          setCurrentView("matches");
-          return true;
-        }
-        if (currentView === "teamsSelection") {
-          setCurrentView("matches");
-          return true;
-        }
-        if (currentView === "addTeamsPlayers") {
-          setCurrentView("tournamentDetail");
-          return true;
-        }
-        if ((currentView as string) === "createTeam") {
-          // Check if we came from addTeamsPlayers or from teamSelection
-          if (teamSlot) {
-            // Came from team selection flow
-            setCurrentView("teamSelection");
-          } else {
-            // Came from addTeamsPlayers flow
-            setCurrentView("addTeamsPlayers");
-          }
-          setShowAddPlayerModal(false);
-          return true;
-        }
-        if (currentView === "tournamentDetail") {
-          console.log("Back from tournamentDetail");
-          setCurrentView("matches");
-          setSelectedTournament(null);
-          return true;
-        }
-        if (currentView === "tournamentTeamManagement") {
-          setCurrentView("createTournament");
-          setShowAddPlayerModal(false);
-          return true;
-        }
-        return false;
-      };
+        setShowAddPlayerModal(false);
+        return true;
+      }
+      if (currentView === "tournamentDetail") {
+        setCurrentView("matches");
+        setSelectedTournament(null);
+        return true;
+      }
+      if (currentView === "tournamentTeamManagement") {
+        setCurrentView("createTournament");
+        setShowAddPlayerModal(false);
+        return true;
+      }
+      return false;
+    };
 
-      const subscription = BackHandler.addEventListener(
-        "hardwareBackPress",
-        onBackPress,
-      );
+    const subscription = BackHandler.addEventListener(
+      "hardwareBackPress",
+      onBackPress,
+    );
 
-      return () => subscription.remove();
-    }, [currentView]),
-  );
+    return () => subscription.remove();
+  }, [currentView]);
 
   const handleStartMatch = () => {
     // Show team selection instead of navigating
@@ -1502,7 +1529,7 @@ export default function MyCricketScreen() {
   };
 
   return (
-    <TabScreenWrapper>
+    <TabScreenWrapper swipeEnabled={false}>
       <View style={styles.container}>
       {/* Header - Always show except when specified */}
       <Animated.View style={{ opacity: fadeAnim }}>
@@ -1602,7 +1629,7 @@ export default function MyCricketScreen() {
             <TouchableOpacity
               key={tab}
               style={[styles.tab, activeTab === tab && styles.activeTab]}
-              onPress={() => setActiveTab(tab)}
+              onPress={() => handleTabPress(tab)}
             >
               <Text
                 style={[
@@ -1943,7 +1970,7 @@ export default function MyCricketScreen() {
                 <TouchableOpacity
                   key={tab}
                   style={[styles.tdTab, activeTournamentDetailTab === tab && styles.tdTabActive]}
-                  onPress={() => setActiveTournamentDetailTab(tab)}
+                  onPress={() => handleTournamentDetailTabPress(tab)}
                 >
                   <Text style={[styles.tdTabText, activeTournamentDetailTab === tab && styles.tdTabTextActive]}>
                     {tab.charAt(0).toUpperCase() + tab.slice(1)}
@@ -1954,10 +1981,18 @@ export default function MyCricketScreen() {
             </View>
 
             {/* Tab Content */}
-            <ScrollView style={styles.tdContent} showsVerticalScrollIndicator={false}>
-
-              {/* ── Matches Tab ── */}
-              {activeTournamentDetailTab === "matches" && (
+            <ScrollView
+              ref={tournamentDetailHorizontalScrollRef}
+              horizontal
+              pagingEnabled
+              showsHorizontalScrollIndicator={false}
+              onMomentumScrollEnd={handleTournamentDetailHorizontalScrollEnd}
+              style={styles.tdContent}
+              scrollEventThrottle={16}
+              nestedScrollEnabled
+            >
+              {/* Slide 1: Matches */}
+              <ScrollView style={{ width: SCREEN_WIDTH }} showsVerticalScrollIndicator={false}>
                 <View style={styles.tdSection}>
                   <Text style={styles.tdSectionTitle}>Upcoming Matches</Text>
                   {[
@@ -2026,8 +2061,8 @@ export default function MyCricketScreen() {
                           <Text style={styles.tdScore}>{m.score2}</Text>
                         </View>
                       </View>
-                      <View style={[styles.tdMatchFooter, { backgroundColor: "rgba(76,175,80,0.08)", borderRadius: 8, padding: 6 }]}>
-                        <Ionicons name="trophy" size={13} color="#4CAF50" />
+                      <View style={styles.tdMatchFooter}>
+                        <Ionicons name="trophy-outline" size={13} color="#4CAF50" />
                         <Text style={[styles.tdMatchVenue, { color: "#4CAF50", fontWeight: "700" }]}>
                           {m.winner} won by {m.margin}
                         </Text>
@@ -2036,10 +2071,10 @@ export default function MyCricketScreen() {
                   ))}
                   <View style={{ height: 80 }} />
                 </View>
-              )}
+              </ScrollView>
 
-              {/* ── Points Tab ── */}
-              {activeTournamentDetailTab === "points" && (
+              {/* Slide 2: Points */}
+              <ScrollView style={{ width: SCREEN_WIDTH }} showsVerticalScrollIndicator={false}>
                 <View style={styles.tdSection}>
                   <Text style={styles.tdSectionTitle}>Points Table</Text>
                   {/* Header */}
@@ -2089,10 +2124,10 @@ export default function MyCricketScreen() {
                   </View>
                   <View style={{ height: 80 }} />
                 </View>
-              )}
+              </ScrollView>
 
-              {/* ── Leaderboard Tab ── */}
-              {activeTournamentDetailTab === "leaderboard" && (
+              {/* Slide 3: Leaderboard */}
+              <ScrollView style={{ width: SCREEN_WIDTH }} showsVerticalScrollIndicator={false}>
                 <View style={styles.tdSection}>
                   <Text style={styles.tdSectionTitle}>🏏 Top Batsmen</Text>
                   {[
@@ -2141,10 +2176,10 @@ export default function MyCricketScreen() {
                   ))}
                   <View style={{ height: 80 }} />
                 </View>
-              )}
+              </ScrollView>
 
-              {/* ── Teams Tab ── */}
-              {activeTournamentDetailTab === "teams" && (
+              {/* Slide 4: Teams */}
+              <ScrollView style={{ width: SCREEN_WIDTH }} showsVerticalScrollIndicator={false}>
                 <View style={styles.tdSection}>
                   {/* Simple Team Management Options */}
                   <View style={styles.simpleTeamMgmtContainer}>
@@ -2184,8 +2219,7 @@ export default function MyCricketScreen() {
 
                   <View style={{ height: 80 }} />
                 </View>
-              )}
-
+              </ScrollView>
             </ScrollView>
 
             {/* Fixed bottom CTA */}
@@ -4619,9 +4653,17 @@ export default function MyCricketScreen() {
           </ScrollView>
         ) : (
           /* Matches/Tournaments/Teams View */
-          <>
-            {activeTab === "matches" && (
-              <>
+          <ScrollView
+            ref={horizontalScrollRef}
+            horizontal
+            pagingEnabled
+            showsHorizontalScrollIndicator={false}
+            onMomentumScrollEnd={handleHorizontalScrollEnd}
+            style={styles.content}
+            scrollEventThrottle={16}
+            nestedScrollEnabled
+          >
+            <ScrollView style={{ width: SCREEN_WIDTH }} showsVerticalScrollIndicator={false}>
             {/* Animated Start Match Card */}
             <Animated.View
               style={[
@@ -4906,11 +4948,10 @@ export default function MyCricketScreen() {
             ))}
 
             <View style={{ height: 20 }} />
-              </>
-            )}
+            </ScrollView>
 
             {/* Tournaments Tab Content */}
-            {activeTab === "tournaments" && (
+            <ScrollView style={{ width: SCREEN_WIDTH }} showsVerticalScrollIndicator={false}>
               <View style={styles.tournamentsContainer}>
                 {/* Create Tournament Card */}
                 <TouchableOpacity 
@@ -5578,10 +5619,10 @@ export default function MyCricketScreen() {
 
                 <View style={{ height: 20 }} />
               </View>
-            )}
+            </ScrollView>
 
             {/* Teams Tab Content */}
-            {activeTab === "teams" && (
+            <View style={{ width: SCREEN_WIDTH, flex: 1 }}>
               <ScrollView 
                 style={styles.teamsContainer}
                 showsVerticalScrollIndicator={false}
@@ -5689,8 +5730,8 @@ export default function MyCricketScreen() {
                 {/* Bottom spacing for scroll */}
                 <View style={{ height: 100 }} />
               </ScrollView>
-            )}
-          </>
+            </View>
+          </ScrollView>
         )}
         </AnimatedViewTransition>
       </ScrollView>

@@ -77,6 +77,21 @@ export default function HomeScreen() {
 
   // Community feed state
   const [activeFeedTab, setActiveFeedTab] = useState('For You');
+  const feedScrollRef = useRef<ScrollView>(null);
+
+  const handleFeedTabPress = (tabName: string, index: number) => {
+    setActiveFeedTab(tabName);
+    feedScrollRef.current?.scrollTo({ x: index * SCREEN_WIDTH, animated: true });
+  };
+
+  const handleFeedScrollEnd = (e: any) => {
+    const pageIndex = Math.round(e.nativeEvent.contentOffset.x / SCREEN_WIDTH);
+    const tabs = ['For You', 'Following', 'Trending'];
+    if (pageIndex >= 0 && pageIndex < tabs.length) {
+      setActiveFeedTab(tabs[pageIndex]);
+    }
+  };
+
   const [showCreatePostModal, setShowCreatePostModal] = useState(false);
   const [newPostText, setNewPostText] = useState('');
   const [selectedPostForComments, setSelectedPostForComments] = useState<any>(null);
@@ -339,6 +354,125 @@ export default function HomeScreen() {
     { id: 6, initials: 'RA', shortName: 'Ravindra', color: '#D97706', active: true },
   ];
 
+  const renderPostCard = (post: any) => (
+    <View key={post.id} style={styles.postCard}>
+      {/* Post Header */}
+      <View style={styles.postHeader}>
+        <View style={[styles.postAvatarRing, { borderColor: post.verified ? '#00A66A' : 'transparent' }]}>
+          <View style={[styles.postAvatar, { backgroundColor: post.color }]}>
+            <Text style={styles.postAvatarInitials}>{post.initials}</Text>
+          </View>
+        </View>
+        <View style={styles.postUserInfo}>
+          <View style={styles.postUserNameRow}>
+            <Text style={styles.postUserName}>{post.user}</Text>
+            {post.verified && <Ionicons name="checkmark-circle" size={14} color="#00A66A" style={{ marginLeft: 4 }} />}
+          </View>
+          <Text style={styles.postMetaRow}>{post.role} · {post.time}</Text>
+        </View>
+        <TouchableOpacity style={styles.postMoreBtn}>
+          <Ionicons name="ellipsis-horizontal" size={18} color="#999" />
+        </TouchableOpacity>
+      </View>
+
+      {/* Post Content */}
+      <Text style={styles.postContentTxt}>{post.content}</Text>
+
+      {/* Hashtags */}
+      {post.tags && (
+        <View style={styles.postTagsRow}>
+          {post.tags.map((tag: string) => (
+            <TouchableOpacity key={tag} style={styles.postTag}>
+              <Text style={styles.postTagTxt}>#{tag}</Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+      )}
+
+      {/* Media placeholder */}
+      {post.hasMedia && (
+        <View style={styles.postMediaBox}>
+          <LinearGradient colors={['#064E3B', '#0F766E', '#059669']} style={styles.postMediaGradient}>
+            <Ionicons name="images-outline" size={36} color="rgba(255,255,255,0.5)" />
+            <Text style={styles.postMediaLabel}>Match Highlights</Text>
+          </LinearGradient>
+        </View>
+      )}
+
+      {/* Stats row */}
+      <View style={styles.postStatsRow}>
+        <View style={styles.postStatsLeft}>
+          <View style={styles.likeIconRow}>
+            <View style={styles.likeIconBg}><Ionicons name="heart" size={9} color="#FFF" /></View>
+            <View style={[styles.likeIconBg, { backgroundColor: '#0F766E', marginLeft: -4 }]}><Ionicons name="thumbs-up" size={9} color="#FFF" /></View>
+          </View>
+          <Text style={styles.postStatsTxt}>{post.likes.toLocaleString()}</Text>
+        </View>
+        <Text style={styles.postStatsTxt}>{post.comments} comments • {post.shares} shares</Text>
+      </View>
+
+      <View style={styles.postDivider} />
+
+      {/* Action Buttons */}
+      <View style={styles.postActionsRow}>
+        <TouchableOpacity
+          style={styles.postActionBtn}
+          activeOpacity={0.7}
+          onPress={() => {
+            setCommunityPosts(prev => prev.map(p =>
+              p.id === post.id ? { ...p, liked: !p.liked, likes: p.liked ? p.likes - 1 : p.likes + 1 } : p
+            ));
+          }}
+        >
+          <Ionicons name={post.liked ? 'heart' : 'heart-outline'} size={19} color={post.liked ? '#EF4444' : '#666'} />
+          <Text style={[styles.postActionTxt, post.liked && { color: '#EF4444' }]}>Like</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.postActionBtn}
+          activeOpacity={0.7}
+          onPress={() => {
+            setSelectedPostForComments(post);
+            setShowCommentsModal(true);
+          }}
+        >
+          <Ionicons name="chatbubble-outline" size={19} color="#666" />
+          <Text style={styles.postActionTxt}>Comment</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.postActionBtn}
+          activeOpacity={0.7}
+          onPress={async () => {
+            const shared = await shareContent({
+              title: `Post by ${post.user}`,
+              message: post.content,
+              type: 'post',
+              id: post.id,
+            });
+            if (shared) {
+              setCommunityPosts(prev => prev.map(p =>
+                p.id === post.id ? { ...p, shares: p.shares + 1 } : p
+              ));
+            }
+          }}
+        >
+          <Ionicons name="share-social-outline" size={19} color="#666" />
+          <Text style={styles.postActionTxt}>Share</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.postActionBtn}
+          activeOpacity={0.7}
+          onPress={() => {
+            setCommunityPosts(prev => prev.map(p =>
+              p.id === post.id ? { ...p, saved: !p.saved } : p
+            ));
+          }}
+        >
+          <Ionicons name={post.saved ? 'bookmark' : 'bookmark-outline'} size={19} color={post.saved ? '#00A66A' : '#666'} />
+        </TouchableOpacity>
+      </View>
+    </View>
+  );
+
   const profileInitials = profile.name
     .split(' ')
     .filter(Boolean)
@@ -464,7 +598,7 @@ export default function HomeScreen() {
   }, []);
 
   return (
-    <TabScreenWrapper>
+    <TabScreenWrapper swipeEnabled={false}>
       <View style={styles.container}>
       {/* Header */}
       <LinearGradient
@@ -708,11 +842,11 @@ export default function HomeScreen() {
 
           {/* Feed Tabs */}
           <View style={styles.feedTabsRow}>
-            {['For You', 'Following', 'Trending'].map((tab) => (
+            {['For You', 'Following', 'Trending'].map((tab, idx) => (
               <TouchableOpacity
                 key={tab}
                 style={[styles.feedTab, activeFeedTab === tab && styles.feedTabActive]}
-                onPress={() => setActiveFeedTab(tab)}
+                onPress={() => handleFeedTabPress(tab, idx)}
                 activeOpacity={0.8}
               >
                 <Text style={[styles.feedTabTxt, activeFeedTab === tab && styles.feedTabTxtActive]}>{tab}</Text>
@@ -720,125 +854,26 @@ export default function HomeScreen() {
             ))}
           </View>
 
-          {/* Posts */}
-          {communityPosts.map((post) => (
-            <View key={post.id} style={styles.postCard}>
-              {/* Post Header */}
-              <View style={styles.postHeader}>
-                <View style={[styles.postAvatarRing, { borderColor: post.verified ? '#00A66A' : 'transparent' }]}>
-                  <View style={[styles.postAvatar, { backgroundColor: post.color }]}>
-                    <Text style={styles.postAvatarInitials}>{post.initials}</Text>
-                  </View>
-                </View>
-                <View style={styles.postUserInfo}>
-                  <View style={styles.postUserNameRow}>
-                    <Text style={styles.postUserName}>{post.user}</Text>
-                    {post.verified && <Ionicons name="checkmark-circle" size={14} color="#00A66A" style={{ marginLeft: 4 }} />}
-                  </View>
-                  <Text style={styles.postMetaRow}>{post.role} · {post.time}</Text>
-                </View>
-                <TouchableOpacity style={styles.postMoreBtn}>
-                  <Ionicons name="ellipsis-horizontal" size={18} color="#999" />
-                </TouchableOpacity>
-              </View>
-
-              {/* Post Content */}
-              <Text style={styles.postContentTxt}>{post.content}</Text>
-
-              {/* Hashtags */}
-              {post.tags && (
-                <View style={styles.postTagsRow}>
-                  {post.tags.map((tag: string) => (
-                    <TouchableOpacity key={tag} style={styles.postTag}>
-                      <Text style={styles.postTagTxt}>#{tag}</Text>
-                    </TouchableOpacity>
-                  ))}
-                </View>
-              )}
-
-              {/* Media placeholder */}
-              {post.hasMedia && (
-                <View style={styles.postMediaBox}>
-                  <LinearGradient colors={['#064E3B', '#0F766E', '#059669']} style={styles.postMediaGradient}>
-                    <Ionicons name="images-outline" size={36} color="rgba(255,255,255,0.5)" />
-                    <Text style={styles.postMediaLabel}>Match Highlights</Text>
-                  </LinearGradient>
-                </View>
-              )}
-
-              {/* Stats row */}
-              <View style={styles.postStatsRow}>
-                <View style={styles.postStatsLeft}>
-                  <View style={styles.likeIconRow}>
-                    <View style={styles.likeIconBg}><Ionicons name="heart" size={9} color="#FFF" /></View>
-                    <View style={[styles.likeIconBg, { backgroundColor: '#0F766E', marginLeft: -4 }]}><Ionicons name="thumbs-up" size={9} color="#FFF" /></View>
-                  </View>
-                  <Text style={styles.postStatsTxt}>{post.likes.toLocaleString()}</Text>
-                </View>
-                <Text style={styles.postStatsTxt}>{post.comments} comments · {post.shares} shares</Text>
-              </View>
-
-              <View style={styles.postDivider} />
-
-              {/* Action Buttons */}
-              <View style={styles.postActionsRow}>
-                <TouchableOpacity
-                  style={styles.postActionBtn}
-                  activeOpacity={0.7}
-                  onPress={() => {
-                    setCommunityPosts(prev => prev.map(p =>
-                      p.id === post.id ? { ...p, liked: !p.liked, likes: p.liked ? p.likes - 1 : p.likes + 1 } : p
-                    ));
-                  }}
-                >
-                  <Ionicons name={post.liked ? 'heart' : 'heart-outline'} size={19} color={post.liked ? '#EF4444' : '#666'} />
-                  <Text style={[styles.postActionTxt, post.liked && { color: '#EF4444' }]}>Like</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={styles.postActionBtn}
-                  activeOpacity={0.7}
-                  onPress={() => {
-                    setSelectedPostForComments(post);
-                    setShowCommentsModal(true);
-                  }}
-                >
-                  <Ionicons name="chatbubble-outline" size={19} color="#666" />
-                  <Text style={styles.postActionTxt}>Comment</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={styles.postActionBtn}
-                  activeOpacity={0.7}
-                  onPress={async () => {
-                    const shared = await shareContent({
-                      title: `Post by ${post.user}`,
-                      message: post.content,
-                      type: 'post',
-                      id: post.id,
-                    });
-                    if (shared) {
-                      setCommunityPosts(prev => prev.map(p =>
-                        p.id === post.id ? { ...p, shares: p.shares + 1 } : p
-                      ));
-                    }
-                  }}
-                >
-                  <Ionicons name="share-social-outline" size={19} color="#666" />
-                  <Text style={styles.postActionTxt}>Share</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={styles.postActionBtn}
-                  activeOpacity={0.7}
-                  onPress={() => {
-                    setCommunityPosts(prev => prev.map(p =>
-                      p.id === post.id ? { ...p, saved: !p.saved } : p
-                    ));
-                  }}
-                >
-                  <Ionicons name={post.saved ? 'bookmark' : 'bookmark-outline'} size={19} color={post.saved ? '#00A66A' : '#666'} />
-                </TouchableOpacity>
-              </View>
+          {/* Swipeable Feeds */}
+          <ScrollView
+            ref={feedScrollRef}
+            horizontal
+            pagingEnabled
+            showsHorizontalScrollIndicator={false}
+            onMomentumScrollEnd={handleFeedScrollEnd}
+            scrollEventThrottle={16}
+            nestedScrollEnabled
+          >
+            <View style={{ width: SCREEN_WIDTH }}>
+              {communityPosts.map(renderPostCard)}
             </View>
-          ))}
+            <View style={{ width: SCREEN_WIDTH }}>
+              {communityPosts.filter(p => p.verified).map(renderPostCard)}
+            </View>
+            <View style={{ width: SCREEN_WIDTH }}>
+              {communityPosts.slice().sort((a, b) => b.likes - a.likes).map(renderPostCard)}
+            </View>
+          </ScrollView>
 
           <View style={{ height: 100 }} />
         </View>
