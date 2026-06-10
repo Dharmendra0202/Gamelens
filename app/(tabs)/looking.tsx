@@ -164,7 +164,7 @@ export default function LookingScreen() {
     <TabScreenWrapper>
       <View style={styles.container}>
       <LinearGradient
-        colors={['#B91C1C', '#991B1B', '#7F1D1D']}
+        colors={['#00A66A', '#0F766E', '#064E3B']}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
         style={styles.header}
@@ -203,7 +203,7 @@ export default function LookingScreen() {
               ]}
               onPress={() => selectAction('opponent')}
             >
-              <Ionicons name="search-outline" size={18} color="#B91C1C" />
+              <Ionicons name="search-outline" size={18} color="#00A66A" />
               <Text style={styles.composerButtonText}>Opponent</Text>
             </TouchableOpacity>
             <TouchableOpacity
@@ -213,7 +213,7 @@ export default function LookingScreen() {
               ]}
               onPress={() => selectAction('tournament')}
             >
-              <Ionicons name="trophy-outline" size={18} color="#B91C1C" />
+              <Ionicons name="trophy-outline" size={18} color="#00A66A" />
               <Text style={styles.composerButtonText}>Tournament</Text>
             </TouchableOpacity>
             <TouchableOpacity
@@ -242,7 +242,7 @@ export default function LookingScreen() {
                 onPress={() => selectAction(action.id)}
               >
                 <View style={styles.quickActionIcon}>
-                  <Ionicons name={action.icon} size={22} color="#B91C1C" />
+                  <Ionicons name={action.icon} size={22} color="#00A66A" />
                 </View>
                 <View style={styles.quickActionText}>
                   <Text style={styles.quickActionTitle}>{action.title}</Text>
@@ -314,7 +314,7 @@ export default function LookingScreen() {
                   <Ionicons
                     name={hasContacted ? 'checkmark-circle' : 'send-outline'}
                     size={18}
-                    color={hasContacted ? '#B91C1C' : '#666'}
+                    color={hasContacted ? '#00A66A' : '#666'}
                   />
                   <Text
                     style={[
@@ -339,7 +339,7 @@ export default function LookingScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F7F7F7',
+    backgroundColor: '#F0F7F4',
   },
   header: {
     paddingHorizontal: 18,
@@ -352,7 +352,7 @@ const styles = StyleSheet.create({
     fontWeight: '800',
   },
   headerSubtitle: {
-    color: '#FEE2E2',
+    color: '#D1FAE5',
     fontSize: 14,
     lineHeight: 20,
     marginTop: 4,
@@ -363,13 +363,13 @@ const styles = StyleSheet.create({
   },
   composer: {
     backgroundColor: '#FFF',
-    borderRadius: 8,
+    borderRadius: 20,
     padding: 14,
     borderWidth: 1,
-    borderColor: '#ECECEC',
-    shadowColor: '#111',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.08,
+    borderColor: '#F4F4F4',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.06,
     shadowRadius: 10,
     elevation: 3,
   },
@@ -382,12 +382,12 @@ const styles = StyleSheet.create({
     width: 42,
     height: 42,
     borderRadius: 21,
-    backgroundColor: '#FEE2E2',
+    backgroundColor: '#D1FAE5',
     alignItems: 'center',
     justifyContent: 'center',
   },
   avatarText: {
-    color: '#B91C1C',
+    color: '#00A66A',
     fontSize: 12,
     fontWeight: '800',
   },
@@ -414,15 +414,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 6,
     paddingHorizontal: 10,
-    borderRadius: 8,
-    backgroundColor: '#FEF2F2',
+    borderRadius: 12,
+    backgroundColor: '#F0FFF8',
   },
   activeComposerButton: {
     borderWidth: 1,
-    borderColor: '#B91C1C',
+    borderColor: '#00A66A',
   },
   composerButtonText: {
-    color: '#B91C1C',
+    color: '#00A66A',
     fontSize: 13,
     fontWeight: '700',
   },
@@ -430,8 +430,8 @@ const styles = StyleSheet.create({
     minHeight: 36,
     marginLeft: 'auto',
     justifyContent: 'center',
-    borderRadius: 8,
-    backgroundColor: '#B91C1C',
+    borderRadius: 20,
+    backgroundColor: '#00A66A',
     paddingHorizontal: 18,
   },
   disabledPostButton: {
@@ -449,23 +449,28 @@ const styles = StyleSheet.create({
   quickActionCard: {
     minHeight: 76,
     backgroundColor: '#FFF',
-    borderRadius: 8,
+    borderRadius: 20,
     borderWidth: 1,
-    borderColor: '#ECECEC',
+    borderColor: '#F4F4F4',
     paddingHorizontal: 14,
     flexDirection: 'row',
     alignItems: 'center',
     gap: 12,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.06,
+    shadowRadius: 10,
+    elevation: 3,
   },
   activeQuickActionCard: {
-    borderColor: '#B91C1C',
-    backgroundColor: '#FFFBFB',
+    borderColor: '#00A66A',
+    backgroundColor: '#F0FFF8',
   },
   quickActionIcon: {
     width: 44,
     height: 44,
     borderRadius: 22,
-    backgroundColor: '#FEF2F2',
+    backgroundColor: '#D1FAE5',
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -499,11 +504,16 @@ const styles = StyleSheet.create({
   },
   postCard: {
     backgroundColor: '#FFF',
-    borderRadius: 8,
+    borderRadius: 20,
     borderWidth: 1,
-    borderColor: '#ECECEC',
-    padding: 14,
+    borderColor: '#F4F4F4',
+    padding: 16,
     marginBottom: 12,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.06,
+    shadowRadius: 10,
+    elevation: 3,
   },
   postHeader: {
     flexDirection: 'row',
@@ -537,13 +547,13 @@ const styles = StyleSheet.create({
     marginTop: 2,
   },
   postTag: {
-    borderRadius: 8,
-    backgroundColor: '#FEF2F2',
+    borderRadius: 12,
+    backgroundColor: '#F0FFF8',
     paddingHorizontal: 9,
     paddingVertical: 5,
   },
   postTagText: {
-    color: '#B91C1C',
+    color: '#00A66A',
     fontSize: 11,
     fontWeight: '800',
   },
@@ -589,12 +599,12 @@ const styles = StyleSheet.create({
     fontWeight: '700',
   },
   activeFooterAction: {
-    backgroundColor: '#FEF2F2',
-    borderRadius: 8,
+    backgroundColor: '#F0FFF8',
+    borderRadius: 12,
     paddingHorizontal: 8,
     paddingVertical: 5,
   },
   activeFooterActionText: {
-    color: '#B91C1C',
+    color: '#00A66A',
   },
 });

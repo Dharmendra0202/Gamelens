@@ -1,3 +1,6 @@
+import { AnimatedViewTransition } from "@/components/ui/animated-view-transition";
+import { TabScreenWrapper } from "@/components/ui/tab-screen-wrapper";
+import { shareContent } from "@/utils/share";
 import { Ionicons } from "@expo/vector-icons";
 import { useFocusEffect } from "@react-navigation/native";
 import * as ImagePicker from "expo-image-picker";
@@ -19,9 +22,6 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { AnimatedViewTransition } from "@/components/ui/animated-view-transition";
-import { TabScreenWrapper } from "@/components/ui/tab-screen-wrapper";
-import { shareContent } from "@/utils/share";
 
 export default function MyCricketScreen() {
   const router = useRouter();
@@ -164,9 +164,9 @@ export default function MyCricketScreen() {
     {
       id: "leather",
       label: "Leather",
-      color: "#B91C1C",
-      seamColor: "#FEE2E2",
-      shadowColor: "#7F1D1D",
+      color: "#00A66A",
+      seamColor: "#D1FAE5",
+      shadowColor: "#064E3B",
     },
     {
       id: "other",
@@ -645,14 +645,14 @@ export default function MyCricketScreen() {
             style={styles.calendarNavButton}
             onPress={() => changeTournamentCalendarMonth(-1)}
           >
-            <Ionicons name="chevron-back" size={18} color="#B91C1C" />
+            <Ionicons name="chevron-back" size={18} color="#00A66A" />
           </TouchableOpacity>
           <Text style={styles.calendarTitle}>{monthLabel}</Text>
           <TouchableOpacity
             style={styles.calendarNavButton}
             onPress={() => changeTournamentCalendarMonth(1)}
           >
-            <Ionicons name="chevron-forward" size={18} color="#B91C1C" />
+            <Ionicons name="chevron-forward" size={18} color="#00A66A" />
           </TouchableOpacity>
         </View>
 
@@ -1507,7 +1507,7 @@ export default function MyCricketScreen() {
       {/* Header - Always show except when specified */}
       <Animated.View style={{ opacity: fadeAnim }}>
           <LinearGradient
-            colors={["#B91C1C", "#991B1B", "#7F1D1D"]}
+            colors={["#00A66A", "#0F766E", "#064E3B"]}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 1 }}
             style={styles.header}
@@ -1652,7 +1652,7 @@ export default function MyCricketScreen() {
                     />
                   ) : (
                     <View style={styles.emptyBannerContent}>
-                      <Ionicons name="image-outline" size={34} color="#B91C1C" />
+                      <Ionicons name="image-outline" size={34} color="#00A66A" />
                       <Text style={styles.emptyBannerTitle}>Tournament banner</Text>
                       <Text style={styles.emptyBannerSubtitle}>Tap to upload from device</Text>
                     </View>
@@ -1675,7 +1675,7 @@ export default function MyCricketScreen() {
                       style={styles.tournamentLogoPreview}
                     />
                   ) : (
-                    <Ionicons name="shield-outline" size={34} color="#B91C1C" />
+                    <Ionicons name="shield-outline" size={34} color="#00A66A" />
                   )}
                   <View style={styles.logoCameraBadge}>
                     <Ionicons name="camera" size={12} color="#FFF" />
@@ -1738,7 +1738,7 @@ export default function MyCricketScreen() {
                       <Ionicons
                         name="calendar-outline"
                         size={20}
-                        color={activeTournamentDateField === field ? "#B91C1C" : "#666"}
+                        color={activeTournamentDateField === field ? "#00A66A" : "#666"}
                       />
                     </TouchableOpacity>
                   </View>
@@ -1770,7 +1770,7 @@ export default function MyCricketScreen() {
                   ["ROUGH", "CEMENT", "TURF", "ASTROTURF", "MATTING"],
                   tournamentPitchType,
                   setTournamentPitchType,
-                  "#B91C1C"
+                  "#00A66A"
                 )}
               </View>
 
@@ -1781,7 +1781,7 @@ export default function MyCricketScreen() {
                   ["Limited Overs", "Box/Turf Cricket", "Pair Cricket", "Test Match", "The Hundred"],
                   tournamentMatchType,
                   setTournamentMatchType,
-                  "#B91C1C"
+                  "#00A66A"
                 )}
               </View>
 
@@ -1866,7 +1866,7 @@ export default function MyCricketScreen() {
                 }}
               >
                 <LinearGradient
-                  colors={["#B91C1C", "#991B1B", "#7F1D1D"]}
+                  colors={["#00A66A", "#0F766E", "#064E3B"]}
                   start={{ x: 0, y: 0 }}
                   end={{ x: 1, y: 1 }}
                   style={styles.nextButtonGradient}
@@ -1883,7 +1883,7 @@ export default function MyCricketScreen() {
           <View style={styles.tdContainer}>
             {/* Hero Banner */}
             <LinearGradient
-              colors={["#7F1D1D", "#B91C1C", "#DC2626"]}
+              colors={["#064E3B", "#00A66A", "#059669"]}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 1 }}
               style={styles.tdHero}
@@ -1974,7 +1974,7 @@ export default function MyCricketScreen() {
                       </View>
                       <View style={styles.tdMatchTeams}>
                         <View style={styles.tdTeamCol}>
-                          <LinearGradient colors={["#B91C1C", "#7F1D1D"]} style={styles.tdTeamAvatar}>
+                          <LinearGradient colors={["#00A66A", "#064E3B"]} style={styles.tdTeamAvatar}>
                             <Text style={styles.tdTeamAvatarText}>{m.team1.charAt(0)}</Text>
                           </LinearGradient>
                           <Text style={styles.tdTeamName}>{m.team1}</Text>
@@ -2009,7 +2009,7 @@ export default function MyCricketScreen() {
                       </View>
                       <View style={styles.tdMatchTeams}>
                         <View style={styles.tdTeamCol}>
-                          <LinearGradient colors={["#B91C1C", "#7F1D1D"]} style={styles.tdTeamAvatar}>
+                          <LinearGradient colors={["#00A66A", "#064E3B"]} style={styles.tdTeamAvatar}>
                             <Text style={styles.tdTeamAvatarText}>{m.team1.charAt(0)}</Text>
                           </LinearGradient>
                           <Text style={styles.tdTeamName}>{m.team1}</Text>
@@ -2043,7 +2043,7 @@ export default function MyCricketScreen() {
                 <View style={styles.tdSection}>
                   <Text style={styles.tdSectionTitle}>Points Table</Text>
                   {/* Header */}
-                  <LinearGradient colors={["#B91C1C", "#7F1D1D"]} style={styles.tdPtsHeader}>
+                  <LinearGradient colors={["#00A66A", "#064E3B"]} style={styles.tdPtsHeader}>
                     {["#", "Team", "P", "W", "L", "NRR", "Pts"].map((h, i) => (
                       <Text key={i} style={[styles.tdPtsCell, styles.tdPtsHeaderCell, i === 1 && { flex: 2.5, textAlign: "left" }]}>{h}</Text>
                     ))}
@@ -2067,7 +2067,7 @@ export default function MyCricketScreen() {
                         </View>
                       </View>
                       <View style={[styles.tdPtsCell, { flex: 2.5, flexDirection: "row", alignItems: "center" }]}>
-                        <LinearGradient colors={["#B91C1C", "#7F1D1D"]} style={styles.tdTeamDot}>
+                        <LinearGradient colors={["#00A66A", "#064E3B"]} style={styles.tdTeamDot}>
                           <Text style={styles.tdTeamDotText}>{row.team.charAt(0)}</Text>
                         </LinearGradient>
                         <Text style={styles.tdTeamLabel} numberOfLines={1}>{row.team}</Text>
@@ -2077,7 +2077,7 @@ export default function MyCricketScreen() {
                       <Text style={[styles.tdPtsCell, { flex: 1, textAlign: "center", color: "#4CAF50", fontWeight: "700" }]}>{row.w}</Text>
                       <Text style={[styles.tdPtsCell, { flex: 1, textAlign: "center", color: "#E63946", fontWeight: "700" }]}>{row.l}</Text>
                       <Text style={[styles.tdPtsCell, { flex: 1, textAlign: "center", color: row.nrr.startsWith("+") ? "#4CAF50" : "#E63946", fontSize: 11 }]}>{row.nrr}</Text>
-                      <Text style={[styles.tdPtsCell, { flex: 1, textAlign: "center", fontWeight: "800", color: "#B91C1C" }]}>{row.pts}</Text>
+                      <Text style={[styles.tdPtsCell, { flex: 1, textAlign: "center", fontWeight: "800", color: "#00A66A" }]}>{row.pts}</Text>
                     </View>
                   ))}
                   <View style={styles.tdLegend}>
@@ -2158,7 +2158,7 @@ export default function MyCricketScreen() {
                       }}
                     >
                       <LinearGradient
-                        colors={["#B91C1C", "#991B1B"]}
+                        colors={["#00A66A", "#0F766E"]}
                         style={styles.simpleTeamMgmtButtonGradient}
                       >
                         <Ionicons name="people-outline" size={24} color="#FFF" />
@@ -2197,7 +2197,7 @@ export default function MyCricketScreen() {
                   setShowAddPlayerModal(true);
                 }}
               >
-                <LinearGradient colors={["#B91C1C", "#7F1D1D"]} style={styles.tdBottomBtnGrad}>
+                <LinearGradient colors={["#00A66A", "#064E3B"]} style={styles.tdBottomBtnGrad}>
                   <Ionicons name="settings-outline" size={18} color="#FFF" />
                   <Text style={styles.tdBottomBtnText}>Manage Tournament</Text>
                 </LinearGradient>
@@ -2290,9 +2290,9 @@ export default function MyCricketScreen() {
                 <Text style={styles.tournamentSectionTitle}>Upcoming Matches</Text>
                 
                 {[
-                  { id: 1, team1: "Warriors", team1Initial: "W", team1Color: "#B91C1C", team2: "Strikers", team2Initial: "S", team2Color: "#1E40AF", date: "Today", time: "6:00 PM", venue: "Ground A" },
-                  { id: 2, team1: "Lions", team1Initial: "L", team1Color: "#B91C1C", team2: "Tigers", team2Initial: "T", team2Color: "#1E40AF", date: "Tomorrow", time: "5:00 PM", venue: "Ground B" },
-                  { id: 3, team1: "Eagles", team1Initial: "E", team1Color: "#B91C1C", team2: "Hawks", team2Initial: "H", team2Color: "#1E40AF", date: "May 12", time: "7:00 PM", venue: "Ground A" },
+                  { id: 1, team1: "Warriors", team1Initial: "W", team1Color: "#00A66A", team2: "Strikers", team2Initial: "S", team2Color: "#1E40AF", date: "Today", time: "6:00 PM", venue: "Ground A" },
+                  { id: 2, team1: "Lions", team1Initial: "L", team1Color: "#00A66A", team2: "Tigers", team2Initial: "T", team2Color: "#1E40AF", date: "Tomorrow", time: "5:00 PM", venue: "Ground B" },
+                  { id: 3, team1: "Eagles", team1Initial: "E", team1Color: "#00A66A", team2: "Hawks", team2Initial: "H", team2Color: "#1E40AF", date: "May 12", time: "7:00 PM", venue: "Ground A" },
                 ].map((match) => (
                   <View key={match.id} style={styles.tournamentMatchCard}>
                     {/* Match Header */}
@@ -2538,7 +2538,7 @@ export default function MyCricketScreen() {
                     >
                       <View style={styles.teamItemHeader}>
                         <LinearGradient
-                          colors={["#B91C1C", "#991B1B"]}
+                          colors={["#00A66A", "#0F766E"]}
                           style={styles.teamItemIcon}
                         >
                           <Text style={styles.teamItemIconText}>{team.name.charAt(5)}</Text>
@@ -2550,8 +2550,8 @@ export default function MyCricketScreen() {
                         <LinearGradient
                           colors={
                             team.status === "Active"
-                              ? ["#B91C1C", "#991B1B"]
-                              : ["#DC2626", "#991B1B"]
+                              ? ["#00A66A", "#0F766E"]
+                              : ["#059669", "#0F766E"]
                           }
                           style={styles.teamItemStatus}
                         >
@@ -2560,7 +2560,7 @@ export default function MyCricketScreen() {
                       </View>
                       <View style={styles.teamItemStats}>
                         <View style={styles.teamItemStat}>
-                          <Ionicons name="people" size={14} color="#B91C1C" />
+                          <Ionicons name="people" size={14} color="#00A66A" />
                           <Text style={styles.teamItemStatText}>{team.players} Players</Text>
                         </View>
                       </View>
@@ -2584,7 +2584,7 @@ export default function MyCricketScreen() {
                 }}
               >
                 <LinearGradient
-                  colors={["#B91C1C", "#991B1B"]}
+                  colors={["#00A66A", "#0F766E"]}
                   start={{ x: 0, y: 0 }}
                   end={{ x: 1, y: 1 }}
                   style={styles.modalOptionGradient}
@@ -2615,7 +2615,7 @@ export default function MyCricketScreen() {
                 }}
               >
                 <LinearGradient
-                  colors={["#B91C1C", "#991B1B"]}
+                  colors={["#00A66A", "#0F766E"]}
                   start={{ x: 0, y: 0 }}
                   end={{ x: 1, y: 1 }}
                   style={styles.modalOptionGradient}
@@ -2646,7 +2646,7 @@ export default function MyCricketScreen() {
                 }}
               >
                 <LinearGradient
-                  colors={["#B91C1C", "#991B1B"]}
+                  colors={["#00A66A", "#0F766E"]}
                   start={{ x: 0, y: 0 }}
                   end={{ x: 1, y: 1 }}
                   style={styles.modalOptionGradient}
@@ -2679,7 +2679,7 @@ export default function MyCricketScreen() {
                 }}
               >
                 <LinearGradient
-                  colors={["#DC2626", "#B91C1C"]}
+                  colors={["#059669", "#00A66A"]}
                   start={{ x: 0, y: 0 }}
                   end={{ x: 1, y: 1 }}
                   style={styles.modalOptionGradient}
@@ -2865,7 +2865,7 @@ export default function MyCricketScreen() {
                 }}
               >
                 <LinearGradient
-                  colors={["#EF4444", "#DC2626"]}
+                  colors={["#EF4444", "#059669"]}
                   start={{ x: 0, y: 0 }}
                   end={{ x: 1, y: 1 }}
                   style={styles.addTeamsOptionGradient}
@@ -2899,9 +2899,9 @@ export default function MyCricketScreen() {
               <Text style={styles.teamsSectionTitle}>My Teams</Text>
               
               {[
-                { id: 1, name: "Mumbai Warriors", players: 15, matches: 12, wins: 8, color: "#B91C1C" },
+                { id: 1, name: "Mumbai Warriors", players: 15, matches: 12, wins: 8, color: "#00A66A" },
                 { id: 2, name: "Delhi Capitals", players: 14, matches: 10, wins: 6, color: "#059669" },
-                { id: 3, name: "Chennai Kings", players: 16, matches: 8, wins: 5, color: "#DC2626" },
+                { id: 3, name: "Chennai Kings", players: 16, matches: 8, wins: 5, color: "#059669" },
                 { id: 4, name: "Bangalore Riders", players: 13, matches: 6, wins: 4, color: "#7C3AED" },
                 { id: 5, name: "Kolkata Knights", players: 15, matches: 9, wins: 7, color: "#F59E0B" }
               ].map((team) => (
@@ -2932,7 +2932,7 @@ export default function MyCricketScreen() {
                     </Text>
                   </View>
                   <View style={styles.teamSelectionAction}>
-                    <Ionicons name="checkmark-circle-outline" size={24} color="#B91C1C" />
+                    <Ionicons name="checkmark-circle-outline" size={24} color="#00A66A" />
                   </View>
                 </TouchableOpacity>
               ))}
@@ -3004,7 +3004,7 @@ export default function MyCricketScreen() {
                   ]}
                 >
                   <LinearGradient
-                    colors={["#B91C1C", "#991B1B"]}
+                    colors={["#00A66A", "#0F766E"]}
                     style={styles.vsTeamCircleSmall}
                   >
                     <Text style={styles.vsTeamInitialSmall}>
@@ -3029,7 +3029,7 @@ export default function MyCricketScreen() {
                   ]}
                 >
                   <LinearGradient
-                    colors={["#B91C1C", "#991B1B"]}
+                    colors={["#00A66A", "#0F766E"]}
                     style={styles.vsTextCircleSmall}
                   >
                     <Text style={styles.vsTextSmall}>VS</Text>
@@ -3054,7 +3054,7 @@ export default function MyCricketScreen() {
                   ]}
                 >
                   <LinearGradient
-                    colors={["#B91C1C", "#991B1B"]}
+                    colors={["#00A66A", "#0F766E"]}
                     style={styles.vsTeamCircleSmall}
                   >
                     <Text style={styles.vsTeamInitialSmall}>
@@ -3075,7 +3075,7 @@ export default function MyCricketScreen() {
             <View style={styles.setupSection}>
               <Text style={styles.setupSectionTitle}>Match Type *</Text>
               <LinearGradient
-                colors={["#FEF2F2", "#FEF2F2", "#FEE2E2"]}
+                colors={["#F0FFF8", "#F0FFF8", "#D1FAE5"]}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 0 }}
                 style={styles.matchTypeCubeContainer}
@@ -3122,7 +3122,7 @@ export default function MyCricketScreen() {
               
               {/* Overs Input */}
               <View style={styles.inputContainer}>
-                <Ionicons name="timer-outline" size={18} color="#B91C1C" />
+                <Ionicons name="timer-outline" size={18} color="#00A66A" />
                 <TextInput
                   style={styles.input}
                   placeholder="Type number of overs"
@@ -3149,7 +3149,7 @@ export default function MyCricketScreen() {
                   onPress={handleEnableLocation}
                 >
                   <LinearGradient
-                    colors={["#B91C1C", "#991B1B", "#7F1D1D"]}
+                    colors={["#00A66A", "#0F766E", "#064E3B"]}
                     start={{ x: 0, y: 0 }}
                     end={{ x: 1, y: 1 }}
                     style={styles.locationButtonGradient}
@@ -3173,11 +3173,11 @@ export default function MyCricketScreen() {
               ) : (
                 <View style={styles.locationEnabledContainer}>
                   <LinearGradient
-                    colors={["#FEF2F2", "#FEE2E2"]}
+                    colors={["#F0FFF8", "#D1FAE5"]}
                     style={styles.locationEnabledHeader}
                   >
                     <View style={styles.locationEnabledBadge}>
-                      <Ionicons name="checkmark-circle" size={18} color="#B91C1C" />
+                      <Ionicons name="checkmark-circle" size={18} color="#00A66A" />
                       <Text style={styles.locationEnabledText}>
                         Location Enabled
                       </Text>
@@ -3223,7 +3223,7 @@ export default function MyCricketScreen() {
                             <LinearGradient
                               colors={
                                 selectedGround === ground.name
-                                  ? ["#FEE2E2", "#FCA5A5"]
+                                  ? ["#D1FAE5", "#6EE7B7"]
                                   : ["#FFFFFF", "#F8F9FA"]
                               }
                               style={styles.groundCardGradient}
@@ -3264,7 +3264,7 @@ export default function MyCricketScreen() {
                               </View>
                               {selectedGround === ground.name && (
                                 <View style={styles.selectedCheckmark}>
-                                  <Ionicons name="checkmark-circle" size={24} color="#B91C1C" />
+                                  <Ionicons name="checkmark-circle" size={24} color="#00A66A" />
                                 </View>
                               )}
                             </LinearGradient>
@@ -3283,7 +3283,7 @@ export default function MyCricketScreen() {
                           ]}
                         >
                           <LinearGradient
-                            colors={["#B91C1C", "#991B1B"]}
+                            colors={["#00A66A", "#0F766E"]}
                             style={styles.customScrollbarThumbGradient}
                           >
                             <View style={styles.scrollbarGrip}>
@@ -3302,7 +3302,7 @@ export default function MyCricketScreen() {
               {locationEnabled && (
                 <>
                   <View style={styles.inputContainer}>
-                    <Ionicons name="business-outline" size={18} color="#B91C1C" />
+                    <Ionicons name="business-outline" size={18} color="#00A66A" />
                     <TextInput
                       style={styles.input}
                       placeholder="City/Town"
@@ -3314,7 +3314,7 @@ export default function MyCricketScreen() {
                   </View>
 
                   <View style={styles.inputContainer}>
-                    <Ionicons name="location-outline" size={18} color="#B91C1C" />
+                    <Ionicons name="location-outline" size={18} color="#00A66A" />
                     <TextInput
                       style={styles.input}
                       placeholder="Ground Name"
@@ -3345,7 +3345,7 @@ export default function MyCricketScreen() {
               <Text style={styles.setupSectionTitle}>Date & Time *</Text>
               <View style={styles.dateTimeRow}>
                 <View style={[styles.inputContainer, { flex: 1 }]}>
-                  <Ionicons name="calendar-outline" size={18} color="#B91C1C" />
+                  <Ionicons name="calendar-outline" size={18} color="#00A66A" />
                   <TextInput
                     style={styles.input}
                     placeholder="DD/MM/YYYY"
@@ -3355,7 +3355,7 @@ export default function MyCricketScreen() {
                   />
                 </View>
                 <View style={[styles.inputContainer, { flex: 1 }]}>
-                  <Ionicons name="time-outline" size={18} color="#B91C1C" />
+                  <Ionicons name="time-outline" size={18} color="#00A66A" />
                   <TextInput
                     style={styles.input}
                     placeholder="HH:MM"
@@ -3372,7 +3372,7 @@ export default function MyCricketScreen() {
               <Text style={styles.setupSectionTitle}>Match Officials</Text>
               
               <View style={styles.inputContainer}>
-                <Ionicons name="person-outline" size={18} color="#B91C1C" />
+                <Ionicons name="person-outline" size={18} color="#00A66A" />
                 <TextInput
                   style={styles.input}
                   placeholder="Umpire 1"
@@ -3383,7 +3383,7 @@ export default function MyCricketScreen() {
               </View>
 
               <View style={styles.inputContainer}>
-                <Ionicons name="person-outline" size={18} color="#B91C1C" />
+                <Ionicons name="person-outline" size={18} color="#00A66A" />
                 <TextInput
                   style={styles.input}
                   placeholder="Umpire 2"
@@ -3394,7 +3394,7 @@ export default function MyCricketScreen() {
               </View>
 
               <View style={styles.inputContainer}>
-                <Ionicons name="create-outline" size={18} color="#B91C1C" />
+                <Ionicons name="create-outline" size={18} color="#00A66A" />
                 <TextInput
                   style={styles.input}
                   placeholder="Scorer"
@@ -3405,7 +3405,7 @@ export default function MyCricketScreen() {
               </View>
 
               <View style={styles.inputContainer}>
-                <Ionicons name="videocam-outline" size={18} color="#B91C1C" />
+                <Ionicons name="videocam-outline" size={18} color="#00A66A" />
                 <TextInput
                   style={styles.input}
                   placeholder="Live Streamer"
@@ -3416,7 +3416,7 @@ export default function MyCricketScreen() {
               </View>
 
               <View style={styles.inputContainer}>
-                <Ionicons name="people-outline" size={18} color="#B91C1C" />
+                <Ionicons name="people-outline" size={18} color="#00A66A" />
                 <TextInput
                   style={styles.input}
                   placeholder="Others"
@@ -3478,7 +3478,7 @@ export default function MyCricketScreen() {
               }}
             >
               <LinearGradient
-                colors={["#B91C1C", "#991B1B", "#7F1D1D"]}
+                colors={["#00A66A", "#0F766E", "#064E3B"]}
                 style={styles.startMatchButtonGradient}
               >
                 <Ionicons name="disc" size={28} color="#FFF" />
@@ -3515,7 +3515,7 @@ export default function MyCricketScreen() {
                 onPress={() => setTossWinner("A")}
               >
                 <View style={styles.tossTeamJersey}>
-                  <Ionicons name="shirt" size={38} color={tossWinner === "A" ? "#B91C1C" : "#777"} />
+                  <Ionicons name="shirt" size={38} color={tossWinner === "A" ? "#00A66A" : "#777"} />
                   {tossWinner === "A" && (
                     <View style={styles.tossCheckBadge}>
                       <Ionicons name="checkmark" size={13} color="#FFF" />
@@ -3538,7 +3538,7 @@ export default function MyCricketScreen() {
                 onPress={() => setTossWinner("B")}
               >
                 <View style={styles.tossTeamJersey}>
-                  <Ionicons name="shirt" size={38} color={tossWinner === "B" ? "#B91C1C" : "#777"} />
+                  <Ionicons name="shirt" size={38} color={tossWinner === "B" ? "#00A66A" : "#777"} />
                   {tossWinner === "B" && (
                     <View style={styles.tossCheckBadge}>
                       <Ionicons name="checkmark" size={13} color="#FFF" />
@@ -3621,7 +3621,7 @@ export default function MyCricketScreen() {
                 }}
               >
                 <LinearGradient
-                  colors={["#B91C1C", "#991B1B", "#7F1D1D"]}
+                  colors={["#00A66A", "#0F766E", "#064E3B"]}
                   style={styles.startMatchButtonGradient}
                 >
                   <Ionicons name="play-circle" size={28} color="#FFF" />
@@ -3780,7 +3780,7 @@ export default function MyCricketScreen() {
                 }}
               >
                 <LinearGradient
-                  colors={["#B91C1C", "#991B1B"]}
+                  colors={["#00A66A", "#0F766E"]}
                   style={styles.startScoringButtonGradient}
                 >
                   <Ionicons name="play-circle" size={20} color="#FFF" />
@@ -3947,7 +3947,7 @@ export default function MyCricketScreen() {
               }}
             >
               <LinearGradient
-                colors={["#B91C1C", "#991B1B"]}
+                colors={["#00A66A", "#0F766E"]}
                 style={styles.saveSettingsButtonGradient}
               >
                 <Ionicons name="checkmark-circle" size={20} color="#FFF" />
@@ -4129,7 +4129,7 @@ export default function MyCricketScreen() {
                   style={styles.selectTeamCardGradient}
                 >
                   <LinearGradient
-                    colors={["#B91C1C", "#991B1B"]}
+                    colors={["#00A66A", "#0F766E"]}
                     style={styles.selectTeamIcon}
                   >
                     <Text style={styles.selectTeamInitial}>
@@ -4156,503 +4156,467 @@ export default function MyCricketScreen() {
                     </View>
                   </View>
 
-                  <Ionicons name="chevron-forward" size={20} color="#B91C1C" />
+                  <Ionicons name="chevron-forward" size={20} color="#00A66A" />
                 </LinearGradient>
               </TouchableOpacity>
             ))}
           </View>
         ) : currentView === "createTeam" ? (
-          /* Create Team View */
-          <View style={styles.teamSelectionContainer}>
-            <Text style={styles.teamSelectionTitle}>
-              Create Team {teamSlot}
-            </Text>
+          /* ── Create Team — Premium Redesign ── */
+          <ScrollView
+            ref={scrollViewRef}
+            style={{ flex: 1, backgroundColor: "#F8FAFC" }}
+            showsVerticalScrollIndicator={false}
+            keyboardShouldPersistTaps="handled"
+          >
+            {/* ── Header ── */}
+            <LinearGradient
+              colors={["#00A66A", "#0F766E", "#064E3B"]}
+              start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }}
+              style={ctStyles.header}
+            >
+              <View style={ctStyles.headerDeco1} />
+              <View style={ctStyles.headerDeco2} />
+              <View style={ctStyles.headerTop}>
+                <View style={ctStyles.headerSlotBadge}>
+                  <Ionicons name="shield-half" size={12} color="#FFF" />
+                  <Text style={ctStyles.headerSlotTxt}>TEAM {teamSlot}</Text>
+                </View>
+              </View>
+              <Text style={ctStyles.headerTitle}>Create Your Team</Text>
+              <Text style={ctStyles.headerSub}>Fill in team details to set up your squad</Text>
 
-            <View style={styles.createTeamForm}>
-              {/* Big Card Container for Form Fields */}
-              <View style={styles.formCard}>
+              {/* Progress bar */}
+              <View style={ctStyles.progressBar}>
+                {[
+                  !!currentTeamName.trim(),
+                  !!currentCity.trim(),
+                  !!currentMobile && currentMobile.length === 10,
+                  !!currentCaptain.trim(),
+                  !!currentPlayers && parseInt(currentPlayers) >= 11,
+                ].map((done, i) => (
+                  <View key={i} style={[ctStyles.progressSlot, done && ctStyles.progressSlotDone]} />
+                ))}
+              </View>
+              <Text style={ctStyles.progressLabel}>
+                {[currentTeamName, currentCity, currentMobile, currentCaptain, currentPlayers].filter(Boolean).length}/5 fields filled
+              </Text>
+            </LinearGradient>
+
+            <View style={ctStyles.body}>
+
+              {/* ── Team Identity ── */}
+              <View style={ctStyles.sectionCard}>
+                <View style={ctStyles.sectionHeader}>
+                  <View style={ctStyles.sectionIconWrap}>
+                    <Ionicons name="shield" size={16} color="#00A66A" />
+                  </View>
+                  <Text style={ctStyles.sectionTitle}>Team Identity</Text>
+                </View>
+
                 {/* Team Name */}
-                <View style={styles.createTeamFormGroup}>
-                  <Text style={styles.createTeamFormLabel}>Team Name *</Text>
-                  <View style={styles.inputContainer}>
-                    <Ionicons name="shield" size={18} color="#B91C1C" />
+                <View style={ctStyles.fieldGroup}>
+                  <Text style={ctStyles.fieldLabel}>Team Name <Text style={ctStyles.req}>*</Text></Text>
+                  <View style={[ctStyles.fieldInput, currentTeamName.trim() && ctStyles.fieldInputDone]}>
+                    <Ionicons name="shield-outline" size={18} color={currentTeamName.trim() ? "#00A66A" : "#94A3B8"} />
                     <TextInput
-                      style={styles.input}
-                      placeholder="Enter team name"
-                      placeholderTextColor="#999"
+                      style={ctStyles.fieldText}
+                      placeholder="e.g. Mumbai Warriors"
+                      placeholderTextColor="#94A3B8"
                       value={currentTeamName}
                       onChangeText={setCurrentTeamName}
                     />
+                    {currentTeamName.trim() && <Ionicons name="checkmark-circle" size={18} color="#22C55E" />}
                   </View>
                 </View>
 
-                {/* City/Town */}
-                <View style={styles.createTeamFormGroup}>
-                  <Text style={styles.createTeamFormLabel}>City/Town *</Text>
-                  <View style={styles.inputContainer}>
-                    <Ionicons name="location" size={18} color="#B91C1C" />
+                {/* City */}
+                <View style={ctStyles.fieldGroup}>
+                  <Text style={ctStyles.fieldLabel}>City / Town <Text style={ctStyles.req}>*</Text></Text>
+                  <View style={[ctStyles.fieldInput, currentCity.trim() && ctStyles.fieldInputDone]}>
+                    <Ionicons name="location-outline" size={18} color={currentCity.trim() ? "#00A66A" : "#94A3B8"} />
                     <TextInput
-                      style={styles.input}
-                      placeholder="Enter city or town"
-                      placeholderTextColor="#999"
+                      style={ctStyles.fieldText}
+                      placeholder="e.g. Mumbai"
+                      placeholderTextColor="#94A3B8"
                       value={currentCity}
                       onChangeText={setCurrentCity}
                     />
+                    {currentCity.trim() && <Ionicons name="checkmark-circle" size={18} color="#22C55E" />}
                   </View>
                 </View>
 
-                {/* Mobile Number */}
-                <View style={styles.createTeamFormGroup}>
-                  <Text style={styles.createTeamFormLabel}>Mobile Number *</Text>
-                  <View style={styles.mobileInputRow}>
-                    {/* Country Code Picker */}
-                    <TouchableOpacity 
-                      style={styles.countryCodePicker}
-                      onPress={() => setShowCountryPicker(!showCountryPicker)}
-                    >
-                      <Text style={styles.countryCodeText}>{countryCode}</Text>
-                      <Ionicons name="chevron-down" size={14} color="#666" />
+                {/* Mobile */}
+                <View style={ctStyles.fieldGroup}>
+                  <Text style={ctStyles.fieldLabel}>Contact Number <Text style={ctStyles.req}>*</Text></Text>
+                  <View style={ctStyles.mobileRow}>
+                    <TouchableOpacity style={ctStyles.dialCodeBtn} onPress={() => setShowCountryPicker(!showCountryPicker)}>
+                      <Text style={ctStyles.dialCodeTxt}>{countryCode}</Text>
+                      <Ionicons name="chevron-down" size={12} color="#64748B" />
                     </TouchableOpacity>
-                    
-                    {/* Mobile Number Input */}
-                    <View style={styles.mobileInputContainer}>
-                      <Ionicons name="call" size={18} color="#B91C1C" />
+                    <View style={[ctStyles.fieldInput, { flex: 1 }, currentMobile.length === 10 && ctStyles.fieldInputDone]}>
+                      <Ionicons name="call-outline" size={18} color={currentMobile.length === 10 ? "#00A66A" : "#94A3B8"} />
                       <TextInput
-                        style={styles.input}
-                        placeholder="Enter 10 digit number"
-                        placeholderTextColor="#999"
+                        style={ctStyles.fieldText}
+                        placeholder="10 digit number"
+                        placeholderTextColor="#94A3B8"
                         keyboardType="phone-pad"
                         maxLength={10}
                         value={currentMobile}
                         onChangeText={setCurrentMobile}
                       />
+                      {currentMobile.length === 10 && <Ionicons name="checkmark-circle" size={18} color="#22C55E" />}
                     </View>
                   </View>
-                  
-                  {/* Country Code Dropdown */}
                   {showCountryPicker && (
-                    <View style={styles.countryCodeDropdown}>
+                    <View style={ctStyles.dialDropdown}>
                       {[
-                        { code: '+91', country: 'India' },
-                        { code: '+1', country: 'USA/Canada' },
-                        { code: '+44', country: 'UK' },
-                        { code: '+61', country: 'Australia' },
-                        { code: '+971', country: 'UAE' },
-                        { code: '+65', country: 'Singapore' },
-                        { code: '+60', country: 'Malaysia' },
-                        { code: '+92', country: 'Pakistan' },
-                        { code: '+880', country: 'Bangladesh' },
-                        { code: '+94', country: 'Sri Lanka' },
-                      ].map((item) => (
-                        <TouchableOpacity
-                          key={item.code}
-                          style={styles.countryCodeOption}
-                          onPress={() => {
-                            setCountryCode(item.code);
-                            setShowCountryPicker(false);
-                          }}
-                        >
-                          <Text style={styles.countryCodeOptionText}>
-                            {item.code} ({item.country})
-                          </Text>
+                        { code: '+91', flag: '🇮🇳', country: 'India' },
+                        { code: '+1',  flag: '🇺🇸', country: 'USA/Canada' },
+                        { code: '+44', flag: '🇬🇧', country: 'UK' },
+                        { code: '+61', flag: '🇦🇺', country: 'Australia' },
+                        { code: '+971',flag: '🇦🇪', country: 'UAE' },
+                        { code: '+65', flag: '🇸🇬', country: 'Singapore' },
+                        { code: '+92', flag: '🇵🇰', country: 'Pakistan' },
+                        { code: '+880',flag: '🇧🇩', country: 'Bangladesh' },
+                        { code: '+94', flag: '🇱🇰', country: 'Sri Lanka' },
+                      ].map(item => (
+                        <TouchableOpacity key={item.code} style={ctStyles.dialOption} onPress={() => { setCountryCode(item.code); setShowCountryPicker(false); }}>
+                          <Text style={ctStyles.dialFlag}>{item.flag}</Text>
+                          <Text style={ctStyles.dialCountry}>{item.country}</Text>
+                          <Text style={ctStyles.dialCode}>{item.code}</Text>
+                          {countryCode === item.code && <Ionicons name="checkmark" size={14} color="#00A66A" />}
                         </TouchableOpacity>
                       ))}
                     </View>
                   )}
                 </View>
+              </View>
 
-                {/* Team Captain Name */}
-                <View style={styles.createTeamFormGroup}>
-                  <Text style={styles.createTeamFormLabel}>Team Captain Name *</Text>
-                  <View style={styles.inputContainer}>
-                    <Ionicons name="person-circle" size={18} color="#B91C1C" />
+              {/* ── Leadership ── */}
+              <View style={ctStyles.sectionCard}>
+                <View style={ctStyles.sectionHeader}>
+                  <View style={ctStyles.sectionIconWrap}>
+                    <Ionicons name="star" size={16} color="#00A66A" />
+                  </View>
+                  <Text style={ctStyles.sectionTitle}>Leadership</Text>
+                </View>
+
+                {/* Captain */}
+                <View style={ctStyles.fieldGroup}>
+                  <Text style={ctStyles.fieldLabel}>Captain Name <Text style={ctStyles.req}>*</Text></Text>
+                  <View style={[ctStyles.fieldInput, currentCaptain.trim() && ctStyles.fieldInputDone]}>
+                    <Ionicons name="person-circle-outline" size={18} color={currentCaptain.trim() ? "#00A66A" : "#94A3B8"} />
                     <TextInput
-                      style={styles.input}
-                      placeholder="Enter captain name"
-                      placeholderTextColor="#999"
+                      style={ctStyles.fieldText}
+                      placeholder="e.g. Rohit Sharma"
+                      placeholderTextColor="#94A3B8"
                       value={currentCaptain}
                       onChangeText={setCurrentCaptain}
                     />
+                    {currentCaptain.trim() && (
+                      <View style={ctStyles.captainBadge}>
+                        <Text style={ctStyles.captainBadgeTxt}>C</Text>
+                      </View>
+                    )}
                   </View>
                 </View>
+              </View>
 
-                {/* Number of Players */}
-                <View style={styles.createTeamFormGroup}>
-                  <Text style={styles.createTeamFormLabel}>Number of Players *</Text>
-                  <View style={styles.inputContainer}>
-                    <Ionicons name="people" size={18} color="#B91C1C" />
+              {/* ── Squad Size ── */}
+              <View style={ctStyles.sectionCard}>
+                <View style={ctStyles.sectionHeader}>
+                  <View style={ctStyles.sectionIconWrap}>
+                    <Ionicons name="people" size={16} color="#00A66A" />
+                  </View>
+                  <Text style={ctStyles.sectionTitle}>Squad Size</Text>
+                </View>
+
+                <View style={ctStyles.fieldGroup}>
+                  <Text style={ctStyles.fieldLabel}>Number of Players <Text style={ctStyles.req}>*</Text></Text>
+                  <Text style={ctStyles.fieldHint}>Min 11 (Playing XI) · Max 20 (with substitutes)</Text>
+                  <View style={[ctStyles.fieldInput, currentPlayers && parseInt(currentPlayers) >= 11 && ctStyles.fieldInputDone]}>
+                    <Ionicons name="people-outline" size={18} color={currentPlayers && parseInt(currentPlayers) >= 11 ? "#00A66A" : "#94A3B8"} />
                     <TextInput
-                      style={styles.input}
-                      placeholder="Enter number (max 20)"
-                      placeholderTextColor="#999"
+                      style={ctStyles.fieldText}
+                      placeholder="11–20 players"
+                      placeholderTextColor="#94A3B8"
                       keyboardType="numeric"
                       maxLength={2}
                       value={currentPlayers}
                       onChangeText={setCurrentPlayers}
                     />
+                    {currentPlayers ? (
+                      parseInt(currentPlayers) >= 11 && parseInt(currentPlayers) <= 20
+                        ? <Ionicons name="checkmark-circle" size={18} color="#22C55E" />
+                        : <Ionicons name="alert-circle" size={18} color="#EF4444" />
+                    ) : null}
                   </View>
-                </View>
-              </View>
 
-              {/* Add Players Button - Below the Card */}
-              <TouchableOpacity
-                style={styles.addPlayersButtonCard}
-                onPress={toggleAddPlayerModal}
-                activeOpacity={0.9}
-              >
-                <LinearGradient
-                  colors={["#B91C1C", "#991B1B"]}
-                  start={{ x: 0, y: 0 }}
-                  end={{ x: 1, y: 1 }}
-                  style={styles.addPlayersButtonCardGradient}
-                >
-                  <View style={styles.addPlayersButtonContent}>
-                    <View style={styles.addPlayersButtonIconCircle}>
-                      <Ionicons name="person-add" size={22} color="#FFF" />
-                    </View>
-                    <View style={styles.addPlayersButtonTextContainer}>
-                      <Text style={styles.addPlayersButtonTitle}>
-                        Add Team Players
-                      </Text>
-                      <Text style={styles.addPlayersButtonSubtitle}>
-                        Invite via link, QR code, or contacts
-                      </Text>
-                    </View>
-                    <Ionicons name="chevron-forward" size={20} color="#FFF" />
+                  {/* Quick select chips */}
+                  <View style={ctStyles.chipRow}>
+                    {[11, 14, 16, 20].map(n => (
+                      <TouchableOpacity key={n} style={[ctStyles.chip, currentPlayers === String(n) && ctStyles.chipActive]} onPress={() => setCurrentPlayers(String(n))}>
+                        <Text style={[ctStyles.chipTxt, currentPlayers === String(n) && ctStyles.chipTxtActive]}>{n}</Text>
+                      </TouchableOpacity>
+                    ))}
                   </View>
-                </LinearGradient>
-              </TouchableOpacity>
-              {/* Create Button */}
-              <TouchableOpacity
-                style={styles.createButton}
-                onPress={handleSaveTeam}
-              >
-                <LinearGradient
-                  colors={["#B91C1C", "#991B1B"]}
-                  style={styles.createButtonGradient}
-                >
-                  <Ionicons name="checkmark-circle" size={24} color="#FFF" />
-                  <Text style={styles.createButtonText}>Create Team</Text>
-                </LinearGradient>
-              </TouchableOpacity>
 
-              {/* Bottom Spacing */}
-              <View style={{ height: 80 }} />
-            </View>
-
-            {/* Add Players Modal */}
-            {showAddPlayerModal && (
-              <>
-                {/* Backdrop */}
-                <TouchableOpacity
-                  style={styles.modalBackdrop}
-                  activeOpacity={1}
-                  onPress={toggleAddPlayerModal}
-                >
-                  <Animated.View
-                    style={[
-                      styles.modalBackdropOverlay,
-                      { opacity: modalAnim },
-                    ]}
-                  />
-                </TouchableOpacity>
-
-                {/* Modal Content */}
-                <Animated.View
-                  style={[
-                    styles.addPlayersModal,
-                    {
-                      opacity: modalAnim,
-                      transform: [
-                        {
-                          translateY: modalAnim.interpolate({
-                            inputRange: [0, 1],
-                            outputRange: [300, 0],
-                          }),
-                        },
-                        {
-                          scale: modalAnim.interpolate({
-                            inputRange: [0, 1],
-                            outputRange: [0.8, 1],
-                          }),
-                        },
-                      ],
-                    },
-                  ]}
-                >
-                  <View style={styles.modalHeader}>
-                    <View style={styles.modalHeaderLeft}>
-                      <LinearGradient
-                        colors={["#B91C1C", "#991B1B"]}
-                        style={styles.modalHeaderIcon}
-                      >
-                        <Ionicons name="people" size={18} color="#FFF" />
-                      </LinearGradient>
-                      <View>
-                        <Text style={styles.modalTitle}>Add Team Players</Text>
-                        <Text style={styles.modalSubtitle}>
-                          Choose your preferred method
-                        </Text>
+                  {/* Rule cards */}
+                  {currentPlayers && parseInt(currentPlayers) >= 11 && (
+                    <View style={ctStyles.ruleBox}>
+                      <View style={ctStyles.ruleRow}>
+                        <Ionicons name="baseball" size={14} color="#00A66A" />
+                        <Text style={ctStyles.ruleTxt}>Playing XI: 11 players</Text>
+                        <View style={ctStyles.ruleCheck}><Ionicons name="checkmark" size={12} color="#FFF" /></View>
+                      </View>
+                      <View style={ctStyles.ruleRow}>
+                        <Ionicons name="swap-horizontal" size={14} color="#64748B" />
+                        <Text style={ctStyles.ruleTxt}>Substitutes: {Math.max(0, parseInt(currentPlayers) - 11)}</Text>
+                      </View>
+                      <View style={ctStyles.ruleRow}>
+                        <Ionicons name="star" size={14} color="#F59E0B" />
+                        <Text style={ctStyles.ruleTxt}>Roles needed: Batsmen, Bowlers, WK, All-rounders</Text>
                       </View>
                     </View>
-                    <TouchableOpacity
-                      onPress={toggleAddPlayerModal}
-                      style={styles.modalCloseButton}
-                    >
-                      <Ionicons name="close-circle" size={28} color="#999" />
-                    </TouchableOpacity>
-                  </View>
-
-                  <View style={styles.modalOptionsContainer}>
-                    {/* Team Link Option */}
-                    <TouchableOpacity
-                      style={styles.modalOption}
-                      onPress={() => {
-                        console.log("Add via Team Link");
-                        toggleAddPlayerModal();
-                      }}
-                    >
-                      <LinearGradient
-                        colors={["#B91C1C", "#991B1B"]}
-                        start={{ x: 0, y: 0 }}
-                        end={{ x: 1, y: 1 }}
-                        style={styles.modalOptionGradient}
-                      >
-                        <View style={styles.modalOptionIconCircle}>
-                          <Ionicons name="link" size={20} color="#FFF" />
-                        </View>
-                        <View style={styles.modalOptionTextContainer}>
-                          <Text style={styles.modalOptionTitle}>Team Link</Text>
-                          <Text style={styles.modalOptionDescription}>
-                            Share invite link with players
-                          </Text>
-                        </View>
-                        <Ionicons
-                          name="chevron-forward"
-                          size={24}
-                          color="#FFF"
-                        />
-                      </LinearGradient>
-                    </TouchableOpacity>
-
-                    {/* QR Code Option */}
-                    <TouchableOpacity
-                      style={styles.modalOption}
-                      onPress={() => {
-                        console.log("Add via QR Code");
-                        toggleAddPlayerModal();
-                      }}
-                    >
-                      <LinearGradient
-                        colors={["#B91C1C", "#991B1B"]}
-                        start={{ x: 0, y: 0 }}
-                        end={{ x: 1, y: 1 }}
-                        style={styles.modalOptionGradient}
-                      >
-                        <View style={styles.modalOptionIconCircle}>
-                          <Ionicons name="qr-code" size={20} color="#FFF" />
-                        </View>
-                        <View style={styles.modalOptionTextContainer}>
-                          <Text style={styles.modalOptionTitle}>QR Code</Text>
-                          <Text style={styles.modalOptionDescription}>
-                            Let players scan to join team
-                          </Text>
-                        </View>
-                        <Ionicons
-                          name="chevron-forward"
-                          size={24}
-                          color="#FFF"
-                        />
-                      </LinearGradient>
-                    </TouchableOpacity>
-
-                    {/* From Contacts Option */}
-                    <TouchableOpacity
-                      style={styles.modalOption}
-                      onPress={() => {
-                        console.log("Add from Contacts");
-                        toggleAddPlayerModal();
-                      }}
-                    >
-                      <LinearGradient
-                        colors={["#B91C1C", "#991B1B"]}
-                        start={{ x: 0, y: 0 }}
-                        end={{ x: 1, y: 1 }}
-                        style={styles.modalOptionGradient}
-                      >
-                        <View style={styles.modalOptionIconCircle}>
-                          <Ionicons name="person-add" size={20} color="#FFF" />
-                        </View>
-                        <View style={styles.modalOptionTextContainer}>
-                          <Text style={styles.modalOptionTitle}>
-                            From Contacts
-                          </Text>
-                          <Text style={styles.modalOptionDescription}>
-                            Select players from phone contacts
-                          </Text>
-                        </View>
-                        <Ionicons
-                          name="chevron-forward"
-                          size={24}
-                          color="#FFF"
-                        />
-                      </LinearGradient>
-                    </TouchableOpacity>
-                  </View>
-                </Animated.View>
-              </>
-            )}
-          </View>
-        ) : currentView === "teamSelection" ? (
-          /* Team Selection View */
-          <View style={styles.teamSelectionContainer}>
-            <Text style={styles.teamSelectionTitle}>Select Your Team</Text>
-
-            {/* Team A */}
-            <View style={styles.teamCardContainer}>
-              <LinearGradient
-                colors={["#FFFFFF", "#FEF2F2"]}
-                style={styles.teamCardGradient}
-              >
-                <View style={styles.teamHeaderRow}>
-                  <LinearGradient
-                    colors={["#B91C1C", "#7F1D1D"]}
-                    style={styles.teamCircleLarge}
-                  >
-                    <Text style={styles.teamLetterLarge}>A</Text>
-                  </LinearGradient>
-                  <View style={styles.teamTitleContainer}>
-                    <Text style={styles.teamTitle}>
-                      {teamAName || "Team A"}
-                    </Text>
-                    <Text style={styles.teamDescription}>
-                      {teamAName ? "Team created" : "Select or create your team"}
-                    </Text>
-                  </View>
+                  )}
                 </View>
-
-                <View style={styles.teamActions}>
-                  <TouchableOpacity
-                    style={styles.actionButton}
-                    onPress={() => handleSelectTeam("A")}
-                  >
-                    <LinearGradient
-                      colors={["#B91C1C", "#991B1B"]}
-                      start={{ x: 0, y: 0 }}
-                      end={{ x: 1, y: 1 }}
-                      style={styles.actionButtonGradient}
-                    >
-                      <Ionicons name="people" size={20} color="#FFF" />
-                      <Text style={styles.actionButtonText}>Select Team</Text>
-                    </LinearGradient>
-                  </TouchableOpacity>
-
-                  <TouchableOpacity
-                    style={styles.actionButton}
-                    onPress={() => handleCreateTeam("A")}
-                  >
-                    <LinearGradient
-                      colors={["#B91C1C", "#991B1B"]}
-                      start={{ x: 0, y: 0 }}
-                      end={{ x: 1, y: 1 }}
-                      style={styles.actionButtonGradient}
-                    >
-                      <Ionicons name="add-circle" size={20} color="#FFF" />
-                      <Text style={styles.actionButtonText}>Create Team</Text>
-                    </LinearGradient>
-                  </TouchableOpacity>
-                </View>
-              </LinearGradient>
-            </View>
-
-            {/* VS Divider */}
-            <View style={styles.vsContainer}>
-              <View style={styles.vsLine} />
-              <View style={styles.vsCircle}>
-                <Text style={styles.vsText}>VS</Text>
               </View>
-              <View style={styles.vsLine} />
-            </View>
 
-            {/* Team B */}
-            <View style={styles.teamCardContainer}>
-              <LinearGradient
-                colors={["#FFFFFF", "#FEF2F2"]}
-                style={styles.teamCardGradient}
-              >
-                <View style={styles.teamHeaderRow}>
-                  <LinearGradient
-                    colors={["#B91C1C", "#7F1D1D"]}
-                    style={styles.teamCircleLarge}
-                  >
-                    <Text style={styles.teamLetterLarge}>B</Text>
-                  </LinearGradient>
-                  <View style={styles.teamTitleContainer}>
-                    <Text style={styles.teamTitle}>
-                      {teamBName || "Team B"}
-                    </Text>
-                    <Text style={styles.teamDescription}>
-                      {teamBName ? "Team created" : "Select or create your team"}
-                    </Text>
+              {/* ── Add Players Section ── */}
+              <View style={ctStyles.sectionCard}>
+                <View style={ctStyles.sectionHeader}>
+                  <View style={ctStyles.sectionIconWrap}>
+                    <Ionicons name="person-add" size={16} color="#00A66A" />
                   </View>
+                  <Text style={ctStyles.sectionTitle}>Add Players</Text>
+                  <Text style={ctStyles.sectionOptional}>Optional</Text>
                 </View>
+                <Text style={ctStyles.addPlayersNote}>Invite players now or after team creation</Text>
 
-                <View style={styles.teamActions}>
-                  <TouchableOpacity
-                    style={styles.actionButton}
-                    onPress={() => handleSelectTeam("B")}
-                  >
-                    <LinearGradient
-                      colors={["#B91C1C", "#991B1B"]}
-                      start={{ x: 0, y: 0 }}
-                      end={{ x: 1, y: 1 }}
-                      style={styles.actionButtonGradient}
-                    >
-                      <Ionicons name="people" size={20} color="#FFF" />
-                      <Text style={styles.actionButtonText}>Select Team</Text>
-                    </LinearGradient>
+                <View style={ctStyles.addOptions}>
+                  {/* Team Link */}
+                  <TouchableOpacity style={ctStyles.addOption} activeOpacity={0.8}
+                    onPress={() => {
+                      const link = `https://gamelens.app/join/${currentTeamName.replace(/\s+/g,'-').toLowerCase()}-${Date.now().toString(36)}`;
+                      Alert.alert("🔗 Team Invite Link", `Share this link with players:\n\n${link}`, [
+                        { text: "Copy Link", onPress: () => Alert.alert("✅ Copied!", "Link copied to clipboard.") },
+                        { text: "Share", onPress: () => Alert.alert("Shared!", "Link shared via WhatsApp, SMS, etc.") },
+                        { text: "Close", style: "cancel" },
+                      ]);
+                    }}>
+                    <View style={[ctStyles.addOptionIcon, { backgroundColor: "#EFF6FF" }]}>
+                      <Ionicons name="link" size={20} color="#3B82F6" />
+                    </View>
+                    <View style={ctStyles.addOptionInfo}>
+                      <Text style={ctStyles.addOptionTitle}>Team Link</Text>
+                      <Text style={ctStyles.addOptionSub}>Generate & share invite</Text>
+                    </View>
+                    <Ionicons name="chevron-forward" size={16} color="#94A3B8" />
                   </TouchableOpacity>
 
-                  <TouchableOpacity
-                    style={styles.actionButton}
-                    onPress={() => handleCreateTeam("B")}
-                  >
-                    <LinearGradient
-                      colors={["#B91C1C", "#991B1B"]}
-                      start={{ x: 0, y: 0 }}
-                      end={{ x: 1, y: 1 }}
-                      style={styles.actionButtonGradient}
-                    >
-                      <Ionicons name="add-circle" size={20} color="#FFF" />
-                      <Text style={styles.actionButtonText}>Create Team</Text>
-                    </LinearGradient>
+                  {/* QR Code */}
+                  <TouchableOpacity style={ctStyles.addOption} activeOpacity={0.8}
+                    onPress={() => {
+                      Alert.alert("📷 QR Code", `Team QR Code generated!\n\nTeam: ${currentTeamName || 'Your Team'}\nCode: GL-${Date.now().toString(36).toUpperCase()}`, [
+                        { text: "Save to Gallery", onPress: () => Alert.alert("✅ Saved!", "QR code saved.") },
+                        { text: "Share", onPress: () => Alert.alert("Shared!", "QR code shared.") },
+                        { text: "Close", style: "cancel" },
+                      ]);
+                    }}>
+                    <View style={[ctStyles.addOptionIcon, { backgroundColor: "#F0FDF4" }]}>
+                      <Ionicons name="qr-code" size={20} color="#16A34A" />
+                    </View>
+                    <View style={ctStyles.addOptionInfo}>
+                      <Text style={ctStyles.addOptionTitle}>QR Code</Text>
+                      <Text style={ctStyles.addOptionSub}>Players scan to join</Text>
+                    </View>
+                    <Ionicons name="chevron-forward" size={16} color="#94A3B8" />
+                  </TouchableOpacity>
+
+                  {/* From Contacts */}
+                  <TouchableOpacity style={ctStyles.addOption} activeOpacity={0.8}
+                    onPress={() => {
+                      Alert.alert("📞 Access Contacts", "Allow GameLens to access your contacts to invite players?", [
+                        { text: "Allow", onPress: () => setTimeout(() => Alert.alert("✅ Contacts Loaded", "Found 25 contacts. Select players to invite!"), 800) },
+                        { text: "Deny", style: "cancel" },
+                      ]);
+                    }}>
+                    <View style={[ctStyles.addOptionIcon, { backgroundColor: "#FFF7ED" }]}>
+                      <Ionicons name="people" size={20} color="#EA580C" />
+                    </View>
+                    <View style={ctStyles.addOptionInfo}>
+                      <Text style={ctStyles.addOptionTitle}>From Contacts</Text>
+                      <Text style={ctStyles.addOptionSub}>Select from phone contacts</Text>
+                    </View>
+                    <Ionicons name="chevron-forward" size={16} color="#94A3B8" />
                   </TouchableOpacity>
                 </View>
-              </LinearGradient>
-            </View>
+              </View>
 
-            {/* Let's Play Button - Shows when both teams are created */}
-            {teamAName && teamBName && (
-              <TouchableOpacity
-                style={styles.letsPlayButton}
-                onPress={handleLetsPlay}
-              >
-                <LinearGradient
-                  colors={["#B91C1C", "#991B1B", "#7F1D1D"]}
-                  start={{ x: 0, y: 0 }}
-                  end={{ x: 1, y: 1 }}
-                  style={styles.letsPlayButtonGradient}
-                >
-                  <Ionicons name="play-circle" size={22} color="#FFF" />
-                  <Text style={styles.letsPlayButtonText}>{"Let's Play!"}</Text>
-                  <Ionicons name="arrow-forward" size={20} color="#FFF" />
+              {/* ── Create Button ── */}
+              <TouchableOpacity style={ctStyles.createBtn} onPress={handleSaveTeam} activeOpacity={0.88}>
+                <LinearGradient colors={["#00A66A", "#0F766E", "#064E3B"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={ctStyles.createBtnGrad}>
+                  <Ionicons name="checkmark-circle" size={22} color="#FFF" />
+                  <Text style={ctStyles.createBtnTxt}>Create Team</Text>
                 </LinearGradient>
               </TouchableOpacity>
-            )}
 
-            {/* Bottom Spacing */}
-            <View style={{ height: 100 }} />
-          </View>
+              <View style={{ height: 80 }} />
+            </View>
+          </ScrollView>
+        ) : currentView === "teamSelection" ? (
+          /* Team Selection View — Premium Redesign */
+          <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 100 }}>
+
+            <View style={{ paddingHorizontal: 16, paddingTop: 20 }}>
+
+              {/* ── Team A Card ── */}
+              <View style={[styles.tsTeamCard, teamAName && styles.tsTeamCardReady]}>
+                {/* Accent strip */}
+                <LinearGradient colors={["#00A66A", "#064E3B"]} start={{ x: 0, y: 0 }} end={{ x: 0, y: 1 }} style={styles.tsTeamCardStrip} />
+
+                <View style={styles.tsTeamCardInner}>
+                  {/* Logo area */}
+                  <View style={styles.tsTeamLogoWrap}>
+                    {teamAName ? (
+                      <LinearGradient colors={["#00A66A", "#064E3B"]} style={styles.tsTeamLogo}>
+                        <Text style={styles.tsTeamLogoLetter}>{teamAName.charAt(0).toUpperCase()}</Text>
+                      </LinearGradient>
+                    ) : (
+                      <View style={styles.tsTeamLogoEmpty}>
+                        <Ionicons name="shield-outline" size={28} color="#CBD5E1" />
+                      </View>
+                    )}
+                    {teamAName && (
+                      <View style={styles.tsReadyDot} />
+                    )}
+                  </View>
+
+                  {/* Info */}
+                  <View style={styles.tsTeamInfo}>
+                    <View style={styles.tsTeamSlotRow}>
+                      <Text style={styles.tsTeamSlot}>HOME</Text>
+                      <View style={[styles.tsTeamStatus, teamAName ? styles.tsTeamStatusReady : styles.tsTeamStatusEmpty]}>
+                        <Text style={styles.tsTeamStatusTxt}>{teamAName ? "READY" : "NOT SET"}</Text>
+                      </View>
+                    </View>
+                    <Text style={styles.tsTeamName}>{teamAName || "Select Team A"}</Text>
+                    {teamAName ? (
+                      <View style={styles.tsTeamMeta}>
+                        <Ionicons name="people" size={12} color="#64748B" />
+                        <Text style={styles.tsTeamMetaTxt}>11 Players · Captain assigned</Text>
+                      </View>
+                    ) : (
+                      <Text style={styles.tsTeamEmptyHint}>Tap below to select or create</Text>
+                    )}
+                  </View>
+                </View>
+
+                {/* Action Buttons */}
+                <View style={styles.tsTeamActions}>
+                  <TouchableOpacity style={styles.tsActionBtnOutline} onPress={() => handleSelectTeam("A")} activeOpacity={0.8}>
+                    <Ionicons name="people-outline" size={16} color="#00A66A" />
+                    <Text style={styles.tsActionBtnOutlineTxt}>Select</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity style={styles.tsActionBtnFill} onPress={() => handleCreateTeam("A")} activeOpacity={0.8}>
+                    <LinearGradient colors={["#00A66A", "#064E3B"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={styles.tsActionBtnFillGrad}>
+                      <Ionicons name="add-circle-outline" size={16} color="#FFF" />
+                      <Text style={styles.tsActionBtnFillTxt}>Create</Text>
+                    </LinearGradient>
+                  </TouchableOpacity>
+                </View>
+              </View>
+
+              {/* ── VS Section ── */}
+              <View style={styles.tsVsRow}>
+                <View style={styles.tsVsLine} />
+                <LinearGradient colors={["#F59E0B", "#D97706"]} style={styles.tsVsCircle}>
+                  <Text style={styles.tsVsTxt}>VS</Text>
+                </LinearGradient>
+                <View style={styles.tsVsLine} />
+              </View>
+
+              {/* ── Team B Card ── */}
+              <View style={[styles.tsTeamCard, teamBName && styles.tsTeamCardReady]}>
+                <LinearGradient colors={["#0F766E", "#064E3B"]} start={{ x: 0, y: 0 }} end={{ x: 0, y: 1 }} style={styles.tsTeamCardStrip} />
+
+                <View style={styles.tsTeamCardInner}>
+                  <View style={styles.tsTeamLogoWrap}>
+                    {teamBName ? (
+                      <LinearGradient colors={["#0F766E", "#064E3B"]} style={styles.tsTeamLogo}>
+                        <Text style={styles.tsTeamLogoLetter}>{teamBName.charAt(0).toUpperCase()}</Text>
+                      </LinearGradient>
+                    ) : (
+                      <View style={styles.tsTeamLogoEmpty}>
+                        <Ionicons name="shield-outline" size={28} color="#CBD5E1" />
+                      </View>
+                    )}
+                    {teamBName && <View style={styles.tsReadyDot} />}
+                  </View>
+
+                  <View style={styles.tsTeamInfo}>
+                    <View style={styles.tsTeamSlotRow}>
+                      <Text style={styles.tsTeamSlot}>AWAY</Text>
+                      <View style={[styles.tsTeamStatus, teamBName ? styles.tsTeamStatusReady : styles.tsTeamStatusEmpty]}>
+                        <Text style={styles.tsTeamStatusTxt}>{teamBName ? "READY" : "NOT SET"}</Text>
+                      </View>
+                    </View>
+                    <Text style={styles.tsTeamName}>{teamBName || "Select Team B"}</Text>
+                    {teamBName ? (
+                      <View style={styles.tsTeamMeta}>
+                        <Ionicons name="people" size={12} color="#64748B" />
+                        <Text style={styles.tsTeamMetaTxt}>11 Players · Captain assigned</Text>
+                      </View>
+                    ) : (
+                      <Text style={styles.tsTeamEmptyHint}>Tap below to select or create</Text>
+                    )}
+                  </View>
+                </View>
+
+                <View style={styles.tsTeamActions}>
+                  <TouchableOpacity style={styles.tsActionBtnOutline} onPress={() => handleSelectTeam("B")} activeOpacity={0.8}>
+                    <Ionicons name="people-outline" size={16} color="#00A66A" />
+                    <Text style={styles.tsActionBtnOutlineTxt}>Select</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity style={styles.tsActionBtnFill} onPress={() => handleCreateTeam("B")} activeOpacity={0.8}>
+                    <LinearGradient colors={["#00A66A", "#064E3B"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={styles.tsActionBtnFillGrad}>
+                      <Ionicons name="add-circle-outline" size={16} color="#FFF" />
+                      <Text style={styles.tsActionBtnFillTxt}>Create</Text>
+                    </LinearGradient>
+                  </TouchableOpacity>
+                </View>
+              </View>
+
+              {/* ── Ready indicator ── */}
+              {(teamAName || teamBName) && (
+                <View style={styles.tsReadyBar}>
+                  <View style={[styles.tsReadyBarSlot, teamAName && styles.tsReadyBarSlotDone]} />
+                  <View style={[styles.tsReadyBarSlot, teamBName && styles.tsReadyBarSlotDone]} />
+                </View>
+              )}
+
+              {/* ── Let's Play ── */}
+              {teamAName && teamBName && (
+                <TouchableOpacity style={styles.tsPlayBtn} onPress={handleLetsPlay} activeOpacity={0.88}>
+                  <LinearGradient colors={["#F59E0B", "#D97706", "#B45309"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={styles.tsPlayBtnGrad}>
+                    <Ionicons name="play-circle" size={24} color="#FFF" />
+                    <Text style={styles.tsPlayBtnTxt}>{"Let's Play!"}</Text>
+                    <Ionicons name="arrow-forward-circle" size={22} color="rgba(255,255,255,0.7)" />
+                  </LinearGradient>
+                </TouchableOpacity>
+              )}
+
+              {/* ── Empty state hint ── */}
+              {!teamAName && !teamBName && (
+                <View style={styles.tsEmptyHint}>
+                  <Ionicons name="information-circle-outline" size={18} color="#94A3B8" />
+                  <Text style={styles.tsEmptyHintTxt}>Set both teams to start the match</Text>
+                </View>
+              )}
+
+            </View>
+          </ScrollView>
         ) : (
           /* Matches/Tournaments/Teams View */
           <>
@@ -4669,7 +4633,7 @@ export default function MyCricketScreen() {
               ]}
             >
               <LinearGradient
-                colors={["#B91C1C", "#991B1B", "#7F1D1D"]}
+                colors={["#00A66A", "#0F766E", "#064E3B"]}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 1 }}
                 style={styles.startMatchCard}
@@ -4730,7 +4694,7 @@ export default function MyCricketScreen() {
                         <Ionicons
                           name="arrow-forward"
                           size={18}
-                          color="#B91C1C"
+                          color="#00A66A"
                         />
                       </LinearGradient>
                     </TouchableOpacity>
@@ -4752,7 +4716,7 @@ export default function MyCricketScreen() {
                 >
                   {activeFilter === filter ? (
                     <LinearGradient
-                      colors={["#B91C1C", "#991B1B"]}
+                      colors={["#00A66A", "#0F766E"]}
                       style={styles.filterGradient}
                     >
                       <Text style={styles.activeFilterText}>
@@ -4814,7 +4778,7 @@ export default function MyCricketScreen() {
                           <Ionicons
                             name="baseball-outline"
                             size={10}
-                            color="#B91C1C"
+                            color="#00A66A"
                           />
                         </View>
                         <Text style={styles.matchType}>{match.type}</Text>
@@ -4822,12 +4786,12 @@ export default function MyCricketScreen() {
                       <LinearGradient
                         colors={
                           match.status === "Live"
-                            ? ["#EF4444", "#DC2626"]
+                            ? ["#EF4444", "#059669"]
                             : match.status === "Upcoming"
                             ? ["#F59E0B", "#D97706"]
                             : match.status === "Completed"
                             ? ["#10B981", "#059669"]
-                            : ["#B91C1C", "#991B1B"]
+                            : ["#00A66A", "#0F766E"]
                         }
                         style={styles.statusBadge}
                       >
@@ -4841,7 +4805,7 @@ export default function MyCricketScreen() {
                     <View style={styles.matchBody}>
                       <View style={styles.teamSection}>
                         <LinearGradient
-                          colors={["#B91C1C", "#991B1B"]}
+                          colors={["#00A66A", "#0F766E"]}
                           style={styles.teamInitial}
                         >
                           <Text style={styles.teamInitialText}>
@@ -4855,7 +4819,7 @@ export default function MyCricketScreen() {
                               <Ionicons
                                 name="trophy"
                                 size={10}
-                                color="#B91C1C"
+                                color="#00A66A"
                               />
                               <Text style={styles.matchResult}>
                                 {match.result}
@@ -4871,7 +4835,7 @@ export default function MyCricketScreen() {
                             <Ionicons
                               name="calendar-outline"
                               size={9}
-                              color="#B91C1C"
+                              color="#00A66A"
                             />
                           </View>
                           <Text style={styles.detailText}>
@@ -4883,7 +4847,7 @@ export default function MyCricketScreen() {
                             <Ionicons
                               name="location-outline"
                               size={9}
-                              color="#B91C1C"
+                              color="#00A66A"
                             />
                           </View>
                           <Text style={styles.detailText}>
@@ -4913,7 +4877,7 @@ export default function MyCricketScreen() {
                           <Ionicons
                             name="stats-chart-outline"
                             size={14}
-                            color="#B91C1C"
+                            color="#00A66A"
                           />
                           <Text style={styles.footerButtonText}>Insights</Text>
                         </LinearGradient>
@@ -4930,7 +4894,7 @@ export default function MyCricketScreen() {
                           <Ionicons
                             name="people-outline"
                             size={14}
-                            color="#B91C1C"
+                            color="#00A66A"
                           />
                           <Text style={styles.footerButtonText}>Squads</Text>
                         </LinearGradient>
@@ -4954,7 +4918,7 @@ export default function MyCricketScreen() {
                   onPress={() => setCurrentView("createTournament")}
                 >
                   <LinearGradient
-                    colors={["#B91C1C", "#991B1B", "#7F1D1D"]}
+                    colors={["#00A66A", "#0F766E", "#064E3B"]}
                     start={{ x: 0, y: 0 }}
                     end={{ x: 1, y: 1 }}
                     style={styles.createTournamentGradient}
@@ -4987,7 +4951,7 @@ export default function MyCricketScreen() {
                     >
                       {activeTournamentFilter === filter ? (
                         <LinearGradient
-                          colors={["#B91C1C", "#991B1B"]}
+                          colors={["#00A66A", "#0F766E"]}
                           style={styles.filterGradient}
                         >
                           <Text style={styles.activeFilterText}>
@@ -5084,7 +5048,7 @@ export default function MyCricketScreen() {
                       <View style={styles.tournamentHeader}>
                         <View style={styles.tournamentHeaderLeft}>
                           <LinearGradient
-                            colors={["#FCA5A5", "#DC2626"]}
+                            colors={["#6EE7B7", "#059669"]}
                             style={styles.tournamentIcon}
                           >
                             <Ionicons name="trophy" size={18} color="#FFF" />
@@ -5104,8 +5068,8 @@ export default function MyCricketScreen() {
                         <LinearGradient
                           colors={
                             tournament.status === "Ongoing"
-                              ? ["#B91C1C", "#991B1B"]
-                              : ["#DC2626", "#991B1B"]
+                              ? ["#00A66A", "#0F766E"]
+                              : ["#059669", "#0F766E"]
                           }
                           style={styles.tournamentStatusBadge}
                         >
@@ -5124,10 +5088,10 @@ export default function MyCricketScreen() {
                                 width: `${tournament.progress}%`,
                                 backgroundColor:
                                   tournament.progress > 70
-                                    ? "#B91C1C"
+                                    ? "#00A66A"
                                     : tournament.progress > 40
-                                    ? "#DC2626"
-                                    : "#B91C1C",
+                                    ? "#059669"
+                                    : "#00A66A",
                               },
                             ]}
                           />
@@ -5140,7 +5104,7 @@ export default function MyCricketScreen() {
                       <View style={styles.tournamentStats}>
                         <View style={styles.tournamentStat}>
                           <View style={styles.statIcon}>
-                            <Ionicons name="people" size={12} color="#B91C1C" />
+                            <Ionicons name="people" size={12} color="#00A66A" />
                           </View>
                           <Text style={styles.tournamentStatText}>
                             {tournament.teams} Teams
@@ -5148,7 +5112,7 @@ export default function MyCricketScreen() {
                         </View>
                         <View style={styles.tournamentStat}>
                           <View style={styles.statIcon}>
-                            <Ionicons name="baseball" size={12} color="#B91C1C" />
+                            <Ionicons name="baseball" size={12} color="#00A66A" />
                           </View>
                           <Text style={styles.tournamentStatText}>
                             {tournament.matches} Matches
@@ -5166,7 +5130,7 @@ export default function MyCricketScreen() {
                           }}
                         >
                           <LinearGradient
-                            colors={["#B91C1C", "#991B1B"]}
+                            colors={["#00A66A", "#0F766E"]}
                             style={styles.tournamentButtonGradient}
                           >
                             <Ionicons name="settings-outline" size={13} color="#FFF" />
@@ -5224,7 +5188,7 @@ export default function MyCricketScreen() {
                       <View style={styles.tournamentHeader}>
                         <View style={styles.tournamentHeaderLeft}>
                           <LinearGradient
-                            colors={["#FCA5A5", "#DC2626"]}
+                            colors={["#6EE7B7", "#059669"]}
                             style={styles.tournamentIcon}
                           >
                             <Ionicons name="trophy" size={18} color="#FFF" />
@@ -5242,7 +5206,7 @@ export default function MyCricketScreen() {
                           </View>
                         </View>
                         <LinearGradient
-                          colors={["#B91C1C", "#991B1B"]}
+                          colors={["#00A66A", "#0F766E"]}
                           style={styles.tournamentStatusBadge}
                         >
                           <Text style={styles.tournamentStatusText}>
@@ -5258,7 +5222,7 @@ export default function MyCricketScreen() {
                               styles.progressFill,
                               {
                                 width: `${tournament.progress}%`,
-                                backgroundColor: "#B91C1C",
+                                backgroundColor: "#00A66A",
                               },
                             ]}
                           />
@@ -5271,7 +5235,7 @@ export default function MyCricketScreen() {
                       <View style={styles.tournamentStats}>
                         <View style={styles.tournamentStat}>
                           <View style={styles.statIcon}>
-                            <Ionicons name="people" size={12} color="#B91C1C" />
+                            <Ionicons name="people" size={12} color="#00A66A" />
                           </View>
                           <Text style={styles.tournamentStatText}>
                             {tournament.teams} Teams
@@ -5279,7 +5243,7 @@ export default function MyCricketScreen() {
                         </View>
                         <View style={styles.tournamentStat}>
                           <View style={styles.statIcon}>
-                            <Ionicons name="baseball" size={12} color="#B91C1C" />
+                            <Ionicons name="baseball" size={12} color="#00A66A" />
                           </View>
                           <Text style={styles.tournamentStatText}>
                             {tournament.matches} Matches
@@ -5297,7 +5261,7 @@ export default function MyCricketScreen() {
                           }}
                         >
                           <LinearGradient
-                            colors={["#B91C1C", "#991B1B"]}
+                            colors={["#00A66A", "#0F766E"]}
                             style={styles.tournamentButtonGradient}
                           >
                             <Ionicons name="stats-chart-outline" size={13} color="#FFF" />
@@ -5355,7 +5319,7 @@ export default function MyCricketScreen() {
                       <View style={styles.tournamentHeader}>
                         <View style={styles.tournamentHeaderLeft}>
                           <LinearGradient
-                            colors={["#FCA5A5", "#DC2626"]}
+                            colors={["#6EE7B7", "#059669"]}
                             style={styles.tournamentIcon}
                           >
                             <Ionicons name="trophy" size={18} color="#FFF" />
@@ -5375,8 +5339,8 @@ export default function MyCricketScreen() {
                         <LinearGradient
                           colors={
                             tournament.status === "Ongoing"
-                              ? ["#B91C1C", "#991B1B"]
-                              : ["#DC2626", "#991B1B"]
+                              ? ["#00A66A", "#0F766E"]
+                              : ["#059669", "#0F766E"]
                           }
                           style={styles.tournamentStatusBadge}
                         >
@@ -5395,10 +5359,10 @@ export default function MyCricketScreen() {
                                 width: `${tournament.progress}%`,
                                 backgroundColor:
                                   tournament.progress > 70
-                                    ? "#B91C1C"
+                                    ? "#00A66A"
                                     : tournament.progress > 40
-                                    ? "#DC2626"
-                                    : "#B91C1C",
+                                    ? "#059669"
+                                    : "#00A66A",
                               },
                             ]}
                           />
@@ -5411,7 +5375,7 @@ export default function MyCricketScreen() {
                       <View style={styles.tournamentStats}>
                         <View style={styles.tournamentStat}>
                           <View style={styles.statIcon}>
-                            <Ionicons name="people" size={12} color="#B91C1C" />
+                            <Ionicons name="people" size={12} color="#00A66A" />
                           </View>
                           <Text style={styles.tournamentStatText}>
                             {tournament.teams} Teams
@@ -5419,7 +5383,7 @@ export default function MyCricketScreen() {
                         </View>
                         <View style={styles.tournamentStat}>
                           <View style={styles.statIcon}>
-                            <Ionicons name="baseball" size={12} color="#B91C1C" />
+                            <Ionicons name="baseball" size={12} color="#00A66A" />
                           </View>
                           <Text style={styles.tournamentStatText}>
                             {tournament.matches} Matches
@@ -5443,7 +5407,7 @@ export default function MyCricketScreen() {
                           }}
                         >
                           <LinearGradient
-                            colors={["#B91C1C", "#991B1B"]}
+                            colors={["#00A66A", "#0F766E"]}
                             style={styles.tournamentButtonGradient}
                           >
                             <Ionicons name="add-circle-outline" size={13} color="#FFF" />
@@ -5510,7 +5474,7 @@ export default function MyCricketScreen() {
                       <View style={styles.tournamentHeader}>
                         <View style={styles.tournamentHeaderLeft}>
                           <LinearGradient
-                            colors={["#FCA5A5", "#DC2626"]}
+                            colors={["#6EE7B7", "#059669"]}
                             style={styles.tournamentIcon}
                           >
                             <Ionicons name="trophy" size={18} color="#FFF" />
@@ -5530,10 +5494,10 @@ export default function MyCricketScreen() {
                         <LinearGradient
                           colors={
                             tournament.status === "Ongoing"
-                              ? ["#B91C1C", "#991B1B"]
+                              ? ["#00A66A", "#0F766E"]
                               : tournament.status === "Completed"
-                              ? ["#B91C1C", "#991B1B"]
-                              : ["#DC2626", "#991B1B"]
+                              ? ["#00A66A", "#0F766E"]
+                              : ["#059669", "#0F766E"]
                           }
                           style={styles.tournamentStatusBadge}
                         >
@@ -5552,12 +5516,12 @@ export default function MyCricketScreen() {
                                 width: `${tournament.progress}%`,
                                 backgroundColor:
                                   tournament.progress > 70
-                                    ? "#B91C1C"
+                                    ? "#00A66A"
                                     : tournament.progress > 40
-                                    ? "#DC2626"
+                                    ? "#059669"
                                     : tournament.progress === 100
-                                    ? "#B91C1C"
-                                    : "#B91C1C",
+                                    ? "#00A66A"
+                                    : "#00A66A",
                               },
                             ]}
                           />
@@ -5570,7 +5534,7 @@ export default function MyCricketScreen() {
                       <View style={styles.tournamentStats}>
                         <View style={styles.tournamentStat}>
                           <View style={styles.statIcon}>
-                            <Ionicons name="people" size={12} color="#B91C1C" />
+                            <Ionicons name="people" size={12} color="#00A66A" />
                           </View>
                           <Text style={styles.tournamentStatText}>
                             {tournament.teams} Teams
@@ -5578,7 +5542,7 @@ export default function MyCricketScreen() {
                         </View>
                         <View style={styles.tournamentStat}>
                           <View style={styles.statIcon}>
-                            <Ionicons name="baseball" size={12} color="#B91C1C" />
+                            <Ionicons name="baseball" size={12} color="#00A66A" />
                           </View>
                           <Text style={styles.tournamentStatText}>
                             {tournament.matches} Matches
@@ -5600,7 +5564,7 @@ export default function MyCricketScreen() {
                           }}
                         >
                           <LinearGradient
-                            colors={["#B91C1C", "#991B1B"]}
+                            colors={["#00A66A", "#0F766E"]}
                             style={styles.tournamentButtonGradient}
                           >
                             <Ionicons name="share-social-outline" size={13} color="#FFF" />
@@ -5665,7 +5629,7 @@ export default function MyCricketScreen() {
                     }}
                   >
                     <LinearGradient
-                      colors={["#B91C1C", "#991B1B"]}
+                      colors={["#00A66A", "#0F766E"]}
                       start={{ x: 0, y: 0 }}
                       end={{ x: 1, y: 1 }}
                       style={styles.teamOptionGradient}
@@ -5691,9 +5655,9 @@ export default function MyCricketScreen() {
                   
                   {/* Sample Recent Teams */}
                   {[
-                    { name: "Mumbai Warriors", players: 15, lastUsed: "2 days ago", color: "#B91C1C" },
+                    { name: "Mumbai Warriors", players: 15, lastUsed: "2 days ago", color: "#00A66A" },
                     { name: "Delhi Capitals", players: 12, lastUsed: "1 week ago", color: "#059669" },
-                    { name: "Chennai Kings", players: 18, lastUsed: "2 weeks ago", color: "#DC2626" }
+                    { name: "Chennai Kings", players: 18, lastUsed: "2 weeks ago", color: "#059669" }
                   ].map((team, index) => (
                     <TouchableOpacity
                       key={index}
@@ -5803,11 +5767,11 @@ export default function MyCricketScreen() {
                   }}
                   activeOpacity={0.7}
                 >
-                  <View style={[styles.tsMenuIcon, item.danger && { backgroundColor: "#FEE2E2" }]}>
+                  <View style={[styles.tsMenuIcon, item.danger && { backgroundColor: "#D1FAE5" }]}>
                     <Ionicons
                       name={item.icon as any}
                       size={20}
-                      color={item.danger ? "#DC2626" : "#555"}
+                      color={item.danger ? "#059669" : "#555"}
                     />
                   </View>
                   <Text style={[styles.tsMenuLabel, item.danger && styles.tsMenuLabelDanger]}>
@@ -5822,7 +5786,7 @@ export default function MyCricketScreen() {
                     <Ionicons
                       name="chevron-forward"
                       size={18}
-                      color={item.danger ? "#DC2626" : "#CCC"}
+                      color={item.danger ? "#059669" : "#CCC"}
                     />
                   </View>
                 </TouchableOpacity>
@@ -5913,7 +5877,7 @@ export default function MyCricketScreen() {
                           <View style={styles.tournamentHeader}>
                             <View style={styles.tournamentHeaderLeft}>
                               <LinearGradient
-                                colors={["#FCA5A5", "#DC2626"]}
+                                colors={["#6EE7B7", "#059669"]}
                                 style={styles.tournamentIcon}
                               >
                                 <Ionicons name="trophy" size={18} color="#FFF" />
@@ -5933,8 +5897,8 @@ export default function MyCricketScreen() {
                             <LinearGradient
                               colors={
                                 tournament.status === "Ongoing"
-                                  ? ["#B91C1C", "#991B1B"]
-                                  : ["#DC2626", "#991B1B"]
+                                  ? ["#00A66A", "#0F766E"]
+                                  : ["#059669", "#0F766E"]
                               }
                               style={styles.tournamentStatusBadge}
                             >
@@ -5953,10 +5917,10 @@ export default function MyCricketScreen() {
                                     width: `${tournament.progress}%`,
                                     backgroundColor:
                                       tournament.progress > 70
-                                        ? "#B91C1C"
+                                        ? "#00A66A"
                                         : tournament.progress > 40
-                                        ? "#DC2626"
-                                        : "#B91C1C",
+                                        ? "#059669"
+                                        : "#00A66A",
                                   },
                                 ]}
                               />
@@ -5969,7 +5933,7 @@ export default function MyCricketScreen() {
                           <View style={styles.tournamentStats}>
                             <View style={styles.tournamentStat}>
                               <View style={styles.statIcon}>
-                                <Ionicons name="people" size={12} color="#B91C1C" />
+                                <Ionicons name="people" size={12} color="#00A66A" />
                               </View>
                               <Text style={styles.tournamentStatText}>
                                 {tournament.teams} Teams
@@ -5977,7 +5941,7 @@ export default function MyCricketScreen() {
                             </View>
                             <View style={styles.tournamentStat}>
                               <View style={styles.statIcon}>
-                                <Ionicons name="baseball" size={12} color="#B91C1C" />
+                                <Ionicons name="baseball" size={12} color="#00A66A" />
                               </View>
                               <Text style={styles.tournamentStatText}>
                                 {tournament.matches} Matches
@@ -5997,7 +5961,7 @@ export default function MyCricketScreen() {
                               }}
                             >
                               <LinearGradient
-                                colors={["#B91C1C", "#991B1B"]}
+                                colors={["#00A66A", "#0F766E"]}
                                 style={styles.tournamentButtonGradient}
                               >
                                 <Ionicons name="eye-outline" size={13} color="#FFF" />
@@ -6033,7 +5997,7 @@ export default function MyCricketScreen() {
                           <View style={styles.searchMatchHeader}>
                             <View style={[
                               styles.searchMatchStatus,
-                              { backgroundColor: match.status === "Live" ? "#B91C1C" : match.status === "Upcoming" ? "#DC2626" : "#666" }
+                              { backgroundColor: match.status === "Live" ? "#00A66A" : match.status === "Upcoming" ? "#059669" : "#666" }
                             ]}>
                               <Text style={styles.searchMatchStatusText}>
                                 {match.status}
@@ -6152,7 +6116,7 @@ export default function MyCricketScreen() {
                   {((playerModalType === "striker" && selectedStriker?.id === player.id) ||
                     (playerModalType === "nonStriker" && selectedNonStriker?.id === player.id) ||
                     (playerModalType === "bowler" && selectedBowler?.id === player.id)) && (
-                    <Ionicons name="checkmark-circle" size={24} color="#B91C1C" />
+                    <Ionicons name="checkmark-circle" size={24} color="#00A66A" />
                   )}
                 </View>
               </TouchableOpacity>
@@ -6168,7 +6132,7 @@ export default function MyCricketScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#F5F5F5",
+    backgroundColor: "#F0F7F4",
   },
   header: {
     flexDirection: "row",
@@ -6207,7 +6171,7 @@ const styles = StyleSheet.create({
     width: 8,
     height: 8,
     borderRadius: 4,
-    backgroundColor: "#FCA5A5",
+    backgroundColor: "#6EE7B7",
     zIndex: 1,
   },
   tabsContainer: {
@@ -6227,7 +6191,7 @@ const styles = StyleSheet.create({
   },
   activeTab: {
     borderBottomWidth: 3,
-    borderBottomColor: "#B91C1C",
+    borderBottomColor: "#00A66A",
   },
   tabText: {
     fontSize: 15,
@@ -6235,7 +6199,7 @@ const styles = StyleSheet.create({
     fontWeight: "500",
   },
   activeTabText: {
-    color: "#B91C1C",
+    color: "#00A66A",
     fontWeight: "700",
   },
   tabIndicator: {
@@ -6243,7 +6207,7 @@ const styles = StyleSheet.create({
     bottom: 0,
     width: "100%",
     height: 3,
-    backgroundColor: "#B91C1C",
+    backgroundColor: "#00A66A",
   },
   content: {
     flex: 1,
@@ -6252,12 +6216,12 @@ const styles = StyleSheet.create({
     padding: 16,
   },
   startMatchCard: {
-    borderRadius: 16,
+    borderRadius: 20,
     padding: 16,
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    shadowColor: "#B91C1C",
+    shadowColor: "#00A66A",
     shadowOffset: { width: 0, height: 6 },
     shadowOpacity: 0.3,
     shadowRadius: 8,
@@ -6351,7 +6315,7 @@ const styles = StyleSheet.create({
   startButtonText: {
     fontSize: 14,
     fontWeight: "700",
-    color: "#B91C1C",
+    color: "#00A66A",
   },
   filterTabs: {
     flexDirection: "row",
@@ -6388,7 +6352,7 @@ const styles = StyleSheet.create({
   matchCard: {
     marginHorizontal: 16,
     marginBottom: 10,
-    borderRadius: 12,
+    borderRadius: 20,
     overflow: "hidden",
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
@@ -6397,7 +6361,7 @@ const styles = StyleSheet.create({
     elevation: 4,
   },
   matchCardGradient: {
-    borderRadius: 12,
+    borderRadius: 20,
   },
   matchHeader: {
     flexDirection: "row",
@@ -6458,7 +6422,7 @@ const styles = StyleSheet.create({
     borderRadius: 18,
     justifyContent: "center",
     alignItems: "center",
-    shadowColor: "#B91C1C",
+    shadowColor: "#00A66A",
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.2,
     shadowRadius: 2,
@@ -6485,7 +6449,7 @@ const styles = StyleSheet.create({
   },
   matchResult: {
     fontSize: 10,
-    color: "#B91C1C",
+    color: "#00A66A",
     fontWeight: "700",
   },
   matchDetailsOld: {
@@ -6546,7 +6510,7 @@ const styles = StyleSheet.create({
   },
   footerButtonText: {
     fontSize: 11,
-    color: "#B91C1C",
+    color: "#00A66A",
     fontWeight: "700",
   },
   // Team Selection Styles
@@ -6590,7 +6554,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 16,
     borderRadius: 12,
     overflow: "hidden",
-    shadowColor: "#B91C1C",
+    shadowColor: "#00A66A",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 8,
@@ -6611,7 +6575,7 @@ const styles = StyleSheet.create({
   // Tournament Dashboard Styles
   dashboardContainer: {
     flex: 1,
-    backgroundColor: "#F5F5F5",
+    backgroundColor: "#F0F7F4",
   },
   dashboardHeader: {
     backgroundColor: "#FFF",
@@ -6646,7 +6610,7 @@ const styles = StyleSheet.create({
     borderBottomColor: "transparent",
   },
   dashboardTabActive: {
-    borderBottomColor: "#B91C1C",
+    borderBottomColor: "#00A66A",
   },
   dashboardTabText: {
     fontSize: 13,
@@ -6654,7 +6618,7 @@ const styles = StyleSheet.create({
     color: "#999",
   },
   dashboardTabTextActive: {
-    color: "#B91C1C",
+    color: "#00A66A",
     fontWeight: "700",
   },
   dashboardContent: {
@@ -6717,7 +6681,7 @@ const styles = StyleSheet.create({
   },
   pointsTableHeader: {
     flexDirection: "row",
-    backgroundColor: "#B91C1C",
+    backgroundColor: "#00A66A",
     paddingVertical: 10,
     paddingHorizontal: 8,
   },
@@ -6748,7 +6712,7 @@ const styles = StyleSheet.create({
     borderRadius: 6,
     paddingVertical: 4,
     fontWeight: "700",
-    color: "#B91C1C",
+    color: "#00A66A",
   },
   leaderboardItem: {
     marginBottom: 10,
@@ -6765,7 +6729,7 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: "#FCA5A5",
+    backgroundColor: "#6EE7B7",
     justifyContent: "center",
     alignItems: "center",
   },
@@ -6793,7 +6757,7 @@ const styles = StyleSheet.create({
   leaderboardRuns: {
     fontSize: 16,
     fontWeight: "800",
-    color: "#B91C1C",
+    color: "#00A66A",
   },
   leaderboardRunsLabel: {
     fontSize: 10,
@@ -6962,7 +6926,7 @@ const styles = StyleSheet.create({
   // New Tournament Dashboard Styles
   tournamentDashboardContainer: {
     flex: 1,
-    backgroundColor: "#F5F5F5",
+    backgroundColor: "#F0F7F4",
   },
   tournamentDashboardHeader: {
     paddingTop: 40,
@@ -7087,7 +7051,7 @@ const styles = StyleSheet.create({
   },
   tournamentTabContent: {
     flex: 1,
-    backgroundColor: "#F5F5F5",
+    backgroundColor: "#F0F7F4",
     padding: 16,
   },
   tournamentSectionTitle: {
@@ -7098,7 +7062,7 @@ const styles = StyleSheet.create({
   },
   tournamentMatchCard: {
     backgroundColor: "#FFF",
-    borderRadius: 16,
+    borderRadius: 20,
     padding: 16,
     marginBottom: 12,
     shadowColor: "#000",
@@ -7170,7 +7134,7 @@ const styles = StyleSheet.create({
     right: 0,
     top: 0,
     padding: 8,
-    backgroundColor: "#F5F5F5",
+    backgroundColor: "#F0F7F4",
     borderRadius: 20,
   },
   tournamentMatchVenue: {
@@ -7186,7 +7150,7 @@ const styles = StyleSheet.create({
   teamCardContainer: {
     borderRadius: 16,
     overflow: "hidden",
-    shadowColor: "#B91C1C",
+    shadowColor: "#00A66A",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.18,
     shadowRadius: 8,
@@ -7210,7 +7174,7 @@ const styles = StyleSheet.create({
     borderRadius: 28,
     justifyContent: "center",
     alignItems: "center",
-    shadowColor: "#B91C1C",
+    shadowColor: "#00A66A",
     shadowOffset: { width: 0, height: 3 },
     shadowOpacity: 0.35,
     shadowRadius: 6,
@@ -7279,11 +7243,11 @@ const styles = StyleSheet.create({
     width: 50,
     height: 50,
     borderRadius: 25,
-    backgroundColor: "#B91C1C",
+    backgroundColor: "#00A66A",
     justifyContent: "center",
     alignItems: "center",
     marginHorizontal: 16,
-    shadowColor: "#B91C1C",
+    shadowColor: "#00A66A",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 6,
@@ -7300,7 +7264,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 32,
     borderRadius: 14,
     overflow: "hidden",
-    shadowColor: "#B91C1C",
+    shadowColor: "#00A66A",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 8,
@@ -7322,7 +7286,7 @@ const styles = StyleSheet.create({
   },
   // Select Team Styles
   selectTeamCard: {
-    borderRadius: 14,
+    borderRadius: 20,
     overflow: "hidden",
     marginBottom: 12,
     shadowColor: "#000",
@@ -7541,7 +7505,7 @@ const styles = StyleSheet.create({
     borderRadius: 14,
     overflow: "hidden",
     marginTop: 10,
-    shadowColor: "#B91C1C",
+    shadowColor: "#00A66A",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 6,
@@ -7563,7 +7527,7 @@ const styles = StyleSheet.create({
   addPlayersButtonCard: {
     borderRadius: 14,
     overflow: "hidden",
-    shadowColor: "#B91C1C",
+    shadowColor: "#00A66A",
     shadowOffset: { width: 0, height: 3 },
     shadowOpacity: 0.25,
     shadowRadius: 6,
@@ -7649,7 +7613,7 @@ const styles = StyleSheet.create({
     borderRadius: 19,
     justifyContent: "center",
     alignItems: "center",
-    shadowColor: "#B91C1C",
+    shadowColor: "#00A66A",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.3,
     shadowRadius: 4,
@@ -7765,7 +7729,7 @@ const styles = StyleSheet.create({
     borderRadius: 25,
     justifyContent: "center",
     alignItems: "center",
-    shadowColor: "#B91C1C",
+    shadowColor: "#00A66A",
     shadowOffset: { width: 0, height: 3 },
     shadowOpacity: 0.3,
     shadowRadius: 6,
@@ -7783,7 +7747,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     padding: 24,
-    backgroundColor: "#F5F5F5",
+    backgroundColor: "#F0F7F4",
     minHeight: 600,
   },
   vsBackButton: {
@@ -7850,7 +7814,7 @@ const styles = StyleSheet.create({
     borderRadius: 40,
     justifyContent: "center",
     alignItems: "center",
-    shadowColor: "#B91C1C",
+    shadowColor: "#00A66A",
     shadowOffset: { width: 0, height: 6 },
     shadowOpacity: 0.4,
     shadowRadius: 10,
@@ -7865,7 +7829,7 @@ const styles = StyleSheet.create({
   vsContinueButton: {
     borderRadius: 16,
     overflow: "hidden",
-    shadowColor: "#B91C1C",
+    shadowColor: "#00A66A",
     shadowOffset: { width: 0, height: 6 },
     shadowOpacity: 0.4,
     shadowRadius: 10,
@@ -7940,9 +7904,9 @@ const styles = StyleSheet.create({
     borderColor: "rgba(185, 28, 28, 0.3)",
   },
   matchTypePillActive: {
-    borderColor: "#B91C1C",
-    backgroundColor: "#B91C1C",
-    shadowColor: "#B91C1C",
+    borderColor: "#00A66A",
+    backgroundColor: "#00A66A",
+    shadowColor: "#00A66A",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.3,
     shadowRadius: 4,
@@ -7951,7 +7915,7 @@ const styles = StyleSheet.create({
   matchTypePillText: {
     fontSize: 12,
     fontWeight: "700",
-    color: "#B91C1C",
+    color: "#00A66A",
   },
   matchTypePillTextActive: {
     color: "#FFF",
@@ -7977,7 +7941,7 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   matchTypeCardActive: {
-    borderColor: "#B91C1C",
+    borderColor: "#00A66A",
     backgroundColor: "rgba(185, 28, 28, 0.05)",
   },
   matchTypeText: {
@@ -7987,13 +7951,13 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   matchTypeTextActive: {
-    color: "#B91C1C",
+    color: "#00A66A",
   },
   locationButton: {
     borderRadius: 14,
     overflow: "hidden",
     marginBottom: 12,
-    shadowColor: "#B91C1C",
+    shadowColor: "#00A66A",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 8,
@@ -8054,7 +8018,7 @@ const styles = StyleSheet.create({
   locationEnabledText: {
     fontSize: 13,
     fontWeight: "800",
-    color: "#B91C1C",
+    color: "#00A66A",
   },
   groundsCountBadge: {
     backgroundColor: "rgba(185, 28, 28, 0.15)",
@@ -8065,7 +8029,7 @@ const styles = StyleSheet.create({
   groundsCountText: {
     fontSize: 11,
     fontWeight: "700",
-    color: "#B91C1C",
+    color: "#00A66A",
   },
   groundsListContainer: {
     padding: 12,
@@ -8128,7 +8092,7 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   groundCardActive: {
-    shadowColor: "#B91C1C",
+    shadowColor: "#00A66A",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
     shadowRadius: 6,
@@ -8157,7 +8121,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   groundNumberBadgeActive: {
-    backgroundColor: "#B91C1C",
+    backgroundColor: "#00A66A",
   },
   groundNumberText: {
     fontSize: 13,
@@ -8177,7 +8141,7 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   groundNameActive: {
-    color: "#B91C1C",
+    color: "#00A66A",
   },
   groundMetaRow: {
     flexDirection: "row",
@@ -8322,7 +8286,7 @@ const styles = StyleSheet.create({
     color: "#555",
   },
   realPitchLabelSelected: {
-    color: "#B91C1C",
+    color: "#00A66A",
     fontWeight: "900",
   },
   pitchTypeContainer: {
@@ -8375,7 +8339,7 @@ const styles = StyleSheet.create({
   pitchTypeCubeContainer: {
     borderRadius: 12,
     padding: 8,
-    shadowColor: "#991B1B",
+    shadowColor: "#0F766E",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.15,
     shadowRadius: 6,
@@ -8398,9 +8362,9 @@ const styles = StyleSheet.create({
     borderColor: "rgba(185, 28, 28, 0.3)",
   },
   pitchTypePillActive: {
-    borderColor: "#991B1B",
-    backgroundColor: "#991B1B",
-    shadowColor: "#991B1B",
+    borderColor: "#0F766E",
+    backgroundColor: "#0F766E",
+    shadowColor: "#0F766E",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.3,
     shadowRadius: 4,
@@ -8409,7 +8373,7 @@ const styles = StyleSheet.create({
   pitchTypePillText: {
     fontSize: 11,
     fontWeight: "700",
-    color: "#991B1B",
+    color: "#0F766E",
   },
   pitchTypePillTextActive: {
     color: "#FFF",
@@ -8428,7 +8392,7 @@ const styles = StyleSheet.create({
     borderColor: "#E5E5E5",
   },
   pitchTypeChipActive: {
-    borderColor: "#B91C1C",
+    borderColor: "#00A66A",
     backgroundColor: "rgba(185, 28, 28, 0.1)",
   },
   pitchTypeText: {
@@ -8437,7 +8401,7 @@ const styles = StyleSheet.create({
     color: "#666",
   },
   pitchTypeTextActive: {
-    color: "#B91C1C",
+    color: "#00A66A",
   },
   ballTypeGrid: {
     flexDirection: "row",
@@ -8519,7 +8483,7 @@ const styles = StyleSheet.create({
     color: "#555",
   },
   realBallLabelSelected: {
-    color: "#B91C1C",
+    color: "#00A66A",
     fontWeight: "900",
   },
   dateTimeRow: {
@@ -8555,13 +8519,13 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   toggleSwitchActive: {
-    backgroundColor: "#B91C1C",
+    backgroundColor: "#00A66A",
   },
   startMatchButton: {
     borderRadius: 16,
     overflow: "hidden",
     marginTop: 12,
-    shadowColor: "#B91C1C",
+    shadowColor: "#00A66A",
     shadowOffset: { width: 0, height: 6 },
     shadowOpacity: 0.4,
     shadowRadius: 10,
@@ -8582,11 +8546,11 @@ const styles = StyleSheet.create({
     letterSpacing: 0.5,
   },
   backButton: {
-    backgroundColor: "#B91C1C",
+    backgroundColor: "#00A66A",
     paddingHorizontal: 24,
     paddingVertical: 14,
     borderRadius: 12,
-    shadowColor: "#B91C1C",
+    shadowColor: "#00A66A",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 6,
@@ -8605,7 +8569,7 @@ const styles = StyleSheet.create({
     marginBottom: 16,
     borderRadius: 14,
     overflow: "hidden",
-    shadowColor: "#B91C1C",
+    shadowColor: "#00A66A",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 8,
@@ -8650,7 +8614,7 @@ const styles = StyleSheet.create({
   },
   tournamentCard: {
     marginBottom: 12,
-    borderRadius: 14,
+    borderRadius: 20,
     overflow: "hidden",
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 3 },
@@ -9157,7 +9121,7 @@ const styles = StyleSheet.create({
   },
   formCard: {
     backgroundColor: "#FFF",
-    borderRadius: 10,
+    borderRadius: 20,
     padding: 14,
     borderWidth: 1,
     borderColor: "#ECECEC",
@@ -9192,7 +9156,7 @@ const styles = StyleSheet.create({
   },
   mediaPlaceholder: {
     width: "100%",
-    backgroundColor: "#F5F5F5",
+    backgroundColor: "#F0F7F4",
     borderRadius: 12,
     justifyContent: "center",
     alignItems: "center",
@@ -9251,7 +9215,7 @@ const styles = StyleSheet.create({
     width: 32,
     height: 32,
     borderRadius: 16,
-    backgroundColor: "#B91C1C",
+    backgroundColor: "#00A66A",
     justifyContent: "center",
     alignItems: "center",
   },
@@ -9262,7 +9226,7 @@ const styles = StyleSheet.create({
     width: 26,
     height: 26,
     borderRadius: 13,
-    backgroundColor: "#B91C1C",
+    backgroundColor: "#00A66A",
     borderWidth: 2,
     borderColor: "#FFF",
     justifyContent: "center",
@@ -9277,7 +9241,7 @@ const styles = StyleSheet.create({
     marginTop: 5,
     fontSize: 11,
     fontWeight: "800",
-    color: "#B91C1C",
+    color: "#00A66A",
   },
   formGroup: {
     marginBottom: 16,
@@ -9331,7 +9295,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#FAFAFA",
   },
   dateInputActive: {
-    borderColor: "#B91C1C",
+    borderColor: "#00A66A",
     backgroundColor: "#FFF7F7",
   },
   dateInputText: {
@@ -9347,7 +9311,7 @@ const styles = StyleSheet.create({
     padding: 12,
     marginTop: -8,
     marginBottom: 20,
-    shadowColor: "#B91C1C",
+    shadowColor: "#00A66A",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.08,
     shadowRadius: 10,
@@ -9363,7 +9327,7 @@ const styles = StyleSheet.create({
     width: 34,
     height: 34,
     borderRadius: 17,
-    backgroundColor: "#FEF2F2",
+    backgroundColor: "#F0FFF8",
     justifyContent: "center",
     alignItems: "center",
   },
@@ -9399,7 +9363,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
   calendarDaySelected: {
-    backgroundColor: "#B91C1C",
+    backgroundColor: "#00A66A",
   },
   calendarDayText: {
     fontSize: 13,
@@ -9509,7 +9473,7 @@ const styles = StyleSheet.create({
     fontWeight: "500",
   },
   ballTypeLabelSelected: {
-    color: "#B91C1C",
+    color: "#00A66A",
     fontWeight: "800",
   },
   checkboxRow: {
@@ -9528,8 +9492,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   checkboxChecked: {
-    backgroundColor: "#B91C1C",
-    borderColor: "#B91C1C",
+    backgroundColor: "#00A66A",
+    borderColor: "#00A66A",
   },
   checkboxLabel: {
     flex: 1,
@@ -9540,7 +9504,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
     borderRadius: 12,
     overflow: "hidden",
-    shadowColor: "#B91C1C",
+    shadowColor: "#00A66A",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 8,
@@ -9559,7 +9523,7 @@ const styles = StyleSheet.create({
   // Team Item Card Styles
   teamItemCard: {
     marginBottom: 12,
-    borderRadius: 12,
+    borderRadius: 20,
     overflow: "hidden",
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
@@ -9759,7 +9723,7 @@ const styles = StyleSheet.create({
     color: "#999",
   },
   tdTabTextActive: {
-    color: "#B91C1C",
+    color: "#00A66A",
     fontWeight: "800",
   },
   tdTabIndicator: {
@@ -9768,7 +9732,7 @@ const styles = StyleSheet.create({
     left: "15%",
     right: "15%",
     height: 3,
-    backgroundColor: "#B91C1C",
+    backgroundColor: "#00A66A",
     borderRadius: 2,
   },
   tdContent: {
@@ -9864,7 +9828,7 @@ const styles = StyleSheet.create({
   tdVs: {
     fontSize: 11,
     fontWeight: "900",
-    color: "#B91C1C",
+    color: "#00A66A",
   },
   tdMatchFooter: {
     flexDirection: "row",
@@ -10002,7 +9966,7 @@ const styles = StyleSheet.create({
   tdPlayerStatMain: {
     fontSize: 20,
     fontWeight: "900",
-    color: "#B91C1C",
+    color: "#00A66A",
   },
   tdPlayerStatSub: {
     fontSize: 10,
@@ -10069,7 +10033,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 4,
-    backgroundColor: "#F5F5F5",
+    backgroundColor: "#F0F7F4",
     paddingHorizontal: 8,
     paddingVertical: 3,
     borderRadius: 20,
@@ -10164,17 +10128,17 @@ const styles = StyleSheet.create({
     paddingVertical: 15,
     paddingHorizontal: 20,
     borderBottomWidth: 1,
-    borderBottomColor: "#F5F5F5",
+    borderBottomColor: "#F0F7F4",
     gap: 14,
   },
   tsMenuItemDanger: {
-    borderBottomColor: "#FEF2F2",
+    borderBottomColor: "#F0FFF8",
   },
   tsMenuIcon: {
     width: 36,
     height: 36,
     borderRadius: 18,
-    backgroundColor: "#F5F5F5",
+    backgroundColor: "#F0F7F4",
     justifyContent: "center",
     alignItems: "center",
   },
@@ -10185,7 +10149,7 @@ const styles = StyleSheet.create({
     color: "#222",
   },
   tsMenuLabelDanger: {
-    color: "#DC2626",
+    color: "#059669",
     fontWeight: "600",
   },
   tsMenuRight: {
@@ -10194,7 +10158,7 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   tsNewBadge: {
-    backgroundColor: "#DC2626",
+    backgroundColor: "#059669",
     borderRadius: 20,
     paddingHorizontal: 10,
     paddingVertical: 3,
@@ -10229,7 +10193,7 @@ const styles = StyleSheet.create({
   searchInputContainer: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#F5F5F5",
+    backgroundColor: "#F0F7F4",
     marginHorizontal: 16,
     marginVertical: 16,
     paddingHorizontal: 12,
@@ -10319,7 +10283,7 @@ const styles = StyleSheet.create({
   },
   searchMatchResult: {
     fontSize: 12,
-    color: "#B91C1C",
+    color: "#00A66A",
     fontWeight: "600",
     marginTop: 8,
   },
@@ -10412,7 +10376,7 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
   },
   tossTeamCardSelected: {
-    borderColor: "#B91C1C",
+    borderColor: "#00A66A",
     backgroundColor: "#FFF7F7",
   },
   tossTeamJersey: {
@@ -10432,7 +10396,7 @@ const styles = StyleSheet.create({
     width: 22,
     height: 22,
     borderRadius: 11,
-    backgroundColor: "#B91C1C",
+    backgroundColor: "#00A66A",
     alignItems: "center",
     justifyContent: "center",
     borderWidth: 2,
@@ -10445,7 +10409,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   tossTeamNameSelected: {
-    color: "#B91C1C",
+    color: "#00A66A",
   },
   tossDecisionSection: {
     marginBottom: 24,
@@ -10477,7 +10441,7 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
   },
   tossDecisionCardSelected: {
-    borderColor: "#B91C1C",
+    borderColor: "#00A66A",
     backgroundColor: "#FFF7F7",
   },
   cricketActionFigure: {
@@ -10492,13 +10456,13 @@ const styles = StyleSheet.create({
     width: 18,
     height: 18,
     borderRadius: 9,
-    backgroundColor: "#7F1D1D",
+    backgroundColor: "#064E3B",
   },
   figureBody: {
     width: 24,
     height: 32,
     borderRadius: 10,
-    backgroundColor: "#B91C1C",
+    backgroundColor: "#00A66A",
     marginTop: 2,
   },
   bowlerFigureBody: {
@@ -10509,7 +10473,7 @@ const styles = StyleSheet.create({
     height: 18,
     borderLeftWidth: 6,
     borderRightWidth: 6,
-    borderColor: "#7F1D1D",
+    borderColor: "#064E3B",
     marginTop: -1,
   },
   batHandle: {
@@ -10529,7 +10493,7 @@ const styles = StyleSheet.create({
     width: 8,
     height: 40,
     borderRadius: 4,
-    backgroundColor: "#7F1D1D",
+    backgroundColor: "#064E3B",
     transform: [{ rotate: "-42deg" }],
   },
   bowlingBall: {
@@ -10539,7 +10503,7 @@ const styles = StyleSheet.create({
     width: 13,
     height: 13,
     borderRadius: 7,
-    backgroundColor: "#B91C1C",
+    backgroundColor: "#00A66A",
   },
   tossDecisionText: {
     fontSize: 18,
@@ -10547,7 +10511,7 @@ const styles = StyleSheet.create({
     color: "#666",
   },
   tossDecisionTextSelected: {
-    color: "#B91C1C",
+    color: "#00A66A",
   },
   // Player Selection Page Styles
   playerSelectionContainer: {
@@ -10597,7 +10561,7 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
   },
   playerSelectionCardSelected: {
-    borderColor: "#B91C1C",
+    borderColor: "#00A66A",
     backgroundColor: "#FFF7F7",
   },
   bowlerCard: {
@@ -10616,7 +10580,7 @@ const styles = StyleSheet.create({
     width: 68,
     height: 68,
     borderRadius: 34,
-    backgroundColor: "#FEF2F2",
+    backgroundColor: "#F0FFF8",
     alignItems: "center",
     justifyContent: "center",
     position: "relative",
@@ -10633,7 +10597,7 @@ const styles = StyleSheet.create({
   selectedPlayerName: {
     fontSize: 13,
     fontWeight: "800",
-    color: "#B91C1C",
+    color: "#00A66A",
     textAlign: "center",
   },
   playerActionButtons: {
@@ -10678,7 +10642,7 @@ const styles = StyleSheet.create({
   // Match Settings Page Styles
   matchSettingsContainer: {
     flex: 1,
-    backgroundColor: "#F5F5F5",
+    backgroundColor: "#F0F7F4",
     padding: 20,
   },
   matchSettingsTitle: {
@@ -10766,7 +10730,7 @@ const styles = StyleSheet.create({
   ruleLabel: {
     fontSize: 16,
     fontWeight: "700",
-    color: "#B91C1C",
+    color: "#00A66A",
     marginRight: 12,
     width: 20,
   },
@@ -10817,8 +10781,8 @@ const styles = StyleSheet.create({
     borderColor: "transparent",
   },
   ignoreRuleOptionActive: {
-    backgroundColor: "#B91C1C",
-    borderColor: "#B91C1C",
+    backgroundColor: "#00A66A",
+    borderColor: "#00A66A",
   },
   ignoreRuleOptionText: {
     fontSize: 16,
@@ -10883,7 +10847,7 @@ const styles = StyleSheet.create({
   playerItemSelected: {
     backgroundColor: "#FFF7F7",
     borderWidth: 1,
-    borderColor: "#B91C1C",
+    borderColor: "#00A66A",
   },
   playerItemContent: {
     flexDirection: "row",
@@ -10894,7 +10858,7 @@ const styles = StyleSheet.create({
     width: 50,
     height: 50,
     borderRadius: 25,
-    backgroundColor: "#B91C1C",
+    backgroundColor: "#00A66A",
     alignItems: "center",
     justifyContent: "center",
     marginRight: 16,
@@ -10936,7 +10900,7 @@ const styles = StyleSheet.create({
   scoringTeamName: {
     fontSize: 14,
     fontWeight: "800",
-    color: "#FCA5A5",
+    color: "#6EE7B7",
     marginBottom: 4,
   },
   scoringTotal: {
@@ -11085,4 +11049,304 @@ const styles = StyleSheet.create({
   outButtonText: {
     color: "#FFF",
   },
+
+  // ── Team Selection Premium Styles ──────────────────────────────
+  tsMatchHeader: {
+    paddingTop: 52,
+    paddingBottom: 28,
+    paddingHorizontal: 20,
+    alignItems: "center",
+    overflow: "hidden",
+    position: "relative",
+  },
+  tsHeaderDecoL: {
+    position: "absolute", top: -40, left: -40,
+    width: 140, height: 140, borderRadius: 70,
+    backgroundColor: "rgba(185,28,28,0.18)",
+  },
+  tsHeaderDecoR: {
+    position: "absolute", bottom: -30, right: -30,
+    width: 110, height: 110, borderRadius: 55,
+    backgroundColor: "rgba(245,158,11,0.12)",
+  },
+  tsHeaderTop: { marginBottom: 10 },
+  tsHeaderBadge: {
+    flexDirection: "row", alignItems: "center", gap: 5,
+    backgroundColor: "rgba(245,158,11,0.18)",
+    paddingHorizontal: 12, paddingVertical: 4, borderRadius: 20,
+    borderWidth: 1, borderColor: "rgba(245,158,11,0.35)",
+  },
+  tsHeaderBadgeTxt: { fontSize: 10, fontWeight: "800", color: "#F59E0B", letterSpacing: 1.2 },
+  tsHeaderTitle: { fontSize: 26, fontWeight: "900", color: "#FFF", letterSpacing: 0.5, marginBottom: 6 },
+  tsHeaderSub: { fontSize: 13, color: "#94A3B8", fontWeight: "500" },
+
+  tsTeamCard: {
+    backgroundColor: "#FFF",
+    borderRadius: 20,
+    overflow: "hidden",
+    marginBottom: 4,
+    borderWidth: 1.5,
+    borderColor: "#E2E8F0",
+    shadowColor: "#00A66A",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 12,
+    elevation: 5,
+  },
+  tsTeamCardB: {
+    shadowColor: "#1E3A5F",
+  },
+  tsTeamCardReady: {
+    borderColor: "#BBF7D0",
+    shadowColor: "#16A34A",
+    shadowOpacity: 0.15,
+  },
+  tsTeamCardStrip: {
+    height: 5,
+    width: "100%",
+  },
+  tsTeamCardInner: {
+    flexDirection: "row",
+    alignItems: "center",
+    padding: 16,
+    gap: 14,
+  },
+  tsTeamLogoWrap: { position: "relative" },
+  tsTeamLogo: {
+    width: 60, height: 60, borderRadius: 30,
+    justifyContent: "center", alignItems: "center",
+    shadowColor: "#000", shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.2, shadowRadius: 6, elevation: 4,
+  },
+  tsTeamLogoLetter: { fontSize: 26, fontWeight: "900", color: "#FFF" },
+  tsTeamLogoEmpty: {
+    width: 60, height: 60, borderRadius: 30,
+    borderWidth: 2, borderColor: "#E2E8F0", borderStyle: "dashed",
+    justifyContent: "center", alignItems: "center",
+    backgroundColor: "#F8FAFC",
+  },
+  tsReadyDot: {
+    position: "absolute", bottom: 2, right: 2,
+    width: 14, height: 14, borderRadius: 7,
+    backgroundColor: "#22C55E",
+    borderWidth: 2, borderColor: "#FFF",
+  },
+  tsTeamInfo: { flex: 1 },
+  tsTeamSlotRow: { flexDirection: "row", alignItems: "center", gap: 8, marginBottom: 4 },
+  tsTeamSlot: { fontSize: 10, fontWeight: "800", color: "#00A66A", letterSpacing: 1.2 },
+  tsTeamStatus: {
+    paddingHorizontal: 7, paddingVertical: 2, borderRadius: 10,
+  },
+  tsTeamStatusReady: { backgroundColor: "#DCFCE7" },
+  tsTeamStatusEmpty: { backgroundColor: "#F1F5F9" },
+  tsTeamStatusTxt: { fontSize: 9, fontWeight: "700", color: "#374151" },
+  tsTeamName: { fontSize: 17, fontWeight: "800", color: "#0F172A", marginBottom: 4 },
+  tsTeamMeta: { flexDirection: "row", alignItems: "center", gap: 5 },
+  tsTeamMetaTxt: { fontSize: 11, color: "#64748B", fontWeight: "500" },
+  tsTeamEmptyHint: { fontSize: 11, color: "#94A3B8", fontStyle: "italic" },
+  tsTeamActions: {
+    flexDirection: "row", gap: 10,
+    paddingHorizontal: 16, paddingBottom: 16,
+  },
+  tsActionBtnOutline: {
+    flex: 1, flexDirection: "row", alignItems: "center", justifyContent: "center",
+    gap: 6, paddingVertical: 11, borderRadius: 12,
+    borderWidth: 1.5, borderColor: "#00A66A",
+    backgroundColor: "#FFF9F9",
+  },
+  tsActionBtnOutlineTxt: { fontSize: 13, fontWeight: "700", color: "#00A66A" },
+  tsActionBtnFill: {
+    flex: 1, borderRadius: 12, overflow: "hidden",
+    shadowColor: "#00A66A", shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.25, shadowRadius: 6, elevation: 4,
+  },
+  tsActionBtnFillGrad: {
+    flexDirection: "row", alignItems: "center", justifyContent: "center",
+    gap: 6, paddingVertical: 11,
+  },
+  tsActionBtnFillTxt: { fontSize: 13, fontWeight: "700", color: "#FFF" },
+
+  tsVsRow: {
+    flexDirection: "row", alignItems: "center",
+    marginVertical: 14, paddingHorizontal: 4,
+  },
+  tsVsLine: { flex: 1, height: 1.5, backgroundColor: "#E2E8F0" },
+  tsVsCircle: {
+    width: 48, height: 48, borderRadius: 24,
+    justifyContent: "center", alignItems: "center",
+    marginHorizontal: 14,
+    shadowColor: "#F59E0B", shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.4, shadowRadius: 8, elevation: 6,
+  },
+  tsVsTxt: { fontSize: 15, fontWeight: "900", color: "#FFF", letterSpacing: 1 },
+
+  tsReadyBar: {
+    flexDirection: "row", gap: 8,
+    marginTop: 16, marginBottom: 8,
+  },
+  tsReadyBarSlot: {
+    flex: 1, height: 4, borderRadius: 2, backgroundColor: "#E2E8F0",
+  },
+  tsReadyBarSlotDone: { backgroundColor: "#22C55E" },
+
+  tsPlayBtn: {
+    marginTop: 16, borderRadius: 16, overflow: "hidden",
+    shadowColor: "#F59E0B", shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.4, shadowRadius: 12, elevation: 8,
+  },
+  tsPlayBtnGrad: {
+    flexDirection: "row", alignItems: "center", justifyContent: "center",
+    paddingVertical: 17, gap: 10,
+  },
+  tsPlayBtnTxt: { fontSize: 18, fontWeight: "900", color: "#FFF", letterSpacing: 0.5 },
+
+  tsEmptyHint: {
+    flexDirection: "row", alignItems: "center", justifyContent: "center",
+    gap: 6, marginTop: 20, paddingVertical: 12,
+    backgroundColor: "#F8FAFC", borderRadius: 12,
+    borderWidth: 1, borderColor: "#E2E8F0",
+  },
+  tsEmptyHintTxt: { fontSize: 13, color: "#94A3B8", fontWeight: "500" },
+});
+
+// ── Create Team Styles (ctStyles) ────────────────────────────────
+const ctStyles = StyleSheet.create({
+  header: {
+    paddingTop: 44, paddingBottom: 20, paddingHorizontal: 16,
+    alignItems: "center", overflow: "hidden", position: "relative",
+  },
+  headerDeco1: {
+    position: "absolute", top: -40, right: -30,
+    width: 110, height: 110, borderRadius: 55,
+    backgroundColor: "rgba(255,255,255,0.07)",
+  },
+  headerDeco2: {
+    position: "absolute", bottom: -20, left: -20,
+    width: 80, height: 80, borderRadius: 40,
+    backgroundColor: "rgba(0,0,0,0.12)",
+  },
+  headerTop: { marginBottom: 6 },
+  headerSlotBadge: {
+    flexDirection: "row", alignItems: "center", gap: 4,
+    backgroundColor: "rgba(255,255,255,0.18)",
+    paddingHorizontal: 10, paddingVertical: 3, borderRadius: 16,
+    borderWidth: 1, borderColor: "rgba(255,255,255,0.3)",
+  },
+  headerSlotTxt: { fontSize: 10, fontWeight: "800", color: "#FFF", letterSpacing: 1 },
+  headerTitle: { fontSize: 18, fontWeight: "900", color: "#FFF", marginBottom: 4 },
+  headerSub: { fontSize: 11, color: "rgba(255,255,255,0.75)", fontWeight: "500", marginBottom: 12 },
+  progressBar: { flexDirection: "row", gap: 5, width: "100%", marginBottom: 4 },
+  progressSlot: { flex: 1, height: 3, borderRadius: 2, backgroundColor: "rgba(255,255,255,0.25)" },
+  progressSlotDone: { backgroundColor: "#FFF" },
+  progressLabel: { fontSize: 10, color: "rgba(255,255,255,0.65)", fontWeight: "600" },
+
+  body: { padding: 10, gap: 8 },
+
+  sectionCard: {
+    backgroundColor: "#FFF", borderRadius: 12, padding: 12,
+    borderWidth: 1, borderColor: "#F1F5F9",
+    shadowColor: "#000", shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05, shadowRadius: 4, elevation: 2,
+  },
+  sectionHeader: { flexDirection: "row", alignItems: "center", gap: 6, marginBottom: 10 },
+  sectionIconWrap: {
+    width: 24, height: 24, borderRadius: 6,
+    backgroundColor: "#F0FFF8", justifyContent: "center", alignItems: "center",
+  },
+  sectionTitle: { fontSize: 13, fontWeight: "800", color: "#0F172A", flex: 1 },
+  sectionOptional: {
+    fontSize: 10, color: "#94A3B8", fontWeight: "600",
+    backgroundColor: "#F1F5F9", paddingHorizontal: 6, paddingVertical: 2, borderRadius: 8,
+  },
+
+  fieldGroup: { marginBottom: 8 },
+  fieldLabel: { fontSize: 11, fontWeight: "700", color: "#475569", marginBottom: 4 },
+  fieldHint: { fontSize: 10, color: "#94A3B8", marginBottom: 4 },
+  req: { color: "#EF4444" },
+  fieldInput: {
+    flexDirection: "row", alignItems: "center", gap: 8,
+    backgroundColor: "#F8FAFC", borderRadius: 10,
+    borderWidth: 1.5, borderColor: "#E2E8F0",
+    paddingHorizontal: 10, paddingVertical: 5,
+  },
+  fieldInputDone: { borderColor: "#BBF7D0", backgroundColor: "#F0FFF4" },
+  fieldText: { flex: 1, fontSize: 13, color: "#0F172A", fontWeight: "500" },
+
+  mobileRow: { flexDirection: "row", gap: 6 },
+  dialCodeBtn: {
+    flexDirection: "row", alignItems: "center", gap: 3,
+    backgroundColor: "#F8FAFC", borderRadius: 10,
+    borderWidth: 1.5, borderColor: "#E2E8F0",
+    paddingHorizontal: 10, paddingVertical: 9,
+  },
+  dialCodeTxt: { fontSize: 13, fontWeight: "700", color: "#0F172A" },
+  dialDropdown: {
+    marginTop: 4, backgroundColor: "#FFF", borderRadius: 10,
+    borderWidth: 1, borderColor: "#E2E8F0",
+    shadowColor: "#000", shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.08, shadowRadius: 6, elevation: 4,
+    overflow: "hidden",
+  },
+  dialOption: {
+    flexDirection: "row", alignItems: "center", gap: 8,
+    paddingHorizontal: 12, paddingVertical: 9,
+    borderBottomWidth: 1, borderBottomColor: "#F8FAFC",
+  },
+  dialFlag: { fontSize: 16 },
+  dialCountry: { flex: 1, fontSize: 12, color: "#374151", fontWeight: "500" },
+  dialCode: { fontSize: 12, color: "#64748B", fontWeight: "600" },
+
+  captainBadge: {
+    width: 18, height: 18, borderRadius: 9,
+    backgroundColor: "#F59E0B", justifyContent: "center", alignItems: "center",
+  },
+  captainBadgeTxt: { fontSize: 10, fontWeight: "900", color: "#FFF" },
+
+  chipRow: { flexDirection: "row", gap: 6, marginTop: 6 },
+  chip: {
+    paddingHorizontal: 12, paddingVertical: 5, borderRadius: 16,
+    borderWidth: 1.5, borderColor: "#E2E8F0", backgroundColor: "#F8FAFC",
+  },
+  chipActive: { borderColor: "#00A66A", backgroundColor: "#F0FFF8" },
+  chipTxt: { fontSize: 12, fontWeight: "700", color: "#64748B" },
+  chipTxtActive: { color: "#00A66A" },
+
+  ruleBox: {
+    marginTop: 8, backgroundColor: "#F8FAFC",
+    borderRadius: 8, padding: 10, gap: 6,
+    borderLeftWidth: 3, borderLeftColor: "#00A66A",
+  },
+  ruleRow: { flexDirection: "row", alignItems: "center", gap: 6 },
+  ruleTxt: { fontSize: 11, color: "#475569", flex: 1 },
+  ruleCheck: {
+    width: 14, height: 14, borderRadius: 7,
+    backgroundColor: "#22C55E", justifyContent: "center", alignItems: "center",
+  },
+
+  addPlayersNote: { fontSize: 11, color: "#94A3B8", marginBottom: 8, fontStyle: "italic" },
+  addOptions: { gap: 7 },
+  addOption: {
+    flexDirection: "row", alignItems: "center", gap: 10,
+    backgroundColor: "#F8FAFC", borderRadius: 10, padding: 10,
+    borderWidth: 1, borderColor: "#F1F5F9",
+  },
+  addOptionIcon: {
+    width: 36, height: 36, borderRadius: 10,
+    justifyContent: "center", alignItems: "center",
+  },
+  addOptionInfo: { flex: 1 },
+  addOptionTitle: { fontSize: 13, fontWeight: "700", color: "#0F172A", marginBottom: 1 },
+  addOptionSub: { fontSize: 10, color: "#64748B" },
+
+  createBtn: {
+    borderRadius: 13, overflow: "hidden",
+    shadowColor: "#00A66A", shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3, shadowRadius: 8, elevation: 6,
+    marginTop: 4,
+  },
+  createBtnGrad: {
+    flexDirection: "row", alignItems: "center", justifyContent: "center",
+    paddingVertical: 14, gap: 8,
+  },
+  createBtnTxt: { fontSize: 14, fontWeight: "800", color: "#FFF", letterSpacing: 0.2 },
 });
