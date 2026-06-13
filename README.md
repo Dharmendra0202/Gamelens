@@ -1,4 +1,4 @@
-# CRICKBUZ 🏏
+# Gamelens 🏏
 
 A modern cricket social platform built with React Native and Expo.
 
