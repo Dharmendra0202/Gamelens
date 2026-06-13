@@ -1,49 +1,116 @@
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import React, { useState } from 'react';
-import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { ScrollView, StyleSheet, Text, TouchableOpacity, View, Dimensions, Animated } from 'react-native';
 import { AnimatedViewTransition } from '@/components/ui/animated-view-transition';
 import { TabScreenWrapper } from '@/components/ui/tab-screen-wrapper';
 import { shareContent } from '@/utils/share';
+import { useSwipeableTabs } from '@/hooks/use-swipeable-tabs';
+import { CricketPostCard, CricketPost } from '@/components/ui/cricket-post-card';
+
+const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
 export default function CommunityScreen() {
-  const [activeTab, setActiveTab] = useState('feed');
+  const {
+    activeTab,
+    scrollRef: horizontalScrollRef,
+    scrollX,
+    goToTab: handleTabPressInternal,
+    handleScroll,
+    handleScrollEnd: handleHorizontalScrollEnd,
+    handleScrollEndDrag,
+  } = useSwipeableTabs({
+    tabs: ['feed', 'groups', 'events'],
+    prevMainTab: 2,  // My Cricket
+    nextMainTab: 4,  // Store
+  });
 
-  const posts = [
+  const handleTabPress = (tabName: string) => handleTabPressInternal(tabName);
+
+  const [posts, setPosts] = useState<CricketPost[]>([
     {
       id: 1,
       user: 'Rahul Sharma',
-      userInitials: 'RS',
+      initials: 'RS',
+      role: 'Batsman',
       time: '2 hours ago',
       content: 'Just finished an amazing match! Team won by 6 wickets 🏏🔥 #CricketLife',
+      tags: ['CricketLife'],
       likes: 234,
       comments: 45,
       shares: 12,
       color: '#B91C1C',
+      liked: false,
+      saved: false,
+      verified: true,
     },
     {
       id: 2,
       user: 'Priya Patel',
-      userInitials: 'PP',
+      initials: 'PP',
+      role: 'Wicket Keeper',
       time: '5 hours ago',
-      content: 'Looking for players for weekend match in Mumbai. Anyone interested? Need 2 batsmen and 1 bowler.',
+      content: 'Looking for players for weekend match in Mumbai. Anyone interested? Need 2 batsmen and 1 bowler. #CricketIndia',
+      tags: ['CricketIndia'],
       likes: 89,
       comments: 23,
       shares: 5,
       color: '#DC2626',
+      liked: false,
+      saved: false,
+      verified: false,
     },
     {
       id: 3,
       user: 'Vikas Kumar',
-      userInitials: 'VK',
+      initials: 'VK',
+      role: 'Bowler',
       time: '1 day ago',
-      content: 'Best catch of my career today! 🙌 Thanks to my team for the support.',
+      content: 'Best catch of my career today! 🙌 Thanks to my team for the support. #CatchOfTheDay',
+      tags: ['CatchOfTheDay'],
       likes: 456,
       comments: 78,
       shares: 34,
       color: '#991B1B',
+      liked: false,
+      saved: false,
+      verified: false,
     },
-  ];
+  ]);
+
+  const handleLike = (id: number) => {
+    setPosts(prev =>
+      prev.map(post =>
+        post.id === id ? { ...post, liked: !post.liked, likes: post.liked ? post.likes - 1 : post.likes + 1 } : post
+      )
+    );
+  };
+
+  const handleComment = (post: CricketPost) => {
+    console.log('Comment on post:', post.id);
+  };
+
+  const handleShare = async (id: number) => {
+    const post = posts.find(p => p.id === id);
+    if (!post) return;
+    const shared = await shareContent({
+      title: `Post by ${post.user}`,
+      message: post.content,
+      type: 'post',
+      id: post.id,
+    });
+    if (shared) {
+      setPosts(prev =>
+        prev.map(p => (p.id === id ? { ...p, shares: p.shares + 1 } : p))
+      );
+    }
+  };
+
+  const handleSave = (id: number) => {
+    setPosts(prev =>
+      prev.map(post => (post.id === id ? { ...post, saved: !post.saved } : post))
+    );
+  };
 
   const groups = [
     { id: 1, name: 'Mumbai Cricket Club', members: '2.5K', icon: '🏏' },
@@ -52,7 +119,7 @@ export default function CommunityScreen() {
   ];
 
   return (
-    <TabScreenWrapper>
+    <TabScreenWrapper swipeEnabled={false}>
       <View style={styles.container}>
       {/* Header */}
       <LinearGradient
@@ -74,9 +141,29 @@ export default function CommunityScreen() {
 
       {/* Tabs */}
       <View style={styles.tabsContainer}>
+        {/* Real-time sliding indicator line */}
+        <Animated.View
+          style={{
+            position: 'absolute',
+            bottom: 0,
+            left: 0,
+            width: SCREEN_WIDTH / 3 - 32,
+            height: 3,
+            backgroundColor: '#B91C1C',
+            transform: [
+              {
+                translateX: scrollX.interpolate({
+                  inputRange: [0, SCREEN_WIDTH * 2],
+                  outputRange: [16, 16 + (SCREEN_WIDTH / 3) * 2],
+                }),
+              },
+            ],
+            zIndex: 10,
+          }}
+        />
         <TouchableOpacity
-          style={[styles.tab, activeTab === 'feed' && styles.activeTab]}
-          onPress={() => setActiveTab('feed')}
+          style={styles.tab}
+          onPress={() => handleTabPress('feed')}
         >
           <Ionicons
             name="home"
@@ -88,8 +175,8 @@ export default function CommunityScreen() {
           </Text>
         </TouchableOpacity>
         <TouchableOpacity
-          style={[styles.tab, activeTab === 'groups' && styles.activeTab]}
-          onPress={() => setActiveTab('groups')}
+          style={styles.tab}
+          onPress={() => handleTabPress('groups')}
         >
           <Ionicons
             name="people"
@@ -101,8 +188,8 @@ export default function CommunityScreen() {
           </Text>
         </TouchableOpacity>
         <TouchableOpacity
-          style={[styles.tab, activeTab === 'events' && styles.activeTab]}
-          onPress={() => setActiveTab('events')}
+          style={styles.tab}
+          onPress={() => handleTabPress('events')}
         >
           <Ionicons
             name="calendar"
@@ -115,178 +202,153 @@ export default function CommunityScreen() {
         </TouchableOpacity>
       </View>
 
-      <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
-        <AnimatedViewTransition transitionKey={activeTab} type="slideUp">
-          {activeTab === 'feed' && (
-            <>
-              {/* Create Post */}
-              <View style={styles.createPostSection}>
-                <TouchableOpacity style={styles.createPost}>
-                  <View style={styles.createPostAvatar}>
-                    <Text style={styles.createPostInitials}>ME</Text>
-                  </View>
-                  <Text style={styles.createPostPlaceholder}>{"What's on your mind?"}</Text>
-                </TouchableOpacity>
-                <View style={styles.createPostActions}>
-                  <TouchableOpacity style={styles.createPostAction}>
-                    <Ionicons name="image-outline" size={20} color="#B91C1C" />
-                    <Text style={styles.createPostActionText}>Photo</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity style={styles.createPostAction}>
-                    <Ionicons name="videocam-outline" size={20} color="#B91C1C" />
-                    <Text style={styles.createPostActionText}>Video</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity style={styles.createPostAction}>
-                    <Ionicons name="location-outline" size={20} color="#B91C1C" />
-                    <Text style={styles.createPostActionText}>Location</Text>
-                  </TouchableOpacity>
-                </View>
+      <Animated.ScrollView
+        ref={horizontalScrollRef}
+        horizontal
+        pagingEnabled
+        showsHorizontalScrollIndicator={false}
+        onScroll={handleScroll}
+        onMomentumScrollEnd={handleHorizontalScrollEnd}
+        onScrollEndDrag={handleScrollEndDrag}
+        style={styles.content}
+        scrollEventThrottle={16}
+        nestedScrollEnabled
+      >
+        {/* Tab 1: Feed */}
+        <ScrollView style={{ width: SCREEN_WIDTH }} showsVerticalScrollIndicator={false}>
+          {/* Create Post */}
+          <View style={styles.createPostSection}>
+            <TouchableOpacity style={styles.createPost}>
+              <View style={styles.createPostAvatar}>
+                <Text style={styles.createPostInitials}>ME</Text>
               </View>
-
-              {/* Posts */}
-              {posts.map((post) => (
-                <View key={post.id} style={styles.postCard}>
-                  <View style={styles.postHeader}>
-                    <View style={[styles.postUserAvatar, { backgroundColor: post.color }]}>
-                      <Text style={styles.postUserInitials}>{post.userInitials}</Text>
-                    </View>
-                    <View style={styles.postUserInfo}>
-                      <Text style={styles.postUserName}>{post.user}</Text>
-                      <Text style={styles.postTime}>{post.time}</Text>
-                    </View>
-                    <TouchableOpacity>
-                      <Ionicons name="ellipsis-horizontal" size={20} color="#666" />
-                    </TouchableOpacity>
-                  </View>
-
-                  <Text style={styles.postContent}>{post.content}</Text>
-
-                  <View style={styles.postStats}>
-                    <Text style={styles.postStatsText}>{post.likes} likes</Text>
-                    <Text style={styles.postStatsText}>
-                      {post.comments} comments • {post.shares} shares
-                    </Text>
-                  </View>
-
-                  <View style={styles.postActions}>
-                    <TouchableOpacity style={styles.postAction}>
-                      <Ionicons name="heart-outline" size={22} color="#666" />
-                      <Text style={styles.postActionText}>Like</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={styles.postAction}>
-                      <Ionicons name="chatbubble-outline" size={22} color="#666" />
-                      <Text style={styles.postActionText}>Comment</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                      style={styles.postAction}
-                      onPress={() => shareContent({
-                        title: `Post by ${post.user}`,
-                        message: post.content,
-                        type: 'post',
-                        id: post.id,
-                      })}
-                    >
-                      <Ionicons name="share-social-outline" size={22} color="#666" />
-                      <Text style={styles.postActionText}>Share</Text>
-                    </TouchableOpacity>
-                  </View>
-                </View>
-              ))}
-            </>
-          )}
-
-          {activeTab === 'groups' && (
-            <View style={styles.groupsSection}>
-              <TouchableOpacity style={styles.createGroupButton}>
-                <Ionicons name="add-circle" size={24} color="#B91C1C" />
-                <Text style={styles.createGroupText}>Create New Group</Text>
+              <Text style={styles.createPostPlaceholder}>{"What's on your mind?"}</Text>
+            </TouchableOpacity>
+            <View style={styles.createPostActions}>
+              <TouchableOpacity style={styles.createPostAction}>
+                <Ionicons name="image-outline" size={20} color="#B91C1C" />
+                <Text style={styles.createPostActionText}>Photo</Text>
               </TouchableOpacity>
+              <TouchableOpacity style={styles.createPostAction}>
+                <Ionicons name="videocam-outline" size={20} color="#B91C1C" />
+                <Text style={styles.createPostActionText}>Video</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.createPostAction}>
+                <Ionicons name="location-outline" size={20} color="#B91C1C" />
+                <Text style={styles.createPostActionText}>Location</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
 
-              <Text style={styles.sectionTitle}>Your Groups</Text>
-              {groups.map((group) => (
-                <TouchableOpacity key={group.id} style={styles.groupCard}>
-                  <View style={styles.groupIcon}>
-                    <Text style={styles.groupIconText}>{group.icon}</Text>
-                  </View>
-                  <View style={styles.groupInfo}>
-                    <Text style={styles.groupName}>{group.name}</Text>
-                    <Text style={styles.groupMembers}>{group.members} members</Text>
-                  </View>
-                  <Ionicons name="chevron-forward" size={20} color="#999" />
-                </TouchableOpacity>
-              ))}
+          {/* Posts */}
+          {posts.map((post) => (
+            <CricketPostCard
+              key={post.id}
+              post={post}
+              onLike={handleLike}
+              onComment={handleComment}
+              onShare={handleShare}
+              onSave={handleSave}
+            />
+          ))}
+          <View style={{ height: 80 }} />
+        </ScrollView>
 
-              <Text style={styles.sectionTitle}>Suggested Groups</Text>
-              <TouchableOpacity style={styles.groupCard}>
+        {/* Tab 2: Groups */}
+        <ScrollView style={{ width: SCREEN_WIDTH }} showsVerticalScrollIndicator={false}>
+          <View style={styles.groupsSection}>
+            <TouchableOpacity style={styles.createGroupButton}>
+              <Ionicons name="add-circle" size={24} color="#B91C1C" />
+              <Text style={styles.createGroupText}>Create New Group</Text>
+            </TouchableOpacity>
+
+            <Text style={styles.sectionTitle}>Your Groups</Text>
+            {groups.map((group) => (
+              <TouchableOpacity key={group.id} style={styles.groupCard}>
                 <View style={styles.groupIcon}>
-                  <Text style={styles.groupIconText}>🏆</Text>
+                  <Text style={styles.groupIconText}>{group.icon}</Text>
                 </View>
                 <View style={styles.groupInfo}>
-                  <Text style={styles.groupName}>IPL Fans United</Text>
-                  <Text style={styles.groupMembers}>12.5K members</Text>
+                  <Text style={styles.groupName}>{group.name}</Text>
+                  <Text style={styles.groupMembers}>{group.members} members</Text>
                 </View>
-                <TouchableOpacity style={styles.joinButton}>
-                  <Text style={styles.joinButtonText}>Join</Text>
-                </TouchableOpacity>
+                <Ionicons name="chevron-forward" size={20} color="#999" />
               </TouchableOpacity>
-            </View>
-          )}
+            ))}
 
-          {activeTab === 'events' && (
-            <View style={styles.eventsSection}>
-              <TouchableOpacity style={styles.createEventButton}>
-                <Ionicons name="add-circle" size={24} color="#B91C1C" />
-                <Text style={styles.createEventText}>Create Event</Text>
+            <Text style={styles.sectionTitle}>Suggested Groups</Text>
+            <TouchableOpacity style={styles.groupCard}>
+              <View style={styles.groupIcon}>
+                <Text style={styles.groupIconText}>🏆</Text>
+              </View>
+              <View style={styles.groupInfo}>
+                <Text style={styles.groupName}>IPL Fans United</Text>
+                <Text style={styles.groupMembers}>12.5K members</Text>
+              </View>
+              <TouchableOpacity style={styles.joinButton}>
+                <Text style={styles.joinButtonText}>Join</Text>
               </TouchableOpacity>
+            </TouchableOpacity>
+          </View>
+          <View style={{ height: 80 }} />
+        </ScrollView>
 
-              <Text style={styles.sectionTitle}>Upcoming Events</Text>
-              <TouchableOpacity style={styles.eventCard}>
-                <View style={styles.eventDate}>
-                  <Text style={styles.eventDay}>15</Text>
-                  <Text style={styles.eventMonth}>MAY</Text>
-                </View>
-                <View style={styles.eventInfo}>
-                  <Text style={styles.eventName}>Weekend Cricket Tournament</Text>
-                  <View style={styles.eventDetail}>
-                    <Ionicons name="location-outline" size={16} color="#666" />
-                    <Text style={styles.eventDetailText}>Wankhede Stadium</Text>
-                  </View>
-                  <View style={styles.eventDetail}>
-                    <Ionicons name="time-outline" size={16} color="#666" />
-                    <Text style={styles.eventDetailText}>10:00 AM - 6:00 PM</Text>
-                  </View>
-                  <View style={styles.eventDetail}>
-                    <Ionicons name="people-outline" size={16} color="#666" />
-                    <Text style={styles.eventDetailText}>45 attending</Text>
-                  </View>
-                </View>
-              </TouchableOpacity>
+        {/* Tab 3: Events */}
+        <ScrollView style={{ width: SCREEN_WIDTH }} showsVerticalScrollIndicator={false}>
+          <View style={styles.eventsSection}>
+            <TouchableOpacity style={styles.createEventButton}>
+              <Ionicons name="add-circle" size={24} color="#B91C1C" />
+              <Text style={styles.createEventText}>Create Event</Text>
+            </TouchableOpacity>
 
-              <TouchableOpacity style={styles.eventCard}>
-                <View style={styles.eventDate}>
-                  <Text style={styles.eventDay}>22</Text>
-                  <Text style={styles.eventMonth}>MAY</Text>
+            <Text style={styles.sectionTitle}>Upcoming Events</Text>
+            <TouchableOpacity style={styles.eventCard}>
+              <View style={styles.eventDate}>
+                <Text style={styles.eventDay}>15</Text>
+                <Text style={styles.eventMonth}>MAY</Text>
+              </View>
+              <View style={styles.eventInfo}>
+                <Text style={styles.eventName}>Weekend Cricket Tournament</Text>
+                <View style={styles.eventDetail}>
+                  <Ionicons name="location-outline" size={16} color="#666" />
+                  <Text style={styles.eventDetailText}>Wankhede Stadium</Text>
                 </View>
-                <View style={styles.eventInfo}>
-                  <Text style={styles.eventName}>Cricket Coaching Camp</Text>
-                  <View style={styles.eventDetail}>
-                    <Ionicons name="location-outline" size={16} color="#666" />
-                    <Text style={styles.eventDetailText}>Brabourne Stadium</Text>
-                  </View>
-                  <View style={styles.eventDetail}>
-                    <Ionicons name="time-outline" size={16} color="#666" />
-                    <Text style={styles.eventDetailText}>8:00 AM - 12:00 PM</Text>
-                  </View>
-                  <View style={styles.eventDetail}>
-                    <Ionicons name="people-outline" size={16} color="#666" />
-                    <Text style={styles.eventDetailText}>23 attending</Text>
-                  </View>
+                <View style={styles.eventDetail}>
+                  <Ionicons name="time-outline" size={16} color="#666" />
+                  <Text style={styles.eventDetailText}>10:00 AM - 6:00 PM</Text>
                 </View>
-              </TouchableOpacity>
-            </View>
-          )}
-        </AnimatedViewTransition>
-      </ScrollView>
+                <View style={styles.eventDetail}>
+                  <Ionicons name="people-outline" size={16} color="#666" />
+                  <Text style={styles.eventDetailText}>45 attending</Text>
+                </View>
+              </View>
+            </TouchableOpacity>
+
+            <TouchableOpacity style={styles.eventCard}>
+              <View style={styles.eventDate}>
+                <Text style={styles.eventDay}>22</Text>
+                <Text style={styles.eventMonth}>MAY</Text>
+              </View>
+              <View style={styles.eventInfo}>
+                <Text style={styles.eventName}>Cricket Coaching Camp</Text>
+                <View style={styles.eventDetail}>
+                  <Ionicons name="location-outline" size={16} color="#666" />
+                  <Text style={styles.eventDetailText}>Brabourne Stadium</Text>
+                </View>
+                <View style={styles.eventDetail}>
+                  <Ionicons name="time-outline" size={16} color="#666" />
+                  <Text style={styles.eventDetailText}>8:00 AM - 12:00 PM</Text>
+                </View>
+                <View style={styles.eventDetail}>
+                  <Ionicons name="people-outline" size={16} color="#666" />
+                  <Text style={styles.eventDetailText}>23 attending</Text>
+                </View>
+              </View>
+            </TouchableOpacity>
+          </View>
+          <View style={{ height: 80 }} />
+        </ScrollView>
+      </Animated.ScrollView>
       </View>
     </TabScreenWrapper>
   );
@@ -396,75 +458,6 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: '#B91C1C',
     fontWeight: '600',
-  },
-  postCard: {
-    backgroundColor: '#FFF',
-    padding: 16,
-    marginBottom: 8,
-  },
-  postHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 12,
-  },
-  postUserAvatar: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: 12,
-  },
-  postUserInitials: {
-    fontSize: 14,
-    fontWeight: 'bold',
-    color: '#FFF',
-  },
-  postUserInfo: {
-    flex: 1,
-  },
-  postUserName: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#333',
-    marginBottom: 2,
-  },
-  postTime: {
-    fontSize: 12,
-    color: '#999',
-  },
-  postContent: {
-    fontSize: 14,
-    color: '#333',
-    lineHeight: 20,
-    marginBottom: 12,
-  },
-  postStats: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingVertical: 8,
-    borderTopWidth: 1,
-    borderBottomWidth: 1,
-    borderColor: '#E5E5E5',
-    marginBottom: 8,
-  },
-  postStatsText: {
-    fontSize: 12,
-    color: '#666',
-  },
-  postActions: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-  },
-  postAction: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 6,
-  },
-  postActionText: {
-    fontSize: 14,
-    color: '#666',
-    fontWeight: '500',
   },
   groupsSection: {
     padding: 16,

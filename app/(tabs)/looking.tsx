@@ -12,6 +12,7 @@ import {
   View,
 } from 'react-native';
 import { TabScreenWrapper } from '@/components/ui/tab-screen-wrapper';
+import { SectionHeader } from '@/components/ui/section-header';
 
 const quickActions = [
   {
@@ -258,10 +259,11 @@ export default function LookingScreen() {
           opacity: feedAnim,
           transform: [{ translateY: feedAnim.interpolate({ inputRange: [0, 1], outputRange: [20, 0] }) }],
         }}>
-          <View style={styles.feedHeader}>
-            <Text style={styles.feedTitle}>Community posts</Text>
-            <Text style={styles.feedSubtitle}>Live requests from players and clubs</Text>
-          </View>
+          <SectionHeader
+            title="Community posts"
+            subtitle="Live requests from players and clubs"
+            style={{ paddingHorizontal: 0, marginTop: 22, marginBottom: 10 }}
+          />
 
           {feedPosts.map((post) => {
             const hasContacted = contactedPostIds.includes(post.id);
@@ -488,20 +490,7 @@ const styles = StyleSheet.create({
     lineHeight: 17,
     marginTop: 2,
   },
-  feedHeader: {
-    marginTop: 22,
-    marginBottom: 10,
-  },
-  feedTitle: {
-    color: '#222',
-    fontSize: 19,
-    fontWeight: '800',
-  },
-  feedSubtitle: {
-    color: '#777',
-    fontSize: 13,
-    marginTop: 3,
-  },
+
   postCard: {
     backgroundColor: '#FFF',
     borderRadius: 20,

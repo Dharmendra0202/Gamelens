@@ -12,6 +12,7 @@ import {
 } from 'react-native';
 import { AnimatedViewTransition } from '@/components/ui/animated-view-transition';
 import { TabScreenWrapper } from '@/components/ui/tab-screen-wrapper';
+import { SectionHeader } from '@/components/ui/section-header';
 
 export default function StoreScreen() {
   const [activeCategory, setActiveCategory] = useState('all');
@@ -82,7 +83,7 @@ export default function StoreScreen() {
 
         {/* Featured Deals */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Featured Deals</Text>
+          <SectionHeader title="Featured Deals" style={{ paddingHorizontal: 0 }} />
           <ScrollView horizontal showsHorizontalScrollIndicator={false}>
             {featuredDeals.map((deal) => (
               <TouchableOpacity key={deal.id} style={styles.dealCard}>
@@ -136,12 +137,15 @@ export default function StoreScreen() {
 
         {/* Products Grid */}
         <View style={styles.section}>
-          <View style={styles.sectionHeader}>
-            <Text style={styles.sectionTitle}>All Products</Text>
-            <TouchableOpacity>
-              <Ionicons name="options-outline" size={24} color="#B91C1C" />
-            </TouchableOpacity>
-          </View>
+          <SectionHeader
+            title="All Products"
+            right={
+              <TouchableOpacity>
+                <Ionicons name="options-outline" size={24} color="#B91C1C" />
+              </TouchableOpacity>
+            }
+            style={{ paddingHorizontal: 0 }}
+          />
 
           <AnimatedViewTransition transitionKey={activeCategory} type="slideUp">
             <View style={styles.productsGrid}>
@@ -271,18 +275,7 @@ const styles = StyleSheet.create({
     padding: 16,
     marginBottom: 8,
   },
-  sectionHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 16,
-  },
-  sectionTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#333',
-    marginBottom: 16,
-  },
+
   dealCard: {
     width: 300,
     height: 150,
