@@ -18,6 +18,9 @@ import {
 } from 'react-native';
 import { TabScreenWrapper } from '@/components/ui/tab-screen-wrapper';
 import { shareContent, shareToPlatform } from '@/utils/share';
+import { useTabNavigator } from '@/contexts/TabNavigatorContext';
+import { CricketPostCard, CricketPost } from '@/components/ui/cricket-post-card';
+import { SectionHeader } from '@/components/ui/section-header';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 const CARD_WIDTH = SCREEN_WIDTH - 48;
@@ -50,6 +53,7 @@ const initialProfile: Profile = {
 
 export default function HomeScreen() {
   const router = useRouter();
+  const { goToMainTab } = useTabNavigator();
   const [selectedPlayer, setSelectedPlayer] = useState<any>(null);
   const [showPlayerModal, setShowPlayerModal] = useState(false);
   const [showSearchModal, setShowSearchModal] = useState(false);
@@ -84,13 +88,19 @@ export default function HomeScreen() {
     feedScrollRef.current?.scrollTo({ x: index * SCREEN_WIDTH, animated: true });
   };
 
+  const FEED_TABS = ['For You', 'Following', 'Trending'];
+
   const handleFeedScrollEnd = (e: any) => {
     const pageIndex = Math.round(e.nativeEvent.contentOffset.x / SCREEN_WIDTH);
-    const tabs = ['For You', 'Following', 'Trending'];
-    if (pageIndex >= 0 && pageIndex < tabs.length) {
-      setActiveFeedTab(tabs[pageIndex]);
+    if (pageIndex >= 0 && pageIndex < FEED_TABS.length) {
+      setActiveFeedTab(FEED_TABS[pageIndex]);
     }
   };
+
+  const handleFeedScrollEndDrag = (e: any) => {
+    // Disabled edge-swipe between main tabs and sub-tabs
+  };
+
 
   const [showCreatePostModal, setShowCreatePostModal] = useState(false);
   const [newPostText, setNewPostText] = useState('');
@@ -355,122 +365,37 @@ export default function HomeScreen() {
   ];
 
   const renderPostCard = (post: any) => (
-    <View key={post.id} style={styles.postCard}>
-      {/* Post Header */}
-      <View style={styles.postHeader}>
-        <View style={[styles.postAvatarRing, { borderColor: post.verified ? '#00A66A' : 'transparent' }]}>
-          <View style={[styles.postAvatar, { backgroundColor: post.color }]}>
-            <Text style={styles.postAvatarInitials}>{post.initials}</Text>
-          </View>
-        </View>
-        <View style={styles.postUserInfo}>
-          <View style={styles.postUserNameRow}>
-            <Text style={styles.postUserName}>{post.user}</Text>
-            {post.verified && <Ionicons name="checkmark-circle" size={14} color="#00A66A" style={{ marginLeft: 4 }} />}
-          </View>
-          <Text style={styles.postMetaRow}>{post.role} · {post.time}</Text>
-        </View>
-        <TouchableOpacity style={styles.postMoreBtn}>
-          <Ionicons name="ellipsis-horizontal" size={18} color="#999" />
-        </TouchableOpacity>
-      </View>
-
-      {/* Post Content */}
-      <Text style={styles.postContentTxt}>{post.content}</Text>
-
-      {/* Hashtags */}
-      {post.tags && (
-        <View style={styles.postTagsRow}>
-          {post.tags.map((tag: string) => (
-            <TouchableOpacity key={tag} style={styles.postTag}>
-              <Text style={styles.postTagTxt}>#{tag}</Text>
-            </TouchableOpacity>
-          ))}
-        </View>
-      )}
-
-      {/* Media placeholder */}
-      {post.hasMedia && (
-        <View style={styles.postMediaBox}>
-          <LinearGradient colors={['#064E3B', '#0F766E', '#059669']} style={styles.postMediaGradient}>
-            <Ionicons name="images-outline" size={36} color="rgba(255,255,255,0.5)" />
-            <Text style={styles.postMediaLabel}>Match Highlights</Text>
-          </LinearGradient>
-        </View>
-      )}
-
-      {/* Stats row */}
-      <View style={styles.postStatsRow}>
-        <View style={styles.postStatsLeft}>
-          <View style={styles.likeIconRow}>
-            <View style={styles.likeIconBg}><Ionicons name="heart" size={9} color="#FFF" /></View>
-            <View style={[styles.likeIconBg, { backgroundColor: '#0F766E', marginLeft: -4 }]}><Ionicons name="thumbs-up" size={9} color="#FFF" /></View>
-          </View>
-          <Text style={styles.postStatsTxt}>{post.likes.toLocaleString()}</Text>
-        </View>
-        <Text style={styles.postStatsTxt}>{post.comments} comments • {post.shares} shares</Text>
-      </View>
-
-      <View style={styles.postDivider} />
-
-      {/* Action Buttons */}
-      <View style={styles.postActionsRow}>
-        <TouchableOpacity
-          style={styles.postActionBtn}
-          activeOpacity={0.7}
-          onPress={() => {
-            setCommunityPosts(prev => prev.map(p =>
-              p.id === post.id ? { ...p, liked: !p.liked, likes: p.liked ? p.likes - 1 : p.likes + 1 } : p
-            ));
-          }}
-        >
-          <Ionicons name={post.liked ? 'heart' : 'heart-outline'} size={19} color={post.liked ? '#EF4444' : '#666'} />
-          <Text style={[styles.postActionTxt, post.liked && { color: '#EF4444' }]}>Like</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.postActionBtn}
-          activeOpacity={0.7}
-          onPress={() => {
-            setSelectedPostForComments(post);
-            setShowCommentsModal(true);
-          }}
-        >
-          <Ionicons name="chatbubble-outline" size={19} color="#666" />
-          <Text style={styles.postActionTxt}>Comment</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.postActionBtn}
-          activeOpacity={0.7}
-          onPress={async () => {
-            const shared = await shareContent({
-              title: `Post by ${post.user}`,
-              message: post.content,
-              type: 'post',
-              id: post.id,
-            });
-            if (shared) {
-              setCommunityPosts(prev => prev.map(p =>
-                p.id === post.id ? { ...p, shares: p.shares + 1 } : p
-              ));
-            }
-          }}
-        >
-          <Ionicons name="share-social-outline" size={19} color="#666" />
-          <Text style={styles.postActionTxt}>Share</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.postActionBtn}
-          activeOpacity={0.7}
-          onPress={() => {
-            setCommunityPosts(prev => prev.map(p =>
-              p.id === post.id ? { ...p, saved: !p.saved } : p
-            ));
-          }}
-        >
-          <Ionicons name={post.saved ? 'bookmark' : 'bookmark-outline'} size={19} color={post.saved ? '#00A66A' : '#666'} />
-        </TouchableOpacity>
-      </View>
-    </View>
+    <CricketPostCard
+      key={post.id}
+      post={post}
+      onLike={(id) => {
+        setCommunityPosts(prev => prev.map(p =>
+          p.id === id ? { ...p, liked: !p.liked, likes: p.liked ? p.likes - 1 : p.likes + 1 } : p
+        ));
+      }}
+      onComment={(p) => {
+        setSelectedPostForComments(p);
+        setShowCommentsModal(true);
+      }}
+      onShare={async (id) => {
+        const shared = await shareContent({
+          title: `Post by ${post.user}`,
+          message: post.content,
+          type: 'post',
+          id: post.id,
+        });
+        if (shared) {
+          setCommunityPosts(prev => prev.map(p =>
+            p.id === id ? { ...p, shares: p.shares + 1 } : p
+          ));
+        }
+      }}
+      onSave={(id) => {
+        setCommunityPosts(prev => prev.map(p =>
+          p.id === id ? { ...p, saved: !p.saved } : p
+        ));
+      }}
+    />
   );
 
   const profileInitials = profile.name
@@ -685,17 +610,18 @@ export default function HomeScreen() {
           transform: [{ translateY: matchesAnim.interpolate({ inputRange: [0,1], outputRange: [20,0] }) }]
         }}>
           <View style={styles.matchesSection}>
-            <View style={styles.matchesSectionHeader}>
-              <View>
-                <Text style={styles.matchesSectionTitle}>Live & Upcoming</Text>
-                <Text style={styles.matchesSectionSub}>Matches scheduled near you</Text>
-              </View>
-              <TouchableOpacity style={styles.locationPill} onPress={() => console.log('Location clicked')}>
-                <Ionicons name="location" size={12} color="#00A66A" />
-                <Text style={styles.locationPillTxt}>Mumbai</Text>
-                <Ionicons name="chevron-down" size={11} color="#00A66A" />
-              </TouchableOpacity>
-            </View>
+            <SectionHeader
+              title="Live & Upcoming"
+              subtitle="Matches scheduled near you"
+              right={
+                <TouchableOpacity style={styles.locationPill} onPress={() => console.log('Location clicked')}>
+                  <Ionicons name="location" size={12} color="#00A66A" />
+                  <Text style={styles.locationPillTxt}>Mumbai</Text>
+                  <Ionicons name="chevron-down" size={11} color="#00A66A" />
+                </TouchableOpacity>
+              }
+              style={{ paddingHorizontal: 0, marginBottom: 14 }}
+            />
 
             <ScrollView
               horizontal
@@ -861,6 +787,7 @@ export default function HomeScreen() {
             pagingEnabled
             showsHorizontalScrollIndicator={false}
             onMomentumScrollEnd={handleFeedScrollEnd}
+            onScrollEndDrag={handleFeedScrollEndDrag}
             scrollEventThrottle={16}
             nestedScrollEnabled
           >

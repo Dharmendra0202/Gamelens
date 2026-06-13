@@ -1,5 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { TabNavigatorProvider } from '@/contexts/TabNavigatorContext';
 import {
   Animated,
   Dimensions,
@@ -114,6 +115,7 @@ const TAB_SCREENS = [
 export default function TabLayout() {
   const [activeIndex, setActiveIndex] = useState(0);
   const scrollRef = useRef<ScrollView>(null);
+  const scrollX = useRef(new Animated.Value(0)).current;
   const isProgrammaticScroll = useRef(false);
 
   // Jump to tab — instant scroll, zero navigation lifecycle overhead
@@ -121,10 +123,15 @@ export default function TabLayout() {
     isProgrammaticScroll.current = true;
     scrollRef.current?.scrollTo({ x: index * SCREEN_WIDTH, animated: true });
     setActiveIndex(index);
+    // Programmatic animation updates scrollX directly to match target
+    Animated.spring(scrollX, {
+      toValue: index * SCREEN_WIDTH,
+      useNativeDriver: false,
+    }).start();
     setTimeout(() => {
       isProgrammaticScroll.current = false;
     }, 350);
-  }, []);
+  }, [scrollX]);
 
   // Live sync active index from user swipe
   const handleScroll = useCallback(
@@ -139,6 +146,7 @@ export default function TabLayout() {
   );
 
   return (
+    <TabNavigatorProvider value={{ goToMainTab: goToTab, activeMainTab: activeIndex }}>
     <View style={styles.root}>
       {/* ── Pager: all 5 screens side-by-side ── */}
       <ScrollView
@@ -149,7 +157,13 @@ export default function TabLayout() {
         scrollEventThrottle={16}
         decelerationRate="fast"
         bounces={false}
-        onScroll={handleScroll}
+        onScroll={Animated.event(
+          [{ nativeEvent: { contentOffset: { x: scrollX } } }],
+          {
+            useNativeDriver: false,
+            listener: handleScroll,
+          }
+        )}
         directionalLockEnabled
         style={styles.pager}
         contentContainerStyle={{ width: SCREEN_WIDTH * TABS.length }}
@@ -166,6 +180,31 @@ export default function TabLayout() {
 
       {/* ── Custom Bottom Tab Bar ── */}
       <View style={styles.tabBar}>
+        {/* Real-time sliding indicator line */}
+        <Animated.View
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            width: 24,
+            height: 3,
+            borderRadius: 1.5,
+            backgroundColor: '#B91C1C',
+            transform: [
+              {
+                translateX: scrollX.interpolate({
+                  inputRange: [0, SCREEN_WIDTH * (TABS.length - 1)],
+                  outputRange: [
+                    (SCREEN_WIDTH / 5 - 24) / 2,
+                    (SCREEN_WIDTH / 5 - 24) / 2 + (SCREEN_WIDTH / 5) * (TABS.length - 1),
+                  ],
+                }),
+              },
+            ],
+            zIndex: 10,
+          }}
+        />
+
         {TABS.map((tab, index) => {
           const focused = activeIndex === index;
           const color = focused ? '#B91C1C' : '#999';
@@ -180,7 +219,6 @@ export default function TabLayout() {
             >
               <View style={styles.tabItemInner}>
                 <AnimatedTabIcon name={iconName} color={color} focused={focused} />
-                <TabIndicator focused={focused} />
               </View>
               <Text style={[styles.tabLabel, { color }]}>{tab.label}</Text>
             </TouchableOpacity>
@@ -188,6 +226,7 @@ export default function TabLayout() {
         })}
       </View>
     </View>
+    </TabNavigatorProvider>
   );
 }
 

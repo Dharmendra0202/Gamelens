@@ -1,6 +1,9 @@
 import { AnimatedViewTransition } from "@/components/ui/animated-view-transition";
 import { TabScreenWrapper } from "@/components/ui/tab-screen-wrapper";
 import { shareContent } from "@/utils/share";
+import { useSwipeableTabs } from "@/hooks/use-swipeable-tabs";
+import { FormTextInput } from "@/components/ui/form-text-input";
+import { ChipGroup } from "@/components/ui/chip-group";
 import { Ionicons } from "@expo/vector-icons";
 
 import * as ImagePicker from "expo-image-picker";
@@ -29,7 +32,21 @@ const { width: SCREEN_WIDTH } = Dimensions.get('window');
 export default function MyCricketScreen() {
   const router = useRouter();
   const params = useLocalSearchParams();
-  const [activeTab, setActiveTab] = useState("matches");
+  // useSwipeableTabs provides goToMainTab internally via useTabNavigator
+  const {
+    activeTab,
+    scrollRef: horizontalScrollRef,
+    scrollX,
+    goToTab: handleTabPress,
+    handleScroll,
+    handleScrollEnd: handleHorizontalScrollEnd,
+    handleScrollEndDrag: handleMainScrollEndDrag,
+  } = useSwipeableTabs({
+    tabs: ["matches", "tournaments", "teams"],
+    prevMainTab: 1,  // Looking
+    nextMainTab: 3,  // Community
+  });
+  // useTabNavigator not needed directly — hook handles edge swipe internally
   const [activeFilter, setActiveFilter] = useState("your");
   const [activeTournamentFilter, setActiveTournamentFilter] = useState("your");
   const [showTeamSelection, setShowTeamSelection] = useState(false);
@@ -249,33 +266,23 @@ export default function MyCricketScreen() {
 
   // Reusable render functions
   const renderTextInput = (label: string, value: string, onChange: (text: string) => void, placeholder: string, required = false, keyboardType: any = "default") => (
-    <View style={styles.formGroup}>
-      <Text style={styles.formLabel}>{label} {required && "*"}</Text>
-      <TextInput
-        style={styles.formInput}
-        placeholder={placeholder}
-        placeholderTextColor="#CCC"
-        value={value}
-        onChangeText={onChange}
-        keyboardType={keyboardType}
-      />
-    </View>
+    <FormTextInput
+      label={label}
+      value={value}
+      onChangeText={onChange}
+      placeholder={placeholder}
+      required={required}
+      keyboardType={keyboardType}
+    />
   );
 
   const renderChipGroup = (items: string[], selected: string, onSelect: (item: string) => void, activeColor: string) => (
-    <View style={styles.chipGrid}>
-      {items.map((item) => (
-        <TouchableOpacity
-          key={item}
-          style={[styles.chip, selected === item && { backgroundColor: activeColor, borderColor: activeColor }]}
-          onPress={() => onSelect(item)}
-        >
-          <Text style={[styles.chipText, selected === item && styles.chipTextActive]}>
-            {item}
-          </Text>
-        </TouchableOpacity>
-      ))}
-    </View>
+    <ChipGroup
+      items={items}
+      selected={selected}
+      onSelect={onSelect}
+      activeColor={activeColor}
+    />
   );
 
   const renderBallTypeSelector = (
@@ -706,26 +713,9 @@ export default function MyCricketScreen() {
   const slideAnim = useRef(new Animated.Value(50)).current;
   const modalAnim = useRef(new Animated.Value(0)).current;
   const scrollViewRef = useRef<ScrollView>(null);
-  const horizontalScrollRef = useRef<ScrollView>(null);
   const tournamentDetailHorizontalScrollRef = useRef<ScrollView>(null);
 
-  const handleTabPress = (tabName: string) => {
-    setActiveTab(tabName);
-    const tabs = ["matches", "tournaments", "teams"];
-    const index = tabs.indexOf(tabName);
-    if (index !== -1) {
-      horizontalScrollRef.current?.scrollTo({ x: index * SCREEN_WIDTH, animated: true });
-    }
-  };
-
-  const handleHorizontalScrollEnd = (e: any) => {
-    const pageIndex = Math.round(e.nativeEvent.contentOffset.x / SCREEN_WIDTH);
-    const tabs = ["matches", "tournaments", "teams"];
-    if (pageIndex >= 0 && pageIndex < tabs.length) {
-      setActiveTab(tabs[pageIndex]);
-    }
-  };
-
+  // Tournament detail sub-pager (no main-tab edge needed — nested within my-cricket)
   const handleTournamentDetailTabPress = (tabName: string) => {
     setActiveTournamentDetailTab(tabName);
     const tabs = ["matches", "points", "leaderboard", "teams"];
@@ -807,20 +797,20 @@ export default function MyCricketScreen() {
       console.log("Coming from drawer - showing individual pages");
       setCurrentView('matches');
     } else if (params.action === 'createTournament') {
-      setActiveTab('tournaments');
+      handleTabPress('tournaments');
       setCurrentView('matches');
     } else if (params.action === 'startMatch') {
-      setActiveTab('matches');
+      handleTabPress('matches');
       setCurrentView('teamSelection');
       setShowTeamSelection(true);
     } else if (params.tab === 'tournaments') {
-      setActiveTab('tournaments');
+      handleTabPress('tournaments');
       setCurrentView('matches');
     } else if (params.tab === 'matches') {
-      setActiveTab('matches');
+      handleTabPress('matches');
       setCurrentView('matches');
     } else if (params.tab === 'teams') {
-      setActiveTab('teams');
+      handleTabPress('teams');
       setCurrentView('matches');
     }
   }, [params.action, params.tab, params.section, params.source]);
@@ -1625,10 +1615,30 @@ export default function MyCricketScreen() {
       {/* Animated Tabs - Always show when on matches view */}
       {currentView === "matches" && (
         <Animated.View style={[styles.tabsContainer, { opacity: fadeAnim }]}>
+          {/* Real-time sliding indicator line */}
+          <Animated.View
+            style={{
+              position: 'absolute',
+              bottom: 0,
+              left: 0,
+              width: SCREEN_WIDTH / 3 - 32,
+              height: 3,
+              backgroundColor: '#00A66A',
+              transform: [
+                {
+                  translateX: scrollX.interpolate({
+                    inputRange: [0, SCREEN_WIDTH * 2],
+                    outputRange: [16, 16 + (SCREEN_WIDTH / 3) * 2],
+                  }),
+                },
+              ],
+              zIndex: 10,
+            }}
+          />
           {["matches", "tournaments", "teams"].map((tab) => (
             <TouchableOpacity
               key={tab}
-              style={[styles.tab, activeTab === tab && styles.activeTab]}
+              style={styles.tab}
               onPress={() => handleTabPress(tab)}
             >
               <Text
@@ -1639,9 +1649,6 @@ export default function MyCricketScreen() {
               >
                 {tab.charAt(0).toUpperCase() + tab.slice(1)}
               </Text>
-              {activeTab === tab && (
-                <Animated.View style={styles.tabIndicator} />
-              )}
             </TouchableOpacity>
           ))}
         </Animated.View>
@@ -4653,12 +4660,14 @@ export default function MyCricketScreen() {
           </ScrollView>
         ) : (
           /* Matches/Tournaments/Teams View */
-          <ScrollView
+          <Animated.ScrollView
             ref={horizontalScrollRef}
             horizontal
             pagingEnabled
             showsHorizontalScrollIndicator={false}
+            onScroll={handleScroll}
             onMomentumScrollEnd={handleHorizontalScrollEnd}
+            onScrollEndDrag={handleMainScrollEndDrag}
             style={styles.content}
             scrollEventThrottle={16}
             nestedScrollEnabled
@@ -5731,7 +5740,7 @@ export default function MyCricketScreen() {
                 <View style={{ height: 100 }} />
               </ScrollView>
             </View>
-          </ScrollView>
+          </Animated.ScrollView>
         )}
         </AnimatedViewTransition>
       </ScrollView>
