@@ -3,20 +3,20 @@ import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
 import React, { useEffect, useRef, useState } from "react";
 import {
-  Animated,
-  Dimensions,
-  Easing,
-  ImageBackground,
-  KeyboardAvoidingView,
-  Platform,
-  SafeAreaView,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
+    Animated,
+    Dimensions,
+    Easing,
+    ImageBackground,
+    KeyboardAvoidingView,
+    Platform,
+    ScrollView,
+    StyleSheet,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    View,
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
 const CRICKET_HERO_IMAGE =
@@ -484,7 +484,10 @@ export default function AuthScreen() {
           <Animated.View
             style={[
               styles.authContent,
-              { opacity: screenOpacity, transform: [{ translateY: screenY }, { scale: screenScale }] },
+              {
+                opacity: screenOpacity,
+                transform: [{ translateY: screenY }, { scale: screenScale }],
+              },
             ]}
           >
             {/* Logo + brand */}
@@ -636,7 +639,10 @@ export default function AuthScreen() {
         <Animated.View
           style={[
             styles.authContent,
-            { opacity: screenOpacity, transform: [{ translateY: screenY }, { scale: screenScale }] },
+            {
+              opacity: screenOpacity,
+              transform: [{ translateY: screenY }, { scale: screenScale }],
+            },
           ]}
         >
           <View style={styles.heroBanner}>
