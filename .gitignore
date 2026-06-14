@@ -45,3 +45,6 @@ app-example
 
 # Kiro specs and settings
 .kiro/
+
+.agents/
+.vscode/
