@@ -5,19 +5,20 @@ import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
 import React, { useEffect, useMemo, useState } from "react";
 import {
-    Alert,
-    KeyboardAvoidingView,
-    Platform,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View,
+  Alert,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { Dropdown } from "@/components/ui/dropdown";
+import { useAuth } from "@/hooks/use-auth";
 import { LocalStorage } from "@/services/storage";
 import type { BattingPosition, BowlingStyle, User } from "@/types";
 
@@ -44,6 +45,7 @@ const USERNAME_RE = /^[a-zA-Z0-9_]*$/;
 
 export default function ProfileSetupScreen() {
   const router = useRouter();
+  const { user } = useAuth();
 
   const [fullName, setFullName] = useState("");
   const [username, setUsername] = useState("");
@@ -97,7 +99,7 @@ export default function ProfileSetupScreen() {
     if (!canSave) return;
 
     const profile: User = {
-      id: `local-${Date.now()}`,
+      id: user?.id ?? `local-${Date.now()}`,
       username: username.trim(),
       fullName: fullName.trim(),
       profilePhoto: photo || undefined,
@@ -107,7 +109,7 @@ export default function ProfileSetupScreen() {
       createdAt: new Date().toISOString(),
     };
 
-    // TODO(backend): POST /api/users/profile — replace AsyncStorage with API call
+    // TODO(backend): POST /api/users/profile — replace AsyncStorage with Supabase upsert
     await LocalStorage.saveProfile(profile);
     Alert.alert("Profile saved", "Your cricket profile is ready.", [
       { text: "OK", onPress: () => router.back() },

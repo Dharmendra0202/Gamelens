@@ -2,6 +2,7 @@ import { CricketPostCard } from "@/components/ui/cricket-post-card";
 import { SectionHeader } from "@/components/ui/section-header";
 import { TabScreenWrapper } from "@/components/ui/tab-screen-wrapper";
 import { useTabNavigator } from "@/contexts/TabNavigatorContext";
+import { useAuth } from "@/hooks/use-auth";
 import { LocalStorage } from "@/services/storage";
 import { shareContent, shareToPlatform } from "@/utils/share";
 import { Ionicons } from "@expo/vector-icons";
@@ -56,6 +57,12 @@ const initialProfile: Profile = {
 export default function HomeScreen() {
   const router = useRouter();
   const { goToMainTab } = useTabNavigator();
+  const { signOut } = useAuth();
+
+  const handleLogout = async () => {
+    await signOut();
+    router.replace("/");
+  };
   const [selectedPlayer, setSelectedPlayer] = useState<any>(null);
   const [showPlayerModal, setShowPlayerModal] = useState(false);
   const [showSearchModal, setShowSearchModal] = useState(false);
@@ -2282,6 +2289,45 @@ export default function HomeScreen() {
                     name="chevron-forward"
                     size={16}
                     color="#00A66A"
+                    style={{ marginLeft: "auto" }}
+                  />
+                </TouchableOpacity>
+
+                {/* Logout */}
+                <TouchableOpacity
+                  style={[
+                    styles.drawerMenuItem,
+                    {
+                      marginTop: 12,
+                      borderTopWidth: 1,
+                      borderTopColor: "#E5E5E5",
+                      paddingTop: 16,
+                    },
+                  ]}
+                  onPress={() => {
+                    setShowMenuDrawer(false);
+                    handleLogout();
+                  }}
+                >
+                  <View
+                    style={[
+                      styles.drawerMenuIcon,
+                      { backgroundColor: "#FEF2F2" },
+                    ]}
+                  >
+                    <Ionicons
+                      name="log-out-outline"
+                      size={20}
+                      color="#DC2626"
+                    />
+                  </View>
+                  <Text style={[styles.drawerMenuText, { color: "#DC2626" }]}>
+                    Logout
+                  </Text>
+                  <Ionicons
+                    name="chevron-forward"
+                    size={16}
+                    color="#DC2626"
                     style={{ marginLeft: "auto" }}
                   />
                 </TouchableOpacity>

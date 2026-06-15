@@ -8,6 +8,7 @@ import { StatusBar } from "expo-status-bar";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import "react-native-reanimated";
 
+import { AuthProvider } from "@/contexts/AuthContext";
 import { useColorScheme } from "@/hooks/use-color-scheme";
 
 export default function RootLayout() {
@@ -15,48 +16,62 @@ export default function RootLayout() {
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-      <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
-        <Stack
-          screenOptions={{
-            headerShown: false,
-            animation: "slide_from_right",
-            animationDuration: 480,
-            gestureEnabled: true,
-            contentStyle: { backgroundColor: "transparent" },
-          }}
+      <AuthProvider>
+        <ThemeProvider
+          value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
         >
-          <Stack.Screen
-            name="index"
-            options={{
+          <Stack
+            screenOptions={{
               headerShown: false,
               animation: "slide_from_right",
               animationDuration: 480,
-            }}
-          />
-          <Stack.Screen
-            name="(tabs)"
-            options={{
-              headerShown: false,
-              animation: "slide_from_right",
-              animationDuration: 480,
-            }}
-          />
-          <Stack.Screen name="setup/players" options={{ headerShown: false }} />
-          <Stack.Screen name="setup/match" options={{ headerShown: false }} />
-          <Stack.Screen name="profile/setup" options={{ headerShown: false }} />
-          <Stack.Screen
-            name="modal"
-            options={{
-              presentation: "transparentModal",
-              animation: "fade",
-              animationDuration: 250,
-              title: "Modal",
+              gestureEnabled: true,
               contentStyle: { backgroundColor: "transparent" },
             }}
-          />
-        </Stack>
-        <StatusBar style="auto" />
-      </ThemeProvider>
+          >
+            <Stack.Screen
+              name="index"
+              options={{
+                headerShown: false,
+                animation: "slide_from_right",
+                animationDuration: 480,
+              }}
+            />
+            <Stack.Screen
+              name="(tabs)"
+              options={{
+                headerShown: false,
+                animation: "slide_from_right",
+                animationDuration: 480,
+              }}
+            />
+            <Stack.Screen
+              name="setup/players"
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen name="setup/match" options={{ headerShown: false }} />
+            <Stack.Screen
+              name="profile/setup"
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="forgot-password"
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="modal"
+              options={{
+                presentation: "transparentModal",
+                animation: "fade",
+                animationDuration: 250,
+                title: "Modal",
+                contentStyle: { backgroundColor: "transparent" },
+              }}
+            />
+          </Stack>
+          <StatusBar style="auto" />
+        </ThemeProvider>
+      </AuthProvider>
     </GestureHandlerRootView>
   );
 }
