@@ -3,7 +3,6 @@ import { SectionHeader } from "@/components/ui/section-header";
 import { TabScreenWrapper } from "@/components/ui/tab-screen-wrapper";
 import { useTabNavigator } from "@/contexts/TabNavigatorContext";
 import { useAuth } from "@/hooks/use-auth";
-import { LocalStorage } from "@/services/storage";
 import { shareContent, shareToPlatform } from "@/utils/share";
 import { Ionicons } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
@@ -41,7 +40,6 @@ type Profile = {
   imageUri: string;
 };
 
-// TODO(backend): load profile from LocalStorage.getProfile() / Supabase 'users' table
 const initialProfile: Profile = {
   name: "",
   phone: "",
@@ -57,7 +55,7 @@ const initialProfile: Profile = {
 export default function HomeScreen() {
   const router = useRouter();
   const { goToMainTab } = useTabNavigator();
-  const { signOut } = useAuth();
+  const { signOut, profile: supaProfile } = useAuth();
 
   const handleLogout = async () => {
     await signOut();
@@ -214,44 +212,31 @@ export default function HomeScreen() {
       .toUpperCase() || "ME";
 
   const openProfileEditor = () => {
-    setProfileDraft(profile);
-    setShowProfileModal(true);
+    router.push("/profile/setup" as never);
   };
 
   const updateProfileDraft = (key: keyof Profile, value: string) => {
     setProfileDraft((currentDraft) => ({ ...currentDraft, [key]: value }));
   };
 
-  // Load any saved profile on mount so edits persist across app restarts.
-  // TODO(backend): replace LocalStorage.getProfile with UserService.getProfile
+  // Sync profile state from Supabase profile context
   useEffect(() => {
-    LocalStorage.getProfile().then((saved) => {
-      if (!saved) return;
-      setProfile((current) => ({
-        ...current,
-        name: saved.fullName || current.name,
-        location: saved.city || current.location,
-        role: saved.battingStyle || current.role,
-        bowlingStyle: saved.bowlingStyle || current.bowlingStyle,
-        imageUri: saved.profilePhoto || current.imageUri,
-      }));
+    if (!supaProfile) return;
+    setProfile({
+      name: supaProfile.full_name || "",
+      phone: supaProfile.phone_number || "",
+      role: supaProfile.player_role || "",
+      location: supaProfile.location || "",
+      battingStyle: supaProfile.batting_style || "",
+      bowlingStyle: supaProfile.bowling_style || "",
+      friends: String(supaProfile.friends_count ?? 0),
+      posts: String(supaProfile.posts_count ?? 0),
+      imageUri: supaProfile.avatar_url || "",
     });
-  }, []);
+  }, [supaProfile]);
 
   const saveProfile = () => {
-    setProfile(profileDraft);
-    // TODO(backend): replace LocalStorage.saveProfile with UserService.createProfile
-    LocalStorage.saveProfile({
-      id: `local-${Date.now()}`,
-      username:
-        profileDraft.name.replace(/\s+/g, "_").toLowerCase() || "player",
-      fullName: profileDraft.name,
-      profilePhoto: profileDraft.imageUri || undefined,
-      city: profileDraft.location || undefined,
-      createdAt: new Date().toISOString(),
-    }).catch(() => {
-      // Non-fatal.
-    });
+    // Profile saving is now handled by /profile/setup screen via Supabase.
     setShowProfileModal(false);
   };
 
@@ -511,7 +496,9 @@ export default function HomeScreen() {
                     </View>
                     <View style={styles.profileCardStatDiv} />
                     <View style={styles.profileCardStat}>
-                      <Text style={styles.profileCardStatVal}>47</Text>
+                      <Text style={styles.profileCardStatVal}>
+                        {supaProfile?.matches_played ?? 0}
+                      </Text>
                       <Text style={styles.profileCardStatLbl}>Matches</Text>
                     </View>
                   </View>

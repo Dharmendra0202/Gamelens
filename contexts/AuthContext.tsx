@@ -13,18 +13,16 @@ import React, {
 } from "react";
 
 import { supabase } from "@/lib/supabase";
-import { LocalStorage } from "@/services/storage";
+import type { Profile } from "@/services/profile";
+import { ProfileService } from "@/services/profile";
 
 // ─── Types ──────────────────────────────────────────────────────────────────────
 
 export interface AuthState {
-  /** Supabase session — null when logged out or still loading. */
   session: Session | null;
-  /** The authenticated Supabase user. */
   user: SupabaseUser | null;
-  /** True while we're restoring the session on app start. */
+  profile: Profile | null;
   isLoading: boolean;
-  /** Whether the user has completed their cricket profile. */
   hasProfile: boolean;
 }
 
@@ -41,6 +39,7 @@ export interface AuthActions {
   signOut: () => Promise<void>;
   resetPassword: (email: string) => Promise<{ error: string | null }>;
   refreshSession: () => Promise<void>;
+  refreshProfile: () => Promise<void>;
 }
 
 export type AuthContextValue = AuthState & AuthActions;
@@ -54,13 +53,15 @@ const AuthContext = createContext<AuthContextValue | null>(null);
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [session, setSession] = useState<Session | null>(null);
   const [user, setUser] = useState<SupabaseUser | null>(null);
+  const [profile, setProfile] = useState<Profile | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [hasProfile, setHasProfile] = useState(false);
 
-  // Check if local profile exists (pre-backend).
-  const checkProfile = useCallback(async () => {
-    const profile = await LocalStorage.getProfile();
-    setHasProfile(!!profile);
+  // Load profile from Supabase for a given user ID.
+  const loadProfile = useCallback(async (userId: string) => {
+    const { data } = await ProfileService.get(userId);
+    setProfile(data);
+    setHasProfile(!!data && !!data.full_name);
   }, []);
 
   // ── Session restoration on mount ──
@@ -75,7 +76,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         if (!mounted) return;
         setSession(restoredSession);
         setUser(restoredSession?.user ?? null);
-        await checkProfile();
+
+        if (restoredSession?.user) {
+          await loadProfile(restoredSession.user.id);
+        }
       } catch (err) {
         console.error("[Auth] Failed to restore session:", err);
       } finally {
@@ -88,7 +92,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return () => {
       mounted = false;
     };
-  }, [checkProfile]);
+  }, [loadProfile]);
 
   // ── Auth state listener ──
   useEffect(() => {
@@ -100,9 +104,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         setUser(newSession?.user ?? null);
 
         if (event === "SIGNED_OUT") {
+          setProfile(null);
           setHasProfile(false);
         } else if (event === "SIGNED_IN" || event === "TOKEN_REFRESHED") {
-          await checkProfile();
+          if (newSession?.user) {
+            await loadProfile(newSession.user.id);
+          }
         }
       },
     );
@@ -110,7 +117,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return () => {
       subscription.unsubscribe();
     };
-  }, [checkProfile]);
+  }, [loadProfile]);
 
   // ── Actions ───────────────────────────────────────────────────────────────────
 
@@ -121,7 +128,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       fullName: string,
     ): Promise<{ error: string | null }> => {
       try {
-        const { error } = await supabase.auth.signUp({
+        const { data, error } = await supabase.auth.signUp({
           email: email.trim().toLowerCase(),
           password,
           options: {
@@ -133,29 +140,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           return { error: mapAuthError(error.message) };
         }
 
-        return { error: null };
-      } catch (err) {
-        return {
-          error: "Network error. Please check your connection and try again.",
-        };
-      }
-    },
-    [],
-  );
-
-  const signIn = useCallback(
-    async (
-      email: string,
-      password: string,
-    ): Promise<{ error: string | null }> => {
-      try {
-        const { error } = await supabase.auth.signInWithPassword({
-          email: email.trim().toLowerCase(),
-          password,
-        });
-
-        if (error) {
-          return { error: mapAuthError(error.message) };
+        // If email confirmation is disabled, user is immediately signed in.
+        // The trigger auto-creates the profile row, so load it.
+        if (data.user && data.session) {
+          await loadProfile(data.user.id);
         }
 
         return { error: null };
@@ -165,12 +153,43 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         };
       }
     },
-    [],
+    [loadProfile],
+  );
+
+  const signIn = useCallback(
+    async (
+      email: string,
+      password: string,
+    ): Promise<{ error: string | null }> => {
+      try {
+        const { data, error } = await supabase.auth.signInWithPassword({
+          email: email.trim().toLowerCase(),
+          password,
+        });
+
+        if (error) {
+          return { error: mapAuthError(error.message) };
+        }
+
+        if (data.user) {
+          await loadProfile(data.user.id);
+        }
+
+        return { error: null };
+      } catch (err) {
+        return {
+          error: "Network error. Please check your connection and try again.",
+        };
+      }
+    },
+    [loadProfile],
   );
 
   const signOut = useCallback(async () => {
     try {
       await supabase.auth.signOut();
+      setProfile(null);
+      setHasProfile(false);
     } catch (err) {
       console.error("[Auth] Sign out error:", err);
     }
@@ -182,11 +201,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         const { error } = await supabase.auth.resetPasswordForEmail(
           email.trim().toLowerCase(),
         );
-
-        if (error) {
-          return { error: mapAuthError(error.message) };
-        }
-
+        if (error) return { error: mapAuthError(error.message) };
         return { error: null };
       } catch (err) {
         return {
@@ -209,12 +224,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   }, []);
 
+  const refreshProfile = useCallback(async () => {
+    if (user) {
+      await loadProfile(user.id);
+    }
+  }, [user, loadProfile]);
+
   // ── Context value ─────────────────────────────────────────────────────────────
 
   const value = useMemo<AuthContextValue>(
     () => ({
       session,
       user,
+      profile,
       isLoading,
       hasProfile,
       signUp,
@@ -222,10 +244,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       signOut,
       resetPassword,
       refreshSession,
+      refreshProfile,
     }),
     [
       session,
       user,
+      profile,
       isLoading,
       hasProfile,
       signUp,
@@ -233,6 +257,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       signOut,
       resetPassword,
       refreshSession,
+      refreshProfile,
     ],
   );
 
