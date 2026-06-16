@@ -10,8 +10,10 @@ import {
   TextInput,
   TouchableOpacity,
   View,
+  Platform,
 } from 'react-native';
 import { TabScreenWrapper } from '@/components/ui/tab-screen-wrapper';
+import { SectionHeader } from '@/components/ui/section-header';
 
 const quickActions = [
   {
@@ -169,14 +171,34 @@ export default function LookingScreen() {
         end={{ x: 1, y: 1 }}
         style={styles.header}
       >
-        <Text style={styles.headerTitle}>Looking</Text>
-        <Text style={styles.headerSubtitle}>Find opponents, players, and cricket posts near you</Text>
+        <View style={styles.headerLeft}>
+          <Text style={styles.headerTitle}>
+            GAME<Text style={styles.headerTitleOrange}>LENS</Text> <Text style={styles.headerTitleTab}>looking</Text>
+          </Text>
+        </View>
+        <View style={styles.headerRight}>
+          <TouchableOpacity style={styles.iconButton} onPress={() => console.log('Search clicked')}>
+            <Ionicons name="search" size={22} color="#FFF" />
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.iconButton} onPress={() => console.log('Notifications clicked')}>
+            <Ionicons name="notifications-outline" size={22} color="#FFF" />
+          </TouchableOpacity>
+        </View>
       </LinearGradient>
 
       <ScrollView
         contentContainerStyle={styles.content}
         showsVerticalScrollIndicator={false}
       >
+        <View style={styles.introCard}>
+          <LinearGradient
+            colors={['#E8FFF4', '#F0FFF8']}
+            style={styles.introGradient}
+          >
+            <Ionicons name="information-circle-outline" size={20} color="#00A66A" />
+            <Text style={styles.introText}>Find opponents, players, and cricket posts near you.</Text>
+          </LinearGradient>
+        </View>
         <Animated.View style={{
           opacity: composerAnim,
           transform: [{ translateY: composerAnim.interpolate({ inputRange: [0, 1], outputRange: [16, 0] }) }],
@@ -258,10 +280,11 @@ export default function LookingScreen() {
           opacity: feedAnim,
           transform: [{ translateY: feedAnim.interpolate({ inputRange: [0, 1], outputRange: [20, 0] }) }],
         }}>
-          <View style={styles.feedHeader}>
-            <Text style={styles.feedTitle}>Community posts</Text>
-            <Text style={styles.feedSubtitle}>Live requests from players and clubs</Text>
-          </View>
+          <SectionHeader
+            title="Community posts"
+            subtitle="Live requests from players and clubs"
+            style={{ paddingHorizontal: 0, marginTop: 22, marginBottom: 10 }}
+          />
 
           {feedPosts.map((post) => {
             const hasContacted = contactedPostIds.includes(post.id);
@@ -342,20 +365,64 @@ const styles = StyleSheet.create({
     backgroundColor: '#F0F7F4',
   },
   header: {
-    paddingHorizontal: 18,
-    paddingTop: 44,
-    paddingBottom: 18,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 16,
+    paddingTop: Platform.OS === 'ios' ? 44 : 35,
+    height: Platform.OS === 'ios' ? 92 : 83,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.15,
+    shadowRadius: 6,
+    elevation: 5,
+  },
+  headerLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   headerTitle: {
+    fontSize: 22,
+    fontWeight: '900',
     color: '#FFF',
-    fontSize: 26,
-    fontWeight: '800',
+    letterSpacing: -0.5,
   },
-  headerSubtitle: {
+  headerTitleOrange: {
+    color: '#34D399',
+  },
+  headerTitleTab: {
+    fontWeight: '400',
+    fontSize: 15,
     color: '#D1FAE5',
-    fontSize: 14,
-    lineHeight: 20,
-    marginTop: 4,
+    textTransform: 'lowercase',
+  },
+  headerRight: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+  },
+  iconButton: {
+    padding: 6,
+  },
+  introCard: {
+    marginBottom: 16,
+    borderRadius: 16,
+    overflow: 'hidden',
+    borderWidth: 1,
+    borderColor: '#E6F4EA',
+  },
+  introGradient: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 14,
+    gap: 10,
+  },
+  introText: {
+    flex: 1,
+    fontSize: 13,
+    color: '#064E3B',
+    fontWeight: '600',
+    lineHeight: 18,
   },
   content: {
     padding: 16,
@@ -488,20 +555,7 @@ const styles = StyleSheet.create({
     lineHeight: 17,
     marginTop: 2,
   },
-  feedHeader: {
-    marginTop: 22,
-    marginBottom: 10,
-  },
-  feedTitle: {
-    color: '#222',
-    fontSize: 19,
-    fontWeight: '800',
-  },
-  feedSubtitle: {
-    color: '#777',
-    fontSize: 13,
-    marginTop: 3,
-  },
+
   postCard: {
     backgroundColor: '#FFF',
     borderRadius: 20,

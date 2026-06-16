@@ -8,10 +8,12 @@ import {
     Text,
     TextInput,
     TouchableOpacity,
-    View
+    View,
+    Platform
 } from 'react-native';
 import { AnimatedViewTransition } from '@/components/ui/animated-view-transition';
 import { TabScreenWrapper } from '@/components/ui/tab-screen-wrapper';
+import { SectionHeader } from '@/components/ui/section-header';
 
 export default function StoreScreen() {
   const [activeCategory, setActiveCategory] = useState('all');
@@ -51,18 +53,20 @@ export default function StoreScreen() {
         end={{ x: 1, y: 1 }}
         style={styles.header}
       >
-        <Text style={styles.headerTitle}>
-          GAME<Text style={styles.headerTitleOrange}>LENS STORE</Text>
-        </Text>
+        <View style={styles.headerLeft}>
+          <Text style={styles.headerTitle}>
+            GAME<Text style={styles.headerTitleOrange}>LENS</Text> <Text style={styles.headerTitleTab}>store</Text>
+          </Text>
+        </View>
         <View style={styles.headerRight}>
           <TouchableOpacity style={styles.iconButton}>
-            <Ionicons name="search" size={24} color="#FFF" />
+            <Ionicons name="search" size={22} color="#FFF" />
           </TouchableOpacity>
           <TouchableOpacity style={styles.iconButton}>
             <View style={styles.cartBadge}>
               <Text style={styles.cartBadgeText}>{cartCount}</Text>
             </View>
-            <Ionicons name="cart-outline" size={24} color="#FFF" />
+            <Ionicons name="cart-outline" size={22} color="#FFF" />
           </TouchableOpacity>
         </View>
       </LinearGradient>
@@ -82,7 +86,7 @@ export default function StoreScreen() {
 
         {/* Featured Deals */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Featured Deals</Text>
+          <SectionHeader title="Featured Deals" style={{ paddingHorizontal: 0 }} />
           <ScrollView horizontal showsHorizontalScrollIndicator={false}>
             {featuredDeals.map((deal) => (
               <TouchableOpacity key={deal.id} style={styles.dealCard}>
@@ -136,12 +140,15 @@ export default function StoreScreen() {
 
         {/* Products Grid */}
         <View style={styles.section}>
-          <View style={styles.sectionHeader}>
-            <Text style={styles.sectionTitle}>All Products</Text>
-            <TouchableOpacity>
-              <Ionicons name="options-outline" size={24} color="#B91C1C" />
-            </TouchableOpacity>
-          </View>
+          <SectionHeader
+            title="All Products"
+            right={
+              <TouchableOpacity>
+                <Ionicons name="options-outline" size={24} color="#B91C1C" />
+              </TouchableOpacity>
+            }
+            style={{ paddingHorizontal: 0 }}
+          />
 
           <AnimatedViewTransition transitionKey={activeCategory} type="slideUp">
             <View style={styles.productsGrid}>
@@ -203,28 +210,40 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingHorizontal: 16,
-    paddingTop: 35,
-    paddingBottom: 12,
+    paddingTop: Platform.OS === 'ios' ? 44 : 35,
+    height: Platform.OS === 'ios' ? 92 : 83,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 8,
     elevation: 8,
   },
+  headerLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
   headerTitle: {
-    fontSize: 24,
-    fontWeight: 'bold',
+    fontSize: 22,
+    fontWeight: '900',
     color: '#FFF',
+    letterSpacing: -0.5,
   },
   headerTitleOrange: {
     color: '#FCA5A5',
   },
+  headerTitleTab: {
+    fontWeight: '400',
+    fontSize: 15,
+    color: '#FECACA',
+    textTransform: 'lowercase',
+  },
   headerRight: {
     flexDirection: 'row',
+    alignItems: 'center',
     gap: 12,
   },
   iconButton: {
-    padding: 8,
+    padding: 6,
     position: 'relative',
   },
   cartBadge: {
@@ -271,18 +290,7 @@ const styles = StyleSheet.create({
     padding: 16,
     marginBottom: 8,
   },
-  sectionHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 16,
-  },
-  sectionTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#333',
-    marginBottom: 16,
-  },
+
   dealCard: {
     width: 300,
     height: 150,

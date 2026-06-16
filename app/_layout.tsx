@@ -37,16 +37,7 @@ export default function RootLayout() {
               animationDuration: 480,
             }}
           />
-          <Stack.Screen
-            name="modal"
-            options={{
-              presentation: 'transparentModal',
-              animation: 'fade',
-              animationDuration: 250,
-              title: 'Modal',
-              contentStyle: { backgroundColor: 'transparent' },
-            }}
-          />
+
         </Stack>
         <StatusBar style="auto" />
       </ThemeProvider>
