@@ -1,15 +1,17 @@
-# Gamelens 🏏
+# Gamelens
 
 A modern cricket social platform built with React Native and Expo.
 
 ## Features
 
 ### 🔐 Authentication
+
 - Splash screen with gradient design
 - Login with social media integration
 - User registration with cricket-themed UI
 
 ### 🏠 Home Dashboard
+
 - Personal profile section
 - Nearby matches discovery
 - Popular cricketers showcase
@@ -17,23 +19,27 @@ A modern cricket social platform built with React Native and Expo.
 - Social feed with posts
 
 ### 🔍 Looking (Match Discovery)
+
 - Match recommendations
 - Location-based filtering
 - User profile management
 
 ### 🏏 My Cricket
+
 - Personal cricket statistics
 - Match history and performance
 - Achievement system
 - Career analytics
 
 ### 👥 Community
+
 - Social feed with posts
 - Cricket groups and clubs
 - Events and tournaments
 - Community interactions
 
 ### 🛒 Store
+
 - Cricket equipment catalog
 - Featured deals and discounts
 - Category-based browsing
@@ -51,7 +57,7 @@ A modern cricket social platform built with React Native and Expo.
 ## Color Scheme
 
 - Primary Red: #E63946
-- Secondary Pink: #FF6B8A  
+- Secondary Pink: #FF6B8A
 - Purple Theme: #9D4EDD, #7209B7
 - Cream Background: #FFF8E7, #FFFBF0
 - Accent Gold: #FFD700
@@ -59,22 +65,26 @@ A modern cricket social platform built with React Native and Expo.
 ## Getting Started
 
 1. Clone the repository
+
 ```bash
 git clone https://github.com/Dharmendra8202/crickbuz.git
 cd crickbuz
 ```
 
 2. Install dependencies
+
 ```bash
 npm install
 ```
 
 3. Start the development server
+
 ```bash
 npx expo start
 ```
 
 4. Run on device
+
 - Scan QR code with Expo Go app (iOS/Android)
 - Or press 'i' for iOS simulator, 'a' for Android emulator
 
@@ -100,7 +110,7 @@ app/
 ✅ Bottom tab navigation  
 ✅ Interactive modals and features  
 ✅ Responsive design  
-✅ Cricket-themed UI/UX  
+✅ Cricket-themed UI/UX
 
 ## Future Enhancements
 
