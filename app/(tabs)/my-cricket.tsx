@@ -1,9 +1,11 @@
 import { AnimatedViewTransition } from "@/components/ui/animated-view-transition";
-import { TabScreenWrapper } from "@/components/ui/tab-screen-wrapper";
-import { shareContent } from "@/utils/share";
-import { useSwipeableTabs } from "@/hooks/use-swipeable-tabs";
-import { FormTextInput } from "@/components/ui/form-text-input";
 import { ChipGroup } from "@/components/ui/chip-group";
+import { FormTextInput } from "@/components/ui/form-text-input";
+import { TabScreenWrapper } from "@/components/ui/tab-screen-wrapper";
+import { useSwipeableTabs } from "@/hooks/use-swipeable-tabs";
+import { LocalStorage } from "@/services/storage";
+import type { Match } from "@/types";
+import { shareContent } from "@/utils/share";
 import { Ionicons } from "@expo/vector-icons";
 
 import * as ImagePicker from "expo-image-picker";
@@ -12,23 +14,22 @@ import * as Location from "expo-location";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import React, { useEffect, useRef, useState } from "react";
 import {
-  Alert,
-  Animated,
-  BackHandler,
-  Easing,
-  Image,
-  Modal,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-  Dimensions,
-  Platform,
+    Alert,
+    Animated,
+    BackHandler,
+    Dimensions,
+    Easing,
+    Image,
+    Modal,
+    ScrollView,
+    StyleSheet,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    View,
 } from "react-native";
 
-const { width: SCREEN_WIDTH } = Dimensions.get('window');
+const { width: SCREEN_WIDTH } = Dimensions.get("window");
 
 export default function MyCricketScreen() {
   const router = useRouter();
@@ -44,8 +45,8 @@ export default function MyCricketScreen() {
     handleScrollEndDrag: handleMainScrollEndDrag,
   } = useSwipeableTabs({
     tabs: ["matches", "tournaments", "teams"],
-    prevMainTab: 1,  // Looking
-    nextMainTab: 3,  // Community
+    prevMainTab: 1, // Looking
+    nextMainTab: 3, // Community
   });
   // useTabNavigator not needed directly — hook handles edge swipe internally
   const [activeFilter, setActiveFilter] = useState("your");
@@ -53,19 +54,38 @@ export default function MyCricketScreen() {
   const [showTeamSelection, setShowTeamSelection] = useState(false);
   const [selectedTeam, setSelectedTeam] = useState<"A" | "B" | null>(null);
   const [currentView, setCurrentView] = useState<
-    "matches" | "teamSelection" | "selectTeam" | "createTeam" | "matchSetup" | "tossPage" | "playerSelection" | "matchSettings" | "scoringPage" | "createTournament" | "tournamentTeamManagement" | "tournamentDashboard" | "tournamentDetail" | "addTeamsPlayers" | "teamsSelection" | "search"
+    | "matches"
+    | "teamSelection"
+    | "selectTeam"
+    | "createTeam"
+    | "matchSetup"
+    | "tossPage"
+    | "playerSelection"
+    | "matchSettings"
+    | "scoringPage"
+    | "createTournament"
+    | "tournamentTeamManagement"
+    | "tournamentDashboard"
+    | "tournamentDetail"
+    | "addTeamsPlayers"
+    | "teamsSelection"
+    | "search"
   >("matches");
   const [selectedTournament, setSelectedTournament] = useState<any>(null);
-  const [activeTournamentDetailTab, setActiveTournamentDetailTab] = useState("matches");
+  const [activeTournamentDetailTab, setActiveTournamentDetailTab] =
+    useState("matches");
   const [showTournamentSettings, setShowTournamentSettings] = useState(false);
   const [teamSlot, setTeamSlot] = useState<"A" | "B" | null>(null);
   const [showAddPlayerModal, setShowAddPlayerModal] = useState(false);
   const [countryCode, setCountryCode] = useState("+91");
   const [showCountryPicker, setShowCountryPicker] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const [searchResults, setSearchResults] = useState<{ tournaments: any[], matches: any[] }>({ tournaments: [], matches: [] });
+  const [searchResults, setSearchResults] = useState<{
+    tournaments: any[];
+    matches: any[];
+  }>({ tournaments: [], matches: [] });
   const [showSearchModal, setShowSearchModal] = useState(false);
-  
+
   // Team data
   const [teamAName, setTeamAName] = useState("");
   const [teamBName, setTeamBName] = useState("");
@@ -90,13 +110,15 @@ export default function MyCricketScreen() {
   const [liveStreamer, setLiveStreamer] = useState("");
   const [others, setOthers] = useState("");
   const [locationEnabled, setLocationEnabled] = useState(false);
-  const [nearbyGrounds, setNearbyGrounds] = useState<Array<{
-    id: number;
-    name: string;
-    distance: string;
-    city: string;
-    pitchType: string;
-  }>>([]);
+  const [nearbyGrounds, setNearbyGrounds] = useState<
+    Array<{
+      id: number;
+      name: string;
+      distance: string;
+      city: string;
+      pitchType: string;
+    }>
+  >([]);
   const [scrollIndicatorPosition, setScrollIndicatorPosition] = useState(0);
   const scrollViewRef2 = useRef<ScrollView>(null);
 
@@ -109,7 +131,9 @@ export default function MyCricketScreen() {
   const [organizerEmail, setOrganizerEmail] = useState("");
   const [tournamentStartDate, setTournamentStartDate] = useState("");
   const [tournamentEndDate, setTournamentEndDate] = useState("");
-  const [activeTournamentDateField, setActiveTournamentDateField] = useState<"start" | "end" | null>(null);
+  const [activeTournamentDateField, setActiveTournamentDateField] = useState<
+    "start" | "end" | null
+  >(null);
   const [tournamentCalendarMonth, setTournamentCalendarMonth] = useState(() => {
     const today = new Date();
     return new Date(today.getFullYear(), today.getMonth(), 1);
@@ -133,7 +157,9 @@ export default function MyCricketScreen() {
   const [selectedNonStriker, setSelectedNonStriker] = useState<any>(null);
   const [selectedBowler, setSelectedBowler] = useState<any>(null);
   const [showPlayerModal, setShowPlayerModal] = useState(false);
-  const [playerModalType, setPlayerModalType] = useState<"striker" | "nonStriker" | "bowler" | null>(null);
+  const [playerModalType, setPlayerModalType] = useState<
+    "striker" | "nonStriker" | "bowler" | null
+  >(null);
 
   // Match settings data
   const [wagonWheelDotBall, setWagonWheelDotBall] = useState(true);
@@ -157,22 +183,26 @@ export default function MyCricketScreen() {
   const [bowlerOvers, setBowlerOvers] = useState("0.0-0-0-0");
   const [bowlerRuns, setBowlerRuns] = useState(0);
   const [bowlerWickets, setBowlerWickets] = useState(0);
-  const [selectedWicketType, setSelectedWicketType] = useState<string | null>(null);
-  const [scoreHistory, setScoreHistory] = useState<{
-    totalRuns: number;
-    totalWickets: number;
-    currentBall: number;
-    currentOver: number;
-    strikerRuns: number;
-    strikerBalls: number;
-    nonStrikerRuns: number;
-    nonStrikerBalls: number;
-    bowlerOvers: string;
-    bowlerRuns: number;
-    bowlerWickets: number;
-    selectedStriker: any;
-    selectedNonStriker: any;
-  }[]>([]);
+  const [selectedWicketType, setSelectedWicketType] = useState<string | null>(
+    null,
+  );
+  const [scoreHistory, setScoreHistory] = useState<
+    {
+      totalRuns: number;
+      totalWickets: number;
+      currentBall: number;
+      currentOver: number;
+      strikerRuns: number;
+      strikerBalls: number;
+      nonStrikerRuns: number;
+      nonStrikerBalls: number;
+      bowlerOvers: string;
+      bowlerRuns: number;
+      bowlerWickets: number;
+      selectedStriker: any;
+      selectedNonStriker: any;
+    }[]
+  >([]);
 
   const ballOptions = [
     {
@@ -236,37 +266,33 @@ export default function MyCricketScreen() {
     },
   ];
 
-  // Dummy players data
-  const battingTeamPlayers = [
-    { id: 1, name: "Rohit Sharma", role: "Batsman", isOut: false, image: "https://images.unsplash.com/photo-1543326727-cf6c39e8f84c?w=240&h=240&fit=crop" },
-    { id: 2, name: "Virat Kohli", role: "Batsman", isOut: false, image: "https://images.unsplash.com/photo-1624532227497-856e69d6382b?w=240&h=240&fit=crop" },
-    { id: 3, name: "KL Rahul", role: "Wicket Keeper", isOut: false, image: "https://images.unsplash.com/photo-1566577739112-5180d4bf9390?w=240&h=240&fit=crop" },
-    { id: 4, name: "Hardik Pandya", role: "All Rounder", isOut: false, image: "https://images.unsplash.com/photo-1531891437562-4301cf35b7e4?w=240&h=240&fit=crop" },
-    { id: 5, name: "Ravindra Jadeja", role: "All Rounder", isOut: false, image: "https://images.unsplash.com/photo-1599566150163-29194dcaad36?w=240&h=240&fit=crop" },
-    { id: 6, name: "Suryakumar Yadav", role: "Batsman", isOut: false, image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=240&h=240&fit=crop" },
-    { id: 7, name: "Rishabh Pant", role: "Wicket Keeper", isOut: false, image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=240&h=240&fit=crop" },
-    { id: 8, name: "Axar Patel", role: "All Rounder", isOut: false, image: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=240&h=240&fit=crop" },
-    { id: 9, name: "Jasprit Bumrah", role: "Bowler", isOut: false, image: "https://images.unsplash.com/photo-1624526267942-ab0ff8a3e972?w=240&h=240&fit=crop" },
-    { id: 10, name: "Mohammed Shami", role: "Bowler", isOut: false, image: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=240&h=240&fit=crop" },
-    { id: 11, name: "Yuzvendra Chahal", role: "Bowler", isOut: false, image: "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=240&h=240&fit=crop" },
-  ];
+  // Squad rosters for the active match.
+  // TODO(backend): load from match setup params / MatchService
+  const battingTeamPlayers: {
+    id: number;
+    name: string;
+    role: string;
+    isOut: boolean;
+    image: string;
+  }[] = [];
 
-  const bowlingTeamPlayers = [
-    { id: 12, name: "David Warner", role: "Batsman", isOut: false, image: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=240&h=240&fit=crop" },
-    { id: 13, name: "Aaron Finch", role: "Batsman", isOut: false, image: "https://images.unsplash.com/photo-1568602471122-7832951cc4c5?w=240&h=240&fit=crop" },
-    { id: 14, name: "Steve Smith", role: "Batsman", isOut: false, image: "https://images.unsplash.com/photo-1566492031773-4f4e44671857?w=240&h=240&fit=crop" },
-    { id: 15, name: "Glenn Maxwell", role: "All Rounder", isOut: false, image: "https://images.unsplash.com/photo-1527980965255-d3b416303d12?w=240&h=240&fit=crop" },
-    { id: 16, name: "Marcus Stoinis", role: "All Rounder", isOut: false, image: "https://images.unsplash.com/photo-1504257432389-52343af06ae3?w=240&h=240&fit=crop" },
-    { id: 17, name: "Alex Carey", role: "Wicket Keeper", isOut: false, image: "https://images.unsplash.com/photo-1519345182560-3f2917c472ef?w=240&h=240&fit=crop" },
-    { id: 18, name: "Pat Cummins", role: "Bowler", isOut: false, image: "https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?w=240&h=240&fit=crop" },
-    { id: 19, name: "Mitchell Starc", role: "Bowler", isOut: false, image: "https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?w=240&h=240&fit=crop" },
-    { id: 20, name: "Josh Hazlewood", role: "Bowler", isOut: false, image: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=240&h=240&fit=crop" },
-    { id: 21, name: "Adam Zampa", role: "Bowler", isOut: false, image: "https://images.unsplash.com/photo-1463453091185-61582044d556?w=240&h=240&fit=crop" },
-    { id: 22, name: "Nathan Lyon", role: "Bowler", isOut: false, image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=240&h=240&fit=crop" },
-  ];
+  const bowlingTeamPlayers: {
+    id: number;
+    name: string;
+    role: string;
+    isOut: boolean;
+    image: string;
+  }[] = [];
 
   // Reusable render functions
-  const renderTextInput = (label: string, value: string, onChange: (text: string) => void, placeholder: string, required = false, keyboardType: any = "default") => (
+  const renderTextInput = (
+    label: string,
+    value: string,
+    onChange: (text: string) => void,
+    placeholder: string,
+    required = false,
+    keyboardType: any = "default",
+  ) => (
     <FormTextInput
       label={label}
       value={value}
@@ -277,7 +303,12 @@ export default function MyCricketScreen() {
     />
   );
 
-  const renderChipGroup = (items: string[], selected: string, onSelect: (item: string) => void, activeColor: string) => (
+  const renderChipGroup = (
+    items: string[],
+    selected: string,
+    onSelect: (item: string) => void,
+    activeColor: string,
+  ) => (
     <ChipGroup
       items={items}
       selected={selected}
@@ -313,10 +344,30 @@ export default function MyCricketScreen() {
                 },
               ]}
             >
-              <View style={[styles.realBallHighlight, { backgroundColor: ball.seamColor }]} />
-              <View style={[styles.realBallSeamLeft, { borderColor: ball.seamColor }]} />
-              <View style={[styles.realBallSeamRight, { borderColor: ball.seamColor }]} />
-              <View style={[styles.realBallStitchLine, { backgroundColor: ball.seamColor }]} />
+              <View
+                style={[
+                  styles.realBallHighlight,
+                  { backgroundColor: ball.seamColor },
+                ]}
+              />
+              <View
+                style={[
+                  styles.realBallSeamLeft,
+                  { borderColor: ball.seamColor },
+                ]}
+              />
+              <View
+                style={[
+                  styles.realBallSeamRight,
+                  { borderColor: ball.seamColor },
+                ]}
+              />
+              <View
+                style={[
+                  styles.realBallStitchLine,
+                  { backgroundColor: ball.seamColor },
+                ]}
+              />
               {isSelected && (
                 <View style={styles.realBallCheck}>
                   <Ionicons name="checkmark" size={18} color="#FFF" />
@@ -352,9 +403,21 @@ export default function MyCricketScreen() {
             onPress={() => setPitchType(pitch.id)}
             activeOpacity={0.84}
           >
-            <View style={[styles.pitchSurface, { backgroundColor: pitch.baseColor }]}>
-              <View style={[styles.pitchLane, { backgroundColor: pitch.laneColor }]}>
-                <View style={[styles.pitchCrease, { backgroundColor: pitch.stripeColor }]} />
+            <View
+              style={[
+                styles.pitchSurface,
+                { backgroundColor: pitch.baseColor },
+              ]}
+            >
+              <View
+                style={[styles.pitchLane, { backgroundColor: pitch.laneColor }]}
+              >
+                <View
+                  style={[
+                    styles.pitchCrease,
+                    { backgroundColor: pitch.stripeColor },
+                  ]}
+                />
                 <View style={styles.pitchStumpsRow}>
                   <View style={styles.pitchStump} />
                   <View style={styles.pitchStump} />
@@ -366,7 +429,12 @@ export default function MyCricketScreen() {
                   <View style={styles.pitchStump} />
                   <View style={styles.pitchStump} />
                 </View>
-                <View style={[styles.pitchCrease, { backgroundColor: pitch.stripeColor }]} />
+                <View
+                  style={[
+                    styles.pitchCrease,
+                    { backgroundColor: pitch.stripeColor },
+                  ]}
+                />
               </View>
               {pitch.id === "matting" && (
                 <View style={styles.pitchMattingLines}>
@@ -401,7 +469,7 @@ export default function MyCricketScreen() {
     if (!permission.granted) {
       Alert.alert(
         "Permission needed",
-        "Please allow photo library access to upload tournament images."
+        "Please allow photo library access to upload tournament images.",
       );
       return;
     }
@@ -458,9 +526,8 @@ export default function MyCricketScreen() {
     setActiveTournamentDateField(null);
   };
 
-  const getTossWinnerName = () => (
-    tossWinner === "A" ? teamAName : tossWinner === "B" ? teamBName : ""
-  );
+  const getTossWinnerName = () =>
+    tossWinner === "A" ? teamAName : tossWinner === "B" ? teamBName : "";
 
   const getBattingTeamName = () => {
     if (!tossWinner || !tossDecision) {
@@ -529,10 +596,14 @@ export default function MyCricketScreen() {
     setCurrentBall((ball) => ball + 1);
   };
 
-  const updateBowlerFigures = (runsAdded: number, wicketAdded = 0, legalBall = true) => {
+  const updateBowlerFigures = (
+    runsAdded: number,
+    wicketAdded = 0,
+    legalBall = true,
+  ) => {
     const nextRuns = bowlerRuns + runsAdded;
     const nextWickets = bowlerWickets + wicketAdded;
-    const currentLegalBalls = ((currentOver - 1) * 6) + (currentBall - 1);
+    const currentLegalBalls = (currentOver - 1) * 6 + (currentBall - 1);
     const nextLegalBalls = currentLegalBalls + (legalBall ? 1 : 0);
     const fullOvers = Math.floor(nextLegalBalls / 6);
     const balls = nextLegalBalls % 6;
@@ -570,7 +641,11 @@ export default function MyCricketScreen() {
     const runsAdded = kind === "WD" ? wideRuns : kind === "NB" ? noBallRuns : 1;
 
     setTotalRuns((score) => score + runsAdded);
-    updateBowlerFigures(kind === "BYE" || kind === "LB" ? 0 : runsAdded, 0, isLegal);
+    updateBowlerFigures(
+      kind === "BYE" || kind === "LB" ? 0 : runsAdded,
+      0,
+      isLegal,
+    );
 
     if (isLegal) {
       setStrikerBalls((balls) => balls + 1);
@@ -613,9 +688,14 @@ export default function MyCricketScreen() {
   };
 
   const changeTournamentCalendarMonth = (offset: number) => {
-    setTournamentCalendarMonth((currentMonth) => (
-      new Date(currentMonth.getFullYear(), currentMonth.getMonth() + offset, 1)
-    ));
+    setTournamentCalendarMonth(
+      (currentMonth) =>
+        new Date(
+          currentMonth.getFullYear(),
+          currentMonth.getMonth() + offset,
+          1,
+        ),
+    );
   };
 
   const renderTournamentDatePicker = () => {
@@ -635,7 +715,9 @@ export default function MyCricketScreen() {
     ).getDate();
     const selectedValue = getTournamentDateValue(activeTournamentDateField);
     const calendarCells: { key: string; date?: Date }[] = [
-      ...Array.from({ length: firstDay }, (_, index) => ({ key: `empty-${index}` })),
+      ...Array.from({ length: firstDay }, (_, index) => ({
+        key: `empty-${index}`,
+      })),
       ...Array.from({ length: daysInMonth }, (_, index) => {
         const day = index + 1;
         return {
@@ -669,14 +751,18 @@ export default function MyCricketScreen() {
 
         <View style={styles.calendarWeekRow}>
           {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day) => (
-            <Text key={day} style={styles.calendarWeekText}>{day}</Text>
+            <Text key={day} style={styles.calendarWeekText}>
+              {day}
+            </Text>
           ))}
         </View>
 
         <View style={styles.calendarGrid}>
           {calendarCells.map((cell) => {
             if (!cell.date) {
-              return <View key={cell.key} style={styles.calendarDayPlaceholder} />;
+              return (
+                <View key={cell.key} style={styles.calendarDayPlaceholder} />
+              );
             }
 
             const date = cell.date;
@@ -722,7 +808,10 @@ export default function MyCricketScreen() {
     const tabs = ["matches", "points", "leaderboard", "teams"];
     const index = tabs.indexOf(tabName);
     if (index !== -1) {
-      tournamentDetailHorizontalScrollRef.current?.scrollTo({ x: index * SCREEN_WIDTH, animated: true });
+      tournamentDetailHorizontalScrollRef.current?.scrollTo({
+        x: index * SCREEN_WIDTH,
+        animated: true,
+      });
     }
   };
 
@@ -794,27 +883,155 @@ export default function MyCricketScreen() {
 
   // Handle navigation parameters
   useEffect(() => {
-    if (params.source === 'drawer') {
-      console.log("Coming from drawer - showing individual pages");
-      setCurrentView('matches');
-    } else if (params.action === 'createTournament') {
-      handleTabPress('tournaments');
-      setCurrentView('matches');
-    } else if (params.action === 'startMatch') {
-      handleTabPress('matches');
-      setCurrentView('teamSelection');
-      setShowTeamSelection(true);
-    } else if (params.tab === 'tournaments') {
-      handleTabPress('tournaments');
-      setCurrentView('matches');
-    } else if (params.tab === 'matches') {
-      handleTabPress('matches');
-      setCurrentView('matches');
-    } else if (params.tab === 'teams') {
-      handleTabPress('teams');
-      setCurrentView('matches');
+    if (params.startScoring === "1") {
+      // Coming from the new setup flow (app/setup/players → match).
+      if (typeof params.teamA === "string") setTeamAName(params.teamA);
+      if (typeof params.teamB === "string") setTeamBName(params.teamB);
+      if (typeof params.overs === "string") setNumberOfOvers(params.overs);
+      if (typeof params.venue === "string") setSelectedGround(params.venue);
+      if (typeof params.matchDate === "string") setMatchDate(params.matchDate);
+      if (params.tossWinner === "teamA") setTossWinner("A");
+      if (params.tossWinner === "teamB") setTossWinner("B");
+      if (params.tossChoice === "bat" || params.tossChoice === "bowl") {
+        setTossDecision(params.tossChoice);
+      }
+      activeMatchId.current = `match-${Date.now()}`;
+      handleTabPress("matches");
+      setCurrentView("scoringPage");
+      return;
     }
-  }, [params.action, params.tab, params.section, params.source]);
+    if (params.source === "drawer") {
+      console.log("Coming from drawer - showing individual pages");
+      setCurrentView("matches");
+    } else if (params.action === "createTournament") {
+      handleTabPress("tournaments");
+      setCurrentView("matches");
+    } else if (params.action === "startMatch") {
+      handleTabPress("matches");
+      setCurrentView("teamSelection");
+      setShowTeamSelection(true);
+    } else if (params.tab === "tournaments") {
+      handleTabPress("tournaments");
+      setCurrentView("matches");
+    } else if (params.tab === "matches") {
+      handleTabPress("matches");
+      setCurrentView("matches");
+    } else if (params.tab === "teams") {
+      handleTabPress("teams");
+      setCurrentView("matches");
+    }
+  }, [
+    params.action,
+    params.tab,
+    params.section,
+    params.source,
+    params.startScoring,
+  ]);
+
+  // ───── Active match auto-save (pre-backend persistence) ─────
+  // A stable id for the in-progress match so saves overwrite the same record.
+  const activeMatchId = useRef<string>(`match-${Date.now()}`);
+
+  // Build a Match object from the current scoring state.
+  const buildMatchSnapshot = (status: Match["status"]): Match => ({
+    id: activeMatchId.current,
+    teamA: { id: "teamA", name: teamAName, players: [] },
+    teamB: { id: "teamB", name: teamBName, players: [] },
+    overs: parseInt(numberOfOvers, 10) || 0,
+    venue: selectedGround || undefined,
+    matchDate: matchDate || new Date().toISOString(),
+    matchType: "friendly",
+    tossWinner: tossWinner === "B" ? "teamB" : "teamA",
+    tossChoice: tossDecision === "bowl" ? "bowl" : "bat",
+    status,
+    innings: [
+      {
+        battingTeam:
+          tossDecision === "bat" && tossWinner === "B" ? "teamB" : "teamA",
+        balls: [],
+        totalRuns,
+        totalWickets,
+        overs: currentOver - 1 + (currentBall - 1) / 10,
+      },
+    ],
+    createdBy: "local-user",
+  });
+
+  // Save the completed match to history and clear the resumable active match.
+  // TODO(backend): replace with MatchService.createMatch / saveInningsState
+  const endMatchAndSave = () => {
+    Alert.alert("End Match", "Save this match to your history and exit?", [
+      { text: "Cancel", style: "cancel" },
+      {
+        text: "Save & End",
+        onPress: async () => {
+          try {
+            await LocalStorage.saveMatch(buildMatchSnapshot("completed"));
+            await LocalStorage.clearActiveMatch();
+          } catch {
+            // Non-fatal: still exit even if persistence fails.
+          }
+          activeMatchId.current = `match-${Date.now()}`;
+          setCurrentView("matches");
+        },
+      },
+    ]);
+  };
+
+  // Auto-save after every recorded ball while on the scoring page.
+  // TODO(backend): replace LocalStorage.saveActiveMatch with
+  // MatchService.saveInningsState(matchId, innings)
+  useEffect(() => {
+    if (currentView !== "scoringPage") {
+      return;
+    }
+    LocalStorage.saveActiveMatch(buildMatchSnapshot("live")).catch(() => {
+      // Non-fatal: scoring continues even if persistence fails.
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentView, totalRuns, totalWickets, currentOver, currentBall]);
+
+  // On first mount, offer to resume a previously saved active match.
+  useEffect(() => {
+    let cancelled = false;
+    LocalStorage.getActiveMatch().then((saved) => {
+      if (cancelled || !saved || !saved.teamA?.name || !saved.teamB?.name) {
+        return;
+      }
+      Alert.alert(
+        "Resume Match?",
+        `You have an unfinished match: ${saved.teamA.name} vs ${saved.teamB.name}. Resume scoring?`,
+        [
+          {
+            text: "Discard",
+            style: "destructive",
+            onPress: () => LocalStorage.clearActiveMatch(),
+          },
+          {
+            text: "Resume",
+            onPress: () => {
+              if (saved.id) {
+                activeMatchId.current = saved.id;
+              }
+              setTeamAName(saved.teamA?.name ?? "");
+              setTeamBName(saved.teamB?.name ?? "");
+              const innings = saved.innings?.[0];
+              if (innings) {
+                setTotalRuns(innings.totalRuns ?? 0);
+                setTotalWickets(innings.totalWickets ?? 0);
+              }
+              handleTabPress("matches");
+              setCurrentView("scoringPage");
+            },
+          },
+        ],
+      );
+    });
+    return () => {
+      cancelled = true;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // Handle hardware back button
   useEffect(() => {
@@ -940,7 +1157,11 @@ export default function MyCricketScreen() {
       alert("Please enter team captain name");
       return;
     }
-    if (!currentPlayers.trim() || parseInt(currentPlayers) < 11 || parseInt(currentPlayers) > 20) {
+    if (
+      !currentPlayers.trim() ||
+      parseInt(currentPlayers) < 11 ||
+      parseInt(currentPlayers) > 20
+    ) {
       alert("Please enter number of players (11-20)");
       return;
     }
@@ -951,14 +1172,14 @@ export default function MyCricketScreen() {
     } else if (teamSlot === "B") {
       setTeamBName(currentTeamName);
     }
-    
+
     // Reset form
     setCurrentTeamName("");
     setCurrentCity("");
     setCurrentMobile("");
     setCurrentCaptain("");
     setCurrentPlayers("");
-    
+
     console.log(`Created team for Team ${teamSlot}: ${currentTeamName}`);
     handleBackToTeamSelection();
   };
@@ -985,7 +1206,7 @@ export default function MyCricketScreen() {
     console.log("Team A:", teamAName);
     console.log("Team B:", teamBName);
     setCurrentView("matchSetup");
-    
+
     // Trigger VS animations
     setTimeout(() => {
       // Team A slides in from left
@@ -1022,70 +1243,65 @@ export default function MyCricketScreen() {
     try {
       // Request location permissions
       const { status } = await Location.requestForegroundPermissionsAsync();
-      
+
       if (status !== "granted") {
         Alert.alert(
           "Permission Denied",
           "Location permission is required to find nearby grounds. Please enable location access in your device settings.",
-          [{ text: "OK" }]
+          [{ text: "OK" }],
         );
         return;
       }
 
       // Show loading state
       setLocationEnabled(true);
-      
+
       // Try to get location with timeout
       try {
-        const location = await Promise.race([
+        const location = (await Promise.race([
           Location.getCurrentPositionAsync({
             accuracy: Location.Accuracy.Balanced,
           }),
-          new Promise((_, reject) => 
-            setTimeout(() => reject(new Error('Location timeout')), 10000)
-          )
-        ]) as Location.LocationObject;
+          new Promise((_, reject) =>
+            setTimeout(() => reject(new Error("Location timeout")), 10000),
+          ),
+        ])) as Location.LocationObject;
 
         console.log("Current location:", location.coords);
       } catch (locationError) {
-        console.log("Location fetch failed, using dummy data:", locationError);
-        // Continue with dummy data even if location fetch fails
+        console.log("Location fetch failed:", locationError);
       }
-      
-      // Dummy data for nearby grounds (in real app, this would be an API call with lat/long)
-      const dummyGrounds = [
-        { id: 1, name: "Wankhede Stadium", distance: "1.2 km", city: "Mumbai", pitchType: "turf" },
-        { id: 2, name: "Brabourne Stadium", distance: "2.5 km", city: "Mumbai", pitchType: "turf" },
-        { id: 3, name: "DY Patil Stadium", distance: "3.8 km", city: "Mumbai", pitchType: "cement" },
-        { id: 4, name: "Shivaji Park Ground", distance: "4.2 km", city: "Mumbai", pitchType: "rough" },
-        { id: 5, name: "Marine Drive Ground", distance: "5.1 km", city: "Mumbai", pitchType: "matting" },
-        { id: 6, name: "Azad Maidan", distance: "5.5 km", city: "Mumbai", pitchType: "rough" },
-        { id: 7, name: "Cross Maidan", distance: "6.0 km", city: "Mumbai", pitchType: "cement" },
-        { id: 8, name: "Oval Maidan", distance: "6.3 km", city: "Mumbai", pitchType: "turf" },
-      ];
-      
-      setNearbyGrounds(dummyGrounds);
-      
-      // Auto-select the nearest ground
-      const nearestGround = dummyGrounds[0];
-      setSelectedGround(nearestGround.name);
-      setSelectedCity(nearestGround.city);
-      setPitchType(nearestGround.pitchType);
-      
-      Alert.alert(
-        "Location Enabled!",
-        `Found ${dummyGrounds.length} nearby grounds. Nearest: ${nearestGround.name}`,
-        [{ text: "OK" }]
-      );
 
-      console.log("Location enabled, nearest ground:", nearestGround.name);
+      // TODO(backend): fetch nearby grounds from API using lat/long
+      const grounds: typeof nearbyGrounds = [];
+
+      setNearbyGrounds(grounds);
+
+      if (grounds.length > 0) {
+        const nearestGround = grounds[0];
+        setSelectedGround(nearestGround.name);
+        setSelectedCity(nearestGround.city);
+        setPitchType(nearestGround.pitchType);
+
+        Alert.alert(
+          "Location Enabled!",
+          `Found ${grounds.length} nearby grounds. Nearest: ${nearestGround.name}`,
+          [{ text: "OK" }],
+        );
+      } else {
+        Alert.alert(
+          "Location Enabled",
+          "No nearby grounds found yet. Enter your ground manually.",
+          [{ text: "OK" }],
+        );
+      }
     } catch (error) {
       console.error("Error enabling location:", error);
       setLocationEnabled(false);
       Alert.alert(
         "Error",
         "Failed to enable location. Please make sure location services are enabled on your device and try again.",
-        [{ text: "OK" }]
+        [{ text: "OK" }],
       );
     }
   };
@@ -1113,202 +1329,40 @@ export default function MyCricketScreen() {
     }
   };
 
-  const matches = [
-    {
-      id: 1,
-      type: "Individual Match",
-      status: "Upcoming",
-      team: "Rhjvssst",
-      date: "Yesterday",
-      overs: "20 Ov.",
-      format: "Box",
-      location: "Mumbai, Bhayander West",
-      time: "09:00 AM",
-    },
-    {
-      id: 2,
-      type: "Team Match",
-      status: "Completed",
-      team: "Warriors vs Strikers",
-      date: "2 days ago",
-      overs: "20 Ov.",
-      format: "Box",
-      location: "Wankhede Stadium",
-      time: "06:00 PM",
-      result: "Won by 6 wickets",
-    },
-  ];
+  // TODO(backend): fetch user matches from MatchService.getMatchHistory()
+  type MatchItem = {
+    id: number;
+    type: string;
+    status: string;
+    team: string;
+    date: string;
+    overs: string;
+    format: string;
+    location: string;
+    time: string;
+    result?: string;
+  };
+  const matches: MatchItem[] = [];
 
-  // Dummy data for different filter categories
-  const getMatchesByFilter = (filter: string) => {
+  // TODO(backend): fetch matches by filter from API (your / participate / network / all)
+  const getMatchesByFilter = (filter: string): MatchItem[] => {
     switch (filter) {
       case "your":
-        return [
-          {
-            id: 1,
-            type: "Individual Match",
-            status: "Upcoming",
-            team: "Mumbai Warriors vs Delhi Capitals",
-            date: "Today",
-            overs: "20 Ov.",
-            format: "T20",
-            location: "Wankhede Stadium, Mumbai",
-            time: "06:00 PM",
-          },
-          {
-            id: 2,
-            type: "Team Match",
-            status: "Completed",
-            team: "Chennai Kings vs Bangalore Riders",
-            date: "Yesterday",
-            overs: "50 Ov.",
-            format: "ODI",
-            location: "M.A. Chidambaram Stadium",
-            time: "02:30 PM",
-            result: "Won by 45 runs",
-          },
-          {
-            id: 3,
-            type: "Practice Match",
-            status: "Live",
-            team: "Kolkata Knights vs Rajasthan Royals",
-            date: "Now",
-            overs: "20 Ov.",
-            format: "T20",
-            location: "Eden Gardens, Kolkata",
-            time: "07:30 PM",
-            result: "15.2 Overs - 142/4",
-          },
-        ];
-      
+        // TODO(backend): fetch user's matches from API
+        return [];
+
       case "participate":
-        return [
-          {
-            id: 4,
-            type: "Tournament Match",
-            status: "Upcoming",
-            team: "Hyderabad Heroes vs Pune Superstars",
-            date: "Tomorrow",
-            overs: "20 Ov.",
-            format: "T20",
-            location: "Rajiv Gandhi Stadium",
-            time: "07:00 PM",
-          },
-          {
-            id: 5,
-            type: "League Match",
-            status: "Completed",
-            team: "Gujarat Giants vs Punjab Kings",
-            date: "3 days ago",
-            overs: "20 Ov.",
-            format: "T20",
-            location: "Narendra Modi Stadium",
-            time: "08:00 PM",
-            result: "Lost by 12 runs",
-          },
-          {
-            id: 6,
-            type: "Qualifier",
-            status: "Upcoming",
-            team: "Lucknow Legends vs Ahmedabad Aces",
-            date: "Next Week",
-            overs: "50 Ov.",
-            format: "ODI",
-            location: "Ekana Stadium, Lucknow",
-            time: "02:00 PM",
-          },
-        ];
-      
+        // TODO(backend): fetch matches the user participates in from API
+        return [];
+
       case "network":
-        return [
-          {
-            id: 7,
-            type: "Friend's Match",
-            status: "Live",
-            team: "Rohit's XI vs Virat's XI",
-            date: "Now",
-            overs: "20 Ov.",
-            format: "T20",
-            location: "Local Ground, Bandra",
-            time: "05:30 PM",
-            result: "12.4 Overs - 98/3",
-          },
-          {
-            id: 8,
-            type: "Club Match",
-            status: "Completed",
-            team: "MCC vs DCC",
-            date: "Last Week",
-            overs: "40 Ov.",
-            format: "List A",
-            location: "Cross Maidan, Mumbai",
-            time: "10:00 AM",
-            result: "Won by 8 wickets",
-          },
-          {
-            id: 9,
-            type: "Corporate Match",
-            status: "Upcoming",
-            team: "TCS vs Infosys",
-            date: "This Weekend",
-            overs: "20 Ov.",
-            format: "T20",
-            location: "Corporate Ground",
-            time: "04:00 PM",
-          },
-        ];
-      
+        // TODO(backend): fetch matches from the user's network from API
+        return [];
+
       case "all":
-        return [
-          {
-            id: 10,
-            type: "International",
-            status: "Live",
-            team: "India vs Australia",
-            date: "Now",
-            overs: "50 Ov.",
-            format: "ODI",
-            location: "MCG, Melbourne",
-            time: "09:30 AM IST",
-            result: "35.2 Overs - 287/4",
-          },
-          {
-            id: 11,
-            type: "IPL Match",
-            status: "Completed",
-            team: "MI vs CSK",
-            date: "Yesterday",
-            overs: "20 Ov.",
-            format: "T20",
-            location: "Wankhede Stadium",
-            time: "07:30 PM",
-            result: "CSK won by 4 runs",
-          },
-          {
-            id: 12,
-            type: "Local Tournament",
-            status: "Upcoming",
-            team: "North Zone vs South Zone",
-            date: "Tomorrow",
-            overs: "20 Ov.",
-            format: "T20",
-            location: "Feroz Shah Kotla",
-            time: "06:00 PM",
-          },
-          {
-            id: 13,
-            type: "Women's Match",
-            status: "Completed",
-            team: "India Women vs England Women",
-            date: "2 days ago",
-            overs: "20 Ov.",
-            format: "T20I",
-            location: "Lord's, London",
-            time: "08:00 PM IST",
-            result: "India won by 7 wickets",
-          },
-        ];
-      
+        // TODO(backend): fetch all public matches from API
+        return [];
+
       default:
         return [];
     }
@@ -1317,169 +1371,25 @@ export default function MyCricketScreen() {
   const currentMatches = getMatchesByFilter(activeFilter);
 
   // All tournaments data for search
-  const allTournaments = [
-    // Your tournaments
-    {
-      id: 1,
-      name: "Mumbai Premier League 2024",
-      teams: 8,
-      matches: 24,
-      status: "Ongoing",
-      startDate: "May 15, 2024",
-      progress: 65,
-      category: "your"
-    },
-    {
-      id: 2,
-      name: "Summer Cricket Championship",
-      teams: 6,
-      matches: 15,
-      status: "Upcoming",
-      startDate: "June 1, 2024",
-      progress: 0,
-      category: "your"
-    },
-    {
-      id: 10,
-      name: "Monsoon T20 Series",
-      teams: 7,
-      matches: 18,
-      status: "Ongoing",
-      startDate: "May 20, 2024",
-      progress: 45,
-      category: "your"
-    },
-    {
-      id: 11,
-      name: "Weekend Cricket Fest",
-      teams: 5,
-      matches: 10,
-      status: "Upcoming",
-      startDate: "June 15, 2024",
-      progress: 0,
-      category: "your"
-    },
-    {
-      id: 12,
-      name: "Corporate League 2024",
-      teams: 9,
-      matches: 20,
-      status: "Ongoing",
-      startDate: "May 10, 2024",
-      progress: 80,
-      category: "your"
-    },
-    {
-      id: 13,
-      name: "Youth Cricket Academy",
-      teams: 4,
-      matches: 8,
-      status: "Upcoming",
-      startDate: "July 1, 2024",
-      progress: 0,
-      category: "your"
-    },
-    // Participate tournaments
-    {
-      id: 3,
-      name: "Delhi Cricket League 2024",
-      teams: 10,
-      matches: 32,
-      status: "Completed",
-      startDate: "Apr 10, 2024",
-      progress: 100,
-      category: "participate"
-    },
-    {
-      id: 4,
-      name: "Bangalore T20 Blast",
-      teams: 7,
-      matches: 18,
-      status: "Completed",
-      startDate: "Mar 20, 2024",
-      progress: 100,
-      category: "participate"
-    },
-    {
-      id: 5,
-      name: "Pune Cricket Festival",
-      teams: 5,
-      matches: 12,
-      status: "Completed",
-      startDate: "Feb 15, 2024",
-      progress: 100,
-      category: "participate"
-    },
-    // Network tournaments
-    {
-      id: 6,
-      name: "National Cricket Championship",
-      teams: 16,
-      matches: 48,
-      status: "Upcoming",
-      startDate: "Jul 1, 2024",
-      progress: 0,
-      category: "network"
-    },
-    {
-      id: 7,
-      name: "Inter-State T20 Series",
-      teams: 12,
-      matches: 36,
-      status: "Upcoming",
-      startDate: "Aug 15, 2024",
-      progress: 0,
-      category: "network"
-    },
-    {
-      id: 8,
-      name: "Corporate Cricket League",
-      teams: 9,
-      matches: 24,
-      status: "Ongoing",
-      startDate: "May 20, 2024",
-      progress: 55,
-      category: "network"
-    },
-    // All tournaments
-    {
-      id: 9,
-      name: "IPL 2024",
-      teams: 10,
-      matches: 74,
-      status: "Ongoing",
-      startDate: "Mar 22, 2024",
-      progress: 85,
-      category: "all"
-    },
-    {
-      id: 14,
-      name: "World Cup 2024",
-      teams: 16,
-      matches: 48,
-      status: "Upcoming",
-      startDate: "Oct 1, 2024",
-      progress: 0,
-      category: "all"
-    },
-    {
-      id: 15,
-      name: "Champions Trophy 2024",
-      teams: 8,
-      matches: 15,
-      status: "Upcoming",
-      startDate: "Sep 15, 2024",
-      progress: 0,
-      category: "all"
-    }
-  ];
+  // TODO(backend): fetch tournaments for search from TournamentService.list()
+  type TournamentItem = {
+    id: number;
+    name: string;
+    teams: number;
+    matches: number;
+    status: string;
+    startDate: string;
+    progress: number;
+    category: string;
+  };
+  const allTournaments: TournamentItem[] = [];
 
   // All matches data for search
   const allMatches = [
     ...getMatchesByFilter("your"),
     ...getMatchesByFilter("participate"),
     ...getMatchesByFilter("network"),
-    ...getMatchesByFilter("all")
+    ...getMatchesByFilter("all"),
   ];
 
   // Search function
@@ -1490,26 +1400,28 @@ export default function MyCricketScreen() {
     }
 
     const searchTerm = query.toLowerCase().trim();
-    
+
     // Search tournaments
-    const filteredTournaments = allTournaments.filter(tournament =>
-      tournament.name.toLowerCase().includes(searchTerm) ||
-      tournament.status.toLowerCase().includes(searchTerm) ||
-      tournament.category.toLowerCase().includes(searchTerm)
+    const filteredTournaments = allTournaments.filter(
+      (tournament) =>
+        tournament.name.toLowerCase().includes(searchTerm) ||
+        tournament.status.toLowerCase().includes(searchTerm) ||
+        tournament.category.toLowerCase().includes(searchTerm),
     );
 
     // Search matches
-    const filteredMatches = allMatches.filter(match =>
-      match.team.toLowerCase().includes(searchTerm) ||
-      match.type.toLowerCase().includes(searchTerm) ||
-      match.location.toLowerCase().includes(searchTerm) ||
-      match.format.toLowerCase().includes(searchTerm) ||
-      match.status.toLowerCase().includes(searchTerm)
+    const filteredMatches = allMatches.filter(
+      (match) =>
+        match.team.toLowerCase().includes(searchTerm) ||
+        match.type.toLowerCase().includes(searchTerm) ||
+        match.location.toLowerCase().includes(searchTerm) ||
+        match.format.toLowerCase().includes(searchTerm) ||
+        match.status.toLowerCase().includes(searchTerm),
     );
 
     setSearchResults({
       tournaments: filteredTournaments,
-      matches: filteredMatches
+      matches: filteredMatches,
     });
   };
 
@@ -1522,8 +1434,8 @@ export default function MyCricketScreen() {
   return (
     <TabScreenWrapper swipeEnabled={false}>
       <View style={styles.container}>
-      {/* Header - Always show except when specified */}
-      <Animated.View style={{ opacity: fadeAnim }}>
+        {/* Header - Always show except when specified */}
+        <Animated.View style={{ opacity: fadeAnim }}>
           <LinearGradient
             colors={["#00A66A", "#0F766E", "#064E3B"]}
             start={{ x: 0, y: 0 }}
@@ -1531,7 +1443,7 @@ export default function MyCricketScreen() {
             style={styles.header}
           >
             <View style={styles.headerLeft}>
-              {currentView !== "matches" ? (
+              {currentView !== "matches" && (
                 <TouchableOpacity
                   style={styles.headerBackButton}
                   onPress={() => {
@@ -1548,7 +1460,10 @@ export default function MyCricketScreen() {
                       vsTeamAnim.setValue(0);
                       vsTeamBanim.setValue(0);
                       vsTextAnim.setValue(0);
-                    } else if (currentView === "selectTeam" || currentView === "createTeam") {
+                    } else if (
+                      currentView === "selectTeam" ||
+                      currentView === "createTeam"
+                    ) {
                       setCurrentView("teamSelection");
                       setShowAddPlayerModal(false);
                     } else if (currentView === "teamSelection") {
@@ -1562,9 +1477,12 @@ export default function MyCricketScreen() {
                     } else if (currentView === "addTeamsPlayers") {
                       setCurrentView("tournamentDetail");
                     } else if ((currentView as string) === "createTeam") {
+                      // Check if we came from addTeamsPlayers or from teamSelection
                       if (teamSlot) {
+                        // Came from team selection flow
                         setCurrentView("teamSelection");
                       } else {
+                        // Came from addTeamsPlayers flow
                         setCurrentView("addTeamsPlayers");
                       }
                       setShowAddPlayerModal(false);
@@ -1580,4602 +1498,6591 @@ export default function MyCricketScreen() {
                 >
                   <Ionicons name="arrow-back" size={24} color="#FFF" />
                 </TouchableOpacity>
-              ) : (
-                <Text style={styles.headerTitle}>
-                  GAME<Text style={styles.headerTitleOrange}>LENS</Text> <Text style={styles.headerTitleTab}>my cricket</Text>
-                </Text>
               )}
             </View>
 
             <View style={styles.headerRight}>
-              <TouchableOpacity 
+              <TouchableOpacity
                 style={styles.iconButton}
                 onPress={() => setShowSearchModal(true)}
               >
-                <Ionicons name="search" size={22} color="#FFF" />
+                <Ionicons name="search" size={24} color="#FFF" />
               </TouchableOpacity>
               <TouchableOpacity style={styles.iconButton}>
                 <View style={styles.notificationDot} />
-                <Ionicons name="chatbubble-outline" size={22} color="#FFF" />
+                <Ionicons name="chatbubble-outline" size={24} color="#FFF" />
               </TouchableOpacity>
               {currentView === "tournamentDetail" ? (
                 <TouchableOpacity
                   style={styles.iconButton}
                   onPress={() => setShowTournamentSettings(true)}
                 >
-                  <Ionicons name="settings-outline" size={22} color="#FFF" />
+                  <Ionicons name="settings-outline" size={24} color="#FFF" />
                 </TouchableOpacity>
               ) : (
                 <TouchableOpacity style={styles.iconButton}>
-                  <Ionicons name="filter" size={22} color="#FFF" />
+                  <Ionicons name="filter" size={24} color="#FFF" />
                 </TouchableOpacity>
               )}
             </View>
           </LinearGradient>
         </Animated.View>
 
-      {/* Animated Tabs - Always show when on matches view */}
-      {currentView === "matches" && (
-        <Animated.View style={[styles.tabsContainer, { opacity: fadeAnim }]}>
-          {/* Real-time sliding indicator line */}
-          <Animated.View
-            style={{
-              position: 'absolute',
-              bottom: 0,
-              left: 0,
-              width: SCREEN_WIDTH / 3 - 32,
-              height: 3,
-              backgroundColor: '#00A66A',
-              transform: [
-                {
-                  translateX: scrollX.interpolate({
-                    inputRange: [0, SCREEN_WIDTH * 2],
-                    outputRange: [16, 16 + (SCREEN_WIDTH / 3) * 2],
-                  }),
-                },
-              ],
-              zIndex: 10,
-            }}
-          />
-          {["matches", "tournaments", "teams"].map((tab) => (
-            <TouchableOpacity
-              key={tab}
-              style={styles.tab}
-              onPress={() => handleTabPress(tab)}
-            >
-              <Text
-                style={[
-                  styles.tabText,
-                  activeTab === tab && styles.activeTabText,
-                ]}
+        {/* Animated Tabs - Always show when on matches view */}
+        {currentView === "matches" && (
+          <Animated.View style={[styles.tabsContainer, { opacity: fadeAnim }]}>
+            {/* Real-time sliding indicator line */}
+            <Animated.View
+              style={{
+                position: "absolute",
+                bottom: 0,
+                left: 0,
+                width: SCREEN_WIDTH / 3 - 32,
+                height: 3,
+                backgroundColor: "#00A66A",
+                transform: [
+                  {
+                    translateX: scrollX.interpolate({
+                      inputRange: [0, SCREEN_WIDTH * 2],
+                      outputRange: [16, 16 + (SCREEN_WIDTH / 3) * 2],
+                    }),
+                  },
+                ],
+                zIndex: 10,
+              }}
+            />
+            {["matches", "tournaments", "teams"].map((tab) => (
+              <TouchableOpacity
+                key={tab}
+                style={styles.tab}
+                onPress={() => handleTabPress(tab)}
               >
-                {tab.charAt(0).toUpperCase() + tab.slice(1)}
-              </Text>
-            </TouchableOpacity>
-          ))}
-        </Animated.View>
-      )}
-
-      <ScrollView 
-        ref={scrollViewRef}
-        style={styles.content} 
-        showsVerticalScrollIndicator={false}
-      >
-        <AnimatedViewTransition transitionKey={currentView} type="slideUp">
-        {/* Main Content Based on Current View */}
-        {currentView === "createTournament" ? (
-          /* Create Tournament Form View */
-          <View style={styles.createTournamentFormContainer}>
-            <View style={styles.formHeaderBlock}>
-              <Text style={styles.formTitle}>Add a tournament / series</Text>
-              <Text style={styles.formSubtitle}>
-                Set up your tournament profile, match rules, and public listing.
-              </Text>
-            </View>
-            
-            <View style={styles.formCard}>
-              <View style={styles.mediaUploadStage}>
-                <TouchableOpacity
-                  style={styles.bannerUploadButton}
-                  onPress={() => pickTournamentImage("banner")}
-                  activeOpacity={0.85}
+                <Text
+                  style={[
+                    styles.tabText,
+                    activeTab === tab && styles.activeTabText,
+                  ]}
                 >
-                  <View style={styles.bannerMediaPlaceholder}>
-                  {tournamentBannerUri ? (
-                    <Image
-                      source={{ uri: tournamentBannerUri }}
-                      style={styles.tournamentBannerPreview}
-                    />
-                  ) : (
-                    <View style={styles.emptyBannerContent}>
-                      <Ionicons name="image-outline" size={34} color="#00A66A" />
-                      <Text style={styles.emptyBannerTitle}>Tournament banner</Text>
-                      <Text style={styles.emptyBannerSubtitle}>Tap to upload from device</Text>
-                    </View>
-                  )}
-                  <View style={styles.cameraIconBadge}>
-                    <Ionicons name="camera" size={16} color="#FFF" />
-                  </View>
-                  </View>
-                </TouchableOpacity>
-
-                <TouchableOpacity
-                  style={styles.logoUploadButton}
-                  onPress={() => pickTournamentImage("logo")}
-                  activeOpacity={0.85}
-                >
-                  <View style={styles.logoMediaPlaceholder}>
-                  {tournamentLogoUri ? (
-                    <Image
-                      source={{ uri: tournamentLogoUri }}
-                      style={styles.tournamentLogoPreview}
-                    />
-                  ) : (
-                    <Ionicons name="shield-outline" size={34} color="#00A66A" />
-                  )}
-                  <View style={styles.logoCameraBadge}>
-                    <Ionicons name="camera" size={12} color="#FFF" />
-                  </View>
-                  </View>
-                  <Text style={styles.logoUploadText}>
-                    {tournamentLogoUri ? "Change logo" : "Add logo"}
-                  </Text>
-                </TouchableOpacity>
-              </View>
-
-              {/* Form Fields */}
-              {renderTextInput("Tournament / series name", tournamentName, setTournamentName, "Enter your tournament name", true)}
-              {renderTextInput("City", tournamentCity, setTournamentCity, "Enter city", true)}
-              {renderTextInput("Ground", tournamentGround, setTournamentGround, "Enter ground name", true)}
-              {renderTextInput("Organiser name", organizerName, setOrganizerName, "Enter organiser name", true)}
-              {renderTextInput("Organiser number", organizerNumber, setOrganizerNumber, "Enter phone number", true, "phone-pad")}
-              
-              <View style={styles.formGroup}>
-                <Text style={styles.formLabel}>Organiser email</Text>
-                <TextInput
-                  style={styles.formInput}
-                  placeholder="Enter email"
-                  placeholderTextColor="#CCC"
-                  keyboardType="email-address"
-                  value={organizerEmail}
-                  onChangeText={setOrganizerEmail}
-                />
-                <Text style={styles.emailHint}>*Get updated with CricHeroes offers and help videos on mail.</Text>
-              </View>
-
-              {/* Tournament Dates */}
-              <Text style={styles.sectionHeading}>Tournament dates</Text>
-              <View style={styles.dateRow}>
-                {[
-                  { label: "Start date", field: "start" as const },
-                  { label: "End date", field: "end" as const },
-                ].map(({ label, field }) => (
-                  <View key={label} style={styles.dateField}>
-                    <Text style={styles.formLabel}>{label} *</Text>
-                    <TouchableOpacity 
-                      style={[
-                        styles.dateInput,
-                        activeTournamentDateField === field && styles.dateInputActive,
-                      ]}
-                      onPress={() => {
-                        setActiveTournamentDateField(
-                          activeTournamentDateField === field ? null : field,
-                        );
-                      }}
-                    >
-                      <TextInput
-                        style={styles.dateInputText}
-                        placeholder="Select date"
-                        placeholderTextColor="#CCC"
-                        value={getTournamentDateValue(field)}
-                        editable={false}
-                        pointerEvents="none"
-                      />
-                      <Ionicons
-                        name="calendar-outline"
-                        size={20}
-                        color={activeTournamentDateField === field ? "#00A66A" : "#666"}
-                      />
-                    </TouchableOpacity>
-                  </View>
-                ))}
-              </View>
-              {renderTournamentDatePicker()}
-
-              {/* Tournament Category */}
-              <View style={styles.formGroup}>
-                <Text style={styles.formLabel}>Tournament category *</Text>
-                {renderChipGroup(
-                  ["OPEN", "CORPORATE", "COMMUNITY", "SCHOOL", "OTHER", "SERIES", "COLLEGE", "UNIVERSITY"],
-                  tournamentCategory,
-                  setTournamentCategory,
-                  "#E63946"
-                )}
-              </View>
-
-              {/* Select Ball Type */}
-              <View style={styles.formGroup}>
-                <Text style={styles.formLabel}>Select ball type *</Text>
-                {renderBallTypeSelector(tournamentBallType, setTournamentBallType)}
-              </View>
-
-              {/* Pitch Type */}
-              <View style={styles.formGroup}>
-                <Text style={styles.formLabel}>Pitch type</Text>
-                {renderChipGroup(
-                  ["ROUGH", "CEMENT", "TURF", "ASTROTURF", "MATTING"],
-                  tournamentPitchType,
-                  setTournamentPitchType,
-                  "#00A66A"
-                )}
-              </View>
-
-              {/* Match Type */}
-              <View style={styles.formGroup}>
-                <Text style={styles.formLabel}>Match type *</Text>
-                {renderChipGroup(
-                  ["Limited Overs", "Box/Turf Cricket", "Pair Cricket", "Test Match", "The Hundred"],
-                  tournamentMatchType,
-                  setTournamentMatchType,
-                  "#00A66A"
-                )}
-              </View>
-
-              {/* Checkboxes */}
-              {[
-                { label: "Do you need more teams for your tournament?", value: needMoreTeams, setter: setNeedMoreTeams },
-                { label: "Do you need officials? (e.g. Umpire, Scorer)", value: needOfficials, setter: setNeedOfficials },
-              ].map((checkbox, idx) => (
-                <TouchableOpacity 
-                  key={idx}
-                  style={styles.checkboxRow}
-                  onPress={() => checkbox.setter(!checkbox.value)}
-                >
-                  <View style={[styles.checkbox, checkbox.value && styles.checkboxChecked]}>
-                    {checkbox.value && <Ionicons name="checkmark" size={16} color="#FFF" />}
-                  </View>
-                  <Text style={styles.checkboxLabel}>{checkbox.label}</Text>
-                </TouchableOpacity>
-              ))}
-
-              {/* Next Button */}
-              <TouchableOpacity 
-                style={styles.nextButton}
-                onPress={() => {
-                  // Validate required fields
-                  if (!tournamentName.trim()) {
-                    Alert.alert("Required Field", "Please enter tournament name");
-                    return;
-                  }
-                  if (!tournamentBannerUri) {
-                    Alert.alert("Required Field", "Please add tournament banner");
-                    return;
-                  }
-                  if (!tournamentLogoUri) {
-                    Alert.alert("Required Field", "Please add tournament logo");
-                    return;
-                  }
-                  if (!tournamentCity.trim()) {
-                    Alert.alert("Required Field", "Please enter city");
-                    return;
-                  }
-                  if (!tournamentGround.trim()) {
-                    Alert.alert("Required Field", "Please enter ground name");
-                    return;
-                  }
-                  if (!organizerName.trim()) {
-                    Alert.alert("Required Field", "Please enter organiser name");
-                    return;
-                  }
-                  if (!organizerNumber.trim()) {
-                    Alert.alert("Required Field", "Please enter organiser number");
-                    return;
-                  }
-                  if (!tournamentStartDate) {
-                    Alert.alert("Required Field", "Please select start date");
-                    return;
-                  }
-                  if (!tournamentEndDate) {
-                    Alert.alert("Required Field", "Please select end date");
-                    return;
-                  }
-                  if (tournamentEndDate < tournamentStartDate) {
-                    Alert.alert("Invalid Date", "End date cannot be before start date");
-                    return;
-                  }
-                  if (!tournamentCategory) {
-                    Alert.alert("Required Field", "Please select tournament category");
-                    return;
-                  }
-                  if (!tournamentBallType) {
-                    Alert.alert("Required Field", "Please select ball type");
-                    return;
-                  }
-                  if (!tournamentMatchType) {
-                    Alert.alert("Required Field", "Please select match type");
-                    return;
-                  }
-                  
-                  // Navigate to team management view
-                  setCurrentView("tournamentTeamManagement");
-                  setShowAddPlayerModal(true);
-                }}
-              >
-                <LinearGradient
-                  colors={["#00A66A", "#0F766E", "#064E3B"]}
-                  start={{ x: 0, y: 0 }}
-                  end={{ x: 1, y: 1 }}
-                  style={styles.nextButtonGradient}
-                >
-                  <Text style={styles.nextButtonText}>NEXT</Text>
-                </LinearGradient>
-              </TouchableOpacity>
-
-              <View style={{ height: 40 }} />
-            </View>
-          </View>
-        ) : currentView === "tournamentDetail" && selectedTournament ? (
-          /* ─────────── Tournament Detail View ─────────── */
-          <View style={styles.tdContainer}>
-            {/* Hero Banner */}
-            <LinearGradient
-              colors={["#064E3B", "#00A66A", "#059669"]}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 1 }}
-              style={styles.tdHero}
-            >
-              {/* Decorative circles */}
-              <View style={styles.tdHeroCircle1} />
-              <View style={styles.tdHeroCircle2} />
-
-              <View style={styles.tdHeroContent}>
-                <View style={styles.tdHeroIcon}>
-                  <Ionicons name="trophy" size={36} color="#FFD700" />
-                </View>
-                <Text style={styles.tdHeroTitle} numberOfLines={2}>
-                  {selectedTournament.name}
+                  {tab.charAt(0).toUpperCase() + tab.slice(1)}
                 </Text>
+              </TouchableOpacity>
+            ))}
+          </Animated.View>
+        )}
 
-                {/* Status pill */}
-                <View style={[
-                  styles.tdStatusPill,
-                  { backgroundColor: selectedTournament.status === "Ongoing" ? "rgba(255,255,255,0.25)" : "rgba(255,255,255,0.15)" }
-                ]}>
-                  <View style={[
-                    styles.tdStatusDot,
-                    { backgroundColor: selectedTournament.status === "Ongoing" ? "#4CAF50" : "#FFA500" }
-                  ]} />
-                  <Text style={styles.tdStatusText}>{selectedTournament.status}</Text>
-                </View>
-
-                {/* Stats row */}
-                <View style={styles.tdHeroStats}>
-                  {[
-                    { icon: "people", label: "Teams", value: selectedTournament.teams },
-                    { icon: "baseball", label: "Matches", value: selectedTournament.matches },
-                    { icon: "calendar-outline", label: "Start", value: selectedTournament.startDate.split(",")[0] },
-                  ].map((stat, i) => (
-                    <View key={i} style={styles.tdHeroStat}>
-                      <Ionicons name={stat.icon as any} size={14} color="rgba(255,255,255,0.8)" />
-                      <Text style={styles.tdHeroStatValue}>{stat.value}</Text>
-                      <Text style={styles.tdHeroStatLabel}>{stat.label}</Text>
-                    </View>
-                  ))}
-                </View>
-
-                {/* Progress bar */}
-                <View style={styles.tdProgressWrap}>
-                  <View style={styles.tdProgressBg}>
-                    <View style={[styles.tdProgressFill, { width: `${selectedTournament.progress}%` }]} />
-                  </View>
-                  <Text style={styles.tdProgressLabel}>{selectedTournament.progress}% Complete</Text>
-                </View>
-              </View>
-            </LinearGradient>
-
-            {/* Detail Tabs */}
-            <View style={styles.tdTabs}>
-              {["matches", "points", "leaderboard", "teams"].map((tab) => (
-                <TouchableOpacity
-                  key={tab}
-                  style={[styles.tdTab, activeTournamentDetailTab === tab && styles.tdTabActive]}
-                  onPress={() => handleTournamentDetailTabPress(tab)}
-                >
-                  <Text style={[styles.tdTabText, activeTournamentDetailTab === tab && styles.tdTabTextActive]}>
-                    {tab.charAt(0).toUpperCase() + tab.slice(1)}
+        <ScrollView
+          ref={scrollViewRef}
+          style={styles.content}
+          showsVerticalScrollIndicator={false}
+        >
+          <AnimatedViewTransition transitionKey={currentView} type="slideUp">
+            {/* Main Content Based on Current View */}
+            {currentView === "createTournament" ? (
+              /* Create Tournament Form View */
+              <View style={styles.createTournamentFormContainer}>
+                <View style={styles.formHeaderBlock}>
+                  <Text style={styles.formTitle}>
+                    Add a tournament / series
                   </Text>
-                  {activeTournamentDetailTab === tab && <View style={styles.tdTabIndicator} />}
-                </TouchableOpacity>
-              ))}
-            </View>
-
-            {/* Tab Content */}
-            <ScrollView
-              ref={tournamentDetailHorizontalScrollRef}
-              horizontal
-              pagingEnabled
-              showsHorizontalScrollIndicator={false}
-              onMomentumScrollEnd={handleTournamentDetailHorizontalScrollEnd}
-              style={styles.tdContent}
-              scrollEventThrottle={16}
-              nestedScrollEnabled
-            >
-              {/* Slide 1: Matches */}
-              <ScrollView style={{ width: SCREEN_WIDTH }} showsVerticalScrollIndicator={false}>
-                <View style={styles.tdSection}>
-                  <Text style={styles.tdSectionTitle}>Upcoming Matches</Text>
-                  {[
-                    { id: 1, team1: "Warriors", team2: "Strikers", date: "Today", time: "6:00 PM", venue: "Ground A", status: "upcoming" },
-                    { id: 2, team1: "Lions",    team2: "Tigers",   date: "Tomorrow", time: "5:00 PM", venue: "Ground B", status: "upcoming" },
-                    { id: 3, team1: "Eagles",   team2: "Hawks",    date: "May 12",   time: "7:00 PM", venue: "Ground A", status: "scheduled" },
-                  ].map((m) => (
-                    <View key={m.id} style={styles.tdMatchCard}>
-                      <View style={styles.tdMatchHeader}>
-                        <View style={[styles.tdMatchBadge, { backgroundColor: m.status === "upcoming" ? "#FF9800" : "#17A2B8" }]}>
-                          <Text style={styles.tdMatchBadgeText}>{m.status === "upcoming" ? "UPCOMING" : "SCHEDULED"}</Text>
-                        </View>
-                        <Text style={styles.tdMatchDate}>{m.date} · {m.time}</Text>
-                      </View>
-                      <View style={styles.tdMatchTeams}>
-                        <View style={styles.tdTeamCol}>
-                          <LinearGradient colors={["#00A66A", "#064E3B"]} style={styles.tdTeamAvatar}>
-                            <Text style={styles.tdTeamAvatarText}>{m.team1.charAt(0)}</Text>
-                          </LinearGradient>
-                          <Text style={styles.tdTeamName}>{m.team1}</Text>
-                        </View>
-                        <View style={styles.tdVsBox}>
-                          <Text style={styles.tdVs}>VS</Text>
-                        </View>
-                        <View style={styles.tdTeamCol}>
-                          <LinearGradient colors={["#1565C0", "#0D47A1"]} style={styles.tdTeamAvatar}>
-                            <Text style={styles.tdTeamAvatarText}>{m.team2.charAt(0)}</Text>
-                          </LinearGradient>
-                          <Text style={styles.tdTeamName}>{m.team2}</Text>
-                        </View>
-                      </View>
-                      <View style={styles.tdMatchFooter}>
-                        <Ionicons name="location-outline" size={13} color="#999" />
-                        <Text style={styles.tdMatchVenue}>{m.venue}</Text>
-                      </View>
-                    </View>
-                  ))}
-
-                  <Text style={[styles.tdSectionTitle, { marginTop: 20 }]}>Completed Matches</Text>
-                  {[
-                    { id: 4, team1: "Warriors", score1: "185/4", team2: "Strikers", score2: "172/8", winner: "Warriors", margin: "13 runs" },
-                    { id: 5, team1: "Lions",    score1: "142/6", team2: "Eagles",   score2: "143/3", winner: "Eagles",   margin: "7 wkts" },
-                  ].map((m) => (
-                    <View key={m.id} style={[styles.tdMatchCard, { borderLeftColor: "#4CAF50", borderLeftWidth: 3 }]}>
-                      <View style={styles.tdMatchHeader}>
-                        <View style={[styles.tdMatchBadge, { backgroundColor: "#4CAF50" }]}>
-                          <Text style={styles.tdMatchBadgeText}>COMPLETED</Text>
-                        </View>
-                      </View>
-                      <View style={styles.tdMatchTeams}>
-                        <View style={styles.tdTeamCol}>
-                          <LinearGradient colors={["#00A66A", "#064E3B"]} style={styles.tdTeamAvatar}>
-                            <Text style={styles.tdTeamAvatarText}>{m.team1.charAt(0)}</Text>
-                          </LinearGradient>
-                          <Text style={styles.tdTeamName}>{m.team1}</Text>
-                          <Text style={styles.tdScore}>{m.score1}</Text>
-                        </View>
-                        <View style={styles.tdVsBox}>
-                          <Text style={styles.tdVs}>VS</Text>
-                        </View>
-                        <View style={styles.tdTeamCol}>
-                          <LinearGradient colors={["#1565C0", "#0D47A1"]} style={styles.tdTeamAvatar}>
-                            <Text style={styles.tdTeamAvatarText}>{m.team2.charAt(0)}</Text>
-                          </LinearGradient>
-                          <Text style={styles.tdTeamName}>{m.team2}</Text>
-                          <Text style={styles.tdScore}>{m.score2}</Text>
-                        </View>
-                      </View>
-                      <View style={styles.tdMatchFooter}>
-                        <Ionicons name="trophy-outline" size={13} color="#4CAF50" />
-                        <Text style={[styles.tdMatchVenue, { color: "#4CAF50", fontWeight: "700" }]}>
-                          {m.winner} won by {m.margin}
-                        </Text>
-                      </View>
-                    </View>
-                  ))}
-                  <View style={{ height: 80 }} />
-                </View>
-              </ScrollView>
-
-              {/* Slide 2: Points */}
-              <ScrollView style={{ width: SCREEN_WIDTH }} showsVerticalScrollIndicator={false}>
-                <View style={styles.tdSection}>
-                  <Text style={styles.tdSectionTitle}>Points Table</Text>
-                  {/* Header */}
-                  <LinearGradient colors={["#00A66A", "#064E3B"]} style={styles.tdPtsHeader}>
-                    {["#", "Team", "P", "W", "L", "NRR", "Pts"].map((h, i) => (
-                      <Text key={i} style={[styles.tdPtsCell, styles.tdPtsHeaderCell, i === 1 && { flex: 2.5, textAlign: "left" }]}>{h}</Text>
-                    ))}
-                  </LinearGradient>
-                  {[
-                    { rank: 1, team: "Warriors", p: 6, w: 5, l: 1, nrr: "+1.42", pts: 10, q: true },
-                    { rank: 2, team: "Lions",    p: 6, w: 4, l: 2, nrr: "+0.88", pts: 8, q: true },
-                    { rank: 3, team: "Eagles",   p: 5, w: 3, l: 2, nrr: "+0.30", pts: 6, q: false },
-                    { rank: 4, team: "Tigers",   p: 5, w: 2, l: 3, nrr: "-0.25", pts: 4, q: false },
-                    { rank: 5, team: "Strikers", p: 6, w: 1, l: 5, nrr: "-1.10", pts: 2, q: false },
-                    { rank: 6, team: "Hawks",    p: 6, w: 0, l: 6, nrr: "-1.80", pts: 0, q: false },
-                  ].map((row, idx) => (
-                    <View key={idx} style={[styles.tdPtsRow, row.q && styles.tdPtsRowQ, idx % 2 === 0 && { backgroundColor: "#FAFAFA" }]}>
-                      <View style={[styles.tdPtsCell, { flex: 1 }]}>
-                        <View style={[styles.tdRankBadge,
-                          row.rank === 1 && { backgroundColor: "#FFD700" },
-                          row.rank === 2 && { backgroundColor: "#C0C0C0" },
-                          row.rank === 3 && { backgroundColor: "#CD7F32" },
-                        ]}>
-                          <Text style={[styles.tdRankText, row.rank <= 3 && { color: "#FFF" }]}>{row.rank}</Text>
-                        </View>
-                      </View>
-                      <View style={[styles.tdPtsCell, { flex: 2.5, flexDirection: "row", alignItems: "center" }]}>
-                        <LinearGradient colors={["#00A66A", "#064E3B"]} style={styles.tdTeamDot}>
-                          <Text style={styles.tdTeamDotText}>{row.team.charAt(0)}</Text>
-                        </LinearGradient>
-                        <Text style={styles.tdTeamLabel} numberOfLines={1}>{row.team}</Text>
-                        {row.q && <Ionicons name="checkmark-circle" size={12} color="#4CAF50" style={{ marginLeft: 4 }} />}
-                      </View>
-                      <Text style={[styles.tdPtsCell, { flex: 1, textAlign: "center" }]}>{row.p}</Text>
-                      <Text style={[styles.tdPtsCell, { flex: 1, textAlign: "center", color: "#4CAF50", fontWeight: "700" }]}>{row.w}</Text>
-                      <Text style={[styles.tdPtsCell, { flex: 1, textAlign: "center", color: "#E63946", fontWeight: "700" }]}>{row.l}</Text>
-                      <Text style={[styles.tdPtsCell, { flex: 1, textAlign: "center", color: row.nrr.startsWith("+") ? "#4CAF50" : "#E63946", fontSize: 11 }]}>{row.nrr}</Text>
-                      <Text style={[styles.tdPtsCell, { flex: 1, textAlign: "center", fontWeight: "800", color: "#00A66A" }]}>{row.pts}</Text>
-                    </View>
-                  ))}
-                  <View style={styles.tdLegend}>
-                    <View style={styles.tdLegendRow}>
-                      <Ionicons name="checkmark-circle" size={14} color="#4CAF50" />
-                      <Text style={styles.tdLegendText}>Qualified for playoffs</Text>
-                    </View>
-                    <Text style={styles.tdLegendNote}>P=Played · W=Won · L=Lost · NRR=Net Run Rate</Text>
-                  </View>
-                  <View style={{ height: 80 }} />
-                </View>
-              </ScrollView>
-
-              {/* Slide 3: Leaderboard */}
-              <ScrollView style={{ width: SCREEN_WIDTH }} showsVerticalScrollIndicator={false}>
-                <View style={styles.tdSection}>
-                  <Text style={styles.tdSectionTitle}>🏏 Top Batsmen</Text>
-                  {[
-                    { rank: 1, name: "Virat Kohli",   team: "Warriors", runs: 428, avg: "71.3", sr: "148.2", icon: "🥇" },
-                    { rank: 2, name: "Rohit Sharma",  team: "Lions",    runs: 390, avg: "65.0", sr: "140.5", icon: "🥈" },
-                    { rank: 3, name: "Suresh Raina",  team: "Eagles",   runs: 345, avg: "57.5", sr: "135.7", icon: "🥉" },
-                  ].map((p) => (
-                    <View key={p.rank} style={styles.tdPlayerCard}>
-                      <Text style={styles.tdPlayerIcon}>{p.icon}</Text>
-                      <View style={styles.tdPlayerInfo}>
-                        <Text style={styles.tdPlayerName}>{p.name}</Text>
-                        <Text style={styles.tdPlayerTeam}>{p.team}</Text>
-                      </View>
-                      <View style={styles.tdPlayerStats}>
-                        <Text style={styles.tdPlayerStatMain}>{p.runs}</Text>
-                        <Text style={styles.tdPlayerStatSub}>Runs</Text>
-                        <View style={styles.tdPlayerMeta}>
-                          <Text style={styles.tdPlayerMetaText}>Avg {p.avg}</Text>
-                          <Text style={styles.tdPlayerMetaText}>SR {p.sr}</Text>
-                        </View>
-                      </View>
-                    </View>
-                  ))}
-
-                  <Text style={[styles.tdSectionTitle, { marginTop: 20 }]}>🎯 Top Bowlers</Text>
-                  {[
-                    { rank: 1, name: "Jasprit Bumrah",    team: "Tigers",   wkts: 18, avg: "11.2", econ: "6.1", icon: "🥇" },
-                    { rank: 2, name: "Rashid Khan",       team: "Strikers", wkts: 15, avg: "13.4", econ: "6.5", icon: "🥈" },
-                    { rank: 3, name: "Yuzvendra Chahal",  team: "Hawks",    wkts: 13, avg: "15.8", econ: "7.0", icon: "🥉" },
-                  ].map((p) => (
-                    <View key={p.rank} style={styles.tdPlayerCard}>
-                      <Text style={styles.tdPlayerIcon}>{p.icon}</Text>
-                      <View style={styles.tdPlayerInfo}>
-                        <Text style={styles.tdPlayerName}>{p.name}</Text>
-                        <Text style={styles.tdPlayerTeam}>{p.team}</Text>
-                      </View>
-                      <View style={styles.tdPlayerStats}>
-                        <Text style={styles.tdPlayerStatMain}>{p.wkts}</Text>
-                        <Text style={styles.tdPlayerStatSub}>Wickets</Text>
-                        <View style={styles.tdPlayerMeta}>
-                          <Text style={styles.tdPlayerMetaText}>Avg {p.avg}</Text>
-                          <Text style={styles.tdPlayerMetaText}>Econ {p.econ}</Text>
-                        </View>
-                      </View>
-                    </View>
-                  ))}
-                  <View style={{ height: 80 }} />
-                </View>
-              </ScrollView>
-
-              {/* Slide 4: Teams */}
-              <ScrollView style={{ width: SCREEN_WIDTH }} showsVerticalScrollIndicator={false}>
-                <View style={styles.tdSection}>
-                  {/* Simple Team Management Options */}
-                  <View style={styles.simpleTeamMgmtContainer}>
-                    
-                    {/* Add Teams Button */}
-                    <TouchableOpacity 
-                      style={styles.simpleTeamMgmtButton}
-                      onPress={() => {
-                        console.log("Add Teams pressed - navigating to Add Teams & Players page");
-                        setCurrentView("addTeamsPlayers");
-                      }}
-                    >
-                      <LinearGradient
-                        colors={["#00A66A", "#0F766E"]}
-                        style={styles.simpleTeamMgmtButtonGradient}
-                      >
-                        <Ionicons name="people-outline" size={24} color="#FFF" />
-                        <Text style={styles.simpleTeamMgmtButtonText}>Add Teams</Text>
-                      </LinearGradient>
-                    </TouchableOpacity>
-
-                    {/* Invite Teams via Link Button */}
-                    <TouchableOpacity 
-                      style={styles.simpleTeamMgmtButton}
-                      onPress={() => Alert.alert("Invite Teams", "Tournament link will be generated and shared")}
-                    >
-                      <LinearGradient
-                        colors={["#059669", "#047857"]}
-                        style={styles.simpleTeamMgmtButtonGradient}
-                      >
-                        <Ionicons name="link-outline" size={24} color="#FFF" />
-                        <Text style={styles.simpleTeamMgmtButtonText}>Invite Teams via Link</Text>
-                      </LinearGradient>
-                    </TouchableOpacity>
-
-                  </View>
-
-                  <View style={{ height: 80 }} />
-                </View>
-              </ScrollView>
-            </ScrollView>
-
-            {/* Fixed bottom CTA */}
-            <View style={styles.tdBottomBar}>
-              <TouchableOpacity
-                style={styles.tdBottomBtn}
-                onPress={() => {
-                  setCurrentView("tournamentTeamManagement");
-                  setShowAddPlayerModal(true);
-                }}
-              >
-                <LinearGradient colors={["#00A66A", "#064E3B"]} style={styles.tdBottomBtnGrad}>
-                  <Ionicons name="settings-outline" size={18} color="#FFF" />
-                  <Text style={styles.tdBottomBtnText}>Manage Tournament</Text>
-                </LinearGradient>
-              </TouchableOpacity>
-            </View>
-          </View>
-        ) : currentView === "tournamentTeamManagement" ? (
-          /* Tournament Team Management View */
-          <View style={styles.tournamentDashboardContainer}>
-            {/* Red Gradient Header with Tournament Info */}
-            <LinearGradient
-              colors={["#E63946", "#C1121F", "#780000"]}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 1 }}
-              style={styles.tournamentDashboardHeader}
-            >
-              {/* Trophy Icon */}
-              <View style={styles.tournamentTrophyContainer}>
-                <View style={styles.tournamentTrophyCircle}>
-                  <Ionicons name="trophy" size={48} color="#FFD700" />
-                </View>
-              </View>
-
-              {/* Tournament Name */}
-              <Text style={styles.tournamentDashboardTitle}>{tournamentName || "Mumbai Premier League 2024"}</Text>
-              
-              {/* Status Badge */}
-              <View style={styles.tournamentStatusBadge}>
-                <View style={styles.statusDot} />
-                <Text style={styles.tournamentStatusText}>Ongoing</Text>
-              </View>
-
-              {/* Stats Row */}
-              <View style={styles.tournamentStatsRow}>
-                <View style={styles.tournamentStatItem}>
-                  <Ionicons name="people" size={20} color="#FFF" />
-                  <Text style={styles.tournamentStatNumber}>8</Text>
-                  <Text style={styles.tournamentStatLabel}>Teams</Text>
-                </View>
-                <View style={styles.tournamentStatItem}>
-                  <Ionicons name="baseball" size={20} color="#FFF" />
-                  <Text style={styles.tournamentStatNumber}>24</Text>
-                  <Text style={styles.tournamentStatLabel}>Matches</Text>
-                </View>
-                <View style={styles.tournamentStatItem}>
-                  <Ionicons name="calendar" size={20} color="#FFF" />
-                  <Text style={styles.tournamentStatNumber}>May 15</Text>
-                  <Text style={styles.tournamentStatLabel}>Start</Text>
-                </View>
-              </View>
-
-              {/* Progress Bar */}
-              <View style={styles.tournamentProgressContainer}>
-                <View style={styles.tournamentProgressBar}>
-                  <View style={[styles.tournamentProgressFill, { width: "65%" }]} />
-                </View>
-                <Text style={styles.tournamentProgressText}>65% Complete</Text>
-              </View>
-            </LinearGradient>
-
-            {/* Dashboard Tabs */}
-            <View style={styles.tournamentTabsContainer}>
-              {["matches", "points", "leaderboard", "teams"].map((tab) => (
-                <TouchableOpacity
-                  key={tab}
-                  style={[
-                    styles.tournamentTab,
-                    activeTournamentTab === tab && styles.tournamentTabActive,
-                  ]}
-                  onPress={() => setActiveTournamentTab(tab)}
-                >
-                  <Text
-                    style={[
-                      styles.tournamentTabText,
-                      activeTournamentTab === tab && styles.tournamentTabTextActive,
-                    ]}
-                  >
-                    {tab.charAt(0).toUpperCase() + tab.slice(1)}
+                  <Text style={styles.formSubtitle}>
+                    Set up your tournament profile, match rules, and public
+                    listing.
                   </Text>
-                  {activeTournamentTab === tab && (
-                    <View style={styles.tournamentTabIndicator} />
-                  )}
-                </TouchableOpacity>
-              ))}
-            </View>
-
-            {/* Content based on active tab */}
-            {activeTournamentTab === "matches" && (
-              <ScrollView style={styles.tournamentTabContent} showsVerticalScrollIndicator={false}>
-                <Text style={styles.tournamentSectionTitle}>Upcoming Matches</Text>
-                
-                {[
-                  { id: 1, team1: "Warriors", team1Initial: "W", team1Color: "#00A66A", team2: "Strikers", team2Initial: "S", team2Color: "#1E40AF", date: "Today", time: "6:00 PM", venue: "Ground A" },
-                  { id: 2, team1: "Lions", team1Initial: "L", team1Color: "#00A66A", team2: "Tigers", team2Initial: "T", team2Color: "#1E40AF", date: "Tomorrow", time: "5:00 PM", venue: "Ground B" },
-                  { id: 3, team1: "Eagles", team1Initial: "E", team1Color: "#00A66A", team2: "Hawks", team2Initial: "H", team2Color: "#1E40AF", date: "May 12", time: "7:00 PM", venue: "Ground A" },
-                ].map((match) => (
-                  <View key={match.id} style={styles.tournamentMatchCard}>
-                    {/* Match Header */}
-                    <View style={styles.tournamentMatchHeader}>
-                      <View style={styles.upcomingBadge}>
-                        <Text style={styles.upcomingBadgeText}>UPCOMING</Text>
-                      </View>
-                      <Text style={styles.tournamentMatchTime}>{match.date} · {match.time}</Text>
-                    </View>
-
-                    {/* Teams Row */}
-                    <View style={styles.tournamentMatchTeams}>
-                      {/* Team 1 */}
-                      <View style={styles.tournamentTeamSection}>
-                        <View style={[styles.tournamentTeamCircle, { backgroundColor: match.team1Color }]}>
-                          <Text style={styles.tournamentTeamInitial}>{match.team1Initial}</Text>
-                        </View>
-                        <Text style={styles.tournamentTeamName}>{match.team1}</Text>
-                      </View>
-
-                      {/* VS */}
-                      <View style={styles.tournamentVsContainer}>
-                        <Text style={styles.tournamentVsText}>vs</Text>
-                      </View>
-
-                      {/* Team 2 */}
-                      <View style={styles.tournamentTeamSection}>
-                        <View style={[styles.tournamentTeamCircle, { backgroundColor: match.team2Color }]}>
-                          <Text style={styles.tournamentTeamInitial}>{match.team2Initial}</Text>
-                        </View>
-                        <Text style={styles.tournamentTeamName}>{match.team2}</Text>
-                      </View>
-
-                      {/* Action Menu */}
-                      <TouchableOpacity style={styles.tournamentMatchMenu}>
-                        <Ionicons name="ellipsis-vertical" size={20} color="#666" />
-                      </TouchableOpacity>
-                    </View>
-
-                    {/* Venue */}
-                    <View style={styles.tournamentMatchVenue}>
-                      <Ionicons name="location-outline" size={14} color="#999" />
-                      <Text style={styles.tournamentMatchVenueText}>{match.venue}</Text>
-                    </View>
-                  </View>
-                ))}
-
-                <View style={{ height: 100 }} />
-              </ScrollView>
-            )}
-
-            {activeTournamentTab === "points" && (
-              <ScrollView style={styles.dashboardTabContent} showsVerticalScrollIndicator={false}>
-                <Text style={styles.dashboardSectionTitle}>Points Table</Text>
-                <View style={styles.pointsTable}>
-                  {/* Table Header */}
-                  <LinearGradient
-                    colors={["#E63946", "#C1121F"]}
-                    start={{ x: 0, y: 0 }}
-                    end={{ x: 1, y: 0 }}
-                    style={styles.pointsTableHeader}
-                  >
-                    <Text style={[styles.pointsTableCell, styles.pointsTableHeaderCell, { flex: 0.8 }]}>#</Text>
-                    <Text style={[styles.pointsTableCell, styles.pointsTableHeaderCell, { flex: 2.5 }]}>Team</Text>
-                    <Text style={[styles.pointsTableCell, styles.pointsTableHeaderCell]}>P</Text>
-                    <Text style={[styles.pointsTableCell, styles.pointsTableHeaderCell]}>W</Text>
-                    <Text style={[styles.pointsTableCell, styles.pointsTableHeaderCell]}>L</Text>
-                    <Text style={[styles.pointsTableCell, styles.pointsTableHeaderCell]}>NRR</Text>
-                    <Text style={[styles.pointsTableCell, styles.pointsTableHeaderCell, { fontWeight: "bold" }]}>Pts</Text>
-                  </LinearGradient>
-                  
-                  {/* Table Rows */}
-                  {[
-                    { rank: 1, team: "Team A", p: 6, w: 5, l: 1, nrr: "+1.25", pts: 10, qualified: true },
-                    { rank: 2, team: "Team B", p: 6, w: 4, l: 2, nrr: "+0.85", pts: 8, qualified: true },
-                    { rank: 3, team: "Team C", p: 5, w: 3, l: 2, nrr: "+0.45", pts: 6, qualified: false },
-                    { rank: 4, team: "Team D", p: 5, w: 2, l: 3, nrr: "-0.32", pts: 4, qualified: false },
-                    { rank: 5, team: "Team E", p: 6, w: 1, l: 5, nrr: "-1.15", pts: 2, qualified: false },
-                  ].map((row, idx) => (
-                    <View 
-                      key={idx} 
-                      style={[
-                        styles.pointsTableRow,
-                        row.qualified && styles.pointsTableRowQualified
-                      ]}
-                    >
-                      <View style={[styles.pointsTableCell, { flex: 0.8 }]}>
-                        <View style={[
-                          styles.rankBadge,
-                          row.rank === 1 && { backgroundColor: "#FFD700" },
-                          row.rank === 2 && { backgroundColor: "#C0C0C0" },
-                          row.rank === 3 && { backgroundColor: "#CD7F32" },
-                        ]}>
-                          <Text style={[
-                            styles.rankText,
-                            row.rank <= 3 && { color: "#FFF" }
-                          ]}>{row.rank}</Text>
-                        </View>
-                      </View>
-                      <View style={[styles.pointsTableCell, { flex: 2.5, flexDirection: "row", alignItems: "center" }]}>
-                        <LinearGradient
-                          colors={["#17A2B8", "#138496"]}
-                          style={styles.teamIconSmall}
-                        >
-                          <Text style={styles.teamIconSmallText}>{row.team.charAt(5)}</Text>
-                        </LinearGradient>
-                        <Text style={styles.pointsTableTeamCell}>{row.team}</Text>
-                      </View>
-                      <Text style={styles.pointsTableCell}>{row.p}</Text>
-                      <Text style={[styles.pointsTableCell, { color: "#4CAF50", fontWeight: "600" }]}>{row.w}</Text>
-                      <Text style={[styles.pointsTableCell, { color: "#E63946", fontWeight: "600" }]}>{row.l}</Text>
-                      <Text style={[styles.pointsTableCell, { color: row.nrr.startsWith("+") ? "#4CAF50" : "#E63946" }]}>{row.nrr}</Text>
-                      <Text style={[styles.pointsTableCell, styles.pointsTablePtsCell]}>{row.pts}</Text>
-                    </View>
-                  ))}
                 </View>
 
-                {/* Legend */}
-                <View style={styles.pointsLegend}>
-                  <View style={styles.legendItem}>
-                    <View style={[styles.legendDot, { backgroundColor: "#4CAF50" }]} />
-                    <Text style={styles.legendText}>Qualified for playoffs</Text>
-                  </View>
-                  <View style={styles.legendItem}>
-                    <Text style={styles.legendLabel}>P - Played | W - Won | L - Lost | NRR - Net Run Rate</Text>
-                  </View>
-                </View>
-                <View style={{ height: 20 }} />
-              </ScrollView>
-            )}
-
-            {activeTournamentTab === "leaderboard" && (
-              <ScrollView style={styles.dashboardTabContent} showsVerticalScrollIndicator={false}>
-                {/* Top Batsmen */}
-                <Text style={styles.dashboardSectionTitle}>🏏 Top Batsmen</Text>
-                {[
-                  { rank: 1, name: "Virat Kohli", team: "Team A", runs: 450, avg: "75.0", sr: "145.2", icon: "🥇" },
-                  { rank: 2, name: "Rohit Sharma", team: "Team B", runs: 420, avg: "70.0", sr: "138.5", icon: "🥈" },
-                  { rank: 3, name: "Suresh Raina", team: "Team C", runs: 380, avg: "63.3", sr: "142.1", icon: "🥉" },
-                ].map((player) => (
-                  <View key={player.rank} style={styles.leaderboardItem}>
-                    <LinearGradient
-                      colors={["#FFF", "#F8F8F8"]}
-                      style={styles.leaderboardItemGradient}
-                    >
-                      <View style={styles.leaderboardRank}>
-                        <Text style={styles.leaderboardRankText}>{player.icon}</Text>
-                      </View>
-                      <View style={styles.leaderboardInfo}>
-                        <Text style={styles.leaderboardName}>{player.name}</Text>
-                        <Text style={styles.leaderboardTeam}>{player.team}</Text>
-                      </View>
-                      <View style={styles.leaderboardStats}>
-                        <Text style={styles.leaderboardRuns}>{player.runs}</Text>
-                        <Text style={styles.leaderboardRunsLabel}>Runs</Text>
-                        <View style={styles.leaderboardSubStats}>
-                          <Text style={styles.leaderboardSubStat}>Avg: {player.avg}</Text>
-                          <Text style={styles.leaderboardSubStat}>SR: {player.sr}</Text>
-                        </View>
-                      </View>
-                    </LinearGradient>
-                  </View>
-                ))}
-
-                {/* Top Bowlers */}
-                <Text style={[styles.dashboardSectionTitle, { marginTop: 24 }]}>🎯 Top Bowlers</Text>
-                {[
-                  { rank: 1, name: "Jasprit Bumrah", team: "Team D", wickets: 18, avg: "12.5", econ: "6.2", icon: "🥇" },
-                  { rank: 2, name: "Rashid Khan", team: "Team E", wickets: 16, avg: "14.2", econ: "6.8", icon: "🥈" },
-                  { rank: 3, name: "Yuzvendra Chahal", team: "Team F", wickets: 14, avg: "16.1", econ: "7.1", icon: "🥉" },
-                ].map((player) => (
-                  <View key={player.rank} style={styles.leaderboardItem}>
-                    <LinearGradient
-                      colors={["#FFF", "#F8F8F8"]}
-                      style={styles.leaderboardItemGradient}
-                    >
-                      <View style={styles.leaderboardRank}>
-                        <Text style={styles.leaderboardRankText}>{player.icon}</Text>
-                      </View>
-                      <View style={styles.leaderboardInfo}>
-                        <Text style={styles.leaderboardName}>{player.name}</Text>
-                        <Text style={styles.leaderboardTeam}>{player.team}</Text>
-                      </View>
-                      <View style={styles.leaderboardStats}>
-                        <Text style={styles.leaderboardRuns}>{player.wickets}</Text>
-                        <Text style={styles.leaderboardRunsLabel}>Wickets</Text>
-                        <View style={styles.leaderboardSubStats}>
-                          <Text style={styles.leaderboardSubStat}>Avg: {player.avg}</Text>
-                          <Text style={styles.leaderboardSubStat}>Econ: {player.econ}</Text>
-                        </View>
-                      </View>
-                    </LinearGradient>
-                  </View>
-                ))}
-
-                {/* Most Valuable Players */}
-                <Text style={[styles.dashboardSectionTitle, { marginTop: 24 }]}>⭐ Most Valuable Players</Text>
-                {[
-                  { rank: 1, name: "MS Dhoni", team: "Team G", points: 850, role: "All-rounder" },
-                  { rank: 2, name: "Hardik Pandya", team: "Team H", points: 780, role: "All-rounder" },
-                ].map((player) => (
-                  <View key={player.rank} style={styles.leaderboardItem}>
-                    <LinearGradient
-                      colors={["#FFF", "#F8F8F8"]}
-                      style={styles.leaderboardItemGradient}
-                    >
-                      <View style={styles.leaderboardRank}>
-                        <LinearGradient
-                          colors={["#FFD700", "#FFA500"]}
-                          style={styles.mvpBadge}
-                        >
-                          <Text style={styles.mvpBadgeText}>{player.rank}</Text>
-                        </LinearGradient>
-                      </View>
-                      <View style={styles.leaderboardInfo}>
-                        <Text style={styles.leaderboardName}>{player.name}</Text>
-                        <Text style={styles.leaderboardTeam}>{player.team} • {player.role}</Text>
-                      </View>
-                      <View style={styles.leaderboardStats}>
-                        <Text style={styles.leaderboardRuns}>{player.points}</Text>
-                        <Text style={styles.leaderboardRunsLabel}>Points</Text>
-                      </View>
-                    </LinearGradient>
-                  </View>
-                ))}
-                <View style={{ height: 20 }} />
-              </ScrollView>
-            )}
-
-            {activeTournamentTab === "teams" && (
-              <ScrollView style={styles.dashboardTabContent} showsVerticalScrollIndicator={false}>
-                <Text style={styles.dashboardSectionTitle}>Tournament Teams</Text>
-                {[
-                  { id: 1, name: "Team A", players: 11, captain: "Virat Kohli", status: "Active" },
-                  { id: 2, name: "Team B", players: 11, captain: "Rohit Sharma", status: "Active" },
-                  { id: 3, name: "Team C", players: 11, captain: "Suresh Raina", status: "Active" },
-                  { id: 4, name: "Team D", players: 11, captain: "MS Dhoni", status: "Pending" },
-                ].map((team) => (
-                  <View key={team.id} style={styles.teamItemCard}>
-                    <LinearGradient
-                      colors={["#FFF", "#F8F8F8"]}
-                      style={styles.teamItemGradient}
-                    >
-                      <View style={styles.teamItemHeader}>
-                        <LinearGradient
-                          colors={["#00A66A", "#0F766E"]}
-                          style={styles.teamItemIcon}
-                        >
-                          <Text style={styles.teamItemIconText}>{team.name.charAt(5)}</Text>
-                        </LinearGradient>
-                        <View style={styles.teamItemInfo}>
-                          <Text style={styles.teamItemName}>{team.name}</Text>
-                          <Text style={styles.teamItemCaptain}>Captain: {team.captain}</Text>
-                        </View>
-                        <LinearGradient
-                          colors={
-                            team.status === "Active"
-                              ? ["#00A66A", "#0F766E"]
-                              : ["#059669", "#0F766E"]
-                          }
-                          style={styles.teamItemStatus}
-                        >
-                          <Text style={styles.teamItemStatusText}>{team.status}</Text>
-                        </LinearGradient>
-                      </View>
-                      <View style={styles.teamItemStats}>
-                        <View style={styles.teamItemStat}>
-                          <Ionicons name="people" size={14} color="#00A66A" />
-                          <Text style={styles.teamItemStatText}>{team.players} Players</Text>
-                        </View>
-                      </View>
-                    </LinearGradient>
-                  </View>
-                ))}
-
-                <Text style={[styles.dashboardSectionTitle, { marginTop: 20 }]}>Add Teams & Players</Text>
-                <Text style={styles.teamSelectionSubtitle}>
-                  Choose how you want to add participants to your tournament
-                </Text>
-
-                {/* Add Players Modal Content - Always Visible */}
-                <View style={styles.tournamentManagementContainer}>
-              {/* Team Link Option */}
-              <TouchableOpacity
-                style={styles.modalOption}
-                onPress={() => {
-                  console.log("Add via Team Link");
-                  Alert.alert("Team Link", "Share invite link with teams and players");
-                }}
-              >
-                <LinearGradient
-                  colors={["#00A66A", "#0F766E"]}
-                  start={{ x: 0, y: 0 }}
-                  end={{ x: 1, y: 1 }}
-                  style={styles.modalOptionGradient}
-                >
-                  <View style={styles.modalOptionIconCircle}>
-                    <Ionicons name="link" size={20} color="#FFF" />
-                  </View>
-                  <View style={styles.modalOptionTextContainer}>
-                    <Text style={styles.modalOptionTitle}>Team Link</Text>
-                    <Text style={styles.modalOptionDescription}>
-                      Share invite link with teams and players
-                    </Text>
-                  </View>
-                  <Ionicons
-                    name="chevron-forward"
-                    size={24}
-                    color="#FFF"
-                  />
-                </LinearGradient>
-              </TouchableOpacity>
-
-              {/* QR Code Option */}
-              <TouchableOpacity
-                style={styles.modalOption}
-                onPress={() => {
-                  console.log("Add via QR Code");
-                  Alert.alert("QR Code", "Generate QR code for teams to scan and join");
-                }}
-              >
-                <LinearGradient
-                  colors={["#00A66A", "#0F766E"]}
-                  start={{ x: 0, y: 0 }}
-                  end={{ x: 1, y: 1 }}
-                  style={styles.modalOptionGradient}
-                >
-                  <View style={styles.modalOptionIconCircle}>
-                    <Ionicons name="qr-code" size={20} color="#FFF" />
-                  </View>
-                  <View style={styles.modalOptionTextContainer}>
-                    <Text style={styles.modalOptionTitle}>QR Code</Text>
-                    <Text style={styles.modalOptionDescription}>
-                      Let teams scan to join tournament
-                    </Text>
-                  </View>
-                  <Ionicons
-                    name="chevron-forward"
-                    size={24}
-                    color="#FFF"
-                  />
-                </LinearGradient>
-              </TouchableOpacity>
-
-              {/* From Contacts Option */}
-              <TouchableOpacity
-                style={styles.modalOption}
-                onPress={() => {
-                  console.log("Add from Contacts");
-                  Alert.alert("From Contacts", "Select teams and players from your contacts");
-                }}
-              >
-                <LinearGradient
-                  colors={["#00A66A", "#0F766E"]}
-                  start={{ x: 0, y: 0 }}
-                  end={{ x: 1, y: 1 }}
-                  style={styles.modalOptionGradient}
-                >
-                  <View style={styles.modalOptionIconCircle}>
-                    <Ionicons name="person-add" size={20} color="#FFF" />
-                  </View>
-                  <View style={styles.modalOptionTextContainer}>
-                    <Text style={styles.modalOptionTitle}>
-                      From Contacts
-                    </Text>
-                    <Text style={styles.modalOptionDescription}>
-                      Select teams and players from phone contacts
-                    </Text>
-                  </View>
-                  <Ionicons
-                    name="chevron-forward"
-                    size={24}
-                    color="#FFF"
-                  />
-                </LinearGradient>
-              </TouchableOpacity>
-
-              {/* Add Groups Option */}
-              <TouchableOpacity
-                style={styles.modalOption}
-                onPress={() => {
-                  console.log("Add Groups");
-                  Alert.alert("Add Groups", "Organize teams into groups for tournament structure");
-                }}
-              >
-                <LinearGradient
-                  colors={["#059669", "#00A66A"]}
-                  start={{ x: 0, y: 0 }}
-                  end={{ x: 1, y: 1 }}
-                  style={styles.modalOptionGradient}
-                >
-                  <View style={styles.modalOptionIconCircle}>
-                    <Ionicons name="people" size={20} color="#FFF" />
-                  </View>
-                  <View style={styles.modalOptionTextContainer}>
-                    <Text style={styles.modalOptionTitle}>
-                      Add Groups
-                    </Text>
-                    <Text style={styles.modalOptionDescription}>
-                      Create tournament groups and pools
-                    </Text>
-                  </View>
-                  <Ionicons
-                    name="chevron-forward"
-                    size={24}
-                    color="#FFF"
-                  />
-                </LinearGradient>
-              </TouchableOpacity>
-            </View>
-
-            <View style={{ height: 100 }} />
-              </ScrollView>
-            )}
-          </View>
-        ) : currentView === "addTeamsPlayers" ? (
-          /* Add Teams & Players View */
-          <View style={styles.addTeamsPlayersContainer}>
-            <Text style={styles.addTeamsPlayersTitle}>Add Teams & Players</Text>
-            <Text style={styles.addTeamsPlayersSubtitle}>
-              Choose how you want to add participants to your tournament
-            </Text>
-
-            <ScrollView style={styles.addTeamsPlayersContent} showsVerticalScrollIndicator={false}>
-              {/* Team Link Option */}
-              <TouchableOpacity
-                style={styles.addTeamsOption}
-                onPress={() => {
-                  console.log("Add via Team Link");
-                  // Generate tournament invite link
-                  const tournamentLink = "https://crickbuz.app/join/MPL2024-8X7K";
-                  Alert.alert(
-                    "Tournament Link Generated",
-                    `Your tournament invite link:\n\n${tournamentLink}\n\nShare this link with teams and players to let them join instantly!`,
-                    [
-                      { 
-                        text: "Copy Link", 
-                        onPress: () => {
-                          // In a real app, this would copy to clipboard
-                          Alert.alert("Copied!", "Tournament link copied to clipboard");
-                        }
-                      },
-                      { 
-                        text: "Share Link", 
-                        onPress: () => {
-                          Alert.alert("Share", "Link shared via WhatsApp, SMS, and social media!");
-                        }
-                      },
-                      { text: "Close", style: "cancel" }
-                    ]
-                  );
-                }}
-              >
-                <LinearGradient
-                  colors={["#20B2AA", "#17A2B8"]}
-                  start={{ x: 0, y: 0 }}
-                  end={{ x: 1, y: 1 }}
-                  style={styles.addTeamsOptionGradient}
-                >
-                  <View style={styles.addTeamsOptionIconCircle}>
-                    <Ionicons name="link" size={24} color="#FFF" />
-                  </View>
-                  <View style={styles.addTeamsOptionTextContainer}>
-                    <Text style={styles.addTeamsOptionTitle}>Team Link</Text>
-                    <Text style={styles.addTeamsOptionDescription}>
-                      Share invite link with teams and players
-                    </Text>
-                  </View>
-                  <Ionicons name="chevron-forward" size={24} color="#FFF" />
-                </LinearGradient>
-              </TouchableOpacity>
-
-              {/* QR Code Option */}
-              <TouchableOpacity
-                style={styles.addTeamsOption}
-                onPress={() => {
-                  console.log("Add via QR Code");
-                  // Generate dummy QR code
-                  Alert.alert(
-                    "QR Code Generated",
-                    "Tournament QR Code has been generated!\n\nTournament ID: MPL2024-8X7K\nCode: QR-CRICKET-JOIN-789\n\nTeams can scan this code to join your tournament instantly.",
-                    [
-                      { text: "Share QR Code", onPress: () => {
-                        Alert.alert("Share", "QR Code shared via WhatsApp, SMS, and Email!");
-                      }},
-                      { text: "Save to Gallery", onPress: () => {
-                        Alert.alert("Saved", "QR Code saved to your photo gallery!");
-                      }},
-                      { text: "Close", style: "cancel" }
-                    ]
-                  );
-                }}
-              >
-                <LinearGradient
-                  colors={["#8B5CF6", "#7C3AED"]}
-                  start={{ x: 0, y: 0 }}
-                  end={{ x: 1, y: 1 }}
-                  style={styles.addTeamsOptionGradient}
-                >
-                  <View style={styles.addTeamsOptionIconCircle}>
-                    <Ionicons name="qr-code" size={24} color="#FFF" />
-                  </View>
-                  <View style={styles.addTeamsOptionTextContainer}>
-                    <Text style={styles.addTeamsOptionTitle}>QR Code</Text>
-                    <Text style={styles.addTeamsOptionDescription}>
-                      Let teams scan to join tournament
-                    </Text>
-                  </View>
-                  <Ionicons name="chevron-forward" size={24} color="#FFF" />
-                </LinearGradient>
-              </TouchableOpacity>
-
-              {/* From Contacts Option */}
-              <TouchableOpacity
-                style={styles.addTeamsOption}
-                onPress={async () => {
-                  console.log("Add from Contacts");
-                  try {
-                    // Request contacts permission (dummy implementation)
-                    Alert.alert(
-                      "Access Contacts",
-                      "This feature would access your contacts to invite teams and players. Would you like to continue?",
-                      [
-                        { text: "Cancel", style: "cancel" },
-                        { 
-                          text: "Allow Access", 
-                          onPress: () => {
-                            // Simulate contact access
-                            setTimeout(() => {
-                              Alert.alert(
-                                "Contacts Loaded",
-                                "Found 25 contacts with cricket interests. You can now select and invite them to your tournament.",
-                                [{ text: "OK" }]
-                              );
-                            }, 1000);
-                          }
-                        }
-                      ]
-                    );
-                  } catch (error) {
-                    Alert.alert("Error", "Unable to access contacts. Please check permissions.");
-                  }
-                }}
-              >
-                <LinearGradient
-                  colors={["#10B981", "#059669"]}
-                  start={{ x: 0, y: 0 }}
-                  end={{ x: 1, y: 1 }}
-                  style={styles.addTeamsOptionGradient}
-                >
-                  <View style={styles.addTeamsOptionIconCircle}>
-                    <Ionicons name="person-add" size={24} color="#FFF" />
-                  </View>
-                  <View style={styles.addTeamsOptionTextContainer}>
-                    <Text style={styles.addTeamsOptionTitle}>From Contacts</Text>
-                    <Text style={styles.addTeamsOptionDescription}>
-                      Select teams and players from phone contacts
-                    </Text>
-                  </View>
-                  <Ionicons name="chevron-forward" size={24} color="#FFF" />
-                </LinearGradient>
-              </TouchableOpacity>
-
-              {/* Add New Team Option */}
-              <TouchableOpacity
-                style={styles.addTeamsOption}
-                onPress={() => {
-                  console.log("Add New Team");
-                  setCurrentView("createTeam");
-                }}
-              >
-                <LinearGradient
-                  colors={["#EF4444", "#059669"]}
-                  start={{ x: 0, y: 0 }}
-                  end={{ x: 1, y: 1 }}
-                  style={styles.addTeamsOptionGradient}
-                >
-                  <View style={styles.addTeamsOptionIconCircle}>
-                    <Ionicons name="add-circle" size={24} color="#FFF" />
-                  </View>
-                  <View style={styles.addTeamsOptionTextContainer}>
-                    <Text style={styles.addTeamsOptionTitle}>Add New Team</Text>
-                    <Text style={styles.addTeamsOptionDescription}>
-                      Create a new team for your tournament
-                    </Text>
-                  </View>
-                  <Ionicons name="chevron-forward" size={24} color="#FFF" />
-                </LinearGradient>
-              </TouchableOpacity>
-
-              <View style={{ height: 100 }} />
-            </ScrollView>
-          </View>
-        ) : currentView === "teamsSelection" ? (
-          /* Teams Selection View */
-          <View style={styles.teamsSelectionContainer}>
-            <Text style={styles.teamsSelectionTitle}>Select Your Team</Text>
-            <Text style={styles.teamsSelectionSubtitle}>
-              Choose from your existing teams or recently played teams
-            </Text>
-
-            <ScrollView style={styles.teamsSelectionContent} showsVerticalScrollIndicator={false}>
-              {/* My Teams Section */}
-              <Text style={styles.teamsSectionTitle}>My Teams</Text>
-              
-              {[
-                { id: 1, name: "Mumbai Warriors", players: 15, matches: 12, wins: 8, color: "#00A66A" },
-                { id: 2, name: "Delhi Capitals", players: 14, matches: 10, wins: 6, color: "#059669" },
-                { id: 3, name: "Chennai Kings", players: 16, matches: 8, wins: 5, color: "#059669" },
-                { id: 4, name: "Bangalore Riders", players: 13, matches: 6, wins: 4, color: "#7C3AED" },
-                { id: 5, name: "Kolkata Knights", players: 15, matches: 9, wins: 7, color: "#F59E0B" }
-              ].map((team) => (
-                <TouchableOpacity
-                  key={team.id}
-                  style={styles.teamSelectionCard}
-                  onPress={() => {
-                    Alert.alert(
-                      "Team Selected",
-                      `You selected ${team.name}\n\nPlayers: ${team.players}\nMatches Played: ${team.matches}\nWins: ${team.wins}`,
-                      [
-                        { text: "Cancel", style: "cancel" },
-                        { text: "Confirm Selection", onPress: () => {
-                          Alert.alert("Success", `${team.name} has been selected for your match!`);
-                          setCurrentView("matches");
-                        }}
-                      ]
-                    );
-                  }}
-                >
-                  <View style={[styles.teamSelectionIcon, { backgroundColor: team.color }]}>
-                    <Text style={styles.teamSelectionInitial}>{team.name.charAt(0)}</Text>
-                  </View>
-                  <View style={styles.teamSelectionInfo}>
-                    <Text style={styles.teamSelectionName}>{team.name}</Text>
-                    <Text style={styles.teamSelectionStats}>
-                      {team.players} players • {team.matches} matches • {team.wins} wins
-                    </Text>
-                  </View>
-                  <View style={styles.teamSelectionAction}>
-                    <Ionicons name="checkmark-circle-outline" size={24} color="#00A66A" />
-                  </View>
-                </TouchableOpacity>
-              ))}
-
-              {/* Recently Played Teams Section */}
-              <Text style={[styles.teamsSectionTitle, { marginTop: 30 }]}>Recently Played</Text>
-              
-              {[
-                { id: 6, name: "Pune Superstars", players: 11, lastPlayed: "2 days ago", color: "#EF4444" },
-                { id: 7, name: "Hyderabad Heroes", players: 13, lastPlayed: "1 week ago", color: "#10B981" },
-                { id: 8, name: "Rajasthan Royals", players: 12, lastPlayed: "2 weeks ago", color: "#8B5CF6" }
-              ].map((team) => (
-                <TouchableOpacity
-                  key={team.id}
-                  style={styles.teamSelectionCard}
-                  onPress={() => {
-                    Alert.alert(
-                      "Select Opponent Team",
-                      `Select ${team.name} as your opponent?\n\nPlayers: ${team.players}\nLast Played: ${team.lastPlayed}`,
-                      [
-                        { text: "Cancel", style: "cancel" },
-                        { text: "Select as Opponent", onPress: () => {
-                          Alert.alert("Success", `${team.name} selected as opponent team!`);
-                          setCurrentView("matches");
-                        }}
-                      ]
-                    );
-                  }}
-                >
-                  <View style={[styles.teamSelectionIcon, { backgroundColor: team.color }]}>
-                    <Text style={styles.teamSelectionInitial}>{team.name.charAt(0)}</Text>
-                  </View>
-                  <View style={styles.teamSelectionInfo}>
-                    <Text style={styles.teamSelectionName}>{team.name}</Text>
-                    <Text style={styles.teamSelectionStats}>
-                      {team.players} players • Last played {team.lastPlayed}
-                    </Text>
-                  </View>
-                  <View style={styles.teamSelectionAction}>
-                    <Ionicons name="add-circle-outline" size={24} color="#666" />
-                  </View>
-                </TouchableOpacity>
-              ))}
-
-              <View style={{ height: 100 }} />
-            </ScrollView>
-          </View>
-        ) : currentView === "matchSetup" ? (
-          /* Match Setup View with VS Animation at top */
-          <View style={styles.matchSetupContainer}>
-            {/* VS Animation Section at Top */}
-            <View style={styles.vsAnimationSection}>
-              <View style={styles.vsTeamsRow}>
-                {/* Team A */}
-                <Animated.View
-                  style={[
-                    styles.vsTeamCardSmall,
-                    {
-                      opacity: vsTeamAnim,
-                      transform: [
-                        {
-                          translateX: vsTeamAnim.interpolate({
-                            inputRange: [0, 1],
-                            outputRange: [-100, 0],
-                          }),
-                        },
-                      ],
-                    },
-                  ]}
-                >
-                  <LinearGradient
-                    colors={["#00A66A", "#0F766E"]}
-                    style={styles.vsTeamCircleSmall}
-                  >
-                    <Text style={styles.vsTeamInitialSmall}>
-                      {teamAName.charAt(0).toUpperCase()}
-                    </Text>
-                  </LinearGradient>
-                  <Text style={styles.vsTeamNameSmall}>{teamAName}</Text>
-                </Animated.View>
-
-                {/* VS Text */}
-                <Animated.View
-                  style={[
-                    styles.vsTextContainerSmall,
-                    {
-                      opacity: vsTextAnim,
-                      transform: [
-                        {
-                          scale: vsTextAnim,
-                        },
-                      ],
-                    },
-                  ]}
-                >
-                  <LinearGradient
-                    colors={["#00A66A", "#0F766E"]}
-                    style={styles.vsTextCircleSmall}
-                  >
-                    <Text style={styles.vsTextSmall}>VS</Text>
-                  </LinearGradient>
-                </Animated.View>
-
-                {/* Team B */}
-                <Animated.View
-                  style={[
-                    styles.vsTeamCardSmall,
-                    {
-                      opacity: vsTeamBanim,
-                      transform: [
-                        {
-                          translateX: vsTeamBanim.interpolate({
-                            inputRange: [0, 1],
-                            outputRange: [100, 0],
-                          }),
-                        },
-                      ],
-                    },
-                  ]}
-                >
-                  <LinearGradient
-                    colors={["#00A66A", "#0F766E"]}
-                    style={styles.vsTeamCircleSmall}
-                  >
-                    <Text style={styles.vsTeamInitialSmall}>
-                      {teamBName.charAt(0).toUpperCase()}
-                    </Text>
-                  </LinearGradient>
-                  <Text style={styles.vsTeamNameSmall}>{teamBName}</Text>
-                </Animated.View>
-              </View>
-            </View>
-
-            <Text style={styles.matchSetupTitle}>Match Setup</Text>
-            <Text style={styles.matchSetupSubtitle}>
-              Configure your match details
-            </Text>
-
-            {/* Match Type Selection */}
-            <View style={styles.setupSection}>
-              <Text style={styles.setupSectionTitle}>Match Type *</Text>
-              <LinearGradient
-                colors={["#F0FFF8", "#F0FFF8", "#D1FAE5"]}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 0 }}
-                style={styles.matchTypeCubeContainer}
-              >
-                <ScrollView 
-                  horizontal 
-                  showsHorizontalScrollIndicator={false}
-                  contentContainerStyle={styles.matchTypeScrollContent}
-                >
-                  {[
-                    { id: "limited", label: "Limited Overs" },
-                    { id: "box", label: "Box/Turf" },
-                    { id: "pair", label: "Pair Cricket" },
-                    { id: "test", label: "Test Match" },
-                    { id: "hundred", label: "The Hundred" },
-                  ].map((type) => (
+                <View style={styles.formCard}>
+                  <View style={styles.mediaUploadStage}>
                     <TouchableOpacity
-                      key={type.id}
+                      style={styles.bannerUploadButton}
+                      onPress={() => pickTournamentImage("banner")}
+                      activeOpacity={0.85}
+                    >
+                      <View style={styles.bannerMediaPlaceholder}>
+                        {tournamentBannerUri ? (
+                          <Image
+                            source={{ uri: tournamentBannerUri }}
+                            style={styles.tournamentBannerPreview}
+                          />
+                        ) : (
+                          <View style={styles.emptyBannerContent}>
+                            <Ionicons
+                              name="image-outline"
+                              size={34}
+                              color="#00A66A"
+                            />
+                            <Text style={styles.emptyBannerTitle}>
+                              Tournament banner
+                            </Text>
+                            <Text style={styles.emptyBannerSubtitle}>
+                              Tap to upload from device
+                            </Text>
+                          </View>
+                        )}
+                        <View style={styles.cameraIconBadge}>
+                          <Ionicons name="camera" size={16} color="#FFF" />
+                        </View>
+                      </View>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity
+                      style={styles.logoUploadButton}
+                      onPress={() => pickTournamentImage("logo")}
+                      activeOpacity={0.85}
+                    >
+                      <View style={styles.logoMediaPlaceholder}>
+                        {tournamentLogoUri ? (
+                          <Image
+                            source={{ uri: tournamentLogoUri }}
+                            style={styles.tournamentLogoPreview}
+                          />
+                        ) : (
+                          <Ionicons
+                            name="shield-outline"
+                            size={34}
+                            color="#00A66A"
+                          />
+                        )}
+                        <View style={styles.logoCameraBadge}>
+                          <Ionicons name="camera" size={12} color="#FFF" />
+                        </View>
+                      </View>
+                      <Text style={styles.logoUploadText}>
+                        {tournamentLogoUri ? "Change logo" : "Add logo"}
+                      </Text>
+                    </TouchableOpacity>
+                  </View>
+
+                  {/* Form Fields */}
+                  {renderTextInput(
+                    "Tournament / series name",
+                    tournamentName,
+                    setTournamentName,
+                    "Enter your tournament name",
+                    true,
+                  )}
+                  {renderTextInput(
+                    "City",
+                    tournamentCity,
+                    setTournamentCity,
+                    "Enter city",
+                    true,
+                  )}
+                  {renderTextInput(
+                    "Ground",
+                    tournamentGround,
+                    setTournamentGround,
+                    "Enter ground name",
+                    true,
+                  )}
+                  {renderTextInput(
+                    "Organiser name",
+                    organizerName,
+                    setOrganizerName,
+                    "Enter organiser name",
+                    true,
+                  )}
+                  {renderTextInput(
+                    "Organiser number",
+                    organizerNumber,
+                    setOrganizerNumber,
+                    "Enter phone number",
+                    true,
+                    "phone-pad",
+                  )}
+
+                  <View style={styles.formGroup}>
+                    <Text style={styles.formLabel}>Organiser email</Text>
+                    <TextInput
+                      style={styles.formInput}
+                      placeholder="Enter email"
+                      placeholderTextColor="#CCC"
+                      keyboardType="email-address"
+                      value={organizerEmail}
+                      onChangeText={setOrganizerEmail}
+                    />
+                    <Text style={styles.emailHint}>
+                      *Get updated with CricHeroes offers and help videos on
+                      mail.
+                    </Text>
+                  </View>
+
+                  {/* Tournament Dates */}
+                  <Text style={styles.sectionHeading}>Tournament dates</Text>
+                  <View style={styles.dateRow}>
+                    {[
+                      { label: "Start date", field: "start" as const },
+                      { label: "End date", field: "end" as const },
+                    ].map(({ label, field }) => (
+                      <View key={label} style={styles.dateField}>
+                        <Text style={styles.formLabel}>{label} *</Text>
+                        <TouchableOpacity
+                          style={[
+                            styles.dateInput,
+                            activeTournamentDateField === field &&
+                              styles.dateInputActive,
+                          ]}
+                          onPress={() => {
+                            setActiveTournamentDateField(
+                              activeTournamentDateField === field
+                                ? null
+                                : field,
+                            );
+                          }}
+                        >
+                          <TextInput
+                            style={styles.dateInputText}
+                            placeholder="Select date"
+                            placeholderTextColor="#CCC"
+                            value={getTournamentDateValue(field)}
+                            editable={false}
+                            pointerEvents="none"
+                          />
+                          <Ionicons
+                            name="calendar-outline"
+                            size={20}
+                            color={
+                              activeTournamentDateField === field
+                                ? "#00A66A"
+                                : "#666"
+                            }
+                          />
+                        </TouchableOpacity>
+                      </View>
+                    ))}
+                  </View>
+                  {renderTournamentDatePicker()}
+
+                  {/* Tournament Category */}
+                  <View style={styles.formGroup}>
+                    <Text style={styles.formLabel}>Tournament category *</Text>
+                    {renderChipGroup(
+                      [
+                        "OPEN",
+                        "CORPORATE",
+                        "COMMUNITY",
+                        "SCHOOL",
+                        "OTHER",
+                        "SERIES",
+                        "COLLEGE",
+                        "UNIVERSITY",
+                      ],
+                      tournamentCategory,
+                      setTournamentCategory,
+                      "#E63946",
+                    )}
+                  </View>
+
+                  {/* Select Ball Type */}
+                  <View style={styles.formGroup}>
+                    <Text style={styles.formLabel}>Select ball type *</Text>
+                    {renderBallTypeSelector(
+                      tournamentBallType,
+                      setTournamentBallType,
+                    )}
+                  </View>
+
+                  {/* Pitch Type */}
+                  <View style={styles.formGroup}>
+                    <Text style={styles.formLabel}>Pitch type</Text>
+                    {renderChipGroup(
+                      ["ROUGH", "CEMENT", "TURF", "ASTROTURF", "MATTING"],
+                      tournamentPitchType,
+                      setTournamentPitchType,
+                      "#00A66A",
+                    )}
+                  </View>
+
+                  {/* Match Type */}
+                  <View style={styles.formGroup}>
+                    <Text style={styles.formLabel}>Match type *</Text>
+                    {renderChipGroup(
+                      [
+                        "Limited Overs",
+                        "Box/Turf Cricket",
+                        "Pair Cricket",
+                        "Test Match",
+                        "The Hundred",
+                      ],
+                      tournamentMatchType,
+                      setTournamentMatchType,
+                      "#00A66A",
+                    )}
+                  </View>
+
+                  {/* Checkboxes */}
+                  {[
+                    {
+                      label: "Do you need more teams for your tournament?",
+                      value: needMoreTeams,
+                      setter: setNeedMoreTeams,
+                    },
+                    {
+                      label: "Do you need officials? (e.g. Umpire, Scorer)",
+                      value: needOfficials,
+                      setter: setNeedOfficials,
+                    },
+                  ].map((checkbox, idx) => (
+                    <TouchableOpacity
+                      key={idx}
+                      style={styles.checkboxRow}
+                      onPress={() => checkbox.setter(!checkbox.value)}
+                    >
+                      <View
+                        style={[
+                          styles.checkbox,
+                          checkbox.value && styles.checkboxChecked,
+                        ]}
+                      >
+                        {checkbox.value && (
+                          <Ionicons name="checkmark" size={16} color="#FFF" />
+                        )}
+                      </View>
+                      <Text style={styles.checkboxLabel}>{checkbox.label}</Text>
+                    </TouchableOpacity>
+                  ))}
+
+                  {/* Next Button */}
+                  <TouchableOpacity
+                    style={styles.nextButton}
+                    onPress={() => {
+                      // Validate required fields
+                      if (!tournamentName.trim()) {
+                        Alert.alert(
+                          "Required Field",
+                          "Please enter tournament name",
+                        );
+                        return;
+                      }
+                      if (!tournamentBannerUri) {
+                        Alert.alert(
+                          "Required Field",
+                          "Please add tournament banner",
+                        );
+                        return;
+                      }
+                      if (!tournamentLogoUri) {
+                        Alert.alert(
+                          "Required Field",
+                          "Please add tournament logo",
+                        );
+                        return;
+                      }
+                      if (!tournamentCity.trim()) {
+                        Alert.alert("Required Field", "Please enter city");
+                        return;
+                      }
+                      if (!tournamentGround.trim()) {
+                        Alert.alert(
+                          "Required Field",
+                          "Please enter ground name",
+                        );
+                        return;
+                      }
+                      if (!organizerName.trim()) {
+                        Alert.alert(
+                          "Required Field",
+                          "Please enter organiser name",
+                        );
+                        return;
+                      }
+                      if (!organizerNumber.trim()) {
+                        Alert.alert(
+                          "Required Field",
+                          "Please enter organiser number",
+                        );
+                        return;
+                      }
+                      if (!tournamentStartDate) {
+                        Alert.alert(
+                          "Required Field",
+                          "Please select start date",
+                        );
+                        return;
+                      }
+                      if (!tournamentEndDate) {
+                        Alert.alert("Required Field", "Please select end date");
+                        return;
+                      }
+                      if (tournamentEndDate < tournamentStartDate) {
+                        Alert.alert(
+                          "Invalid Date",
+                          "End date cannot be before start date",
+                        );
+                        return;
+                      }
+                      if (!tournamentCategory) {
+                        Alert.alert(
+                          "Required Field",
+                          "Please select tournament category",
+                        );
+                        return;
+                      }
+                      if (!tournamentBallType) {
+                        Alert.alert(
+                          "Required Field",
+                          "Please select ball type",
+                        );
+                        return;
+                      }
+                      if (!tournamentMatchType) {
+                        Alert.alert(
+                          "Required Field",
+                          "Please select match type",
+                        );
+                        return;
+                      }
+
+                      // Navigate to team management view
+                      setCurrentView("tournamentTeamManagement");
+                      setShowAddPlayerModal(true);
+                    }}
+                  >
+                    <LinearGradient
+                      colors={["#00A66A", "#0F766E", "#064E3B"]}
+                      start={{ x: 0, y: 0 }}
+                      end={{ x: 1, y: 1 }}
+                      style={styles.nextButtonGradient}
+                    >
+                      <Text style={styles.nextButtonText}>NEXT</Text>
+                    </LinearGradient>
+                  </TouchableOpacity>
+
+                  <View style={{ height: 40 }} />
+                </View>
+              </View>
+            ) : currentView === "tournamentDetail" && selectedTournament ? (
+              /* ─────────── Tournament Detail View ─────────── */
+              <View style={styles.tdContainer}>
+                {/* Hero Banner */}
+                <LinearGradient
+                  colors={["#064E3B", "#00A66A", "#059669"]}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 1 }}
+                  style={styles.tdHero}
+                >
+                  {/* Decorative circles */}
+                  <View style={styles.tdHeroCircle1} />
+                  <View style={styles.tdHeroCircle2} />
+
+                  <View style={styles.tdHeroContent}>
+                    <View style={styles.tdHeroIcon}>
+                      <Ionicons name="trophy" size={36} color="#FFD700" />
+                    </View>
+                    <Text style={styles.tdHeroTitle} numberOfLines={2}>
+                      {selectedTournament.name}
+                    </Text>
+
+                    {/* Status pill */}
+                    <View
                       style={[
-                        styles.matchTypePill,
-                        matchType === type.id && styles.matchTypePillActive,
+                        styles.tdStatusPill,
+                        {
+                          backgroundColor:
+                            selectedTournament.status === "Ongoing"
+                              ? "rgba(255,255,255,0.25)"
+                              : "rgba(255,255,255,0.15)",
+                        },
                       ]}
-                      onPress={() => setMatchType(type.id)}
+                    >
+                      <View
+                        style={[
+                          styles.tdStatusDot,
+                          {
+                            backgroundColor:
+                              selectedTournament.status === "Ongoing"
+                                ? "#4CAF50"
+                                : "#FFA500",
+                          },
+                        ]}
+                      />
+                      <Text style={styles.tdStatusText}>
+                        {selectedTournament.status}
+                      </Text>
+                    </View>
+
+                    {/* Stats row */}
+                    <View style={styles.tdHeroStats}>
+                      {[
+                        {
+                          icon: "people",
+                          label: "Teams",
+                          value: selectedTournament.teams,
+                        },
+                        {
+                          icon: "baseball",
+                          label: "Matches",
+                          value: selectedTournament.matches,
+                        },
+                        {
+                          icon: "calendar-outline",
+                          label: "Start",
+                          value: selectedTournament.startDate.split(",")[0],
+                        },
+                      ].map((stat, i) => (
+                        <View key={i} style={styles.tdHeroStat}>
+                          <Ionicons
+                            name={stat.icon as any}
+                            size={14}
+                            color="rgba(255,255,255,0.8)"
+                          />
+                          <Text style={styles.tdHeroStatValue}>
+                            {stat.value}
+                          </Text>
+                          <Text style={styles.tdHeroStatLabel}>
+                            {stat.label}
+                          </Text>
+                        </View>
+                      ))}
+                    </View>
+
+                    {/* Progress bar */}
+                    <View style={styles.tdProgressWrap}>
+                      <View style={styles.tdProgressBg}>
+                        <View
+                          style={[
+                            styles.tdProgressFill,
+                            { width: `${selectedTournament.progress}%` },
+                          ]}
+                        />
+                      </View>
+                      <Text style={styles.tdProgressLabel}>
+                        {selectedTournament.progress}% Complete
+                      </Text>
+                    </View>
+                  </View>
+                </LinearGradient>
+
+                {/* Detail Tabs */}
+                <View style={styles.tdTabs}>
+                  {["matches", "points", "leaderboard", "teams"].map((tab) => (
+                    <TouchableOpacity
+                      key={tab}
+                      style={[
+                        styles.tdTab,
+                        activeTournamentDetailTab === tab && styles.tdTabActive,
+                      ]}
+                      onPress={() => handleTournamentDetailTabPress(tab)}
                     >
                       <Text
                         style={[
-                          styles.matchTypePillText,
-                          matchType === type.id && styles.matchTypePillTextActive,
+                          styles.tdTabText,
+                          activeTournamentDetailTab === tab &&
+                            styles.tdTabTextActive,
                         ]}
                       >
-                        {type.label}
+                        {tab.charAt(0).toUpperCase() + tab.slice(1)}
                       </Text>
+                      {activeTournamentDetailTab === tab && (
+                        <View style={styles.tdTabIndicator} />
+                      )}
                     </TouchableOpacity>
                   ))}
-                </ScrollView>
-              </LinearGradient>
-            </View>
+                </View>
 
-            {/* Number of Overs */}
-            <View style={styles.setupSection}>
-              <Text style={styles.setupSectionTitle}>
-                Number of Overs {(matchType === "limited" || matchType === "box") && "*"}
-              </Text>
-              
-              {/* Overs Input */}
-              <View style={styles.inputContainer}>
-                <Ionicons name="timer-outline" size={18} color="#00A66A" />
-                <TextInput
-                  style={styles.input}
-                  placeholder="Type number of overs"
-                  placeholderTextColor="#999"
-                  keyboardType="numeric"
-                  value={numberOfOvers}
-                  onChangeText={setNumberOfOvers}
-                />
-                {numberOfOvers && (
-                  <TouchableOpacity onPress={() => setNumberOfOvers("")}>
-                    <Ionicons name="close-circle" size={18} color="#999" />
-                  </TouchableOpacity>
-                )}
-              </View>
-            </View>
-
-            {/* Location - City & Ground */}
-            <View style={styles.setupSection}>
-              <Text style={styles.setupSectionTitle}>Location *</Text>
-              
-              {!locationEnabled ? (
-                <TouchableOpacity 
-                  style={styles.locationButton}
-                  onPress={handleEnableLocation}
+                {/* Tab Content */}
+                <ScrollView
+                  ref={tournamentDetailHorizontalScrollRef}
+                  horizontal
+                  pagingEnabled
+                  showsHorizontalScrollIndicator={false}
+                  onMomentumScrollEnd={
+                    handleTournamentDetailHorizontalScrollEnd
+                  }
+                  style={styles.tdContent}
+                  scrollEventThrottle={16}
+                  nestedScrollEnabled
                 >
-                  <LinearGradient
-                    colors={["#00A66A", "#0F766E", "#064E3B"]}
-                    start={{ x: 0, y: 0 }}
-                    end={{ x: 1, y: 1 }}
-                    style={styles.locationButtonGradient}
+                  {/* Slide 1: Matches */}
+                  <ScrollView
+                    style={{ width: SCREEN_WIDTH }}
+                    showsVerticalScrollIndicator={false}
                   >
-                    <View style={styles.locationButtonContent}>
-                      <View style={styles.locationIconCircle}>
-                        <Ionicons name="location" size={24} color="#FFF" />
-                      </View>
-                      <View style={styles.locationButtonTextContainer}>
-                        <Text style={styles.locationButtonTitle}>
-                          Find Nearby Grounds
-                        </Text>
-                        <Text style={styles.locationButtonSubtitle}>
-                          Enable location to discover cricket grounds
-                        </Text>
-                      </View>
-                      <Ionicons name="chevron-forward" size={20} color="#FFF" />
+                    <View style={styles.tdSection}>
+                      <Text style={styles.tdSectionTitle}>
+                        Upcoming Matches
+                      </Text>
+                      {/* TODO(backend): fetch upcoming tournament matches from API */}
+                      {(
+                        [] as {
+                          id: number;
+                          team1: string;
+                          team2: string;
+                          date: string;
+                          time: string;
+                          venue: string;
+                          status: string;
+                        }[]
+                      ).map((m) => (
+                        <View key={m.id} style={styles.tdMatchCard}>
+                          <View style={styles.tdMatchHeader}>
+                            <View
+                              style={[
+                                styles.tdMatchBadge,
+                                {
+                                  backgroundColor:
+                                    m.status === "upcoming"
+                                      ? "#FF9800"
+                                      : "#17A2B8",
+                                },
+                              ]}
+                            >
+                              <Text style={styles.tdMatchBadgeText}>
+                                {m.status === "upcoming"
+                                  ? "UPCOMING"
+                                  : "SCHEDULED"}
+                              </Text>
+                            </View>
+                            <Text style={styles.tdMatchDate}>
+                              {m.date} · {m.time}
+                            </Text>
+                          </View>
+                          <View style={styles.tdMatchTeams}>
+                            <View style={styles.tdTeamCol}>
+                              <LinearGradient
+                                colors={["#00A66A", "#064E3B"]}
+                                style={styles.tdTeamAvatar}
+                              >
+                                <Text style={styles.tdTeamAvatarText}>
+                                  {m.team1.charAt(0)}
+                                </Text>
+                              </LinearGradient>
+                              <Text style={styles.tdTeamName}>{m.team1}</Text>
+                            </View>
+                            <View style={styles.tdVsBox}>
+                              <Text style={styles.tdVs}>VS</Text>
+                            </View>
+                            <View style={styles.tdTeamCol}>
+                              <LinearGradient
+                                colors={["#1565C0", "#0D47A1"]}
+                                style={styles.tdTeamAvatar}
+                              >
+                                <Text style={styles.tdTeamAvatarText}>
+                                  {m.team2.charAt(0)}
+                                </Text>
+                              </LinearGradient>
+                              <Text style={styles.tdTeamName}>{m.team2}</Text>
+                            </View>
+                          </View>
+                          <View style={styles.tdMatchFooter}>
+                            <Ionicons
+                              name="location-outline"
+                              size={13}
+                              color="#999"
+                            />
+                            <Text style={styles.tdMatchVenue}>{m.venue}</Text>
+                          </View>
+                        </View>
+                      ))}
+
+                      <Text style={[styles.tdSectionTitle, { marginTop: 20 }]}>
+                        Completed Matches
+                      </Text>
+                      {/* TODO(backend): fetch completed tournament matches from API */}
+                      {(
+                        [] as {
+                          id: number;
+                          team1: string;
+                          score1: string;
+                          team2: string;
+                          score2: string;
+                          winner: string;
+                          margin: string;
+                        }[]
+                      ).map((m) => (
+                        <View
+                          key={m.id}
+                          style={[
+                            styles.tdMatchCard,
+                            { borderLeftColor: "#4CAF50", borderLeftWidth: 3 },
+                          ]}
+                        >
+                          <View style={styles.tdMatchHeader}>
+                            <View
+                              style={[
+                                styles.tdMatchBadge,
+                                { backgroundColor: "#4CAF50" },
+                              ]}
+                            >
+                              <Text style={styles.tdMatchBadgeText}>
+                                COMPLETED
+                              </Text>
+                            </View>
+                          </View>
+                          <View style={styles.tdMatchTeams}>
+                            <View style={styles.tdTeamCol}>
+                              <LinearGradient
+                                colors={["#00A66A", "#064E3B"]}
+                                style={styles.tdTeamAvatar}
+                              >
+                                <Text style={styles.tdTeamAvatarText}>
+                                  {m.team1.charAt(0)}
+                                </Text>
+                              </LinearGradient>
+                              <Text style={styles.tdTeamName}>{m.team1}</Text>
+                              <Text style={styles.tdScore}>{m.score1}</Text>
+                            </View>
+                            <View style={styles.tdVsBox}>
+                              <Text style={styles.tdVs}>VS</Text>
+                            </View>
+                            <View style={styles.tdTeamCol}>
+                              <LinearGradient
+                                colors={["#1565C0", "#0D47A1"]}
+                                style={styles.tdTeamAvatar}
+                              >
+                                <Text style={styles.tdTeamAvatarText}>
+                                  {m.team2.charAt(0)}
+                                </Text>
+                              </LinearGradient>
+                              <Text style={styles.tdTeamName}>{m.team2}</Text>
+                              <Text style={styles.tdScore}>{m.score2}</Text>
+                            </View>
+                          </View>
+                          <View style={styles.tdMatchFooter}>
+                            <Ionicons
+                              name="trophy-outline"
+                              size={13}
+                              color="#4CAF50"
+                            />
+                            <Text
+                              style={[
+                                styles.tdMatchVenue,
+                                { color: "#4CAF50", fontWeight: "700" },
+                              ]}
+                            >
+                              {m.winner} won by {m.margin}
+                            </Text>
+                          </View>
+                        </View>
+                      ))}
+                      <View style={{ height: 80 }} />
                     </View>
-                  </LinearGradient>
-                </TouchableOpacity>
-              ) : (
-                <View style={styles.locationEnabledContainer}>
-                  <LinearGradient
-                    colors={["#F0FFF8", "#D1FAE5"]}
-                    style={styles.locationEnabledHeader}
+                  </ScrollView>
+
+                  {/* Slide 2: Points */}
+                  <ScrollView
+                    style={{ width: SCREEN_WIDTH }}
+                    showsVerticalScrollIndicator={false}
                   >
-                    <View style={styles.locationEnabledBadge}>
-                      <Ionicons name="checkmark-circle" size={18} color="#00A66A" />
-                      <Text style={styles.locationEnabledText}>
-                        Location Enabled
-                      </Text>
-                    </View>
-                    <View style={styles.groundsCountBadge}>
-                      <Text style={styles.groundsCountText}>
-                        {nearbyGrounds.length} grounds nearby
-                      </Text>
-                    </View>
-                  </LinearGradient>
-                  
-                  {/* Nearby Grounds List */}
-                  <View style={styles.groundsListContainer}>
-                    <Text style={styles.groundsListTitle}>Select Ground</Text>
-                    <View style={styles.groundsScrollWrapper}>
-                      <ScrollView 
-                        ref={scrollViewRef2}
-                        style={styles.groundsList}
-                        showsVerticalScrollIndicator={false}
-                        nestedScrollEnabled={true}
-                        onScroll={(event) => {
-                          const { contentOffset, contentSize, layoutMeasurement } = event.nativeEvent;
-                          const scrollPercentage = contentOffset.y / (contentSize.height - layoutMeasurement.height);
-                          const indicatorHeight = 60; // Height of the scroll indicator
-                          const trackHeight = 240 - indicatorHeight; // Max scroll area
-                          setScrollIndicatorPosition(scrollPercentage * trackHeight);
-                        }}
-                        scrollEventThrottle={16}
+                    <View style={styles.tdSection}>
+                      <Text style={styles.tdSectionTitle}>Points Table</Text>
+                      {/* Header */}
+                      <LinearGradient
+                        colors={["#00A66A", "#064E3B"]}
+                        style={styles.tdPtsHeader}
                       >
-                        {nearbyGrounds.map((ground, index) => (
-                          <TouchableOpacity
-                            key={ground.id}
+                        {["#", "Team", "P", "W", "L", "NRR", "Pts"].map(
+                          (h, i) => (
+                            <Text
+                              key={i}
+                              style={[
+                                styles.tdPtsCell,
+                                styles.tdPtsHeaderCell,
+                                i === 1 && { flex: 2.5, textAlign: "left" },
+                              ]}
+                            >
+                              {h}
+                            </Text>
+                          ),
+                        )}
+                      </LinearGradient>
+                      {/* TODO(backend): fetch points table from API */}
+                      {(
+                        [] as {
+                          rank: number;
+                          team: string;
+                          p: number;
+                          w: number;
+                          l: number;
+                          nrr: string;
+                          pts: number;
+                          q: boolean;
+                        }[]
+                      ).map((row, idx) => (
+                        <View
+                          key={idx}
+                          style={[
+                            styles.tdPtsRow,
+                            row.q && styles.tdPtsRowQ,
+                            idx % 2 === 0 && { backgroundColor: "#FAFAFA" },
+                          ]}
+                        >
+                          <View style={[styles.tdPtsCell, { flex: 1 }]}>
+                            <View
+                              style={[
+                                styles.tdRankBadge,
+                                row.rank === 1 && {
+                                  backgroundColor: "#FFD700",
+                                },
+                                row.rank === 2 && {
+                                  backgroundColor: "#C0C0C0",
+                                },
+                                row.rank === 3 && {
+                                  backgroundColor: "#CD7F32",
+                                },
+                              ]}
+                            >
+                              <Text
+                                style={[
+                                  styles.tdRankText,
+                                  row.rank <= 3 && { color: "#FFF" },
+                                ]}
+                              >
+                                {row.rank}
+                              </Text>
+                            </View>
+                          </View>
+                          <View
                             style={[
-                              styles.groundCard,
-                              selectedGround === ground.name && styles.groundCardActive,
+                              styles.tdPtsCell,
+                              {
+                                flex: 2.5,
+                                flexDirection: "row",
+                                alignItems: "center",
+                              },
                             ]}
-                            onPress={() => {
-                              setSelectedGround(ground.name);
-                              setSelectedCity(ground.city);
-                              setPitchType(ground.pitchType);
-                            }}
                           >
                             <LinearGradient
-                              colors={
-                                selectedGround === ground.name
-                                  ? ["#D1FAE5", "#6EE7B7"]
-                                  : ["#FFFFFF", "#F8F9FA"]
-                              }
-                              style={styles.groundCardGradient}
+                              colors={["#00A66A", "#064E3B"]}
+                              style={styles.tdTeamDot}
                             >
-                              <View style={styles.groundCardLeft}>
-                                <View style={[
-                                  styles.groundNumberBadge,
-                                  selectedGround === ground.name && styles.groundNumberBadgeActive,
-                                ]}>
-                                  <Text style={[
-                                    styles.groundNumberText,
-                                    selectedGround === ground.name && styles.groundNumberTextActive,
-                                  ]}>
-                                    {index + 1}
-                                  </Text>
-                                </View>
-                                <View style={styles.groundInfo}>
-                                  <Text style={[
-                                    styles.groundName,
-                                    selectedGround === ground.name && styles.groundNameActive,
-                                  ]}>
-                                    {ground.name}
-                                  </Text>
-                                  <View style={styles.groundMetaRow}>
-                                    <View style={styles.groundMetaItem}>
-                                      <Ionicons name="navigate" size={12} color="#666" />
-                                      <Text style={styles.groundMetaText}>{ground.distance}</Text>
-                                    </View>
-                                    <View style={styles.groundMetaDivider} />
-                                    <View style={styles.groundMetaItem}>
-                                      <Ionicons name="layers" size={12} color="#666" />
-                                      <Text style={styles.groundMetaText}>
-                                        {ground.pitchType.toUpperCase()}
-                                      </Text>
-                                    </View>
-                                  </View>
-                                </View>
-                              </View>
-                              {selectedGround === ground.name && (
-                                <View style={styles.selectedCheckmark}>
-                                  <Ionicons name="checkmark-circle" size={24} color="#00A66A" />
-                                </View>
-                              )}
+                              <Text style={styles.tdTeamDotText}>
+                                {row.team.charAt(0)}
+                              </Text>
                             </LinearGradient>
-                          </TouchableOpacity>
-                        ))}
-                      </ScrollView>
-                      
-                      {/* Custom Scrollbar */}
-                      <View style={styles.customScrollbarTrack}>
-                        <Animated.View 
-                          style={[
-                            styles.customScrollbarThumb,
-                            {
-                              transform: [{ translateY: scrollIndicatorPosition }],
-                            },
-                          ]}
+                            <Text style={styles.tdTeamLabel} numberOfLines={1}>
+                              {row.team}
+                            </Text>
+                            {row.q && (
+                              <Ionicons
+                                name="checkmark-circle"
+                                size={12}
+                                color="#4CAF50"
+                                style={{ marginLeft: 4 }}
+                              />
+                            )}
+                          </View>
+                          <Text
+                            style={[
+                              styles.tdPtsCell,
+                              { flex: 1, textAlign: "center" },
+                            ]}
+                          >
+                            {row.p}
+                          </Text>
+                          <Text
+                            style={[
+                              styles.tdPtsCell,
+                              {
+                                flex: 1,
+                                textAlign: "center",
+                                color: "#4CAF50",
+                                fontWeight: "700",
+                              },
+                            ]}
+                          >
+                            {row.w}
+                          </Text>
+                          <Text
+                            style={[
+                              styles.tdPtsCell,
+                              {
+                                flex: 1,
+                                textAlign: "center",
+                                color: "#E63946",
+                                fontWeight: "700",
+                              },
+                            ]}
+                          >
+                            {row.l}
+                          </Text>
+                          <Text
+                            style={[
+                              styles.tdPtsCell,
+                              {
+                                flex: 1,
+                                textAlign: "center",
+                                color: row.nrr.startsWith("+")
+                                  ? "#4CAF50"
+                                  : "#E63946",
+                                fontSize: 11,
+                              },
+                            ]}
+                          >
+                            {row.nrr}
+                          </Text>
+                          <Text
+                            style={[
+                              styles.tdPtsCell,
+                              {
+                                flex: 1,
+                                textAlign: "center",
+                                fontWeight: "800",
+                                color: "#00A66A",
+                              },
+                            ]}
+                          >
+                            {row.pts}
+                          </Text>
+                        </View>
+                      ))}
+                      <View style={styles.tdLegend}>
+                        <View style={styles.tdLegendRow}>
+                          <Ionicons
+                            name="checkmark-circle"
+                            size={14}
+                            color="#4CAF50"
+                          />
+                          <Text style={styles.tdLegendText}>
+                            Qualified for playoffs
+                          </Text>
+                        </View>
+                        <Text style={styles.tdLegendNote}>
+                          P=Played · W=Won · L=Lost · NRR=Net Run Rate
+                        </Text>
+                      </View>
+                      <View style={{ height: 80 }} />
+                    </View>
+                  </ScrollView>
+
+                  {/* Slide 3: Leaderboard */}
+                  <ScrollView
+                    style={{ width: SCREEN_WIDTH }}
+                    showsVerticalScrollIndicator={false}
+                  >
+                    <View style={styles.tdSection}>
+                      <Text style={styles.tdSectionTitle}>🏏 Top Batsmen</Text>
+                      {/* TODO(backend): fetch top batsmen leaderboard from API */}
+                      {(
+                        [] as {
+                          rank: number;
+                          name: string;
+                          team: string;
+                          runs: number;
+                          avg: string;
+                          sr: string;
+                          icon: string;
+                        }[]
+                      ).map((p) => (
+                        <View key={p.rank} style={styles.tdPlayerCard}>
+                          <Text style={styles.tdPlayerIcon}>{p.icon}</Text>
+                          <View style={styles.tdPlayerInfo}>
+                            <Text style={styles.tdPlayerName}>{p.name}</Text>
+                            <Text style={styles.tdPlayerTeam}>{p.team}</Text>
+                          </View>
+                          <View style={styles.tdPlayerStats}>
+                            <Text style={styles.tdPlayerStatMain}>
+                              {p.runs}
+                            </Text>
+                            <Text style={styles.tdPlayerStatSub}>Runs</Text>
+                            <View style={styles.tdPlayerMeta}>
+                              <Text style={styles.tdPlayerMetaText}>
+                                Avg {p.avg}
+                              </Text>
+                              <Text style={styles.tdPlayerMetaText}>
+                                SR {p.sr}
+                              </Text>
+                            </View>
+                          </View>
+                        </View>
+                      ))}
+
+                      <Text style={[styles.tdSectionTitle, { marginTop: 20 }]}>
+                        🎯 Top Bowlers
+                      </Text>
+                      {/* TODO(backend): fetch top bowlers leaderboard from API */}
+                      {(
+                        [] as {
+                          rank: number;
+                          name: string;
+                          team: string;
+                          wkts: number;
+                          avg: string;
+                          econ: string;
+                          icon: string;
+                        }[]
+                      ).map((p) => (
+                        <View key={p.rank} style={styles.tdPlayerCard}>
+                          <Text style={styles.tdPlayerIcon}>{p.icon}</Text>
+                          <View style={styles.tdPlayerInfo}>
+                            <Text style={styles.tdPlayerName}>{p.name}</Text>
+                            <Text style={styles.tdPlayerTeam}>{p.team}</Text>
+                          </View>
+                          <View style={styles.tdPlayerStats}>
+                            <Text style={styles.tdPlayerStatMain}>
+                              {p.wkts}
+                            </Text>
+                            <Text style={styles.tdPlayerStatSub}>Wickets</Text>
+                            <View style={styles.tdPlayerMeta}>
+                              <Text style={styles.tdPlayerMetaText}>
+                                Avg {p.avg}
+                              </Text>
+                              <Text style={styles.tdPlayerMetaText}>
+                                Econ {p.econ}
+                              </Text>
+                            </View>
+                          </View>
+                        </View>
+                      ))}
+                      <View style={{ height: 80 }} />
+                    </View>
+                  </ScrollView>
+
+                  {/* Slide 4: Teams */}
+                  <ScrollView
+                    style={{ width: SCREEN_WIDTH }}
+                    showsVerticalScrollIndicator={false}
+                  >
+                    <View style={styles.tdSection}>
+                      {/* Simple Team Management Options */}
+                      <View style={styles.simpleTeamMgmtContainer}>
+                        {/* Add Teams Button */}
+                        <TouchableOpacity
+                          style={styles.simpleTeamMgmtButton}
+                          onPress={() => {
+                            console.log(
+                              "Add Teams pressed - navigating to Add Teams & Players page",
+                            );
+                            setCurrentView("addTeamsPlayers");
+                          }}
                         >
                           <LinearGradient
                             colors={["#00A66A", "#0F766E"]}
-                            style={styles.customScrollbarThumbGradient}
+                            style={styles.simpleTeamMgmtButtonGradient}
                           >
-                            <View style={styles.scrollbarGrip}>
-                              <View style={styles.scrollbarGripLine} />
-                              <View style={styles.scrollbarGripLine} />
-                              <View style={styles.scrollbarGripLine} />
-                            </View>
+                            <Ionicons
+                              name="people-outline"
+                              size={24}
+                              color="#FFF"
+                            />
+                            <Text style={styles.simpleTeamMgmtButtonText}>
+                              Add Teams
+                            </Text>
                           </LinearGradient>
-                        </Animated.View>
+                        </TouchableOpacity>
+
+                        {/* Invite Teams via Link Button */}
+                        <TouchableOpacity
+                          style={styles.simpleTeamMgmtButton}
+                          onPress={() =>
+                            Alert.alert(
+                              "Invite Teams",
+                              "Tournament link will be generated and shared",
+                            )
+                          }
+                        >
+                          <LinearGradient
+                            colors={["#059669", "#047857"]}
+                            style={styles.simpleTeamMgmtButtonGradient}
+                          >
+                            <Ionicons
+                              name="link-outline"
+                              size={24}
+                              color="#FFF"
+                            />
+                            <Text style={styles.simpleTeamMgmtButtonText}>
+                              Invite Teams via Link
+                            </Text>
+                          </LinearGradient>
+                        </TouchableOpacity>
                       </View>
+
+                      <View style={{ height: 80 }} />
                     </View>
-                  </View>
-                </View>
-              )}
+                  </ScrollView>
+                </ScrollView>
 
-              {locationEnabled && (
-                <>
-                  <View style={styles.inputContainer}>
-                    <Ionicons name="business-outline" size={18} color="#00A66A" />
-                    <TextInput
-                      style={styles.input}
-                      placeholder="City/Town"
-                      placeholderTextColor="#999"
-                      value={selectedCity}
-                      onChangeText={setSelectedCity}
-                      editable={false}
-                    />
-                  </View>
-
-                  <View style={styles.inputContainer}>
-                    <Ionicons name="location-outline" size={18} color="#00A66A" />
-                    <TextInput
-                      style={styles.input}
-                      placeholder="Ground Name"
-                      placeholderTextColor="#999"
-                      value={selectedGround}
-                      onChangeText={setSelectedGround}
-                      editable={false}
-                    />
-                  </View>
-                </>
-              )}
-            </View>
-
-            {/* Pitch Type */}
-            <View style={styles.setupSection}>
-              <Text style={styles.setupSectionTitle}>Pitch Type *</Text>
-              {renderPitchTypeSelector()}
-            </View>
-
-            {/* Ball Type */}
-            <View style={styles.setupSection}>
-              <Text style={styles.setupSectionTitle}>Ball Type *</Text>
-              {renderBallTypeSelector(ballType, setBallType)}
-            </View>
-
-            {/* Date & Time */}
-            <View style={styles.setupSection}>
-              <Text style={styles.setupSectionTitle}>Date & Time *</Text>
-              <View style={styles.dateTimeRow}>
-                <View style={[styles.inputContainer, { flex: 1 }]}>
-                  <Ionicons name="calendar-outline" size={18} color="#00A66A" />
-                  <TextInput
-                    style={styles.input}
-                    placeholder="DD/MM/YYYY"
-                    placeholderTextColor="#999"
-                    value={matchDate}
-                    onChangeText={setMatchDate}
-                  />
-                </View>
-                <View style={[styles.inputContainer, { flex: 1 }]}>
-                  <Ionicons name="time-outline" size={18} color="#00A66A" />
-                  <TextInput
-                    style={styles.input}
-                    placeholder="HH:MM"
-                    placeholderTextColor="#999"
-                    value={matchTime}
-                    onChangeText={setMatchTime}
-                  />
-                </View>
-              </View>
-            </View>
-
-            {/* Match Officials */}
-            <View style={styles.setupSection}>
-              <Text style={styles.setupSectionTitle}>Match Officials</Text>
-              
-              <View style={styles.inputContainer}>
-                <Ionicons name="person-outline" size={18} color="#00A66A" />
-                <TextInput
-                  style={styles.input}
-                  placeholder="Umpire 1"
-                  placeholderTextColor="#999"
-                  value={umpire1}
-                  onChangeText={setUmpire1}
-                />
-              </View>
-
-              <View style={styles.inputContainer}>
-                <Ionicons name="person-outline" size={18} color="#00A66A" />
-                <TextInput
-                  style={styles.input}
-                  placeholder="Umpire 2"
-                  placeholderTextColor="#999"
-                  value={umpire2}
-                  onChangeText={setUmpire2}
-                />
-              </View>
-
-              <View style={styles.inputContainer}>
-                <Ionicons name="create-outline" size={18} color="#00A66A" />
-                <TextInput
-                  style={styles.input}
-                  placeholder="Scorer"
-                  placeholderTextColor="#999"
-                  value={scorer}
-                  onChangeText={setScorer}
-                />
-              </View>
-
-              <View style={styles.inputContainer}>
-                <Ionicons name="videocam-outline" size={18} color="#00A66A" />
-                <TextInput
-                  style={styles.input}
-                  placeholder="Live Streamer"
-                  placeholderTextColor="#999"
-                  value={liveStreamer}
-                  onChangeText={setLiveStreamer}
-                />
-              </View>
-
-              <View style={styles.inputContainer}>
-                <Ionicons name="people-outline" size={18} color="#00A66A" />
-                <TextInput
-                  style={styles.input}
-                  placeholder="Others"
-                  placeholderTextColor="#999"
-                  value={others}
-                  onChangeText={setOthers}
-                />
-              </View>
-            </View>
-
-            {/* Let's Toss Button */}
-            <TouchableOpacity
-              style={styles.startMatchButton}
-              onPress={() => {
-                // Validation
-                if (!matchType) {
-                  Alert.alert("Required Field", "Please select match type");
-                  return;
-                }
-                
-                if ((matchType === "limited" || matchType === "box") && !numberOfOvers.trim()) {
-                  Alert.alert("Required Field", "Please enter number of overs");
-                  return;
-                }
-                
-                if ((matchType === "limited" || matchType === "box") && numberOfOvers.trim()) {
-                  const overs = parseInt(numberOfOvers);
-                  if (isNaN(overs) || overs < 1 || overs > 50) {
-                    Alert.alert("Invalid Input", "Please enter a valid number of overs (1-50)");
-                    return;
-                  }
-                }
-                
-                if (!selectedCity.trim()) {
-                  Alert.alert("Required Field", "Please select a city");
-                  return;
-                }
-                
-                if (!selectedGround.trim()) {
-                  Alert.alert("Required Field", "Please select a ground");
-                  return;
-                }
-
-                console.log("Match setup complete, proceeding to toss:", {
-                  teamA: teamAName,
-                  teamB: teamBName,
-                  matchType,
-                  overs: numberOfOvers,
-                  city: selectedCity,
-                  ground: selectedGround,
-                  pitchType,
-                  ballType,
-                  date: matchDate,
-                  time: matchTime,
-                });
-                
-                // Navigate to toss page
-                setCurrentView("tossPage");
-              }}
-            >
-              <LinearGradient
-                colors={["#00A66A", "#0F766E", "#064E3B"]}
-                style={styles.startMatchButtonGradient}
-              >
-                <Ionicons name="disc" size={28} color="#FFF" />
-                <Text style={styles.startMatchButtonText}>{"Let's Toss"}</Text>
-                <Ionicons name="arrow-forward" size={24} color="#FFF" />
-              </LinearGradient>
-            </TouchableOpacity>
-
-            {/* Bottom Spacing */}
-            <View style={{ height: 100 }} />
-          </View>
-        ) : currentView === "tossPage" ? (
-          /* Toss Page View */
-          <ScrollView style={styles.tossContainer} showsVerticalScrollIndicator={false}>
-            <View style={styles.tossHero}>
-              <View style={styles.coinStage}>
-                <View style={styles.coinOuter}>
-                  <View style={styles.coinInner}>
-                    <Ionicons name="disc" size={38} color="#FDE68A" />
-                  </View>
-                </View>
-              </View>
-              <Text style={styles.tossTitle}>Match toss</Text>
-              <Text style={styles.tossSubtitle}>Select the toss winner and their first innings choice.</Text>
-            </View>
-            
-            {/* Team Selection for Toss Winner */}
-            <View style={styles.tossTeamsContainer}>
-              <TouchableOpacity
-                style={[
-                  styles.tossTeamCard,
-                  tossWinner === "A" && styles.tossTeamCardSelected,
-                ]}
-                onPress={() => setTossWinner("A")}
-              >
-                <View style={styles.tossTeamJersey}>
-                  <Ionicons name="shirt" size={38} color={tossWinner === "A" ? "#00A66A" : "#777"} />
-                  {tossWinner === "A" && (
-                    <View style={styles.tossCheckBadge}>
-                      <Ionicons name="checkmark" size={13} color="#FFF" />
-                    </View>
-                  )}
-                </View>
-                <Text style={[
-                  styles.tossTeamName,
-                  tossWinner === "A" && styles.tossTeamNameSelected,
-                ]}>
-                  {teamAName}
-                </Text>
-              </TouchableOpacity>
-
-              <TouchableOpacity
-                style={[
-                  styles.tossTeamCard,
-                  tossWinner === "B" && styles.tossTeamCardSelected,
-                ]}
-                onPress={() => setTossWinner("B")}
-              >
-                <View style={styles.tossTeamJersey}>
-                  <Ionicons name="shirt" size={38} color={tossWinner === "B" ? "#00A66A" : "#777"} />
-                  {tossWinner === "B" && (
-                    <View style={styles.tossCheckBadge}>
-                      <Ionicons name="checkmark" size={13} color="#FFF" />
-                    </View>
-                  )}
-                </View>
-                <Text style={[
-                  styles.tossTeamName,
-                  tossWinner === "B" && styles.tossTeamNameSelected,
-                ]}>
-                  {teamBName}
-                </Text>
-              </TouchableOpacity>
-            </View>
-
-            {/* Toss Decision Section */}
-            {tossWinner && (
-              <View style={styles.tossDecisionSection}>
-                <Text style={styles.tossDecisionTitle}>
-                  {getTossWinnerName()} elected to
-                </Text>
-                
-                <View style={styles.tossDecisionContainer}>
+                {/* Fixed bottom CTA */}
+                <View style={styles.tdBottomBar}>
                   <TouchableOpacity
-                    style={[
-                      styles.tossDecisionCard,
-                      tossDecision === "bat" && styles.tossDecisionCardSelected,
-                    ]}
-                    onPress={() => setTossDecision("bat")}
+                    style={styles.tdBottomBtn}
+                    onPress={() => {
+                      setCurrentView("tournamentTeamManagement");
+                      setShowAddPlayerModal(true);
+                    }}
                   >
-                    <View style={styles.cricketActionFigure}>
-                      <View style={styles.figureHead} />
-                      <View style={styles.figureBody} />
-                      <View style={styles.figureLegs} />
-                      <View style={styles.batHandle} />
-                    </View>
-                    <Text style={[
-                      styles.tossDecisionText,
-                      tossDecision === "bat" && styles.tossDecisionTextSelected,
-                    ]}>
-                      BAT
-                    </Text>
-                  </TouchableOpacity>
-
-                  <TouchableOpacity
-                    style={[
-                      styles.tossDecisionCard,
-                      tossDecision === "bowl" && styles.tossDecisionCardSelected,
-                    ]}
-                    onPress={() => setTossDecision("bowl")}
-                  >
-                    <View style={styles.cricketActionFigure}>
-                      <View style={styles.figureHead} />
-                      <View style={[styles.figureBody, styles.bowlerFigureBody]} />
-                      <View style={styles.figureLegs} />
-                      <View style={styles.bowlingArm} />
-                      <View style={styles.bowlingBall} />
-                    </View>
-                    <Text style={[
-                      styles.tossDecisionText,
-                      tossDecision === "bowl" && styles.tossDecisionTextSelected,
-                    ]}>
-                      BOWL
-                    </Text>
-                  </TouchableOpacity>
-                </View>
-              </View>
-            )}
-
-            {/* Start Match Button */}
-            {tossWinner && tossDecision && (
-              <TouchableOpacity
-                style={styles.startMatchButton}
-                onPress={() => {
-                  const winnerTeam = tossWinner === "A" ? teamAName : teamBName;
-                  console.log(`${winnerTeam} won the toss and elected to ${tossDecision.toUpperCase()} first.`);
-                  
-                  // Navigate to player selection
-                  setCurrentView("playerSelection");
-                }}
-              >
-                <LinearGradient
-                  colors={["#00A66A", "#0F766E", "#064E3B"]}
-                  style={styles.startMatchButtonGradient}
-                >
-                  <Ionicons name="play-circle" size={28} color="#FFF" />
-                  <Text style={styles.startMatchButtonText}>Start Match</Text>
-                  <Ionicons name="arrow-forward" size={24} color="#FFF" />
-                </LinearGradient>
-              </TouchableOpacity>
-            )}
-
-            {/* Bottom Spacing */}
-            <View style={{ height: 100 }} />
-          </ScrollView>
-        ) : currentView === "playerSelection" ? (
-          /* Player Selection Page */
-          <ScrollView style={styles.playerSelectionContainer} showsVerticalScrollIndicator={false}>
-            <View style={styles.playerSelectionHero}>
-              <Text style={styles.playerSelectionTitle}>Opening lineup</Text>
-              <Text style={styles.playerSelectionSubtitle}>
-                Confirm the two batters and the bowler before scoring starts.
-              </Text>
-            </View>
-
-            {/* Batting Team Section */}
-            <View style={styles.playerSection}>
-              <Text style={styles.playerSectionTitle}>
-                Batting - {getBattingTeamName()}
-              </Text>
-              
-              {/* Striker Selection */}
-              <View style={styles.playerSelectionRow}>
-                <TouchableOpacity 
-                  style={[styles.playerSelectionCard, selectedStriker && styles.playerSelectionCardSelected]}
-                  onPress={() => {
-                    setPlayerModalType("striker");
-                    setShowPlayerModal(true);
-                  }}
-                >
-                  {selectedStriker?.image ? (
-                    <Image source={{ uri: selectedStriker.image }} style={styles.selectionPlayerImage} />
-                  ) : (
-                    <View style={styles.playerRoleFigure}>
-                      <View style={styles.figureHead} />
-                      <View style={styles.figureBody} />
-                      <View style={styles.batHandle} />
-                    </View>
-                  )}
-                  <Text style={styles.playerSelectionLabel}>Select Striker</Text>
-                  {selectedStriker && (
-                    <Text style={styles.selectedPlayerName}>{selectedStriker.name}</Text>
-                  )}
-                </TouchableOpacity>
-
-                <TouchableOpacity 
-                  style={[styles.playerSelectionCard, selectedNonStriker && styles.playerSelectionCardSelected]}
-                  onPress={() => {
-                    setPlayerModalType("nonStriker");
-                    setShowPlayerModal(true);
-                  }}
-                >
-                  {selectedNonStriker?.image ? (
-                    <Image source={{ uri: selectedNonStriker.image }} style={styles.selectionPlayerImage} />
-                  ) : (
-                    <View style={styles.playerRoleFigure}>
-                      <View style={styles.figureHead} />
-                      <View style={styles.figureBody} />
-                      <View style={styles.figureLegs} />
-                    </View>
-                  )}
-                  <Text style={styles.playerSelectionLabel}>Select Non-striker</Text>
-                  {selectedNonStriker && (
-                    <Text style={styles.selectedPlayerName}>{selectedNonStriker.name}</Text>
-                  )}
-                </TouchableOpacity>
-              </View>
-            </View>
-
-            {/* Bowling Team Section */}
-            <View style={styles.playerSection}>
-              <Text style={styles.playerSectionTitle}>
-                Bowling - {getBowlingTeamName()}
-              </Text>
-              
-              {/* Bowler Selection */}
-              <View style={styles.playerSelectionRow}>
-                <TouchableOpacity 
-                  style={[styles.playerSelectionCard, styles.bowlerCard, selectedBowler && styles.playerSelectionCardSelected]}
-                  onPress={() => {
-                    setPlayerModalType("bowler");
-                    setShowPlayerModal(true);
-                  }}
-                >
-                  {selectedBowler?.image ? (
-                    <Image source={{ uri: selectedBowler.image }} style={styles.selectionPlayerImage} />
-                  ) : (
-                    <View style={styles.playerRoleFigure}>
-                      <View style={styles.figureHead} />
-                      <View style={[styles.figureBody, styles.bowlerFigureBody]} />
-                      <View style={styles.bowlingArm} />
-                      <View style={styles.bowlingBall} />
-                    </View>
-                  )}
-                  <Text style={styles.playerSelectionLabel}>Select Bowler</Text>
-                  {selectedBowler && (
-                    <Text style={styles.selectedPlayerName}>{selectedBowler.name}</Text>
-                  )}
-                </TouchableOpacity>
-              </View>
-            </View>
-
-            {/* Action Buttons */}
-            <View style={styles.playerActionButtons}>
-              <TouchableOpacity 
-                style={styles.matchSettingsButton}
-                onPress={() => setCurrentView("matchSettings")}
-              >
-                <LinearGradient
-                  colors={["#666", "#555"]}
-                  style={styles.matchSettingsButtonGradient}
-                >
-                  <Ionicons name="settings-outline" size={20} color="#FFF" />
-                  <Text style={styles.matchSettingsButtonText}>Match Settings</Text>
-                </LinearGradient>
-              </TouchableOpacity>
-
-              <TouchableOpacity 
-                style={styles.startScoringButton}
-                onPress={() => {
-                  // Validation: Check if all players are selected
-                  if (!selectedStriker) {
-                    Alert.alert("Missing Selection", "Please select a striker before starting the match.");
-                    return;
-                  }
-                  if (!selectedNonStriker) {
-                    Alert.alert("Missing Selection", "Please select a non-striker before starting the match.");
-                    return;
-                  }
-                  if (!selectedBowler) {
-                    Alert.alert("Missing Selection", "Please select a bowler before starting the match.");
-                    return;
-                  }
-
-                  // Navigate to scoring page
-                  setCurrentOver(1);
-                  setCurrentBall(1);
-                  setTotalRuns(0);
-                  setTotalWickets(0);
-                  setStrikerRuns(0);
-                  setStrikerBalls(0);
-                  setNonStrikerRuns(0);
-                  setNonStrikerBalls(0);
-                  setBowlerRuns(0);
-                  setBowlerWickets(0);
-                  setBowlerOvers("0.0-0-0-0");
-                  setScoreHistory([]);
-                  setCurrentView("scoringPage");
-                }}
-              >
-                <LinearGradient
-                  colors={["#00A66A", "#0F766E"]}
-                  style={styles.startScoringButtonGradient}
-                >
-                  <Ionicons name="play-circle" size={20} color="#FFF" />
-                  <Text style={styles.startScoringButtonText}>Start Scoring</Text>
-                </LinearGradient>
-              </TouchableOpacity>
-            </View>
-
-            {/* Bottom Spacing */}
-            <View style={{ height: 100 }} />
-          </ScrollView>
-        ) : currentView === "matchSettings" ? (
-          /* Match Settings Page */
-          <ScrollView style={styles.matchSettingsContainer} showsVerticalScrollIndicator={false}>
-            <Text style={styles.matchSettingsTitle}>Match Settings</Text>
-
-            {/* Wagon Wheel Section */}
-            <View style={styles.settingsSection}>
-              <Text style={styles.settingsSectionTitle}>WAGON WHEEL</Text>
-              
-              <View style={styles.settingItem}>
-                <Text style={styles.settingLabel}>Disable Wagon Wheel for DOT Ball</Text>
-                <TouchableOpacity 
-                  style={[styles.toggle, wagonWheelDotBall && styles.toggleActive]}
-                  onPress={() => setWagonWheelDotBall(!wagonWheelDotBall)}
-                >
-                  <View style={[styles.toggleThumb, wagonWheelDotBall && styles.toggleThumbActive]} />
-                </TouchableOpacity>
-              </View>
-
-              <View style={styles.settingItem}>
-                <Text style={styles.settingLabel}>Disable Wagon Wheel for 1s, 2s and 3s</Text>
-                <TouchableOpacity 
-                  style={[styles.toggle, wagonWheel123s && styles.toggleActive]}
-                  onPress={() => setWagonWheel123s(!wagonWheel123s)}
-                >
-                  <View style={[styles.toggleThumb, wagonWheel123s && styles.toggleThumbActive]} />
-                </TouchableOpacity>
-              </View>
-
-              <View style={styles.settingItem}>
-                <Text style={styles.settingLabel}>Disable Shot Selection</Text>
-                <TouchableOpacity 
-                  style={[styles.toggle, shotSelection && styles.toggleActive]}
-                  onPress={() => setShotSelection(!shotSelection)}
-                >
-                  <View style={[styles.toggleThumb, shotSelection && styles.toggleThumbActive]} />
-                </TouchableOpacity>
-              </View>
-
-              <Text style={styles.settingNote}>
-                {"*WW and Shot Selection won't be disabled for boundaries and wickets."}
-              </Text>
-            </View>
-
-            {/* Wide/No Ball Rules Section */}
-            <View style={styles.settingsSection}>
-              <Text style={styles.settingsSectionTitle}>WIDE/NO BALL RULES</Text>
-              
-              <View style={styles.ruleItem}>
-                <View style={styles.ruleHeader}>
-                  <Text style={styles.ruleLabel}>A</Text>
-                  <Text style={styles.ruleText}>Count Wide as a legal delivery</Text>
-                </View>
-                <TouchableOpacity 
-                  style={[styles.toggle, countWideAsLegal && styles.toggleActive]}
-                  onPress={() => setCountWideAsLegal(!countWideAsLegal)}
-                >
-                  <View style={[styles.toggleThumb, countWideAsLegal && styles.toggleThumbActive]} />
-                </TouchableOpacity>
-              </View>
-
-              <View style={styles.ruleItem}>
-                <View style={styles.ruleHeader}>
-                  <Text style={styles.ruleLabel}>B</Text>
-                  <Text style={styles.ruleText}>Wide Runs</Text>
-                </View>
-                <View style={styles.runsCounter}>
-                  <TouchableOpacity 
-                    style={styles.counterButton}
-                    onPress={() => setWideRuns(Math.max(0, wideRuns - 1))}
-                  >
-                    <Ionicons name="remove-circle-outline" size={24} color="#666" />
-                  </TouchableOpacity>
-                  <Text style={styles.counterValue}>{wideRuns}</Text>
-                  <TouchableOpacity 
-                    style={styles.counterButton}
-                    onPress={() => setWideRuns(wideRuns + 1)}
-                  >
-                    <Ionicons name="add-circle-outline" size={24} color="#666" />
-                  </TouchableOpacity>
-                </View>
-              </View>
-
-              <View style={styles.ruleItem}>
-                <View style={styles.ruleHeader}>
-                  <Text style={styles.ruleLabel}>C</Text>
-                  <Text style={styles.ruleText}>Count No Ball as a legal delivery</Text>
-                </View>
-                <TouchableOpacity 
-                  style={[styles.toggle, countNoBallAsLegal && styles.toggleActive]}
-                  onPress={() => setCountNoBallAsLegal(!countNoBallAsLegal)}
-                >
-                  <View style={[styles.toggleThumb, countNoBallAsLegal && styles.toggleThumbActive]} />
-                </TouchableOpacity>
-              </View>
-
-              <View style={styles.ruleItem}>
-                <View style={styles.ruleHeader}>
-                  <Text style={styles.ruleLabel}>D</Text>
-                  <Text style={styles.ruleText}>No Ball Runs</Text>
-                </View>
-                <View style={styles.runsCounter}>
-                  <TouchableOpacity 
-                    style={styles.counterButton}
-                    onPress={() => setNoBallRuns(Math.max(0, noBallRuns - 1))}
-                  >
-                    <Ionicons name="remove-circle-outline" size={24} color="#666" />
-                  </TouchableOpacity>
-                  <Text style={styles.counterValue}>{noBallRuns}</Text>
-                  <TouchableOpacity 
-                    style={styles.counterButton}
-                    onPress={() => setNoBallRuns(noBallRuns + 1)}
-                  >
-                    <Ionicons name="add-circle-outline" size={24} color="#666" />
-                  </TouchableOpacity>
-                </View>
-              </View>
-
-              {/* Ignore Rules */}
-              <View style={styles.ignoreRulesContainer}>
-                <Text style={styles.ignoreRulesLabel}>Ignore Rules</Text>
-                <View style={styles.ignoreRulesOptions}>
-                  {["A", "B", "C", "D"].map((option) => (
-                    <TouchableOpacity
-                      key={option}
-                      style={[
-                        styles.ignoreRuleOption,
-                        ignoreRules === option && styles.ignoreRuleOptionActive,
-                      ]}
-                      onPress={() => setIgnoreRules(option)}
+                    <LinearGradient
+                      colors={["#00A66A", "#064E3B"]}
+                      style={styles.tdBottomBtnGrad}
                     >
-                      <Text style={[
-                        styles.ignoreRuleOptionText,
-                        ignoreRules === option && styles.ignoreRuleOptionTextActive,
-                      ]}>
-                        {option}
+                      <Ionicons
+                        name="settings-outline"
+                        size={18}
+                        color="#FFF"
+                      />
+                      <Text style={styles.tdBottomBtnText}>
+                        Manage Tournament
                       </Text>
+                    </LinearGradient>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            ) : currentView === "tournamentTeamManagement" ? (
+              /* Tournament Team Management View */
+              <View style={styles.tournamentDashboardContainer}>
+                {/* Red Gradient Header with Tournament Info */}
+                <LinearGradient
+                  colors={["#E63946", "#C1121F", "#780000"]}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 1 }}
+                  style={styles.tournamentDashboardHeader}
+                >
+                  {/* Trophy Icon */}
+                  <View style={styles.tournamentTrophyContainer}>
+                    <View style={styles.tournamentTrophyCircle}>
+                      <Ionicons name="trophy" size={48} color="#FFD700" />
+                    </View>
+                  </View>
+
+                  {/* Tournament Name */}
+                  <Text style={styles.tournamentDashboardTitle}>
+                    {tournamentName || "Mumbai Premier League 2024"}
+                  </Text>
+
+                  {/* Status Badge */}
+                  <View style={styles.tournamentStatusBadge}>
+                    <View style={styles.statusDot} />
+                    <Text style={styles.tournamentStatusText}>Ongoing</Text>
+                  </View>
+
+                  {/* Stats Row */}
+                  <View style={styles.tournamentStatsRow}>
+                    <View style={styles.tournamentStatItem}>
+                      <Ionicons name="people" size={20} color="#FFF" />
+                      <Text style={styles.tournamentStatNumber}>8</Text>
+                      <Text style={styles.tournamentStatLabel}>Teams</Text>
+                    </View>
+                    <View style={styles.tournamentStatItem}>
+                      <Ionicons name="baseball" size={20} color="#FFF" />
+                      <Text style={styles.tournamentStatNumber}>24</Text>
+                      <Text style={styles.tournamentStatLabel}>Matches</Text>
+                    </View>
+                    <View style={styles.tournamentStatItem}>
+                      <Ionicons name="calendar" size={20} color="#FFF" />
+                      <Text style={styles.tournamentStatNumber}>May 15</Text>
+                      <Text style={styles.tournamentStatLabel}>Start</Text>
+                    </View>
+                  </View>
+
+                  {/* Progress Bar */}
+                  <View style={styles.tournamentProgressContainer}>
+                    <View style={styles.tournamentProgressBar}>
+                      <View
+                        style={[
+                          styles.tournamentProgressFill,
+                          { width: "65%" },
+                        ]}
+                      />
+                    </View>
+                    <Text style={styles.tournamentProgressText}>
+                      65% Complete
+                    </Text>
+                  </View>
+                </LinearGradient>
+
+                {/* Dashboard Tabs */}
+                <View style={styles.tournamentTabsContainer}>
+                  {["matches", "points", "leaderboard", "teams"].map((tab) => (
+                    <TouchableOpacity
+                      key={tab}
+                      style={[
+                        styles.tournamentTab,
+                        activeTournamentTab === tab &&
+                          styles.tournamentTabActive,
+                      ]}
+                      onPress={() => setActiveTournamentTab(tab)}
+                    >
+                      <Text
+                        style={[
+                          styles.tournamentTabText,
+                          activeTournamentTab === tab &&
+                            styles.tournamentTabTextActive,
+                        ]}
+                      >
+                        {tab.charAt(0).toUpperCase() + tab.slice(1)}
+                      </Text>
+                      {activeTournamentTab === tab && (
+                        <View style={styles.tournamentTabIndicator} />
+                      )}
                     </TouchableOpacity>
                   ))}
                 </View>
-              </View>
-            </View>
 
-            {/* Save Settings Button */}
-            <TouchableOpacity 
-              style={styles.saveSettingsButton}
-              onPress={() => {
-                Alert.alert(
-                  "Settings Saved",
-                  "Match settings have been saved successfully!",
-                  [{ text: "OK", onPress: () => setCurrentView("playerSelection") }]
-                );
-              }}
-            >
-              <LinearGradient
-                colors={["#00A66A", "#0F766E"]}
-                style={styles.saveSettingsButtonGradient}
-              >
-                <Ionicons name="checkmark-circle" size={20} color="#FFF" />
-                <Text style={styles.saveSettingsButtonText}>Save Settings</Text>
-              </LinearGradient>
-            </TouchableOpacity>
-
-            {/* Bottom Spacing */}
-            <View style={{ height: 100 }} />
-          </ScrollView>
-        ) : currentView === "scoringPage" ? (
-          /* Cricket Scoring Page */
-          <View style={styles.scoringContainer}>
-            {/* Match Header */}
-            <View style={styles.scoringHeader}>
-              <Text style={styles.scoringTeamName}>{getBattingTeamName()}</Text>
-              <Text style={styles.scoringTotal}>{totalRuns}/{totalWickets}</Text>
-              <Text style={styles.matchHeaderText}>
-                Overs {getOverLabel(currentOver - 1, currentBall - 1)} / {numberOfOvers || "?"}
-              </Text>
-            </View>
-
-            {/* Batsmen Section */}
-            <View style={styles.batsmenSection}>
-              <View style={styles.batsmanCard}>
-                {selectedStriker?.image && <Image source={{ uri: selectedStriker.image }} style={styles.scoringPlayerImage} />}
-                <Text style={styles.batsmanName}>{selectedStriker?.name || "Aniket"}</Text>
-                <Text style={styles.batsmanScore}>{strikerRuns}({strikerBalls})</Text>
-              </View>
-
-              <View style={styles.batsmanCard}>
-                {selectedNonStriker?.image && <Image source={{ uri: selectedNonStriker.image }} style={styles.scoringPlayerImage} />}
-                <Text style={styles.batsmanName}>{selectedNonStriker?.name || "Deepu"}</Text>
-                <Text style={styles.batsmanScore}>{nonStrikerRuns}({nonStrikerBalls})</Text>
-              </View>
-            </View>
-
-            {/* Bowler Section */}
-            <View style={styles.bowlerSection}>
-              {selectedBowler?.image && <Image source={{ uri: selectedBowler.image }} style={styles.scoringPlayerImage} />}
-              <Text style={styles.bowlerName}>{selectedBowler?.name || "Kapil Jangir"}</Text>
-              <View style={styles.bowlerStats}>
-                <Ionicons name="stats-chart" size={12} color="#4CAF50" />
-              </View>
-              <Text style={styles.bowlerFigures}>{bowlerOvers}</Text>
-            </View>
-
-            {/* Wicket Type Selection */}
-            <View style={styles.wicketTypeSection}>
-              <TouchableOpacity 
-                style={[styles.wicketTypeButton, selectedWicketType === "overWicket" && styles.wicketTypeButtonActive]}
-                onPress={() => setSelectedWicketType(selectedWicketType === "overWicket" ? null : "overWicket")}
-              >
-                <View style={styles.wicketIcon}>
-                  <Ionicons name="stats-chart" size={20} color="#4CAF50" />
-                </View>
-                <Text style={styles.wicketTypeText}>Over the Wicket</Text>
-              </TouchableOpacity>
-
-              <TouchableOpacity 
-                style={[styles.wicketTypeButton, selectedWicketType === "betweenWicket" && styles.wicketTypeButtonActive]}
-                onPress={() => setSelectedWicketType(selectedWicketType === "betweenWicket" ? null : "betweenWicket")}
-              >
-                <View style={styles.wicketIcon}>
-                  <Ionicons name="stats-chart" size={20} color="#4CAF50" />
-                </View>
-                <Text style={styles.wicketTypeText}>Between the Wicket</Text>
-              </TouchableOpacity>
-
-              <TouchableOpacity 
-                style={[styles.wicketTypeButton, selectedWicketType === "roundWicket" && styles.wicketTypeButtonActive]}
-                onPress={() => setSelectedWicketType(selectedWicketType === "roundWicket" ? null : "roundWicket")}
-              >
-                <View style={styles.wicketIcon}>
-                  <Ionicons name="stats-chart" size={20} color="#4CAF50" />
-                </View>
-                <Text style={styles.wicketTypeText}>Round the Wicket</Text>
-              </TouchableOpacity>
-            </View>
-
-            {/* Scoring Buttons */}
-            <View style={styles.scoringGrid}>
-              {/* First Row */}
-              <View style={styles.scoringRow}>
-                <TouchableOpacity style={styles.scoreButton} onPress={() => applyLegalRun(0)}>
-                  <Text style={styles.scoreButtonText}>0</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.scoreButton} onPress={() => applyLegalRun(1)}>
-                  <Text style={styles.scoreButtonText}>1</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.scoreButton} onPress={() => applyLegalRun(2)}>
-                  <Text style={styles.scoreButtonText}>2</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={[styles.scoreButton, styles.undoButton]} onPress={undoScore}>
-                  <Text style={[styles.scoreButtonText, styles.undoButtonText]}>UNDO</Text>
-                </TouchableOpacity>
-              </View>
-
-              {/* Second Row */}
-              <View style={styles.scoringRow}>
-                <TouchableOpacity style={styles.scoreButton} onPress={() => applyLegalRun(3)}>
-                  <Text style={styles.scoreButtonText}>3</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.scoreButton} onPress={() => applyLegalRun(4)}>
-                  <Text style={styles.scoreButtonText}>4</Text>
-                  <Text style={styles.scoreButtonSubText}>FOUR</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.scoreButton} onPress={() => applyLegalRun(6)}>
-                  <Text style={styles.scoreButtonText}>6</Text>
-                  <Text style={styles.scoreButtonSubText}>SIX</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.scoreButton} onPress={() => applyLegalRun(5)}>
-                  <Text style={styles.scoreButtonText}>5, 7</Text>
-                </TouchableOpacity>
-              </View>
-
-              {/* Third Row */}
-              <View style={styles.scoringRow}>
-                <TouchableOpacity style={styles.scoreButton} onPress={() => applyExtra("WD")}>
-                  <Text style={styles.scoreButtonText}>WD</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.scoreButton} onPress={() => applyExtra("NB")}>
-                  <Text style={styles.scoreButtonText}>NB</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.scoreButton} onPress={() => applyExtra("BYE")}>
-                  <Text style={styles.scoreButtonText}>BYE</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={[styles.scoreButton, styles.outButton]} onPress={applyWicket}>
-                  <Text style={[styles.scoreButtonText, styles.outButtonText]}>OUT</Text>
-                </TouchableOpacity>
-              </View>
-
-              <TouchableOpacity style={styles.scoreButton} onPress={() => applyExtra("LB")}>
-                <Text style={styles.scoreButtonText}>LB</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        ) : currentView === "selectTeam" ? (
-          /* Select Team View */
-          <View style={styles.teamSelectionContainer}>
-            <Text style={styles.teamSelectionTitle}>
-              Select Team {teamSlot}
-            </Text>
-
-            {/* Teams List */}
-            {[
-              {
-                id: 1,
-                name: "Mumbai Warriors",
-                players: 11,
-                wins: 18,
-                matches: 25,
-              },
-              {
-                id: 2,
-                name: "Delhi Strikers",
-                players: 11,
-                wins: 12,
-                matches: 20,
-              },
-              {
-                id: 3,
-                name: "Bangalore Challengers",
-                players: 11,
-                wins: 10,
-                matches: 18,
-              },
-            ].map((team) => (
-              <TouchableOpacity
-                key={team.id}
-                style={styles.selectTeamCard}
-                onPress={() => {
-                  console.log(`Selected ${team.name} for Team ${teamSlot}`);
-                  handleBackToTeamSelection();
-                }}
-              >
-                <LinearGradient
-                  colors={["#FFF", "#F8F8F8"]}
-                  style={styles.selectTeamCardGradient}
-                >
-                  <LinearGradient
-                    colors={["#00A66A", "#0F766E"]}
-                    style={styles.selectTeamIcon}
+                {/* Content based on active tab */}
+                {activeTournamentTab === "matches" && (
+                  <ScrollView
+                    style={styles.tournamentTabContent}
+                    showsVerticalScrollIndicator={false}
                   >
-                    <Text style={styles.selectTeamInitial}>
-                      {team.name.charAt(0)}
+                    <Text style={styles.tournamentSectionTitle}>
+                      Upcoming Matches
                     </Text>
-                  </LinearGradient>
 
-                  <View style={styles.selectTeamInfo}>
-                    <Text style={styles.selectTeamName}>{team.name}</Text>
-                    <View style={styles.selectTeamStats}>
-                      <Ionicons name="people" size={12} color="#666" />
-                      <Text style={styles.selectStatText}>
-                        {team.players} Players
-                      </Text>
-                      <Ionicons
-                        name="trophy"
-                        size={12}
-                        color="#666"
-                        style={{ marginLeft: 12 }}
-                      />
-                      <Text style={styles.selectStatText}>
-                        {team.wins}/{team.matches}
-                      </Text>
-                    </View>
-                  </View>
+                    {/* TODO(backend): fetch upcoming tournament matches from API */}
+                    {(
+                      [] as {
+                        id: number;
+                        team1: string;
+                        team1Initial: string;
+                        team1Color: string;
+                        team2: string;
+                        team2Initial: string;
+                        team2Color: string;
+                        date: string;
+                        time: string;
+                        venue: string;
+                      }[]
+                    ).map((match) => (
+                      <View key={match.id} style={styles.tournamentMatchCard}>
+                        {/* Match Header */}
+                        <View style={styles.tournamentMatchHeader}>
+                          <View style={styles.upcomingBadge}>
+                            <Text style={styles.upcomingBadgeText}>
+                              UPCOMING
+                            </Text>
+                          </View>
+                          <Text style={styles.tournamentMatchTime}>
+                            {match.date} · {match.time}
+                          </Text>
+                        </View>
 
-                  <Ionicons name="chevron-forward" size={20} color="#00A66A" />
-                </LinearGradient>
-              </TouchableOpacity>
-            ))}
-          </View>
-        ) : currentView === "createTeam" ? (
-          /* ── Create Team — Premium Redesign ── */
-          <ScrollView
-            ref={scrollViewRef}
-            style={{ flex: 1, backgroundColor: "#F8FAFC" }}
-            showsVerticalScrollIndicator={false}
-            keyboardShouldPersistTaps="handled"
-          >
-            {/* ── Header ── */}
-            <LinearGradient
-              colors={["#00A66A", "#0F766E", "#064E3B"]}
-              start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }}
-              style={ctStyles.header}
-            >
-              <View style={ctStyles.headerDeco1} />
-              <View style={ctStyles.headerDeco2} />
-              <View style={ctStyles.headerTop}>
-                <View style={ctStyles.headerSlotBadge}>
-                  <Ionicons name="shield-half" size={12} color="#FFF" />
-                  <Text style={ctStyles.headerSlotTxt}>TEAM {teamSlot}</Text>
-                </View>
-              </View>
-              <Text style={ctStyles.headerTitle}>Create Your Team</Text>
-              <Text style={ctStyles.headerSub}>Fill in team details to set up your squad</Text>
+                        {/* Teams Row */}
+                        <View style={styles.tournamentMatchTeams}>
+                          {/* Team 1 */}
+                          <View style={styles.tournamentTeamSection}>
+                            <View
+                              style={[
+                                styles.tournamentTeamCircle,
+                                { backgroundColor: match.team1Color },
+                              ]}
+                            >
+                              <Text style={styles.tournamentTeamInitial}>
+                                {match.team1Initial}
+                              </Text>
+                            </View>
+                            <Text style={styles.tournamentTeamName}>
+                              {match.team1}
+                            </Text>
+                          </View>
 
-              {/* Progress bar */}
-              <View style={ctStyles.progressBar}>
-                {[
-                  !!currentTeamName.trim(),
-                  !!currentCity.trim(),
-                  !!currentMobile && currentMobile.length === 10,
-                  !!currentCaptain.trim(),
-                  !!currentPlayers && parseInt(currentPlayers) >= 11,
-                ].map((done, i) => (
-                  <View key={i} style={[ctStyles.progressSlot, done && ctStyles.progressSlotDone]} />
-                ))}
-              </View>
-              <Text style={ctStyles.progressLabel}>
-                {[currentTeamName, currentCity, currentMobile, currentCaptain, currentPlayers].filter(Boolean).length}/5 fields filled
-              </Text>
-            </LinearGradient>
+                          {/* VS */}
+                          <View style={styles.tournamentVsContainer}>
+                            <Text style={styles.tournamentVsText}>vs</Text>
+                          </View>
 
-            <View style={ctStyles.body}>
+                          {/* Team 2 */}
+                          <View style={styles.tournamentTeamSection}>
+                            <View
+                              style={[
+                                styles.tournamentTeamCircle,
+                                { backgroundColor: match.team2Color },
+                              ]}
+                            >
+                              <Text style={styles.tournamentTeamInitial}>
+                                {match.team2Initial}
+                              </Text>
+                            </View>
+                            <Text style={styles.tournamentTeamName}>
+                              {match.team2}
+                            </Text>
+                          </View>
 
-              {/* ── Team Identity ── */}
-              <View style={ctStyles.sectionCard}>
-                <View style={ctStyles.sectionHeader}>
-                  <View style={ctStyles.sectionIconWrap}>
-                    <Ionicons name="shield" size={16} color="#00A66A" />
-                  </View>
-                  <Text style={ctStyles.sectionTitle}>Team Identity</Text>
-                </View>
+                          {/* Action Menu */}
+                          <TouchableOpacity style={styles.tournamentMatchMenu}>
+                            <Ionicons
+                              name="ellipsis-vertical"
+                              size={20}
+                              color="#666"
+                            />
+                          </TouchableOpacity>
+                        </View>
 
-                {/* Team Name */}
-                <View style={ctStyles.fieldGroup}>
-                  <Text style={ctStyles.fieldLabel}>Team Name <Text style={ctStyles.req}>*</Text></Text>
-                  <View style={[ctStyles.fieldInput, currentTeamName.trim() && ctStyles.fieldInputDone]}>
-                    <Ionicons name="shield-outline" size={18} color={currentTeamName.trim() ? "#00A66A" : "#94A3B8"} />
-                    <TextInput
-                      style={ctStyles.fieldText}
-                      placeholder="e.g. Mumbai Warriors"
-                      placeholderTextColor="#94A3B8"
-                      value={currentTeamName}
-                      onChangeText={setCurrentTeamName}
-                    />
-                    {currentTeamName.trim() && <Ionicons name="checkmark-circle" size={18} color="#22C55E" />}
-                  </View>
-                </View>
+                        {/* Venue */}
+                        <View style={styles.tournamentMatchVenue}>
+                          <Ionicons
+                            name="location-outline"
+                            size={14}
+                            color="#999"
+                          />
+                          <Text style={styles.tournamentMatchVenueText}>
+                            {match.venue}
+                          </Text>
+                        </View>
+                      </View>
+                    ))}
 
-                {/* City */}
-                <View style={ctStyles.fieldGroup}>
-                  <Text style={ctStyles.fieldLabel}>City / Town <Text style={ctStyles.req}>*</Text></Text>
-                  <View style={[ctStyles.fieldInput, currentCity.trim() && ctStyles.fieldInputDone]}>
-                    <Ionicons name="location-outline" size={18} color={currentCity.trim() ? "#00A66A" : "#94A3B8"} />
-                    <TextInput
-                      style={ctStyles.fieldText}
-                      placeholder="e.g. Mumbai"
-                      placeholderTextColor="#94A3B8"
-                      value={currentCity}
-                      onChangeText={setCurrentCity}
-                    />
-                    {currentCity.trim() && <Ionicons name="checkmark-circle" size={18} color="#22C55E" />}
-                  </View>
-                </View>
+                    <View style={{ height: 100 }} />
+                  </ScrollView>
+                )}
 
-                {/* Mobile */}
-                <View style={ctStyles.fieldGroup}>
-                  <Text style={ctStyles.fieldLabel}>Contact Number <Text style={ctStyles.req}>*</Text></Text>
-                  <View style={ctStyles.mobileRow}>
-                    <TouchableOpacity style={ctStyles.dialCodeBtn} onPress={() => setShowCountryPicker(!showCountryPicker)}>
-                      <Text style={ctStyles.dialCodeTxt}>{countryCode}</Text>
-                      <Ionicons name="chevron-down" size={12} color="#64748B" />
-                    </TouchableOpacity>
-                    <View style={[ctStyles.fieldInput, { flex: 1 }, currentMobile.length === 10 && ctStyles.fieldInputDone]}>
-                      <Ionicons name="call-outline" size={18} color={currentMobile.length === 10 ? "#00A66A" : "#94A3B8"} />
-                      <TextInput
-                        style={ctStyles.fieldText}
-                        placeholder="10 digit number"
-                        placeholderTextColor="#94A3B8"
-                        keyboardType="phone-pad"
-                        maxLength={10}
-                        value={currentMobile}
-                        onChangeText={setCurrentMobile}
-                      />
-                      {currentMobile.length === 10 && <Ionicons name="checkmark-circle" size={18} color="#22C55E" />}
-                    </View>
-                  </View>
-                  {showCountryPicker && (
-                    <View style={ctStyles.dialDropdown}>
-                      {[
-                        { code: '+91', flag: '🇮🇳', country: 'India' },
-                        { code: '+1',  flag: '🇺🇸', country: 'USA/Canada' },
-                        { code: '+44', flag: '🇬🇧', country: 'UK' },
-                        { code: '+61', flag: '🇦🇺', country: 'Australia' },
-                        { code: '+971',flag: '🇦🇪', country: 'UAE' },
-                        { code: '+65', flag: '🇸🇬', country: 'Singapore' },
-                        { code: '+92', flag: '🇵🇰', country: 'Pakistan' },
-                        { code: '+880',flag: '🇧🇩', country: 'Bangladesh' },
-                        { code: '+94', flag: '🇱🇰', country: 'Sri Lanka' },
-                      ].map(item => (
-                        <TouchableOpacity key={item.code} style={ctStyles.dialOption} onPress={() => { setCountryCode(item.code); setShowCountryPicker(false); }}>
-                          <Text style={ctStyles.dialFlag}>{item.flag}</Text>
-                          <Text style={ctStyles.dialCountry}>{item.country}</Text>
-                          <Text style={ctStyles.dialCode}>{item.code}</Text>
-                          {countryCode === item.code && <Ionicons name="checkmark" size={14} color="#00A66A" />}
-                        </TouchableOpacity>
+                {activeTournamentTab === "points" && (
+                  <ScrollView
+                    style={styles.dashboardTabContent}
+                    showsVerticalScrollIndicator={false}
+                  >
+                    <Text style={styles.dashboardSectionTitle}>
+                      Points Table
+                    </Text>
+                    <View style={styles.pointsTable}>
+                      {/* Table Header */}
+                      <LinearGradient
+                        colors={["#E63946", "#C1121F"]}
+                        start={{ x: 0, y: 0 }}
+                        end={{ x: 1, y: 0 }}
+                        style={styles.pointsTableHeader}
+                      >
+                        <Text
+                          style={[
+                            styles.pointsTableCell,
+                            styles.pointsTableHeaderCell,
+                            { flex: 0.8 },
+                          ]}
+                        >
+                          #
+                        </Text>
+                        <Text
+                          style={[
+                            styles.pointsTableCell,
+                            styles.pointsTableHeaderCell,
+                            { flex: 2.5 },
+                          ]}
+                        >
+                          Team
+                        </Text>
+                        <Text
+                          style={[
+                            styles.pointsTableCell,
+                            styles.pointsTableHeaderCell,
+                          ]}
+                        >
+                          P
+                        </Text>
+                        <Text
+                          style={[
+                            styles.pointsTableCell,
+                            styles.pointsTableHeaderCell,
+                          ]}
+                        >
+                          W
+                        </Text>
+                        <Text
+                          style={[
+                            styles.pointsTableCell,
+                            styles.pointsTableHeaderCell,
+                          ]}
+                        >
+                          L
+                        </Text>
+                        <Text
+                          style={[
+                            styles.pointsTableCell,
+                            styles.pointsTableHeaderCell,
+                          ]}
+                        >
+                          NRR
+                        </Text>
+                        <Text
+                          style={[
+                            styles.pointsTableCell,
+                            styles.pointsTableHeaderCell,
+                            { fontWeight: "bold" },
+                          ]}
+                        >
+                          Pts
+                        </Text>
+                      </LinearGradient>
+
+                      {/* Table Rows */}
+                      {/* TODO(backend): fetch points table from API */}
+                      {(
+                        [] as {
+                          rank: number;
+                          team: string;
+                          p: number;
+                          w: number;
+                          l: number;
+                          nrr: string;
+                          pts: number;
+                          qualified: boolean;
+                        }[]
+                      ).map((row, idx) => (
+                        <View
+                          key={idx}
+                          style={[
+                            styles.pointsTableRow,
+                            row.qualified && styles.pointsTableRowQualified,
+                          ]}
+                        >
+                          <View style={[styles.pointsTableCell, { flex: 0.8 }]}>
+                            <View
+                              style={[
+                                styles.rankBadge,
+                                row.rank === 1 && {
+                                  backgroundColor: "#FFD700",
+                                },
+                                row.rank === 2 && {
+                                  backgroundColor: "#C0C0C0",
+                                },
+                                row.rank === 3 && {
+                                  backgroundColor: "#CD7F32",
+                                },
+                              ]}
+                            >
+                              <Text
+                                style={[
+                                  styles.rankText,
+                                  row.rank <= 3 && { color: "#FFF" },
+                                ]}
+                              >
+                                {row.rank}
+                              </Text>
+                            </View>
+                          </View>
+                          <View
+                            style={[
+                              styles.pointsTableCell,
+                              {
+                                flex: 2.5,
+                                flexDirection: "row",
+                                alignItems: "center",
+                              },
+                            ]}
+                          >
+                            <LinearGradient
+                              colors={["#17A2B8", "#138496"]}
+                              style={styles.teamIconSmall}
+                            >
+                              <Text style={styles.teamIconSmallText}>
+                                {row.team.charAt(5)}
+                              </Text>
+                            </LinearGradient>
+                            <Text style={styles.pointsTableTeamCell}>
+                              {row.team}
+                            </Text>
+                          </View>
+                          <Text style={styles.pointsTableCell}>{row.p}</Text>
+                          <Text
+                            style={[
+                              styles.pointsTableCell,
+                              { color: "#4CAF50", fontWeight: "600" },
+                            ]}
+                          >
+                            {row.w}
+                          </Text>
+                          <Text
+                            style={[
+                              styles.pointsTableCell,
+                              { color: "#E63946", fontWeight: "600" },
+                            ]}
+                          >
+                            {row.l}
+                          </Text>
+                          <Text
+                            style={[
+                              styles.pointsTableCell,
+                              {
+                                color: row.nrr.startsWith("+")
+                                  ? "#4CAF50"
+                                  : "#E63946",
+                              },
+                            ]}
+                          >
+                            {row.nrr}
+                          </Text>
+                          <Text
+                            style={[
+                              styles.pointsTableCell,
+                              styles.pointsTablePtsCell,
+                            ]}
+                          >
+                            {row.pts}
+                          </Text>
+                        </View>
                       ))}
                     </View>
-                  )}
-                </View>
-              </View>
 
-              {/* ── Leadership ── */}
-              <View style={ctStyles.sectionCard}>
-                <View style={ctStyles.sectionHeader}>
-                  <View style={ctStyles.sectionIconWrap}>
-                    <Ionicons name="star" size={16} color="#00A66A" />
-                  </View>
-                  <Text style={ctStyles.sectionTitle}>Leadership</Text>
-                </View>
-
-                {/* Captain */}
-                <View style={ctStyles.fieldGroup}>
-                  <Text style={ctStyles.fieldLabel}>Captain Name <Text style={ctStyles.req}>*</Text></Text>
-                  <View style={[ctStyles.fieldInput, currentCaptain.trim() && ctStyles.fieldInputDone]}>
-                    <Ionicons name="person-circle-outline" size={18} color={currentCaptain.trim() ? "#00A66A" : "#94A3B8"} />
-                    <TextInput
-                      style={ctStyles.fieldText}
-                      placeholder="e.g. Rohit Sharma"
-                      placeholderTextColor="#94A3B8"
-                      value={currentCaptain}
-                      onChangeText={setCurrentCaptain}
-                    />
-                    {currentCaptain.trim() && (
-                      <View style={ctStyles.captainBadge}>
-                        <Text style={ctStyles.captainBadgeTxt}>C</Text>
+                    {/* Legend */}
+                    <View style={styles.pointsLegend}>
+                      <View style={styles.legendItem}>
+                        <View
+                          style={[
+                            styles.legendDot,
+                            { backgroundColor: "#4CAF50" },
+                          ]}
+                        />
+                        <Text style={styles.legendText}>
+                          Qualified for playoffs
+                        </Text>
                       </View>
-                    )}
-                  </View>
-                </View>
-              </View>
+                      <View style={styles.legendItem}>
+                        <Text style={styles.legendLabel}>
+                          P - Played | W - Won | L - Lost | NRR - Net Run Rate
+                        </Text>
+                      </View>
+                    </View>
+                    <View style={{ height: 20 }} />
+                  </ScrollView>
+                )}
 
-              {/* ── Squad Size ── */}
-              <View style={ctStyles.sectionCard}>
-                <View style={ctStyles.sectionHeader}>
-                  <View style={ctStyles.sectionIconWrap}>
-                    <Ionicons name="people" size={16} color="#00A66A" />
-                  </View>
-                  <Text style={ctStyles.sectionTitle}>Squad Size</Text>
-                </View>
-
-                <View style={ctStyles.fieldGroup}>
-                  <Text style={ctStyles.fieldLabel}>Number of Players <Text style={ctStyles.req}>*</Text></Text>
-                  <Text style={ctStyles.fieldHint}>Min 11 (Playing XI) · Max 20 (with substitutes)</Text>
-                  <View style={[ctStyles.fieldInput, currentPlayers && parseInt(currentPlayers) >= 11 && ctStyles.fieldInputDone]}>
-                    <Ionicons name="people-outline" size={18} color={currentPlayers && parseInt(currentPlayers) >= 11 ? "#00A66A" : "#94A3B8"} />
-                    <TextInput
-                      style={ctStyles.fieldText}
-                      placeholder="11–20 players"
-                      placeholderTextColor="#94A3B8"
-                      keyboardType="numeric"
-                      maxLength={2}
-                      value={currentPlayers}
-                      onChangeText={setCurrentPlayers}
-                    />
-                    {currentPlayers ? (
-                      parseInt(currentPlayers) >= 11 && parseInt(currentPlayers) <= 20
-                        ? <Ionicons name="checkmark-circle" size={18} color="#22C55E" />
-                        : <Ionicons name="alert-circle" size={18} color="#EF4444" />
-                    ) : null}
-                  </View>
-
-                  {/* Quick select chips */}
-                  <View style={ctStyles.chipRow}>
-                    {[11, 14, 16, 20].map(n => (
-                      <TouchableOpacity key={n} style={[ctStyles.chip, currentPlayers === String(n) && ctStyles.chipActive]} onPress={() => setCurrentPlayers(String(n))}>
-                        <Text style={[ctStyles.chipTxt, currentPlayers === String(n) && ctStyles.chipTxtActive]}>{n}</Text>
-                      </TouchableOpacity>
+                {activeTournamentTab === "leaderboard" && (
+                  <ScrollView
+                    style={styles.dashboardTabContent}
+                    showsVerticalScrollIndicator={false}
+                  >
+                    {/* Top Batsmen */}
+                    <Text style={styles.dashboardSectionTitle}>
+                      🏏 Top Batsmen
+                    </Text>
+                    {/* TODO(backend): fetch top batsmen from API */}
+                    {(
+                      [] as {
+                        rank: number;
+                        name: string;
+                        team: string;
+                        runs: number;
+                        avg: string;
+                        sr: string;
+                        icon: string;
+                      }[]
+                    ).map((player) => (
+                      <View key={player.rank} style={styles.leaderboardItem}>
+                        <LinearGradient
+                          colors={["#FFF", "#F8F8F8"]}
+                          style={styles.leaderboardItemGradient}
+                        >
+                          <View style={styles.leaderboardRank}>
+                            <Text style={styles.leaderboardRankText}>
+                              {player.icon}
+                            </Text>
+                          </View>
+                          <View style={styles.leaderboardInfo}>
+                            <Text style={styles.leaderboardName}>
+                              {player.name}
+                            </Text>
+                            <Text style={styles.leaderboardTeam}>
+                              {player.team}
+                            </Text>
+                          </View>
+                          <View style={styles.leaderboardStats}>
+                            <Text style={styles.leaderboardRuns}>
+                              {player.runs}
+                            </Text>
+                            <Text style={styles.leaderboardRunsLabel}>
+                              Runs
+                            </Text>
+                            <View style={styles.leaderboardSubStats}>
+                              <Text style={styles.leaderboardSubStat}>
+                                Avg: {player.avg}
+                              </Text>
+                              <Text style={styles.leaderboardSubStat}>
+                                SR: {player.sr}
+                              </Text>
+                            </View>
+                          </View>
+                        </LinearGradient>
+                      </View>
                     ))}
-                  </View>
 
-                  {/* Rule cards */}
-                  {currentPlayers && parseInt(currentPlayers) >= 11 && (
-                    <View style={ctStyles.ruleBox}>
-                      <View style={ctStyles.ruleRow}>
-                        <Ionicons name="baseball" size={14} color="#00A66A" />
-                        <Text style={ctStyles.ruleTxt}>Playing XI: 11 players</Text>
-                        <View style={ctStyles.ruleCheck}><Ionicons name="checkmark" size={12} color="#FFF" /></View>
+                    {/* Top Bowlers */}
+                    <Text
+                      style={[styles.dashboardSectionTitle, { marginTop: 24 }]}
+                    >
+                      🎯 Top Bowlers
+                    </Text>
+                    {/* TODO(backend): fetch top bowlers from API */}
+                    {(
+                      [] as {
+                        rank: number;
+                        name: string;
+                        team: string;
+                        wickets: number;
+                        avg: string;
+                        econ: string;
+                        icon: string;
+                      }[]
+                    ).map((player) => (
+                      <View key={player.rank} style={styles.leaderboardItem}>
+                        <LinearGradient
+                          colors={["#FFF", "#F8F8F8"]}
+                          style={styles.leaderboardItemGradient}
+                        >
+                          <View style={styles.leaderboardRank}>
+                            <Text style={styles.leaderboardRankText}>
+                              {player.icon}
+                            </Text>
+                          </View>
+                          <View style={styles.leaderboardInfo}>
+                            <Text style={styles.leaderboardName}>
+                              {player.name}
+                            </Text>
+                            <Text style={styles.leaderboardTeam}>
+                              {player.team}
+                            </Text>
+                          </View>
+                          <View style={styles.leaderboardStats}>
+                            <Text style={styles.leaderboardRuns}>
+                              {player.wickets}
+                            </Text>
+                            <Text style={styles.leaderboardRunsLabel}>
+                              Wickets
+                            </Text>
+                            <View style={styles.leaderboardSubStats}>
+                              <Text style={styles.leaderboardSubStat}>
+                                Avg: {player.avg}
+                              </Text>
+                              <Text style={styles.leaderboardSubStat}>
+                                Econ: {player.econ}
+                              </Text>
+                            </View>
+                          </View>
+                        </LinearGradient>
                       </View>
-                      <View style={ctStyles.ruleRow}>
-                        <Ionicons name="swap-horizontal" size={14} color="#64748B" />
-                        <Text style={ctStyles.ruleTxt}>Substitutes: {Math.max(0, parseInt(currentPlayers) - 11)}</Text>
+                    ))}
+
+                    {/* Most Valuable Players */}
+                    <Text
+                      style={[styles.dashboardSectionTitle, { marginTop: 24 }]}
+                    >
+                      ⭐ Most Valuable Players
+                    </Text>
+                    {/* TODO(backend): fetch MVP leaderboard from API */}
+                    {(
+                      [] as {
+                        rank: number;
+                        name: string;
+                        team: string;
+                        points: number;
+                        role: string;
+                      }[]
+                    ).map((player) => (
+                      <View key={player.rank} style={styles.leaderboardItem}>
+                        <LinearGradient
+                          colors={["#FFF", "#F8F8F8"]}
+                          style={styles.leaderboardItemGradient}
+                        >
+                          <View style={styles.leaderboardRank}>
+                            <LinearGradient
+                              colors={["#FFD700", "#FFA500"]}
+                              style={styles.mvpBadge}
+                            >
+                              <Text style={styles.mvpBadgeText}>
+                                {player.rank}
+                              </Text>
+                            </LinearGradient>
+                          </View>
+                          <View style={styles.leaderboardInfo}>
+                            <Text style={styles.leaderboardName}>
+                              {player.name}
+                            </Text>
+                            <Text style={styles.leaderboardTeam}>
+                              {player.team} • {player.role}
+                            </Text>
+                          </View>
+                          <View style={styles.leaderboardStats}>
+                            <Text style={styles.leaderboardRuns}>
+                              {player.points}
+                            </Text>
+                            <Text style={styles.leaderboardRunsLabel}>
+                              Points
+                            </Text>
+                          </View>
+                        </LinearGradient>
                       </View>
-                      <View style={ctStyles.ruleRow}>
-                        <Ionicons name="star" size={14} color="#F59E0B" />
-                        <Text style={ctStyles.ruleTxt}>Roles needed: Batsmen, Bowlers, WK, All-rounders</Text>
+                    ))}
+                    <View style={{ height: 20 }} />
+                  </ScrollView>
+                )}
+
+                {activeTournamentTab === "teams" && (
+                  <ScrollView
+                    style={styles.dashboardTabContent}
+                    showsVerticalScrollIndicator={false}
+                  >
+                    <Text style={styles.dashboardSectionTitle}>
+                      Tournament Teams
+                    </Text>
+                    {[
+                      {
+                        id: 1,
+                        name: "Team A",
+                        players: 11,
+                        captain: "Virat Kohli",
+                        status: "Active",
+                      },
+                      {
+                        id: 2,
+                        name: "Team B",
+                        players: 11,
+                        captain: "Rohit Sharma",
+                        status: "Active",
+                      },
+                      {
+                        id: 3,
+                        name: "Team C",
+                        players: 11,
+                        captain: "Suresh Raina",
+                        status: "Active",
+                      },
+                      {
+                        id: 4,
+                        name: "Team D",
+                        players: 11,
+                        captain: "MS Dhoni",
+                        status: "Pending",
+                      },
+                    ].map((team) => (
+                      <View key={team.id} style={styles.teamItemCard}>
+                        <LinearGradient
+                          colors={["#FFF", "#F8F8F8"]}
+                          style={styles.teamItemGradient}
+                        >
+                          <View style={styles.teamItemHeader}>
+                            <LinearGradient
+                              colors={["#00A66A", "#0F766E"]}
+                              style={styles.teamItemIcon}
+                            >
+                              <Text style={styles.teamItemIconText}>
+                                {team.name.charAt(5)}
+                              </Text>
+                            </LinearGradient>
+                            <View style={styles.teamItemInfo}>
+                              <Text style={styles.teamItemName}>
+                                {team.name}
+                              </Text>
+                              <Text style={styles.teamItemCaptain}>
+                                Captain: {team.captain}
+                              </Text>
+                            </View>
+                            <LinearGradient
+                              colors={
+                                team.status === "Active"
+                                  ? ["#00A66A", "#0F766E"]
+                                  : ["#059669", "#0F766E"]
+                              }
+                              style={styles.teamItemStatus}
+                            >
+                              <Text style={styles.teamItemStatusText}>
+                                {team.status}
+                              </Text>
+                            </LinearGradient>
+                          </View>
+                          <View style={styles.teamItemStats}>
+                            <View style={styles.teamItemStat}>
+                              <Ionicons
+                                name="people"
+                                size={14}
+                                color="#00A66A"
+                              />
+                              <Text style={styles.teamItemStatText}>
+                                {team.players} Players
+                              </Text>
+                            </View>
+                          </View>
+                        </LinearGradient>
+                      </View>
+                    ))}
+
+                    <Text
+                      style={[styles.dashboardSectionTitle, { marginTop: 20 }]}
+                    >
+                      Add Teams & Players
+                    </Text>
+                    <Text style={styles.teamSelectionSubtitle}>
+                      Choose how you want to add participants to your tournament
+                    </Text>
+
+                    {/* Add Players Modal Content - Always Visible */}
+                    <View style={styles.tournamentManagementContainer}>
+                      {/* Team Link Option */}
+                      <TouchableOpacity
+                        style={styles.modalOption}
+                        onPress={() => {
+                          console.log("Add via Team Link");
+                          Alert.alert(
+                            "Team Link",
+                            "Share invite link with teams and players",
+                          );
+                        }}
+                      >
+                        <LinearGradient
+                          colors={["#00A66A", "#0F766E"]}
+                          start={{ x: 0, y: 0 }}
+                          end={{ x: 1, y: 1 }}
+                          style={styles.modalOptionGradient}
+                        >
+                          <View style={styles.modalOptionIconCircle}>
+                            <Ionicons name="link" size={20} color="#FFF" />
+                          </View>
+                          <View style={styles.modalOptionTextContainer}>
+                            <Text style={styles.modalOptionTitle}>
+                              Team Link
+                            </Text>
+                            <Text style={styles.modalOptionDescription}>
+                              Share invite link with teams and players
+                            </Text>
+                          </View>
+                          <Ionicons
+                            name="chevron-forward"
+                            size={24}
+                            color="#FFF"
+                          />
+                        </LinearGradient>
+                      </TouchableOpacity>
+
+                      {/* QR Code Option */}
+                      <TouchableOpacity
+                        style={styles.modalOption}
+                        onPress={() => {
+                          console.log("Add via QR Code");
+                          Alert.alert(
+                            "QR Code",
+                            "Generate QR code for teams to scan and join",
+                          );
+                        }}
+                      >
+                        <LinearGradient
+                          colors={["#00A66A", "#0F766E"]}
+                          start={{ x: 0, y: 0 }}
+                          end={{ x: 1, y: 1 }}
+                          style={styles.modalOptionGradient}
+                        >
+                          <View style={styles.modalOptionIconCircle}>
+                            <Ionicons name="qr-code" size={20} color="#FFF" />
+                          </View>
+                          <View style={styles.modalOptionTextContainer}>
+                            <Text style={styles.modalOptionTitle}>QR Code</Text>
+                            <Text style={styles.modalOptionDescription}>
+                              Let teams scan to join tournament
+                            </Text>
+                          </View>
+                          <Ionicons
+                            name="chevron-forward"
+                            size={24}
+                            color="#FFF"
+                          />
+                        </LinearGradient>
+                      </TouchableOpacity>
+
+                      {/* From Contacts Option */}
+                      <TouchableOpacity
+                        style={styles.modalOption}
+                        onPress={() => {
+                          console.log("Add from Contacts");
+                          Alert.alert(
+                            "From Contacts",
+                            "Select teams and players from your contacts",
+                          );
+                        }}
+                      >
+                        <LinearGradient
+                          colors={["#00A66A", "#0F766E"]}
+                          start={{ x: 0, y: 0 }}
+                          end={{ x: 1, y: 1 }}
+                          style={styles.modalOptionGradient}
+                        >
+                          <View style={styles.modalOptionIconCircle}>
+                            <Ionicons
+                              name="person-add"
+                              size={20}
+                              color="#FFF"
+                            />
+                          </View>
+                          <View style={styles.modalOptionTextContainer}>
+                            <Text style={styles.modalOptionTitle}>
+                              From Contacts
+                            </Text>
+                            <Text style={styles.modalOptionDescription}>
+                              Select teams and players from phone contacts
+                            </Text>
+                          </View>
+                          <Ionicons
+                            name="chevron-forward"
+                            size={24}
+                            color="#FFF"
+                          />
+                        </LinearGradient>
+                      </TouchableOpacity>
+
+                      {/* Add Groups Option */}
+                      <TouchableOpacity
+                        style={styles.modalOption}
+                        onPress={() => {
+                          console.log("Add Groups");
+                          Alert.alert(
+                            "Add Groups",
+                            "Organize teams into groups for tournament structure",
+                          );
+                        }}
+                      >
+                        <LinearGradient
+                          colors={["#059669", "#00A66A"]}
+                          start={{ x: 0, y: 0 }}
+                          end={{ x: 1, y: 1 }}
+                          style={styles.modalOptionGradient}
+                        >
+                          <View style={styles.modalOptionIconCircle}>
+                            <Ionicons name="people" size={20} color="#FFF" />
+                          </View>
+                          <View style={styles.modalOptionTextContainer}>
+                            <Text style={styles.modalOptionTitle}>
+                              Add Groups
+                            </Text>
+                            <Text style={styles.modalOptionDescription}>
+                              Create tournament groups and pools
+                            </Text>
+                          </View>
+                          <Ionicons
+                            name="chevron-forward"
+                            size={24}
+                            color="#FFF"
+                          />
+                        </LinearGradient>
+                      </TouchableOpacity>
+                    </View>
+
+                    <View style={{ height: 100 }} />
+                  </ScrollView>
+                )}
+              </View>
+            ) : currentView === "addTeamsPlayers" ? (
+              /* Add Teams & Players View */
+              <View style={styles.addTeamsPlayersContainer}>
+                <Text style={styles.addTeamsPlayersTitle}>
+                  Add Teams & Players
+                </Text>
+                <Text style={styles.addTeamsPlayersSubtitle}>
+                  Choose how you want to add participants to your tournament
+                </Text>
+
+                <ScrollView
+                  style={styles.addTeamsPlayersContent}
+                  showsVerticalScrollIndicator={false}
+                >
+                  {/* Team Link Option */}
+                  <TouchableOpacity
+                    style={styles.addTeamsOption}
+                    onPress={() => {
+                      console.log("Add via Team Link");
+                      // Generate tournament invite link
+                      const tournamentLink =
+                        "https://crickbuz.app/join/MPL2024-8X7K";
+                      Alert.alert(
+                        "Tournament Link Generated",
+                        `Your tournament invite link:\n\n${tournamentLink}\n\nShare this link with teams and players to let them join instantly!`,
+                        [
+                          {
+                            text: "Copy Link",
+                            onPress: () => {
+                              // In a real app, this would copy to clipboard
+                              Alert.alert(
+                                "Copied!",
+                                "Tournament link copied to clipboard",
+                              );
+                            },
+                          },
+                          {
+                            text: "Share Link",
+                            onPress: () => {
+                              Alert.alert(
+                                "Share",
+                                "Link shared via WhatsApp, SMS, and social media!",
+                              );
+                            },
+                          },
+                          { text: "Close", style: "cancel" },
+                        ],
+                      );
+                    }}
+                  >
+                    <LinearGradient
+                      colors={["#20B2AA", "#17A2B8"]}
+                      start={{ x: 0, y: 0 }}
+                      end={{ x: 1, y: 1 }}
+                      style={styles.addTeamsOptionGradient}
+                    >
+                      <View style={styles.addTeamsOptionIconCircle}>
+                        <Ionicons name="link" size={24} color="#FFF" />
+                      </View>
+                      <View style={styles.addTeamsOptionTextContainer}>
+                        <Text style={styles.addTeamsOptionTitle}>
+                          Team Link
+                        </Text>
+                        <Text style={styles.addTeamsOptionDescription}>
+                          Share invite link with teams and players
+                        </Text>
+                      </View>
+                      <Ionicons name="chevron-forward" size={24} color="#FFF" />
+                    </LinearGradient>
+                  </TouchableOpacity>
+
+                  {/* QR Code Option */}
+                  <TouchableOpacity
+                    style={styles.addTeamsOption}
+                    onPress={() => {
+                      console.log("Add via QR Code");
+                      // Generate dummy QR code
+                      Alert.alert(
+                        "QR Code Generated",
+                        "Tournament QR Code has been generated!\n\nTournament ID: MPL2024-8X7K\nCode: QR-CRICKET-JOIN-789\n\nTeams can scan this code to join your tournament instantly.",
+                        [
+                          {
+                            text: "Share QR Code",
+                            onPress: () => {
+                              Alert.alert(
+                                "Share",
+                                "QR Code shared via WhatsApp, SMS, and Email!",
+                              );
+                            },
+                          },
+                          {
+                            text: "Save to Gallery",
+                            onPress: () => {
+                              Alert.alert(
+                                "Saved",
+                                "QR Code saved to your photo gallery!",
+                              );
+                            },
+                          },
+                          { text: "Close", style: "cancel" },
+                        ],
+                      );
+                    }}
+                  >
+                    <LinearGradient
+                      colors={["#8B5CF6", "#7C3AED"]}
+                      start={{ x: 0, y: 0 }}
+                      end={{ x: 1, y: 1 }}
+                      style={styles.addTeamsOptionGradient}
+                    >
+                      <View style={styles.addTeamsOptionIconCircle}>
+                        <Ionicons name="qr-code" size={24} color="#FFF" />
+                      </View>
+                      <View style={styles.addTeamsOptionTextContainer}>
+                        <Text style={styles.addTeamsOptionTitle}>QR Code</Text>
+                        <Text style={styles.addTeamsOptionDescription}>
+                          Let teams scan to join tournament
+                        </Text>
+                      </View>
+                      <Ionicons name="chevron-forward" size={24} color="#FFF" />
+                    </LinearGradient>
+                  </TouchableOpacity>
+
+                  {/* From Contacts Option */}
+                  <TouchableOpacity
+                    style={styles.addTeamsOption}
+                    onPress={async () => {
+                      console.log("Add from Contacts");
+                      try {
+                        // Request contacts permission (dummy implementation)
+                        Alert.alert(
+                          "Access Contacts",
+                          "This feature would access your contacts to invite teams and players. Would you like to continue?",
+                          [
+                            { text: "Cancel", style: "cancel" },
+                            {
+                              text: "Allow Access",
+                              onPress: () => {
+                                // Simulate contact access
+                                setTimeout(() => {
+                                  Alert.alert(
+                                    "Contacts Loaded",
+                                    "Found 25 contacts with cricket interests. You can now select and invite them to your tournament.",
+                                    [{ text: "OK" }],
+                                  );
+                                }, 1000);
+                              },
+                            },
+                          ],
+                        );
+                      } catch (error) {
+                        Alert.alert(
+                          "Error",
+                          "Unable to access contacts. Please check permissions.",
+                        );
+                      }
+                    }}
+                  >
+                    <LinearGradient
+                      colors={["#10B981", "#059669"]}
+                      start={{ x: 0, y: 0 }}
+                      end={{ x: 1, y: 1 }}
+                      style={styles.addTeamsOptionGradient}
+                    >
+                      <View style={styles.addTeamsOptionIconCircle}>
+                        <Ionicons name="person-add" size={24} color="#FFF" />
+                      </View>
+                      <View style={styles.addTeamsOptionTextContainer}>
+                        <Text style={styles.addTeamsOptionTitle}>
+                          From Contacts
+                        </Text>
+                        <Text style={styles.addTeamsOptionDescription}>
+                          Select teams and players from phone contacts
+                        </Text>
+                      </View>
+                      <Ionicons name="chevron-forward" size={24} color="#FFF" />
+                    </LinearGradient>
+                  </TouchableOpacity>
+
+                  {/* Add New Team Option */}
+                  <TouchableOpacity
+                    style={styles.addTeamsOption}
+                    onPress={() => {
+                      console.log("Add New Team");
+                      setCurrentView("createTeam");
+                    }}
+                  >
+                    <LinearGradient
+                      colors={["#EF4444", "#059669"]}
+                      start={{ x: 0, y: 0 }}
+                      end={{ x: 1, y: 1 }}
+                      style={styles.addTeamsOptionGradient}
+                    >
+                      <View style={styles.addTeamsOptionIconCircle}>
+                        <Ionicons name="add-circle" size={24} color="#FFF" />
+                      </View>
+                      <View style={styles.addTeamsOptionTextContainer}>
+                        <Text style={styles.addTeamsOptionTitle}>
+                          Add New Team
+                        </Text>
+                        <Text style={styles.addTeamsOptionDescription}>
+                          Create a new team for your tournament
+                        </Text>
+                      </View>
+                      <Ionicons name="chevron-forward" size={24} color="#FFF" />
+                    </LinearGradient>
+                  </TouchableOpacity>
+
+                  <View style={{ height: 100 }} />
+                </ScrollView>
+              </View>
+            ) : currentView === "teamsSelection" ? (
+              /* Teams Selection View */
+              <View style={styles.teamsSelectionContainer}>
+                <Text style={styles.teamsSelectionTitle}>Select Your Team</Text>
+                <Text style={styles.teamsSelectionSubtitle}>
+                  Choose from your existing teams or recently played teams
+                </Text>
+
+                <ScrollView
+                  style={styles.teamsSelectionContent}
+                  showsVerticalScrollIndicator={false}
+                >
+                  {/* My Teams Section */}
+                  <Text style={styles.teamsSectionTitle}>My Teams</Text>
+
+                  {[
+                    {
+                      id: 1,
+                      name: "Mumbai Warriors",
+                      players: 15,
+                      matches: 12,
+                      wins: 8,
+                      color: "#00A66A",
+                    },
+                    {
+                      id: 2,
+                      name: "Delhi Capitals",
+                      players: 14,
+                      matches: 10,
+                      wins: 6,
+                      color: "#059669",
+                    },
+                    {
+                      id: 3,
+                      name: "Chennai Kings",
+                      players: 16,
+                      matches: 8,
+                      wins: 5,
+                      color: "#059669",
+                    },
+                    {
+                      id: 4,
+                      name: "Bangalore Riders",
+                      players: 13,
+                      matches: 6,
+                      wins: 4,
+                      color: "#7C3AED",
+                    },
+                    {
+                      id: 5,
+                      name: "Kolkata Knights",
+                      players: 15,
+                      matches: 9,
+                      wins: 7,
+                      color: "#F59E0B",
+                    },
+                  ].map((team) => (
+                    <TouchableOpacity
+                      key={team.id}
+                      style={styles.teamSelectionCard}
+                      onPress={() => {
+                        Alert.alert(
+                          "Team Selected",
+                          `You selected ${team.name}\n\nPlayers: ${team.players}\nMatches Played: ${team.matches}\nWins: ${team.wins}`,
+                          [
+                            { text: "Cancel", style: "cancel" },
+                            {
+                              text: "Confirm Selection",
+                              onPress: () => {
+                                Alert.alert(
+                                  "Success",
+                                  `${team.name} has been selected for your match!`,
+                                );
+                                setCurrentView("matches");
+                              },
+                            },
+                          ],
+                        );
+                      }}
+                    >
+                      <View
+                        style={[
+                          styles.teamSelectionIcon,
+                          { backgroundColor: team.color },
+                        ]}
+                      >
+                        <Text style={styles.teamSelectionInitial}>
+                          {team.name.charAt(0)}
+                        </Text>
+                      </View>
+                      <View style={styles.teamSelectionInfo}>
+                        <Text style={styles.teamSelectionName}>
+                          {team.name}
+                        </Text>
+                        <Text style={styles.teamSelectionStats}>
+                          {team.players} players • {team.matches} matches •{" "}
+                          {team.wins} wins
+                        </Text>
+                      </View>
+                      <View style={styles.teamSelectionAction}>
+                        <Ionicons
+                          name="checkmark-circle-outline"
+                          size={24}
+                          color="#00A66A"
+                        />
+                      </View>
+                    </TouchableOpacity>
+                  ))}
+
+                  {/* Recently Played Teams Section */}
+                  <Text style={[styles.teamsSectionTitle, { marginTop: 30 }]}>
+                    Recently Played
+                  </Text>
+
+                  {[
+                    {
+                      id: 6,
+                      name: "Pune Superstars",
+                      players: 11,
+                      lastPlayed: "2 days ago",
+                      color: "#EF4444",
+                    },
+                    {
+                      id: 7,
+                      name: "Hyderabad Heroes",
+                      players: 13,
+                      lastPlayed: "1 week ago",
+                      color: "#10B981",
+                    },
+                    {
+                      id: 8,
+                      name: "Rajasthan Royals",
+                      players: 12,
+                      lastPlayed: "2 weeks ago",
+                      color: "#8B5CF6",
+                    },
+                  ].map((team) => (
+                    <TouchableOpacity
+                      key={team.id}
+                      style={styles.teamSelectionCard}
+                      onPress={() => {
+                        Alert.alert(
+                          "Select Opponent Team",
+                          `Select ${team.name} as your opponent?\n\nPlayers: ${team.players}\nLast Played: ${team.lastPlayed}`,
+                          [
+                            { text: "Cancel", style: "cancel" },
+                            {
+                              text: "Select as Opponent",
+                              onPress: () => {
+                                Alert.alert(
+                                  "Success",
+                                  `${team.name} selected as opponent team!`,
+                                );
+                                setCurrentView("matches");
+                              },
+                            },
+                          ],
+                        );
+                      }}
+                    >
+                      <View
+                        style={[
+                          styles.teamSelectionIcon,
+                          { backgroundColor: team.color },
+                        ]}
+                      >
+                        <Text style={styles.teamSelectionInitial}>
+                          {team.name.charAt(0)}
+                        </Text>
+                      </View>
+                      <View style={styles.teamSelectionInfo}>
+                        <Text style={styles.teamSelectionName}>
+                          {team.name}
+                        </Text>
+                        <Text style={styles.teamSelectionStats}>
+                          {team.players} players • Last played {team.lastPlayed}
+                        </Text>
+                      </View>
+                      <View style={styles.teamSelectionAction}>
+                        <Ionicons
+                          name="add-circle-outline"
+                          size={24}
+                          color="#666"
+                        />
+                      </View>
+                    </TouchableOpacity>
+                  ))}
+
+                  <View style={{ height: 100 }} />
+                </ScrollView>
+              </View>
+            ) : currentView === "matchSetup" ? (
+              /* Match Setup View with VS Animation at top */
+              <View style={styles.matchSetupContainer}>
+                {/* VS Animation Section at Top */}
+                <View style={styles.vsAnimationSection}>
+                  <View style={styles.vsTeamsRow}>
+                    {/* Team A */}
+                    <Animated.View
+                      style={[
+                        styles.vsTeamCardSmall,
+                        {
+                          opacity: vsTeamAnim,
+                          transform: [
+                            {
+                              translateX: vsTeamAnim.interpolate({
+                                inputRange: [0, 1],
+                                outputRange: [-100, 0],
+                              }),
+                            },
+                          ],
+                        },
+                      ]}
+                    >
+                      <LinearGradient
+                        colors={["#00A66A", "#0F766E"]}
+                        style={styles.vsTeamCircleSmall}
+                      >
+                        <Text style={styles.vsTeamInitialSmall}>
+                          {teamAName.charAt(0).toUpperCase()}
+                        </Text>
+                      </LinearGradient>
+                      <Text style={styles.vsTeamNameSmall}>{teamAName}</Text>
+                    </Animated.View>
+
+                    {/* VS Text */}
+                    <Animated.View
+                      style={[
+                        styles.vsTextContainerSmall,
+                        {
+                          opacity: vsTextAnim,
+                          transform: [
+                            {
+                              scale: vsTextAnim,
+                            },
+                          ],
+                        },
+                      ]}
+                    >
+                      <LinearGradient
+                        colors={["#00A66A", "#0F766E"]}
+                        style={styles.vsTextCircleSmall}
+                      >
+                        <Text style={styles.vsTextSmall}>VS</Text>
+                      </LinearGradient>
+                    </Animated.View>
+
+                    {/* Team B */}
+                    <Animated.View
+                      style={[
+                        styles.vsTeamCardSmall,
+                        {
+                          opacity: vsTeamBanim,
+                          transform: [
+                            {
+                              translateX: vsTeamBanim.interpolate({
+                                inputRange: [0, 1],
+                                outputRange: [100, 0],
+                              }),
+                            },
+                          ],
+                        },
+                      ]}
+                    >
+                      <LinearGradient
+                        colors={["#00A66A", "#0F766E"]}
+                        style={styles.vsTeamCircleSmall}
+                      >
+                        <Text style={styles.vsTeamInitialSmall}>
+                          {teamBName.charAt(0).toUpperCase()}
+                        </Text>
+                      </LinearGradient>
+                      <Text style={styles.vsTeamNameSmall}>{teamBName}</Text>
+                    </Animated.View>
+                  </View>
+                </View>
+
+                <Text style={styles.matchSetupTitle}>Match Setup</Text>
+                <Text style={styles.matchSetupSubtitle}>
+                  Configure your match details
+                </Text>
+
+                {/* Match Type Selection */}
+                <View style={styles.setupSection}>
+                  <Text style={styles.setupSectionTitle}>Match Type *</Text>
+                  <LinearGradient
+                    colors={["#F0FFF8", "#F0FFF8", "#D1FAE5"]}
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 1, y: 0 }}
+                    style={styles.matchTypeCubeContainer}
+                  >
+                    <ScrollView
+                      horizontal
+                      showsHorizontalScrollIndicator={false}
+                      contentContainerStyle={styles.matchTypeScrollContent}
+                    >
+                      {[
+                        { id: "limited", label: "Limited Overs" },
+                        { id: "box", label: "Box/Turf" },
+                        { id: "pair", label: "Pair Cricket" },
+                        { id: "test", label: "Test Match" },
+                        { id: "hundred", label: "The Hundred" },
+                      ].map((type) => (
+                        <TouchableOpacity
+                          key={type.id}
+                          style={[
+                            styles.matchTypePill,
+                            matchType === type.id && styles.matchTypePillActive,
+                          ]}
+                          onPress={() => setMatchType(type.id)}
+                        >
+                          <Text
+                            style={[
+                              styles.matchTypePillText,
+                              matchType === type.id &&
+                                styles.matchTypePillTextActive,
+                            ]}
+                          >
+                            {type.label}
+                          </Text>
+                        </TouchableOpacity>
+                      ))}
+                    </ScrollView>
+                  </LinearGradient>
+                </View>
+
+                {/* Number of Overs */}
+                <View style={styles.setupSection}>
+                  <Text style={styles.setupSectionTitle}>
+                    Number of Overs{" "}
+                    {(matchType === "limited" || matchType === "box") && "*"}
+                  </Text>
+
+                  {/* Overs Input */}
+                  <View style={styles.inputContainer}>
+                    <Ionicons name="timer-outline" size={18} color="#00A66A" />
+                    <TextInput
+                      style={styles.input}
+                      placeholder="Type number of overs"
+                      placeholderTextColor="#999"
+                      keyboardType="numeric"
+                      value={numberOfOvers}
+                      onChangeText={setNumberOfOvers}
+                    />
+                    {numberOfOvers && (
+                      <TouchableOpacity onPress={() => setNumberOfOvers("")}>
+                        <Ionicons name="close-circle" size={18} color="#999" />
+                      </TouchableOpacity>
+                    )}
+                  </View>
+                </View>
+
+                {/* Location - City & Ground */}
+                <View style={styles.setupSection}>
+                  <Text style={styles.setupSectionTitle}>Location *</Text>
+
+                  {!locationEnabled ? (
+                    <TouchableOpacity
+                      style={styles.locationButton}
+                      onPress={handleEnableLocation}
+                    >
+                      <LinearGradient
+                        colors={["#00A66A", "#0F766E", "#064E3B"]}
+                        start={{ x: 0, y: 0 }}
+                        end={{ x: 1, y: 1 }}
+                        style={styles.locationButtonGradient}
+                      >
+                        <View style={styles.locationButtonContent}>
+                          <View style={styles.locationIconCircle}>
+                            <Ionicons name="location" size={24} color="#FFF" />
+                          </View>
+                          <View style={styles.locationButtonTextContainer}>
+                            <Text style={styles.locationButtonTitle}>
+                              Find Nearby Grounds
+                            </Text>
+                            <Text style={styles.locationButtonSubtitle}>
+                              Enable location to discover cricket grounds
+                            </Text>
+                          </View>
+                          <Ionicons
+                            name="chevron-forward"
+                            size={20}
+                            color="#FFF"
+                          />
+                        </View>
+                      </LinearGradient>
+                    </TouchableOpacity>
+                  ) : (
+                    <View style={styles.locationEnabledContainer}>
+                      <LinearGradient
+                        colors={["#F0FFF8", "#D1FAE5"]}
+                        style={styles.locationEnabledHeader}
+                      >
+                        <View style={styles.locationEnabledBadge}>
+                          <Ionicons
+                            name="checkmark-circle"
+                            size={18}
+                            color="#00A66A"
+                          />
+                          <Text style={styles.locationEnabledText}>
+                            Location Enabled
+                          </Text>
+                        </View>
+                        <View style={styles.groundsCountBadge}>
+                          <Text style={styles.groundsCountText}>
+                            {nearbyGrounds.length} grounds nearby
+                          </Text>
+                        </View>
+                      </LinearGradient>
+
+                      {/* Nearby Grounds List */}
+                      <View style={styles.groundsListContainer}>
+                        <Text style={styles.groundsListTitle}>
+                          Select Ground
+                        </Text>
+                        <View style={styles.groundsScrollWrapper}>
+                          <ScrollView
+                            ref={scrollViewRef2}
+                            style={styles.groundsList}
+                            showsVerticalScrollIndicator={false}
+                            nestedScrollEnabled={true}
+                            onScroll={(event) => {
+                              const {
+                                contentOffset,
+                                contentSize,
+                                layoutMeasurement,
+                              } = event.nativeEvent;
+                              const scrollPercentage =
+                                contentOffset.y /
+                                (contentSize.height - layoutMeasurement.height);
+                              const indicatorHeight = 60; // Height of the scroll indicator
+                              const trackHeight = 240 - indicatorHeight; // Max scroll area
+                              setScrollIndicatorPosition(
+                                scrollPercentage * trackHeight,
+                              );
+                            }}
+                            scrollEventThrottle={16}
+                          >
+                            {nearbyGrounds.map((ground, index) => (
+                              <TouchableOpacity
+                                key={ground.id}
+                                style={[
+                                  styles.groundCard,
+                                  selectedGround === ground.name &&
+                                    styles.groundCardActive,
+                                ]}
+                                onPress={() => {
+                                  setSelectedGround(ground.name);
+                                  setSelectedCity(ground.city);
+                                  setPitchType(ground.pitchType);
+                                }}
+                              >
+                                <LinearGradient
+                                  colors={
+                                    selectedGround === ground.name
+                                      ? ["#D1FAE5", "#6EE7B7"]
+                                      : ["#FFFFFF", "#F8F9FA"]
+                                  }
+                                  style={styles.groundCardGradient}
+                                >
+                                  <View style={styles.groundCardLeft}>
+                                    <View
+                                      style={[
+                                        styles.groundNumberBadge,
+                                        selectedGround === ground.name &&
+                                          styles.groundNumberBadgeActive,
+                                      ]}
+                                    >
+                                      <Text
+                                        style={[
+                                          styles.groundNumberText,
+                                          selectedGround === ground.name &&
+                                            styles.groundNumberTextActive,
+                                        ]}
+                                      >
+                                        {index + 1}
+                                      </Text>
+                                    </View>
+                                    <View style={styles.groundInfo}>
+                                      <Text
+                                        style={[
+                                          styles.groundName,
+                                          selectedGround === ground.name &&
+                                            styles.groundNameActive,
+                                        ]}
+                                      >
+                                        {ground.name}
+                                      </Text>
+                                      <View style={styles.groundMetaRow}>
+                                        <View style={styles.groundMetaItem}>
+                                          <Ionicons
+                                            name="navigate"
+                                            size={12}
+                                            color="#666"
+                                          />
+                                          <Text style={styles.groundMetaText}>
+                                            {ground.distance}
+                                          </Text>
+                                        </View>
+                                        <View
+                                          style={styles.groundMetaDivider}
+                                        />
+                                        <View style={styles.groundMetaItem}>
+                                          <Ionicons
+                                            name="layers"
+                                            size={12}
+                                            color="#666"
+                                          />
+                                          <Text style={styles.groundMetaText}>
+                                            {ground.pitchType.toUpperCase()}
+                                          </Text>
+                                        </View>
+                                      </View>
+                                    </View>
+                                  </View>
+                                  {selectedGround === ground.name && (
+                                    <View style={styles.selectedCheckmark}>
+                                      <Ionicons
+                                        name="checkmark-circle"
+                                        size={24}
+                                        color="#00A66A"
+                                      />
+                                    </View>
+                                  )}
+                                </LinearGradient>
+                              </TouchableOpacity>
+                            ))}
+                          </ScrollView>
+
+                          {/* Custom Scrollbar */}
+                          <View style={styles.customScrollbarTrack}>
+                            <Animated.View
+                              style={[
+                                styles.customScrollbarThumb,
+                                {
+                                  transform: [
+                                    { translateY: scrollIndicatorPosition },
+                                  ],
+                                },
+                              ]}
+                            >
+                              <LinearGradient
+                                colors={["#00A66A", "#0F766E"]}
+                                style={styles.customScrollbarThumbGradient}
+                              >
+                                <View style={styles.scrollbarGrip}>
+                                  <View style={styles.scrollbarGripLine} />
+                                  <View style={styles.scrollbarGripLine} />
+                                  <View style={styles.scrollbarGripLine} />
+                                </View>
+                              </LinearGradient>
+                            </Animated.View>
+                          </View>
+                        </View>
                       </View>
                     </View>
                   )}
-                </View>
-              </View>
 
-              {/* ── Add Players Section ── */}
-              <View style={ctStyles.sectionCard}>
-                <View style={ctStyles.sectionHeader}>
-                  <View style={ctStyles.sectionIconWrap}>
-                    <Ionicons name="person-add" size={16} color="#00A66A" />
-                  </View>
-                  <Text style={ctStyles.sectionTitle}>Add Players</Text>
-                  <Text style={ctStyles.sectionOptional}>Optional</Text>
-                </View>
-                <Text style={ctStyles.addPlayersNote}>Invite players now or after team creation</Text>
-
-                <View style={ctStyles.addOptions}>
-                  {/* Team Link */}
-                  <TouchableOpacity style={ctStyles.addOption} activeOpacity={0.8}
-                    onPress={() => {
-                      const link = `https://gamelens.app/join/${currentTeamName.replace(/\s+/g,'-').toLowerCase()}-${Date.now().toString(36)}`;
-                      Alert.alert("🔗 Team Invite Link", `Share this link with players:\n\n${link}`, [
-                        { text: "Copy Link", onPress: () => Alert.alert("✅ Copied!", "Link copied to clipboard.") },
-                        { text: "Share", onPress: () => Alert.alert("Shared!", "Link shared via WhatsApp, SMS, etc.") },
-                        { text: "Close", style: "cancel" },
-                      ]);
-                    }}>
-                    <View style={[ctStyles.addOptionIcon, { backgroundColor: "#EFF6FF" }]}>
-                      <Ionicons name="link" size={20} color="#3B82F6" />
-                    </View>
-                    <View style={ctStyles.addOptionInfo}>
-                      <Text style={ctStyles.addOptionTitle}>Team Link</Text>
-                      <Text style={ctStyles.addOptionSub}>Generate & share invite</Text>
-                    </View>
-                    <Ionicons name="chevron-forward" size={16} color="#94A3B8" />
-                  </TouchableOpacity>
-
-                  {/* QR Code */}
-                  <TouchableOpacity style={ctStyles.addOption} activeOpacity={0.8}
-                    onPress={() => {
-                      Alert.alert("📷 QR Code", `Team QR Code generated!\n\nTeam: ${currentTeamName || 'Your Team'}\nCode: GL-${Date.now().toString(36).toUpperCase()}`, [
-                        { text: "Save to Gallery", onPress: () => Alert.alert("✅ Saved!", "QR code saved.") },
-                        { text: "Share", onPress: () => Alert.alert("Shared!", "QR code shared.") },
-                        { text: "Close", style: "cancel" },
-                      ]);
-                    }}>
-                    <View style={[ctStyles.addOptionIcon, { backgroundColor: "#F0FDF4" }]}>
-                      <Ionicons name="qr-code" size={20} color="#16A34A" />
-                    </View>
-                    <View style={ctStyles.addOptionInfo}>
-                      <Text style={ctStyles.addOptionTitle}>QR Code</Text>
-                      <Text style={ctStyles.addOptionSub}>Players scan to join</Text>
-                    </View>
-                    <Ionicons name="chevron-forward" size={16} color="#94A3B8" />
-                  </TouchableOpacity>
-
-                  {/* From Contacts */}
-                  <TouchableOpacity style={ctStyles.addOption} activeOpacity={0.8}
-                    onPress={() => {
-                      Alert.alert("📞 Access Contacts", "Allow GameLens to access your contacts to invite players?", [
-                        { text: "Allow", onPress: () => setTimeout(() => Alert.alert("✅ Contacts Loaded", "Found 25 contacts. Select players to invite!"), 800) },
-                        { text: "Deny", style: "cancel" },
-                      ]);
-                    }}>
-                    <View style={[ctStyles.addOptionIcon, { backgroundColor: "#FFF7ED" }]}>
-                      <Ionicons name="people" size={20} color="#EA580C" />
-                    </View>
-                    <View style={ctStyles.addOptionInfo}>
-                      <Text style={ctStyles.addOptionTitle}>From Contacts</Text>
-                      <Text style={ctStyles.addOptionSub}>Select from phone contacts</Text>
-                    </View>
-                    <Ionicons name="chevron-forward" size={16} color="#94A3B8" />
-                  </TouchableOpacity>
-                </View>
-              </View>
-
-              {/* ── Create Button ── */}
-              <TouchableOpacity style={ctStyles.createBtn} onPress={handleSaveTeam} activeOpacity={0.88}>
-                <LinearGradient colors={["#00A66A", "#0F766E", "#064E3B"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={ctStyles.createBtnGrad}>
-                  <Ionicons name="checkmark-circle" size={22} color="#FFF" />
-                  <Text style={ctStyles.createBtnTxt}>Create Team</Text>
-                </LinearGradient>
-              </TouchableOpacity>
-
-              <View style={{ height: 80 }} />
-            </View>
-          </ScrollView>
-        ) : currentView === "teamSelection" ? (
-          /* Team Selection View — Premium Redesign */
-          <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 100 }}>
-
-            <View style={{ paddingHorizontal: 16, paddingTop: 20 }}>
-
-              {/* ── Team A Card ── */}
-              <View style={[styles.tsTeamCard, teamAName && styles.tsTeamCardReady]}>
-                {/* Accent strip */}
-                <LinearGradient colors={["#00A66A", "#064E3B"]} start={{ x: 0, y: 0 }} end={{ x: 0, y: 1 }} style={styles.tsTeamCardStrip} />
-
-                <View style={styles.tsTeamCardInner}>
-                  {/* Logo area */}
-                  <View style={styles.tsTeamLogoWrap}>
-                    {teamAName ? (
-                      <LinearGradient colors={["#00A66A", "#064E3B"]} style={styles.tsTeamLogo}>
-                        <Text style={styles.tsTeamLogoLetter}>{teamAName.charAt(0).toUpperCase()}</Text>
-                      </LinearGradient>
-                    ) : (
-                      <View style={styles.tsTeamLogoEmpty}>
-                        <Ionicons name="shield-outline" size={28} color="#CBD5E1" />
+                  {locationEnabled && (
+                    <>
+                      <View style={styles.inputContainer}>
+                        <Ionicons
+                          name="business-outline"
+                          size={18}
+                          color="#00A66A"
+                        />
+                        <TextInput
+                          style={styles.input}
+                          placeholder="City/Town"
+                          placeholderTextColor="#999"
+                          value={selectedCity}
+                          onChangeText={setSelectedCity}
+                          editable={false}
+                        />
                       </View>
-                    )}
-                    {teamAName && (
-                      <View style={styles.tsReadyDot} />
-                    )}
+
+                      <View style={styles.inputContainer}>
+                        <Ionicons
+                          name="location-outline"
+                          size={18}
+                          color="#00A66A"
+                        />
+                        <TextInput
+                          style={styles.input}
+                          placeholder="Ground Name"
+                          placeholderTextColor="#999"
+                          value={selectedGround}
+                          onChangeText={setSelectedGround}
+                          editable={false}
+                        />
+                      </View>
+                    </>
+                  )}
+                </View>
+
+                {/* Pitch Type */}
+                <View style={styles.setupSection}>
+                  <Text style={styles.setupSectionTitle}>Pitch Type *</Text>
+                  {renderPitchTypeSelector()}
+                </View>
+
+                {/* Ball Type */}
+                <View style={styles.setupSection}>
+                  <Text style={styles.setupSectionTitle}>Ball Type *</Text>
+                  {renderBallTypeSelector(ballType, setBallType)}
+                </View>
+
+                {/* Date & Time */}
+                <View style={styles.setupSection}>
+                  <Text style={styles.setupSectionTitle}>Date & Time *</Text>
+                  <View style={styles.dateTimeRow}>
+                    <View style={[styles.inputContainer, { flex: 1 }]}>
+                      <Ionicons
+                        name="calendar-outline"
+                        size={18}
+                        color="#00A66A"
+                      />
+                      <TextInput
+                        style={styles.input}
+                        placeholder="DD/MM/YYYY"
+                        placeholderTextColor="#999"
+                        value={matchDate}
+                        onChangeText={setMatchDate}
+                      />
+                    </View>
+                    <View style={[styles.inputContainer, { flex: 1 }]}>
+                      <Ionicons name="time-outline" size={18} color="#00A66A" />
+                      <TextInput
+                        style={styles.input}
+                        placeholder="HH:MM"
+                        placeholderTextColor="#999"
+                        value={matchTime}
+                        onChangeText={setMatchTime}
+                      />
+                    </View>
+                  </View>
+                </View>
+
+                {/* Match Officials */}
+                <View style={styles.setupSection}>
+                  <Text style={styles.setupSectionTitle}>Match Officials</Text>
+
+                  <View style={styles.inputContainer}>
+                    <Ionicons name="person-outline" size={18} color="#00A66A" />
+                    <TextInput
+                      style={styles.input}
+                      placeholder="Umpire 1"
+                      placeholderTextColor="#999"
+                      value={umpire1}
+                      onChangeText={setUmpire1}
+                    />
                   </View>
 
-                  {/* Info */}
-                  <View style={styles.tsTeamInfo}>
-                    <View style={styles.tsTeamSlotRow}>
-                      <Text style={styles.tsTeamSlot}>HOME</Text>
-                      <View style={[styles.tsTeamStatus, teamAName ? styles.tsTeamStatusReady : styles.tsTeamStatusEmpty]}>
-                        <Text style={styles.tsTeamStatusTxt}>{teamAName ? "READY" : "NOT SET"}</Text>
+                  <View style={styles.inputContainer}>
+                    <Ionicons name="person-outline" size={18} color="#00A66A" />
+                    <TextInput
+                      style={styles.input}
+                      placeholder="Umpire 2"
+                      placeholderTextColor="#999"
+                      value={umpire2}
+                      onChangeText={setUmpire2}
+                    />
+                  </View>
+
+                  <View style={styles.inputContainer}>
+                    <Ionicons name="create-outline" size={18} color="#00A66A" />
+                    <TextInput
+                      style={styles.input}
+                      placeholder="Scorer"
+                      placeholderTextColor="#999"
+                      value={scorer}
+                      onChangeText={setScorer}
+                    />
+                  </View>
+
+                  <View style={styles.inputContainer}>
+                    <Ionicons
+                      name="videocam-outline"
+                      size={18}
+                      color="#00A66A"
+                    />
+                    <TextInput
+                      style={styles.input}
+                      placeholder="Live Streamer"
+                      placeholderTextColor="#999"
+                      value={liveStreamer}
+                      onChangeText={setLiveStreamer}
+                    />
+                  </View>
+
+                  <View style={styles.inputContainer}>
+                    <Ionicons name="people-outline" size={18} color="#00A66A" />
+                    <TextInput
+                      style={styles.input}
+                      placeholder="Others"
+                      placeholderTextColor="#999"
+                      value={others}
+                      onChangeText={setOthers}
+                    />
+                  </View>
+                </View>
+
+                {/* Let's Toss Button */}
+                <TouchableOpacity
+                  style={styles.startMatchButton}
+                  onPress={() => {
+                    // Validation
+                    if (!matchType) {
+                      Alert.alert("Required Field", "Please select match type");
+                      return;
+                    }
+
+                    if (
+                      (matchType === "limited" || matchType === "box") &&
+                      !numberOfOvers.trim()
+                    ) {
+                      Alert.alert(
+                        "Required Field",
+                        "Please enter number of overs",
+                      );
+                      return;
+                    }
+
+                    if (
+                      (matchType === "limited" || matchType === "box") &&
+                      numberOfOvers.trim()
+                    ) {
+                      const overs = parseInt(numberOfOvers);
+                      if (isNaN(overs) || overs < 1 || overs > 50) {
+                        Alert.alert(
+                          "Invalid Input",
+                          "Please enter a valid number of overs (1-50)",
+                        );
+                        return;
+                      }
+                    }
+
+                    if (!selectedCity.trim()) {
+                      Alert.alert("Required Field", "Please select a city");
+                      return;
+                    }
+
+                    if (!selectedGround.trim()) {
+                      Alert.alert("Required Field", "Please select a ground");
+                      return;
+                    }
+
+                    console.log("Match setup complete, proceeding to toss:", {
+                      teamA: teamAName,
+                      teamB: teamBName,
+                      matchType,
+                      overs: numberOfOvers,
+                      city: selectedCity,
+                      ground: selectedGround,
+                      pitchType,
+                      ballType,
+                      date: matchDate,
+                      time: matchTime,
+                    });
+
+                    // Navigate to toss page
+                    setCurrentView("tossPage");
+                  }}
+                >
+                  <LinearGradient
+                    colors={["#00A66A", "#0F766E", "#064E3B"]}
+                    style={styles.startMatchButtonGradient}
+                  >
+                    <Ionicons name="disc" size={28} color="#FFF" />
+                    <Text style={styles.startMatchButtonText}>
+                      {"Let's Toss"}
+                    </Text>
+                    <Ionicons name="arrow-forward" size={24} color="#FFF" />
+                  </LinearGradient>
+                </TouchableOpacity>
+
+                {/* Bottom Spacing */}
+                <View style={{ height: 100 }} />
+              </View>
+            ) : currentView === "tossPage" ? (
+              /* Toss Page View */
+              <ScrollView
+                style={styles.tossContainer}
+                showsVerticalScrollIndicator={false}
+              >
+                <View style={styles.tossHero}>
+                  <View style={styles.coinStage}>
+                    <View style={styles.coinOuter}>
+                      <View style={styles.coinInner}>
+                        <Ionicons name="disc" size={38} color="#FDE68A" />
                       </View>
                     </View>
-                    <Text style={styles.tsTeamName}>{teamAName || "Select Team A"}</Text>
-                    {teamAName ? (
-                      <View style={styles.tsTeamMeta}>
-                        <Ionicons name="people" size={12} color="#64748B" />
-                        <Text style={styles.tsTeamMetaTxt}>11 Players · Captain assigned</Text>
-                      </View>
-                    ) : (
-                      <Text style={styles.tsTeamEmptyHint}>Tap below to select or create</Text>
-                    )}
+                  </View>
+                  <Text style={styles.tossTitle}>Match toss</Text>
+                  <Text style={styles.tossSubtitle}>
+                    Select the toss winner and their first innings choice.
+                  </Text>
+                </View>
+
+                {/* Team Selection for Toss Winner */}
+                <View style={styles.tossTeamsContainer}>
+                  <TouchableOpacity
+                    style={[
+                      styles.tossTeamCard,
+                      tossWinner === "A" && styles.tossTeamCardSelected,
+                    ]}
+                    onPress={() => setTossWinner("A")}
+                  >
+                    <View style={styles.tossTeamJersey}>
+                      <Ionicons
+                        name="shirt"
+                        size={38}
+                        color={tossWinner === "A" ? "#00A66A" : "#777"}
+                      />
+                      {tossWinner === "A" && (
+                        <View style={styles.tossCheckBadge}>
+                          <Ionicons name="checkmark" size={13} color="#FFF" />
+                        </View>
+                      )}
+                    </View>
+                    <Text
+                      style={[
+                        styles.tossTeamName,
+                        tossWinner === "A" && styles.tossTeamNameSelected,
+                      ]}
+                    >
+                      {teamAName}
+                    </Text>
+                  </TouchableOpacity>
+
+                  <TouchableOpacity
+                    style={[
+                      styles.tossTeamCard,
+                      tossWinner === "B" && styles.tossTeamCardSelected,
+                    ]}
+                    onPress={() => setTossWinner("B")}
+                  >
+                    <View style={styles.tossTeamJersey}>
+                      <Ionicons
+                        name="shirt"
+                        size={38}
+                        color={tossWinner === "B" ? "#00A66A" : "#777"}
+                      />
+                      {tossWinner === "B" && (
+                        <View style={styles.tossCheckBadge}>
+                          <Ionicons name="checkmark" size={13} color="#FFF" />
+                        </View>
+                      )}
+                    </View>
+                    <Text
+                      style={[
+                        styles.tossTeamName,
+                        tossWinner === "B" && styles.tossTeamNameSelected,
+                      ]}
+                    >
+                      {teamBName}
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+
+                {/* Toss Decision Section */}
+                {tossWinner && (
+                  <View style={styles.tossDecisionSection}>
+                    <Text style={styles.tossDecisionTitle}>
+                      {getTossWinnerName()} elected to
+                    </Text>
+
+                    <View style={styles.tossDecisionContainer}>
+                      <TouchableOpacity
+                        style={[
+                          styles.tossDecisionCard,
+                          tossDecision === "bat" &&
+                            styles.tossDecisionCardSelected,
+                        ]}
+                        onPress={() => setTossDecision("bat")}
+                      >
+                        <View style={styles.cricketActionFigure}>
+                          <View style={styles.figureHead} />
+                          <View style={styles.figureBody} />
+                          <View style={styles.figureLegs} />
+                          <View style={styles.batHandle} />
+                        </View>
+                        <Text
+                          style={[
+                            styles.tossDecisionText,
+                            tossDecision === "bat" &&
+                              styles.tossDecisionTextSelected,
+                          ]}
+                        >
+                          BAT
+                        </Text>
+                      </TouchableOpacity>
+
+                      <TouchableOpacity
+                        style={[
+                          styles.tossDecisionCard,
+                          tossDecision === "bowl" &&
+                            styles.tossDecisionCardSelected,
+                        ]}
+                        onPress={() => setTossDecision("bowl")}
+                      >
+                        <View style={styles.cricketActionFigure}>
+                          <View style={styles.figureHead} />
+                          <View
+                            style={[styles.figureBody, styles.bowlerFigureBody]}
+                          />
+                          <View style={styles.figureLegs} />
+                          <View style={styles.bowlingArm} />
+                          <View style={styles.bowlingBall} />
+                        </View>
+                        <Text
+                          style={[
+                            styles.tossDecisionText,
+                            tossDecision === "bowl" &&
+                              styles.tossDecisionTextSelected,
+                          ]}
+                        >
+                          BOWL
+                        </Text>
+                      </TouchableOpacity>
+                    </View>
+                  </View>
+                )}
+
+                {/* Start Match Button */}
+                {tossWinner && tossDecision && (
+                  <TouchableOpacity
+                    style={styles.startMatchButton}
+                    onPress={() => {
+                      const winnerTeam =
+                        tossWinner === "A" ? teamAName : teamBName;
+                      console.log(
+                        `${winnerTeam} won the toss and elected to ${tossDecision.toUpperCase()} first.`,
+                      );
+
+                      // Navigate to player selection
+                      setCurrentView("playerSelection");
+                    }}
+                  >
+                    <LinearGradient
+                      colors={["#00A66A", "#0F766E", "#064E3B"]}
+                      style={styles.startMatchButtonGradient}
+                    >
+                      <Ionicons name="play-circle" size={28} color="#FFF" />
+                      <Text style={styles.startMatchButtonText}>
+                        Start Match
+                      </Text>
+                      <Ionicons name="arrow-forward" size={24} color="#FFF" />
+                    </LinearGradient>
+                  </TouchableOpacity>
+                )}
+
+                {/* Bottom Spacing */}
+                <View style={{ height: 100 }} />
+              </ScrollView>
+            ) : currentView === "playerSelection" ? (
+              /* Player Selection Page */
+              <ScrollView
+                style={styles.playerSelectionContainer}
+                showsVerticalScrollIndicator={false}
+              >
+                <View style={styles.playerSelectionHero}>
+                  <Text style={styles.playerSelectionTitle}>
+                    Opening lineup
+                  </Text>
+                  <Text style={styles.playerSelectionSubtitle}>
+                    Confirm the two batters and the bowler before scoring
+                    starts.
+                  </Text>
+                </View>
+
+                {/* Batting Team Section */}
+                <View style={styles.playerSection}>
+                  <Text style={styles.playerSectionTitle}>
+                    Batting - {getBattingTeamName()}
+                  </Text>
+
+                  {/* Striker Selection */}
+                  <View style={styles.playerSelectionRow}>
+                    <TouchableOpacity
+                      style={[
+                        styles.playerSelectionCard,
+                        selectedStriker && styles.playerSelectionCardSelected,
+                      ]}
+                      onPress={() => {
+                        setPlayerModalType("striker");
+                        setShowPlayerModal(true);
+                      }}
+                    >
+                      {selectedStriker?.image ? (
+                        <Image
+                          source={{ uri: selectedStriker.image }}
+                          style={styles.selectionPlayerImage}
+                        />
+                      ) : (
+                        <View style={styles.playerRoleFigure}>
+                          <View style={styles.figureHead} />
+                          <View style={styles.figureBody} />
+                          <View style={styles.batHandle} />
+                        </View>
+                      )}
+                      <Text style={styles.playerSelectionLabel}>
+                        Select Striker
+                      </Text>
+                      {selectedStriker && (
+                        <Text style={styles.selectedPlayerName}>
+                          {selectedStriker.name}
+                        </Text>
+                      )}
+                    </TouchableOpacity>
+
+                    <TouchableOpacity
+                      style={[
+                        styles.playerSelectionCard,
+                        selectedNonStriker &&
+                          styles.playerSelectionCardSelected,
+                      ]}
+                      onPress={() => {
+                        setPlayerModalType("nonStriker");
+                        setShowPlayerModal(true);
+                      }}
+                    >
+                      {selectedNonStriker?.image ? (
+                        <Image
+                          source={{ uri: selectedNonStriker.image }}
+                          style={styles.selectionPlayerImage}
+                        />
+                      ) : (
+                        <View style={styles.playerRoleFigure}>
+                          <View style={styles.figureHead} />
+                          <View style={styles.figureBody} />
+                          <View style={styles.figureLegs} />
+                        </View>
+                      )}
+                      <Text style={styles.playerSelectionLabel}>
+                        Select Non-striker
+                      </Text>
+                      {selectedNonStriker && (
+                        <Text style={styles.selectedPlayerName}>
+                          {selectedNonStriker.name}
+                        </Text>
+                      )}
+                    </TouchableOpacity>
+                  </View>
+                </View>
+
+                {/* Bowling Team Section */}
+                <View style={styles.playerSection}>
+                  <Text style={styles.playerSectionTitle}>
+                    Bowling - {getBowlingTeamName()}
+                  </Text>
+
+                  {/* Bowler Selection */}
+                  <View style={styles.playerSelectionRow}>
+                    <TouchableOpacity
+                      style={[
+                        styles.playerSelectionCard,
+                        styles.bowlerCard,
+                        selectedBowler && styles.playerSelectionCardSelected,
+                      ]}
+                      onPress={() => {
+                        setPlayerModalType("bowler");
+                        setShowPlayerModal(true);
+                      }}
+                    >
+                      {selectedBowler?.image ? (
+                        <Image
+                          source={{ uri: selectedBowler.image }}
+                          style={styles.selectionPlayerImage}
+                        />
+                      ) : (
+                        <View style={styles.playerRoleFigure}>
+                          <View style={styles.figureHead} />
+                          <View
+                            style={[styles.figureBody, styles.bowlerFigureBody]}
+                          />
+                          <View style={styles.bowlingArm} />
+                          <View style={styles.bowlingBall} />
+                        </View>
+                      )}
+                      <Text style={styles.playerSelectionLabel}>
+                        Select Bowler
+                      </Text>
+                      {selectedBowler && (
+                        <Text style={styles.selectedPlayerName}>
+                          {selectedBowler.name}
+                        </Text>
+                      )}
+                    </TouchableOpacity>
                   </View>
                 </View>
 
                 {/* Action Buttons */}
-                <View style={styles.tsTeamActions}>
-                  <TouchableOpacity style={styles.tsActionBtnOutline} onPress={() => handleSelectTeam("A")} activeOpacity={0.8}>
-                    <Ionicons name="people-outline" size={16} color="#00A66A" />
-                    <Text style={styles.tsActionBtnOutlineTxt}>Select</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity style={styles.tsActionBtnFill} onPress={() => handleCreateTeam("A")} activeOpacity={0.8}>
-                    <LinearGradient colors={["#00A66A", "#064E3B"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={styles.tsActionBtnFillGrad}>
-                      <Ionicons name="add-circle-outline" size={16} color="#FFF" />
-                      <Text style={styles.tsActionBtnFillTxt}>Create</Text>
+                <View style={styles.playerActionButtons}>
+                  <TouchableOpacity
+                    style={styles.matchSettingsButton}
+                    onPress={() => setCurrentView("matchSettings")}
+                  >
+                    <LinearGradient
+                      colors={["#666", "#555"]}
+                      style={styles.matchSettingsButtonGradient}
+                    >
+                      <Ionicons
+                        name="settings-outline"
+                        size={20}
+                        color="#FFF"
+                      />
+                      <Text style={styles.matchSettingsButtonText}>
+                        Match Settings
+                      </Text>
                     </LinearGradient>
                   </TouchableOpacity>
-                </View>
-              </View>
 
-              {/* ── VS Section ── */}
-              <View style={styles.tsVsRow}>
-                <View style={styles.tsVsLine} />
-                <LinearGradient colors={["#F59E0B", "#D97706"]} style={styles.tsVsCircle}>
-                  <Text style={styles.tsVsTxt}>VS</Text>
-                </LinearGradient>
-                <View style={styles.tsVsLine} />
-              </View>
+                  <TouchableOpacity
+                    style={styles.startScoringButton}
+                    onPress={() => {
+                      // Validation: Check if all players are selected
+                      if (!selectedStriker) {
+                        Alert.alert(
+                          "Missing Selection",
+                          "Please select a striker before starting the match.",
+                        );
+                        return;
+                      }
+                      if (!selectedNonStriker) {
+                        Alert.alert(
+                          "Missing Selection",
+                          "Please select a non-striker before starting the match.",
+                        );
+                        return;
+                      }
+                      if (!selectedBowler) {
+                        Alert.alert(
+                          "Missing Selection",
+                          "Please select a bowler before starting the match.",
+                        );
+                        return;
+                      }
 
-              {/* ── Team B Card ── */}
-              <View style={[styles.tsTeamCard, teamBName && styles.tsTeamCardReady]}>
-                <LinearGradient colors={["#0F766E", "#064E3B"]} start={{ x: 0, y: 0 }} end={{ x: 0, y: 1 }} style={styles.tsTeamCardStrip} />
-
-                <View style={styles.tsTeamCardInner}>
-                  <View style={styles.tsTeamLogoWrap}>
-                    {teamBName ? (
-                      <LinearGradient colors={["#0F766E", "#064E3B"]} style={styles.tsTeamLogo}>
-                        <Text style={styles.tsTeamLogoLetter}>{teamBName.charAt(0).toUpperCase()}</Text>
-                      </LinearGradient>
-                    ) : (
-                      <View style={styles.tsTeamLogoEmpty}>
-                        <Ionicons name="shield-outline" size={28} color="#CBD5E1" />
-                      </View>
-                    )}
-                    {teamBName && <View style={styles.tsReadyDot} />}
-                  </View>
-
-                  <View style={styles.tsTeamInfo}>
-                    <View style={styles.tsTeamSlotRow}>
-                      <Text style={styles.tsTeamSlot}>AWAY</Text>
-                      <View style={[styles.tsTeamStatus, teamBName ? styles.tsTeamStatusReady : styles.tsTeamStatusEmpty]}>
-                        <Text style={styles.tsTeamStatusTxt}>{teamBName ? "READY" : "NOT SET"}</Text>
-                      </View>
-                    </View>
-                    <Text style={styles.tsTeamName}>{teamBName || "Select Team B"}</Text>
-                    {teamBName ? (
-                      <View style={styles.tsTeamMeta}>
-                        <Ionicons name="people" size={12} color="#64748B" />
-                        <Text style={styles.tsTeamMetaTxt}>11 Players · Captain assigned</Text>
-                      </View>
-                    ) : (
-                      <Text style={styles.tsTeamEmptyHint}>Tap below to select or create</Text>
-                    )}
-                  </View>
-                </View>
-
-                <View style={styles.tsTeamActions}>
-                  <TouchableOpacity style={styles.tsActionBtnOutline} onPress={() => handleSelectTeam("B")} activeOpacity={0.8}>
-                    <Ionicons name="people-outline" size={16} color="#00A66A" />
-                    <Text style={styles.tsActionBtnOutlineTxt}>Select</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity style={styles.tsActionBtnFill} onPress={() => handleCreateTeam("B")} activeOpacity={0.8}>
-                    <LinearGradient colors={["#00A66A", "#064E3B"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={styles.tsActionBtnFillGrad}>
-                      <Ionicons name="add-circle-outline" size={16} color="#FFF" />
-                      <Text style={styles.tsActionBtnFillTxt}>Create</Text>
-                    </LinearGradient>
-                  </TouchableOpacity>
-                </View>
-              </View>
-
-              {/* ── Ready indicator ── */}
-              {(teamAName || teamBName) && (
-                <View style={styles.tsReadyBar}>
-                  <View style={[styles.tsReadyBarSlot, teamAName && styles.tsReadyBarSlotDone]} />
-                  <View style={[styles.tsReadyBarSlot, teamBName && styles.tsReadyBarSlotDone]} />
-                </View>
-              )}
-
-              {/* ── Let's Play ── */}
-              {teamAName && teamBName && (
-                <TouchableOpacity style={styles.tsPlayBtn} onPress={handleLetsPlay} activeOpacity={0.88}>
-                  <LinearGradient colors={["#F59E0B", "#D97706", "#B45309"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={styles.tsPlayBtnGrad}>
-                    <Ionicons name="play-circle" size={24} color="#FFF" />
-                    <Text style={styles.tsPlayBtnTxt}>{"Let's Play!"}</Text>
-                    <Ionicons name="arrow-forward-circle" size={22} color="rgba(255,255,255,0.7)" />
-                  </LinearGradient>
-                </TouchableOpacity>
-              )}
-
-              {/* ── Empty state hint ── */}
-              {!teamAName && !teamBName && (
-                <View style={styles.tsEmptyHint}>
-                  <Ionicons name="information-circle-outline" size={18} color="#94A3B8" />
-                  <Text style={styles.tsEmptyHintTxt}>Set both teams to start the match</Text>
-                </View>
-              )}
-
-            </View>
-          </ScrollView>
-        ) : (
-          /* Matches/Tournaments/Teams View */
-          <Animated.ScrollView
-            ref={horizontalScrollRef}
-            horizontal
-            pagingEnabled
-            showsHorizontalScrollIndicator={false}
-            onScroll={handleScroll}
-            onMomentumScrollEnd={handleHorizontalScrollEnd}
-            onScrollEndDrag={handleMainScrollEndDrag}
-            style={styles.content}
-            scrollEventThrottle={16}
-            nestedScrollEnabled
-          >
-            <ScrollView style={{ width: SCREEN_WIDTH }} showsVerticalScrollIndicator={false}>
-            {/* Animated Start Match Card */}
-            <Animated.View
-              style={[
-                styles.startMatchSection,
-                {
-                  opacity: fadeAnim,
-                  transform: [{ translateY: slideAnim }],
-                },
-              ]}
-            >
-              <LinearGradient
-                colors={["#00A66A", "#0F766E", "#064E3B"]}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 1 }}
-                style={styles.startMatchCard}
-              >
-                {/* Animated background circles */}
-                <Animated.View
-                  style={[
-                    styles.bgCircle1,
-                    { transform: [{ scale: pulseAnim }] },
-                  ]}
-                />
-                <Animated.View
-                  style={[
-                    styles.bgCircle2,
-                    { transform: [{ scale: pulseAnim }] },
-                  ]}
-                />
-
-                <View style={styles.startMatchWrapper}>
-                  <View style={styles.startMatchTop}>
-                    <Animated.View
-                      style={[
-                        styles.startMatchIcon,
-                        { transform: [{ scale: pulseAnim }] },
-                      ]}
-                    >
-                      <LinearGradient
-                        colors={[
-                          "rgba(255,255,255,0.3)",
-                          "rgba(255,255,255,0.1)",
-                        ]}
-                        style={styles.iconGradient}
-                      >
-                        <Ionicons name="add-circle" size={28} color="#FFF" />
-                      </LinearGradient>
-                    </Animated.View>
-                    <View style={styles.startMatchText}>
-                      <Text style={styles.startMatchTitle}>
-                        Want to start a match?
-                      </Text>
-                      <Text style={styles.startMatchSubtitle}>
-                        Create and manage your cricket matches
-                      </Text>
-                    </View>
-                  </View>
-
-                  <Animated.View style={{ transform: [{ scale: scaleAnim }] }}>
-                    <TouchableOpacity
-                      style={styles.startButton}
-                      onPress={handleStartMatch}
-                      activeOpacity={0.8}
-                    >
-                      <LinearGradient
-                        colors={["#FFF", "#F0F0F0"]}
-                        style={styles.startButtonGradient}
-                      >
-                        <Text style={styles.startButtonText}>Start</Text>
-                        <Ionicons
-                          name="arrow-forward"
-                          size={18}
-                          color="#00A66A"
-                        />
-                      </LinearGradient>
-                    </TouchableOpacity>
-                  </Animated.View>
-                </View>
-              </LinearGradient>
-            </Animated.View>
-
-            {/* Animated Filter Tabs */}
-            <Animated.View style={[styles.filterTabs, { opacity: fadeAnim }]}>
-              {["your", "participate", "network", "all"].map((filter) => (
-                <TouchableOpacity
-                  key={filter}
-                  style={[
-                    styles.filterTab,
-                    activeFilter === filter && styles.activeFilterTab,
-                  ]}
-                  onPress={() => setActiveFilter(filter)}
-                >
-                  {activeFilter === filter ? (
+                      // Navigate to scoring page
+                      setCurrentOver(1);
+                      setCurrentBall(1);
+                      setTotalRuns(0);
+                      setTotalWickets(0);
+                      setStrikerRuns(0);
+                      setStrikerBalls(0);
+                      setNonStrikerRuns(0);
+                      setNonStrikerBalls(0);
+                      setBowlerRuns(0);
+                      setBowlerWickets(0);
+                      setBowlerOvers("0.0-0-0-0");
+                      setScoreHistory([]);
+                      setCurrentView("scoringPage");
+                    }}
+                  >
                     <LinearGradient
                       colors={["#00A66A", "#0F766E"]}
-                      style={styles.filterGradient}
+                      style={styles.startScoringButtonGradient}
                     >
-                      <Text style={styles.activeFilterText}>
-                        {filter.charAt(0).toUpperCase() + filter.slice(1)}
+                      <Ionicons name="play-circle" size={20} color="#FFF" />
+                      <Text style={styles.startScoringButtonText}>
+                        Start Scoring
                       </Text>
                     </LinearGradient>
-                  ) : (
-                    <Text style={styles.filterText}>
-                      {filter.charAt(0).toUpperCase() + filter.slice(1)}
-                    </Text>
-                  )}
-                </TouchableOpacity>
-              ))}
-            </Animated.View>
+                  </TouchableOpacity>
+                </View>
 
-            {/* Animated Matches List */}
-            {currentMatches.map((match, index) => (
-              <Animated.View
-                key={match.id}
-                style={{
-                  opacity: cardAnimations[index],
-                  transform: [
-                    {
-                      translateY: cardAnimations[index].interpolate({
-                        inputRange: [0, 1],
-                        outputRange: [50, 0],
-                      }),
-                    },
-                    {
-                      scale: cardAnimations[index],
-                    },
-                  ],
-                }}
+                {/* Bottom Spacing */}
+                <View style={{ height: 100 }} />
+              </ScrollView>
+            ) : currentView === "matchSettings" ? (
+              /* Match Settings Page */
+              <ScrollView
+                style={styles.matchSettingsContainer}
+                showsVerticalScrollIndicator={false}
               >
-                <TouchableOpacity 
-                  style={styles.matchCard}
+                <Text style={styles.matchSettingsTitle}>Match Settings</Text>
+
+                {/* Wagon Wheel Section */}
+                <View style={styles.settingsSection}>
+                  <Text style={styles.settingsSectionTitle}>WAGON WHEEL</Text>
+
+                  <View style={styles.settingItem}>
+                    <Text style={styles.settingLabel}>
+                      Disable Wagon Wheel for DOT Ball
+                    </Text>
+                    <TouchableOpacity
+                      style={[
+                        styles.toggle,
+                        wagonWheelDotBall && styles.toggleActive,
+                      ]}
+                      onPress={() => setWagonWheelDotBall(!wagonWheelDotBall)}
+                    >
+                      <View
+                        style={[
+                          styles.toggleThumb,
+                          wagonWheelDotBall && styles.toggleThumbActive,
+                        ]}
+                      />
+                    </TouchableOpacity>
+                  </View>
+
+                  <View style={styles.settingItem}>
+                    <Text style={styles.settingLabel}>
+                      Disable Wagon Wheel for 1s, 2s and 3s
+                    </Text>
+                    <TouchableOpacity
+                      style={[
+                        styles.toggle,
+                        wagonWheel123s && styles.toggleActive,
+                      ]}
+                      onPress={() => setWagonWheel123s(!wagonWheel123s)}
+                    >
+                      <View
+                        style={[
+                          styles.toggleThumb,
+                          wagonWheel123s && styles.toggleThumbActive,
+                        ]}
+                      />
+                    </TouchableOpacity>
+                  </View>
+
+                  <View style={styles.settingItem}>
+                    <Text style={styles.settingLabel}>
+                      Disable Shot Selection
+                    </Text>
+                    <TouchableOpacity
+                      style={[
+                        styles.toggle,
+                        shotSelection && styles.toggleActive,
+                      ]}
+                      onPress={() => setShotSelection(!shotSelection)}
+                    >
+                      <View
+                        style={[
+                          styles.toggleThumb,
+                          shotSelection && styles.toggleThumbActive,
+                        ]}
+                      />
+                    </TouchableOpacity>
+                  </View>
+
+                  <Text style={styles.settingNote}>
+                    {
+                      "*WW and Shot Selection won't be disabled for boundaries and wickets."
+                    }
+                  </Text>
+                </View>
+
+                {/* Wide/No Ball Rules Section */}
+                <View style={styles.settingsSection}>
+                  <Text style={styles.settingsSectionTitle}>
+                    WIDE/NO BALL RULES
+                  </Text>
+
+                  <View style={styles.ruleItem}>
+                    <View style={styles.ruleHeader}>
+                      <Text style={styles.ruleLabel}>A</Text>
+                      <Text style={styles.ruleText}>
+                        Count Wide as a legal delivery
+                      </Text>
+                    </View>
+                    <TouchableOpacity
+                      style={[
+                        styles.toggle,
+                        countWideAsLegal && styles.toggleActive,
+                      ]}
+                      onPress={() => setCountWideAsLegal(!countWideAsLegal)}
+                    >
+                      <View
+                        style={[
+                          styles.toggleThumb,
+                          countWideAsLegal && styles.toggleThumbActive,
+                        ]}
+                      />
+                    </TouchableOpacity>
+                  </View>
+
+                  <View style={styles.ruleItem}>
+                    <View style={styles.ruleHeader}>
+                      <Text style={styles.ruleLabel}>B</Text>
+                      <Text style={styles.ruleText}>Wide Runs</Text>
+                    </View>
+                    <View style={styles.runsCounter}>
+                      <TouchableOpacity
+                        style={styles.counterButton}
+                        onPress={() => setWideRuns(Math.max(0, wideRuns - 1))}
+                      >
+                        <Ionicons
+                          name="remove-circle-outline"
+                          size={24}
+                          color="#666"
+                        />
+                      </TouchableOpacity>
+                      <Text style={styles.counterValue}>{wideRuns}</Text>
+                      <TouchableOpacity
+                        style={styles.counterButton}
+                        onPress={() => setWideRuns(wideRuns + 1)}
+                      >
+                        <Ionicons
+                          name="add-circle-outline"
+                          size={24}
+                          color="#666"
+                        />
+                      </TouchableOpacity>
+                    </View>
+                  </View>
+
+                  <View style={styles.ruleItem}>
+                    <View style={styles.ruleHeader}>
+                      <Text style={styles.ruleLabel}>C</Text>
+                      <Text style={styles.ruleText}>
+                        Count No Ball as a legal delivery
+                      </Text>
+                    </View>
+                    <TouchableOpacity
+                      style={[
+                        styles.toggle,
+                        countNoBallAsLegal && styles.toggleActive,
+                      ]}
+                      onPress={() => setCountNoBallAsLegal(!countNoBallAsLegal)}
+                    >
+                      <View
+                        style={[
+                          styles.toggleThumb,
+                          countNoBallAsLegal && styles.toggleThumbActive,
+                        ]}
+                      />
+                    </TouchableOpacity>
+                  </View>
+
+                  <View style={styles.ruleItem}>
+                    <View style={styles.ruleHeader}>
+                      <Text style={styles.ruleLabel}>D</Text>
+                      <Text style={styles.ruleText}>No Ball Runs</Text>
+                    </View>
+                    <View style={styles.runsCounter}>
+                      <TouchableOpacity
+                        style={styles.counterButton}
+                        onPress={() =>
+                          setNoBallRuns(Math.max(0, noBallRuns - 1))
+                        }
+                      >
+                        <Ionicons
+                          name="remove-circle-outline"
+                          size={24}
+                          color="#666"
+                        />
+                      </TouchableOpacity>
+                      <Text style={styles.counterValue}>{noBallRuns}</Text>
+                      <TouchableOpacity
+                        style={styles.counterButton}
+                        onPress={() => setNoBallRuns(noBallRuns + 1)}
+                      >
+                        <Ionicons
+                          name="add-circle-outline"
+                          size={24}
+                          color="#666"
+                        />
+                      </TouchableOpacity>
+                    </View>
+                  </View>
+
+                  {/* Ignore Rules */}
+                  <View style={styles.ignoreRulesContainer}>
+                    <Text style={styles.ignoreRulesLabel}>Ignore Rules</Text>
+                    <View style={styles.ignoreRulesOptions}>
+                      {["A", "B", "C", "D"].map((option) => (
+                        <TouchableOpacity
+                          key={option}
+                          style={[
+                            styles.ignoreRuleOption,
+                            ignoreRules === option &&
+                              styles.ignoreRuleOptionActive,
+                          ]}
+                          onPress={() => setIgnoreRules(option)}
+                        >
+                          <Text
+                            style={[
+                              styles.ignoreRuleOptionText,
+                              ignoreRules === option &&
+                                styles.ignoreRuleOptionTextActive,
+                            ]}
+                          >
+                            {option}
+                          </Text>
+                        </TouchableOpacity>
+                      ))}
+                    </View>
+                  </View>
+                </View>
+
+                {/* Save Settings Button */}
+                <TouchableOpacity
+                  style={styles.saveSettingsButton}
                   onPress={() => {
                     Alert.alert(
-                      match.team,
-                      `${match.type}\nStatus: ${match.status}\nDate: ${match.date}\nTime: ${match.time}\nLocation: ${match.location}\nFormat: ${match.format} (${match.overs})${match.result ? `\nResult: ${match.result}` : ''}`,
+                      "Settings Saved",
+                      "Match settings have been saved successfully!",
                       [
-                        { text: "Close", style: "cancel" },
-                        match.status === "Live" ? 
-                          { text: "Watch Live", onPress: () => Alert.alert("Live Match", "Opening live match view...") } :
-                        match.status === "Upcoming" ?
-                          { text: "Set Reminder", onPress: () => Alert.alert("Reminder Set", "You'll be notified before the match starts!") } :
-                          { text: "View Scorecard", onPress: () => Alert.alert("Scorecard", "Opening detailed scorecard...") }
-                      ]
+                        {
+                          text: "OK",
+                          onPress: () => setCurrentView("playerSelection"),
+                        },
+                      ],
                     );
                   }}
                 >
                   <LinearGradient
-                    colors={["#FFF", "#F8F8F8"]}
-                    style={styles.matchCardGradient}
+                    colors={["#00A66A", "#0F766E"]}
+                    style={styles.saveSettingsButtonGradient}
                   >
-                    <View style={styles.matchHeader}>
-                      <View style={styles.matchTypeContainer}>
-                        <View style={styles.iconCircle}>
-                          <Ionicons
-                            name="baseball-outline"
-                            size={10}
-                            color="#00A66A"
-                          />
-                        </View>
-                        <Text style={styles.matchType}>{match.type}</Text>
-                      </View>
-                      <LinearGradient
-                        colors={
-                          match.status === "Live"
-                            ? ["#EF4444", "#059669"]
-                            : match.status === "Upcoming"
-                            ? ["#F59E0B", "#D97706"]
-                            : match.status === "Completed"
-                            ? ["#10B981", "#059669"]
-                            : ["#00A66A", "#0F766E"]
-                        }
-                        style={styles.statusBadge}
-                      >
-                        {match.status === "Live" && (
-                          <View style={styles.liveIndicator} />
-                        )}
-                        <Text style={styles.statusText}>{match.status}</Text>
-                      </LinearGradient>
-                    </View>
-
-                    <View style={styles.matchBody}>
-                      <View style={styles.teamSection}>
-                        <LinearGradient
-                          colors={["#00A66A", "#0F766E"]}
-                          style={styles.teamInitial}
-                        >
-                          <Text style={styles.teamInitialText}>
-                            {match.team.charAt(0)}
-                          </Text>
-                        </LinearGradient>
-                        <View style={styles.teamInfo}>
-                          <Text style={styles.teamName}>{match.team}</Text>
-                          {match.result && (
-                            <View style={styles.resultContainer}>
-                              <Ionicons
-                                name="trophy"
-                                size={10}
-                                color="#00A66A"
-                              />
-                              <Text style={styles.matchResult}>
-                                {match.result}
-                              </Text>
-                            </View>
-                          )}
-                        </View>
-                      </View>
-
-                      <View style={styles.matchDetails}>
-                        <View style={styles.detailRow}>
-                          <View style={styles.detailIcon}>
-                            <Ionicons
-                              name="calendar-outline"
-                              size={9}
-                              color="#00A66A"
-                            />
-                          </View>
-                          <Text style={styles.detailText}>
-                            {match.date} | {match.overs} | {match.format}
-                          </Text>
-                        </View>
-                        <View style={styles.detailRow}>
-                          <View style={styles.detailIcon}>
-                            <Ionicons
-                              name="location-outline"
-                              size={9}
-                              color="#00A66A"
-                            />
-                          </View>
-                          <Text style={styles.detailText}>
-                            {match.location}
-                          </Text>
-                        </View>
-                      </View>
-
-                      <View style={styles.scheduleContainer}>
-                        <Ionicons name="time-outline" size={10} color="#999" />
-                        <Text style={styles.matchSchedule}>
-                          Match scheduled to begin on {match.date} at{" "}
-                          {match.time}
-                        </Text>
-                      </View>
-                    </View>
-
-                    <View style={styles.matchFooter}>
-                      <TouchableOpacity style={styles.footerButton}>
-                        <LinearGradient
-                          colors={[
-                            "rgba(185, 28, 28, 0.1)",
-                            "rgba(185, 28, 28, 0.05)",
-                          ]}
-                          style={styles.footerButtonGradient}
-                        >
-                          <Ionicons
-                            name="stats-chart-outline"
-                            size={14}
-                            color="#00A66A"
-                          />
-                          <Text style={styles.footerButtonText}>Insights</Text>
-                        </LinearGradient>
-                      </TouchableOpacity>
-                      <View style={styles.footerDivider} />
-                      <TouchableOpacity style={styles.footerButton}>
-                        <LinearGradient
-                          colors={[
-                            "rgba(185, 28, 28, 0.1)",
-                            "rgba(185, 28, 28, 0.05)",
-                          ]}
-                          style={styles.footerButtonGradient}
-                        >
-                          <Ionicons
-                            name="people-outline"
-                            size={14}
-                            color="#00A66A"
-                          />
-                          <Text style={styles.footerButtonText}>Squads</Text>
-                        </LinearGradient>
-                      </TouchableOpacity>
-                    </View>
-                  </LinearGradient>
-                </TouchableOpacity>
-              </Animated.View>
-            ))}
-
-            <View style={{ height: 20 }} />
-            </ScrollView>
-
-            {/* Tournaments Tab Content */}
-            <ScrollView style={{ width: SCREEN_WIDTH }} showsVerticalScrollIndicator={false}>
-              <View style={styles.tournamentsContainer}>
-                {/* Create Tournament Card */}
-                <TouchableOpacity 
-                  style={styles.createTournamentCard}
-                  onPress={() => setCurrentView("createTournament")}
-                >
-                  <LinearGradient
-                    colors={["#00A66A", "#0F766E", "#064E3B"]}
-                    start={{ x: 0, y: 0 }}
-                    end={{ x: 1, y: 1 }}
-                    style={styles.createTournamentGradient}
-                  >
-                    <View style={styles.createTournamentIcon}>
-                      <Ionicons name="trophy" size={32} color="#FFF" />
-                    </View>
-                    <View style={styles.createTournamentText}>
-                      <Text style={styles.createTournamentTitle}>
-                        Register Tournament
-                      </Text>
-                      <Text style={styles.createTournamentSubtitle}>
-                        Add a tournament / series
-                      </Text>
-                    </View>
-                    <Ionicons name="add-circle" size={28} color="#FFF" />
+                    <Ionicons name="checkmark-circle" size={20} color="#FFF" />
+                    <Text style={styles.saveSettingsButtonText}>
+                      Save Settings
+                    </Text>
                   </LinearGradient>
                 </TouchableOpacity>
 
-                {/* Tournament Filter Tabs */}
-                <Animated.View style={[styles.filterTabs, { opacity: fadeAnim }]}>
-                  {["your", "participate", "network", "all"].map((filter) => (
+                {/* Bottom Spacing */}
+                <View style={{ height: 100 }} />
+              </ScrollView>
+            ) : currentView === "scoringPage" ? (
+              /* Cricket Scoring Page */
+              <View style={styles.scoringContainer}>
+                {/* Match Header */}
+                <View style={styles.scoringHeader}>
+                  <Text style={styles.scoringTeamName}>
+                    {getBattingTeamName()}
+                  </Text>
+                  <Text style={styles.scoringTotal}>
+                    {totalRuns}/{totalWickets}
+                  </Text>
+                  <Text style={styles.matchHeaderText}>
+                    Overs {getOverLabel(currentOver - 1, currentBall - 1)} /{" "}
+                    {numberOfOvers || "?"}
+                  </Text>
+                  <TouchableOpacity
+                    style={styles.endMatchButton}
+                    onPress={endMatchAndSave}
+                  >
+                    <Ionicons name="flag" size={14} color="#FFF" />
+                    <Text style={styles.endMatchButtonText}>End Match</Text>
+                  </TouchableOpacity>
+                </View>
+
+                {/* Batsmen Section */}
+                <View style={styles.batsmenSection}>
+                  <View style={styles.batsmanCard}>
+                    {selectedStriker?.image && (
+                      <Image
+                        source={{ uri: selectedStriker.image }}
+                        style={styles.scoringPlayerImage}
+                      />
+                    )}
+                    <Text style={styles.batsmanName}>
+                      {selectedStriker?.name || "Aniket"}
+                    </Text>
+                    <Text style={styles.batsmanScore}>
+                      {strikerRuns}({strikerBalls})
+                    </Text>
+                  </View>
+
+                  <View style={styles.batsmanCard}>
+                    {selectedNonStriker?.image && (
+                      <Image
+                        source={{ uri: selectedNonStriker.image }}
+                        style={styles.scoringPlayerImage}
+                      />
+                    )}
+                    <Text style={styles.batsmanName}>
+                      {selectedNonStriker?.name || "Deepu"}
+                    </Text>
+                    <Text style={styles.batsmanScore}>
+                      {nonStrikerRuns}({nonStrikerBalls})
+                    </Text>
+                  </View>
+                </View>
+
+                {/* Bowler Section */}
+                <View style={styles.bowlerSection}>
+                  {selectedBowler?.image && (
+                    <Image
+                      source={{ uri: selectedBowler.image }}
+                      style={styles.scoringPlayerImage}
+                    />
+                  )}
+                  <Text style={styles.bowlerName}>
+                    {selectedBowler?.name || "Kapil Jangir"}
+                  </Text>
+                  <View style={styles.bowlerStats}>
+                    <Ionicons name="stats-chart" size={12} color="#4CAF50" />
+                  </View>
+                  <Text style={styles.bowlerFigures}>{bowlerOvers}</Text>
+                </View>
+
+                {/* Wicket Type Selection */}
+                <View style={styles.wicketTypeSection}>
+                  <TouchableOpacity
+                    style={[
+                      styles.wicketTypeButton,
+                      selectedWicketType === "overWicket" &&
+                        styles.wicketTypeButtonActive,
+                    ]}
+                    onPress={() =>
+                      setSelectedWicketType(
+                        selectedWicketType === "overWicket"
+                          ? null
+                          : "overWicket",
+                      )
+                    }
+                  >
+                    <View style={styles.wicketIcon}>
+                      <Ionicons name="stats-chart" size={20} color="#4CAF50" />
+                    </View>
+                    <Text style={styles.wicketTypeText}>Over the Wicket</Text>
+                  </TouchableOpacity>
+
+                  <TouchableOpacity
+                    style={[
+                      styles.wicketTypeButton,
+                      selectedWicketType === "betweenWicket" &&
+                        styles.wicketTypeButtonActive,
+                    ]}
+                    onPress={() =>
+                      setSelectedWicketType(
+                        selectedWicketType === "betweenWicket"
+                          ? null
+                          : "betweenWicket",
+                      )
+                    }
+                  >
+                    <View style={styles.wicketIcon}>
+                      <Ionicons name="stats-chart" size={20} color="#4CAF50" />
+                    </View>
+                    <Text style={styles.wicketTypeText}>
+                      Between the Wicket
+                    </Text>
+                  </TouchableOpacity>
+
+                  <TouchableOpacity
+                    style={[
+                      styles.wicketTypeButton,
+                      selectedWicketType === "roundWicket" &&
+                        styles.wicketTypeButtonActive,
+                    ]}
+                    onPress={() =>
+                      setSelectedWicketType(
+                        selectedWicketType === "roundWicket"
+                          ? null
+                          : "roundWicket",
+                      )
+                    }
+                  >
+                    <View style={styles.wicketIcon}>
+                      <Ionicons name="stats-chart" size={20} color="#4CAF50" />
+                    </View>
+                    <Text style={styles.wicketTypeText}>Round the Wicket</Text>
+                  </TouchableOpacity>
+                </View>
+
+                {/* Scoring Buttons */}
+                <View style={styles.scoringGrid}>
+                  {/* First Row */}
+                  <View style={styles.scoringRow}>
                     <TouchableOpacity
-                      key={filter}
-                      style={[
-                        styles.filterTab,
-                        activeTournamentFilter === filter && styles.activeFilterTab,
-                      ]}
-                      onPress={() => setActiveTournamentFilter(filter)}
+                      style={styles.scoreButton}
+                      onPress={() => applyLegalRun(0)}
                     >
-                      {activeTournamentFilter === filter ? (
-                        <LinearGradient
-                          colors={["#00A66A", "#0F766E"]}
-                          style={styles.filterGradient}
-                        >
-                          <Text style={styles.activeFilterText}>
-                            {filter.charAt(0).toUpperCase() + filter.slice(1)}
-                          </Text>
-                        </LinearGradient>
-                      ) : (
-                        <Text style={styles.filterText}>
-                          {filter.charAt(0).toUpperCase() + filter.slice(1)}
-                        </Text>
-                      )}
+                      <Text style={styles.scoreButtonText}>0</Text>
                     </TouchableOpacity>
-                  ))}
-                </Animated.View>
+                    <TouchableOpacity
+                      style={styles.scoreButton}
+                      onPress={() => applyLegalRun(1)}
+                    >
+                      <Text style={styles.scoreButtonText}>1</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      style={styles.scoreButton}
+                      onPress={() => applyLegalRun(2)}
+                    >
+                      <Text style={styles.scoreButtonText}>2</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      style={[styles.scoreButton, styles.undoButton]}
+                      onPress={undoScore}
+                    >
+                      <Text
+                        style={[styles.scoreButtonText, styles.undoButtonText]}
+                      >
+                        UNDO
+                      </Text>
+                    </TouchableOpacity>
+                  </View>
 
-                {/* Tournaments List */}
-                <Text style={styles.sectionTitle}>
-                  {activeTournamentFilter === "your" && "Your Tournaments"}
-                  {activeTournamentFilter === "participate" && "Tournaments to Participate"}
-                  {activeTournamentFilter === "network" && "Network Tournaments"}
-                  {activeTournamentFilter === "all" && "All Tournaments"}
+                  {/* Second Row */}
+                  <View style={styles.scoringRow}>
+                    <TouchableOpacity
+                      style={styles.scoreButton}
+                      onPress={() => applyLegalRun(3)}
+                    >
+                      <Text style={styles.scoreButtonText}>3</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      style={styles.scoreButton}
+                      onPress={() => applyLegalRun(4)}
+                    >
+                      <Text style={styles.scoreButtonText}>4</Text>
+                      <Text style={styles.scoreButtonSubText}>FOUR</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      style={styles.scoreButton}
+                      onPress={() => applyLegalRun(6)}
+                    >
+                      <Text style={styles.scoreButtonText}>6</Text>
+                      <Text style={styles.scoreButtonSubText}>SIX</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      style={styles.scoreButton}
+                      onPress={() => applyLegalRun(5)}
+                    >
+                      <Text style={styles.scoreButtonText}>5, 7</Text>
+                    </TouchableOpacity>
+                  </View>
+
+                  {/* Third Row */}
+                  <View style={styles.scoringRow}>
+                    <TouchableOpacity
+                      style={styles.scoreButton}
+                      onPress={() => applyExtra("WD")}
+                    >
+                      <Text style={styles.scoreButtonText}>WD</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      style={styles.scoreButton}
+                      onPress={() => applyExtra("NB")}
+                    >
+                      <Text style={styles.scoreButtonText}>NB</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      style={styles.scoreButton}
+                      onPress={() => applyExtra("BYE")}
+                    >
+                      <Text style={styles.scoreButtonText}>BYE</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      style={[styles.scoreButton, styles.outButton]}
+                      onPress={applyWicket}
+                    >
+                      <Text
+                        style={[styles.scoreButtonText, styles.outButtonText]}
+                      >
+                        OUT
+                      </Text>
+                    </TouchableOpacity>
+                  </View>
+
+                  <TouchableOpacity
+                    style={styles.scoreButton}
+                    onPress={() => applyExtra("LB")}
+                  >
+                    <Text style={styles.scoreButtonText}>LB</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            ) : currentView === "selectTeam" ? (
+              /* Select Team View */
+              <View style={styles.teamSelectionContainer}>
+                <Text style={styles.teamSelectionTitle}>
+                  Select Team {teamSlot}
                 </Text>
-                
-                {activeTournamentFilter === "your" && [
+
+                {/* Teams List */}
+                {[
                   {
                     id: 1,
-                    name: "Mumbai Premier League 2024",
-                    teams: 8,
-                    matches: 24,
-                    status: "Ongoing",
-                    startDate: "May 15, 2024",
-                    progress: 65,
+                    name: "Mumbai Warriors",
+                    players: 11,
+                    wins: 18,
+                    matches: 25,
                   },
                   {
                     id: 2,
-                    name: "Summer Cricket Championship",
-                    teams: 6,
-                    matches: 15,
-                    status: "Upcoming",
-                    startDate: "June 1, 2024",
-                    progress: 0,
-                  },
-                  {
-                    id: 10,
-                    name: "Monsoon T20 Series",
-                    teams: 7,
-                    matches: 18,
-                    status: "Ongoing",
-                    startDate: "May 20, 2024",
-                    progress: 45,
-                  },
-                  {
-                    id: 11,
-                    name: "Weekend Cricket Fest",
-                    teams: 5,
-                    matches: 10,
-                    status: "Upcoming",
-                    startDate: "June 15, 2024",
-                    progress: 0,
-                  },
-                  {
-                    id: 12,
-                    name: "Corporate League 2024",
-                    teams: 9,
+                    name: "Delhi Strikers",
+                    players: 11,
+                    wins: 12,
                     matches: 20,
-                    status: "Ongoing",
-                    startDate: "May 10, 2024",
-                    progress: 80,
                   },
-                  {
-                    id: 13,
-                    name: "Youth Cricket Academy",
-                    teams: 4,
-                    matches: 8,
-                    status: "Upcoming",
-                    startDate: "July 1, 2024",
-                    progress: 0,
-                  },
-                ].map((tournament) => (
-                  <TouchableOpacity
-                    key={tournament.id}
-                    style={styles.tournamentCard}
-                    activeOpacity={0.85}
-                    onPress={() => {
-                      setSelectedTournament(tournament);
-                      setActiveTournamentDetailTab("matches");
-                      setCurrentView("tournamentDetail");
-                    }}
-                  >
-                    <LinearGradient
-                      colors={["#FFF", "#F8F8F8"]}
-                      style={styles.tournamentCardGradient}
-                    >
-                      <View style={styles.tournamentHeader}>
-                        <View style={styles.tournamentHeaderLeft}>
-                          <LinearGradient
-                            colors={["#6EE7B7", "#059669"]}
-                            style={styles.tournamentIcon}
-                          >
-                            <Ionicons name="trophy" size={18} color="#FFF" />
-                          </LinearGradient>
-                          <View style={styles.tournamentHeaderInfo}>
-                            <Text style={styles.tournamentName} numberOfLines={1}>
-                              {tournament.name}
-                            </Text>
-                            <View style={styles.tournamentMeta}>
-                              <Ionicons name="calendar-outline" size={11} color="#999" />
-                              <Text style={styles.tournamentMetaText}>
-                                {tournament.startDate}
-                              </Text>
-                            </View>
-                          </View>
-                        </View>
-                        <LinearGradient
-                          colors={
-                            tournament.status === "Ongoing"
-                              ? ["#00A66A", "#0F766E"]
-                              : ["#059669", "#0F766E"]
-                          }
-                          style={styles.tournamentStatusBadge}
-                        >
-                          <Text style={styles.tournamentStatusText}>
-                            {tournament.status}
-                          </Text>
-                        </LinearGradient>
-                      </View>
-
-                      <View style={styles.tournamentProgressSection}>
-                        <View style={styles.progressBar}>
-                          <View
-                            style={[
-                              styles.progressFill,
-                              {
-                                width: `${tournament.progress}%`,
-                                backgroundColor:
-                                  tournament.progress > 70
-                                    ? "#00A66A"
-                                    : tournament.progress > 40
-                                    ? "#059669"
-                                    : "#00A66A",
-                              },
-                            ]}
-                          />
-                        </View>
-                        <Text style={styles.progressText}>
-                          {tournament.progress}% Complete
-                        </Text>
-                      </View>
-
-                      <View style={styles.tournamentStats}>
-                        <View style={styles.tournamentStat}>
-                          <View style={styles.statIcon}>
-                            <Ionicons name="people" size={12} color="#00A66A" />
-                          </View>
-                          <Text style={styles.tournamentStatText}>
-                            {tournament.teams} Teams
-                          </Text>
-                        </View>
-                        <View style={styles.tournamentStat}>
-                          <View style={styles.statIcon}>
-                            <Ionicons name="baseball" size={12} color="#00A66A" />
-                          </View>
-                          <Text style={styles.tournamentStatText}>
-                            {tournament.matches} Matches
-                          </Text>
-                        </View>
-                      </View>
-
-                      <View style={styles.tournamentFooter}>
-                        <TouchableOpacity 
-                          style={[styles.tournamentButton, { flex: 1 }]}
-                          onPress={(e) => {
-                            e.stopPropagation();
-                            setSelectedTournament(tournament);
-                            setShowTournamentSettings(true);
-                          }}
-                        >
-                          <LinearGradient
-                            colors={["#00A66A", "#0F766E"]}
-                            style={styles.tournamentButtonGradient}
-                          >
-                            <Ionicons name="settings-outline" size={13} color="#FFF" />
-                            <Text style={styles.tournamentButtonText}>Manage</Text>
-                          </LinearGradient>
-                        </TouchableOpacity>
-                      </View>
-                    </LinearGradient>
-                  </TouchableOpacity>
-                ))}
-
-                {activeTournamentFilter === "participate" && [
                   {
                     id: 3,
-                    name: "Delhi Cricket League 2024",
-                    teams: 10,
-                    matches: 32,
-                    status: "Completed",
-                    startDate: "Apr 10, 2024",
-                    progress: 100,
-                  },
-                  {
-                    id: 4,
-                    name: "Bangalore T20 Blast",
-                    teams: 7,
+                    name: "Bangalore Challengers",
+                    players: 11,
+                    wins: 10,
                     matches: 18,
-                    status: "Completed",
-                    startDate: "Mar 20, 2024",
-                    progress: 100,
                   },
-                  {
-                    id: 5,
-                    name: "Pune Cricket Festival",
-                    teams: 5,
-                    matches: 12,
-                    status: "Completed",
-                    startDate: "Feb 15, 2024",
-                    progress: 100,
-                  },
-                ].map((tournament) => (
+                ].map((team) => (
                   <TouchableOpacity
-                    key={tournament.id}
-                    style={styles.tournamentCard}
-                    activeOpacity={0.85}
+                    key={team.id}
+                    style={styles.selectTeamCard}
                     onPress={() => {
-                      setSelectedTournament(tournament);
-                      setActiveTournamentDetailTab("matches");
-                      setCurrentView("tournamentDetail");
+                      console.log(`Selected ${team.name} for Team ${teamSlot}`);
+                      handleBackToTeamSelection();
                     }}
                   >
                     <LinearGradient
                       colors={["#FFF", "#F8F8F8"]}
-                      style={styles.tournamentCardGradient}
+                      style={styles.selectTeamCardGradient}
                     >
-                      <View style={styles.tournamentHeader}>
-                        <View style={styles.tournamentHeaderLeft}>
-                          <LinearGradient
-                            colors={["#6EE7B7", "#059669"]}
-                            style={styles.tournamentIcon}
-                          >
-                            <Ionicons name="trophy" size={18} color="#FFF" />
-                          </LinearGradient>
-                          <View style={styles.tournamentHeaderInfo}>
-                            <Text style={styles.tournamentName} numberOfLines={1}>
-                              {tournament.name}
-                            </Text>
-                            <View style={styles.tournamentMeta}>
-                              <Ionicons name="calendar-outline" size={11} color="#999" />
-                              <Text style={styles.tournamentMetaText}>
-                                {tournament.startDate}
-                              </Text>
-                            </View>
-                          </View>
-                        </View>
-                        <LinearGradient
-                          colors={["#00A66A", "#0F766E"]}
-                          style={styles.tournamentStatusBadge}
-                        >
-                          <Text style={styles.tournamentStatusText}>
-                            {tournament.status}
-                          </Text>
-                        </LinearGradient>
-                      </View>
-
-                      <View style={styles.tournamentProgressSection}>
-                        <View style={styles.progressBar}>
-                          <View
-                            style={[
-                              styles.progressFill,
-                              {
-                                width: `${tournament.progress}%`,
-                                backgroundColor: "#00A66A",
-                              },
-                            ]}
-                          />
-                        </View>
-                        <Text style={styles.progressText}>
-                          {tournament.progress}% Complete
+                      <LinearGradient
+                        colors={["#00A66A", "#0F766E"]}
+                        style={styles.selectTeamIcon}
+                      >
+                        <Text style={styles.selectTeamInitial}>
+                          {team.name.charAt(0)}
                         </Text>
-                      </View>
+                      </LinearGradient>
 
-                      <View style={styles.tournamentStats}>
-                        <View style={styles.tournamentStat}>
-                          <View style={styles.statIcon}>
-                            <Ionicons name="people" size={12} color="#00A66A" />
-                          </View>
-                          <Text style={styles.tournamentStatText}>
-                            {tournament.teams} Teams
+                      <View style={styles.selectTeamInfo}>
+                        <Text style={styles.selectTeamName}>{team.name}</Text>
+                        <View style={styles.selectTeamStats}>
+                          <Ionicons name="people" size={12} color="#666" />
+                          <Text style={styles.selectStatText}>
+                            {team.players} Players
+                          </Text>
+                          <Ionicons
+                            name="trophy"
+                            size={12}
+                            color="#666"
+                            style={{ marginLeft: 12 }}
+                          />
+                          <Text style={styles.selectStatText}>
+                            {team.wins}/{team.matches}
                           </Text>
                         </View>
-                        <View style={styles.tournamentStat}>
-                          <View style={styles.statIcon}>
-                            <Ionicons name="baseball" size={12} color="#00A66A" />
-                          </View>
-                          <Text style={styles.tournamentStatText}>
-                            {tournament.matches} Matches
-                          </Text>
-                        </View>
                       </View>
 
-                      <View style={styles.tournamentFooter}>
-                        <TouchableOpacity 
-                          style={[styles.tournamentButton, { flex: 1 }]}
-                          onPress={(e) => {
-                            e.stopPropagation();
-                            setSelectedTournament(tournament);
-                            setShowTournamentSettings(true);
-                          }}
-                        >
-                          <LinearGradient
-                            colors={["#00A66A", "#0F766E"]}
-                            style={styles.tournamentButtonGradient}
-                          >
-                            <Ionicons name="stats-chart-outline" size={13} color="#FFF" />
-                            <Text style={styles.tournamentButtonText}>Stats</Text>
-                          </LinearGradient>
-                        </TouchableOpacity>
-                      </View>
+                      <Ionicons
+                        name="chevron-forward"
+                        size={20}
+                        color="#00A66A"
+                      />
                     </LinearGradient>
                   </TouchableOpacity>
                 ))}
-
-                {activeTournamentFilter === "network" && [
-                  {
-                    id: 6,
-                    name: "National Cricket Championship",
-                    teams: 16,
-                    matches: 48,
-                    status: "Upcoming",
-                    startDate: "Jul 1, 2024",
-                    progress: 0,
-                  },
-                  {
-                    id: 7,
-                    name: "Inter-State T20 Series",
-                    teams: 12,
-                    matches: 36,
-                    status: "Upcoming",
-                    startDate: "Aug 15, 2024",
-                    progress: 0,
-                  },
-                  {
-                    id: 8,
-                    name: "Corporate Cricket League",
-                    teams: 9,
-                    matches: 24,
-                    status: "Ongoing",
-                    startDate: "May 20, 2024",
-                    progress: 55,
-                  },
-                ].map((tournament) => (
-                  <TouchableOpacity
-                    key={tournament.id}
-                    style={styles.tournamentCard}
-                    activeOpacity={0.85}
-                    onPress={() => {
-                      setSelectedTournament(tournament);
-                      setActiveTournamentDetailTab("matches");
-                      setCurrentView("tournamentDetail");
-                    }}
-                  >
-                    <LinearGradient
-                      colors={["#FFF", "#F8F8F8"]}
-                      style={styles.tournamentCardGradient}
-                    >
-                      <View style={styles.tournamentHeader}>
-                        <View style={styles.tournamentHeaderLeft}>
-                          <LinearGradient
-                            colors={["#6EE7B7", "#059669"]}
-                            style={styles.tournamentIcon}
-                          >
-                            <Ionicons name="trophy" size={18} color="#FFF" />
-                          </LinearGradient>
-                          <View style={styles.tournamentHeaderInfo}>
-                            <Text style={styles.tournamentName} numberOfLines={1}>
-                              {tournament.name}
-                            </Text>
-                            <View style={styles.tournamentMeta}>
-                              <Ionicons name="calendar-outline" size={11} color="#999" />
-                              <Text style={styles.tournamentMetaText}>
-                                {tournament.startDate}
-                              </Text>
-                            </View>
-                          </View>
-                        </View>
-                        <LinearGradient
-                          colors={
-                            tournament.status === "Ongoing"
-                              ? ["#00A66A", "#0F766E"]
-                              : ["#059669", "#0F766E"]
-                          }
-                          style={styles.tournamentStatusBadge}
-                        >
-                          <Text style={styles.tournamentStatusText}>
-                            {tournament.status}
-                          </Text>
-                        </LinearGradient>
-                      </View>
-
-                      <View style={styles.tournamentProgressSection}>
-                        <View style={styles.progressBar}>
-                          <View
-                            style={[
-                              styles.progressFill,
-                              {
-                                width: `${tournament.progress}%`,
-                                backgroundColor:
-                                  tournament.progress > 70
-                                    ? "#00A66A"
-                                    : tournament.progress > 40
-                                    ? "#059669"
-                                    : "#00A66A",
-                              },
-                            ]}
-                          />
-                        </View>
-                        <Text style={styles.progressText}>
-                          {tournament.progress}% Complete
-                        </Text>
-                      </View>
-
-                      <View style={styles.tournamentStats}>
-                        <View style={styles.tournamentStat}>
-                          <View style={styles.statIcon}>
-                            <Ionicons name="people" size={12} color="#00A66A" />
-                          </View>
-                          <Text style={styles.tournamentStatText}>
-                            {tournament.teams} Teams
-                          </Text>
-                        </View>
-                        <View style={styles.tournamentStat}>
-                          <View style={styles.statIcon}>
-                            <Ionicons name="baseball" size={12} color="#00A66A" />
-                          </View>
-                          <Text style={styles.tournamentStatText}>
-                            {tournament.matches} Matches
-                          </Text>
-                        </View>
-                      </View>
-
-                      <View style={styles.tournamentFooter}>
-                        <TouchableOpacity 
-                          style={[styles.tournamentButton, { flex: 1 }]}
-                          onPress={(e) => {
-                            e.stopPropagation();
-                            Alert.alert(
-                              "Join Tournament",
-                              `Would you like to join ${tournament.name}?`,
-                              [
-                                { text: "Cancel", style: "cancel" },
-                                { text: "Join", onPress: () => console.log("Joined tournament") }
-                              ]
-                            );
-                          }}
-                        >
-                          <LinearGradient
-                            colors={["#00A66A", "#0F766E"]}
-                            style={styles.tournamentButtonGradient}
-                          >
-                            <Ionicons name="add-circle-outline" size={13} color="#FFF" />
-                            <Text style={styles.tournamentButtonText}>Join</Text>
-                          </LinearGradient>
-                        </TouchableOpacity>
-                      </View>
-                    </LinearGradient>
-                  </TouchableOpacity>
-                ))}
-
-                {activeTournamentFilter === "all" && [
-                  {
-                    id: 1,
-                    name: "Mumbai Premier League 2024",
-                    teams: 8,
-                    matches: 24,
-                    status: "Ongoing",
-                    startDate: "May 15, 2024",
-                    progress: 65,
-                  },
-                  {
-                    id: 3,
-                    name: "Delhi Cricket League 2024",
-                    teams: 10,
-                    matches: 32,
-                    status: "Completed",
-                    startDate: "Apr 10, 2024",
-                    progress: 100,
-                  },
-                  {
-                    id: 6,
-                    name: "National Cricket Championship",
-                    teams: 16,
-                    matches: 48,
-                    status: "Upcoming",
-                    startDate: "Jul 1, 2024",
-                    progress: 0,
-                  },
-                  {
-                    id: 9,
-                    name: "Youth Cricket Academy",
-                    teams: 4,
-                    matches: 8,
-                    status: "Upcoming",
-                    startDate: "Jun 10, 2024",
-                    progress: 0,
-                  },
-                ].map((tournament) => (
-                  <TouchableOpacity
-                    key={tournament.id}
-                    style={styles.tournamentCard}
-                    activeOpacity={0.85}
-                    onPress={() => {
-                      setSelectedTournament(tournament);
-                      setActiveTournamentDetailTab("matches");
-                      setCurrentView("tournamentDetail");
-                    }}
-                  >
-                    <LinearGradient
-                      colors={["#FFF", "#F8F8F8"]}
-                      style={styles.tournamentCardGradient}
-                    >
-                      <View style={styles.tournamentHeader}>
-                        <View style={styles.tournamentHeaderLeft}>
-                          <LinearGradient
-                            colors={["#6EE7B7", "#059669"]}
-                            style={styles.tournamentIcon}
-                          >
-                            <Ionicons name="trophy" size={18} color="#FFF" />
-                          </LinearGradient>
-                          <View style={styles.tournamentHeaderInfo}>
-                            <Text style={styles.tournamentName} numberOfLines={1}>
-                              {tournament.name}
-                            </Text>
-                            <View style={styles.tournamentMeta}>
-                              <Ionicons name="calendar-outline" size={11} color="#999" />
-                              <Text style={styles.tournamentMetaText}>
-                                {tournament.startDate}
-                              </Text>
-                            </View>
-                          </View>
-                        </View>
-                        <LinearGradient
-                          colors={
-                            tournament.status === "Ongoing"
-                              ? ["#00A66A", "#0F766E"]
-                              : tournament.status === "Completed"
-                              ? ["#00A66A", "#0F766E"]
-                              : ["#059669", "#0F766E"]
-                          }
-                          style={styles.tournamentStatusBadge}
-                        >
-                          <Text style={styles.tournamentStatusText}>
-                            {tournament.status}
-                          </Text>
-                        </LinearGradient>
-                      </View>
-
-                      <View style={styles.tournamentProgressSection}>
-                        <View style={styles.progressBar}>
-                          <View
-                            style={[
-                              styles.progressFill,
-                              {
-                                width: `${tournament.progress}%`,
-                                backgroundColor:
-                                  tournament.progress > 70
-                                    ? "#00A66A"
-                                    : tournament.progress > 40
-                                    ? "#059669"
-                                    : tournament.progress === 100
-                                    ? "#00A66A"
-                                    : "#00A66A",
-                              },
-                            ]}
-                          />
-                        </View>
-                        <Text style={styles.progressText}>
-                          {tournament.progress}% Complete
-                        </Text>
-                      </View>
-
-                      <View style={styles.tournamentStats}>
-                        <View style={styles.tournamentStat}>
-                          <View style={styles.statIcon}>
-                            <Ionicons name="people" size={12} color="#00A66A" />
-                          </View>
-                          <Text style={styles.tournamentStatText}>
-                            {tournament.teams} Teams
-                          </Text>
-                        </View>
-                        <View style={styles.tournamentStat}>
-                          <View style={styles.statIcon}>
-                            <Ionicons name="baseball" size={12} color="#00A66A" />
-                          </View>
-                          <Text style={styles.tournamentStatText}>
-                            {tournament.matches} Matches
-                          </Text>
-                        </View>
-                      </View>
-
-                      <View style={styles.tournamentFooter}>
-                        <TouchableOpacity 
-                          style={[styles.tournamentButton, { flex: 1 }]}
-                          onPress={(e) => {
-                            e.stopPropagation();
-                            shareContent({
-                              title: tournament.name,
-                              message: `Join and follow the tournament ${tournament.name} on GameLens!`,
-                              type: 'match',
-                              id: tournament.id,
-                            });
-                          }}
-                        >
-                          <LinearGradient
-                            colors={["#00A66A", "#0F766E"]}
-                            style={styles.tournamentButtonGradient}
-                          >
-                            <Ionicons name="share-social-outline" size={13} color="#FFF" />
-                            <Text style={styles.tournamentButtonText}>Share</Text>
-                          </LinearGradient>
-                        </TouchableOpacity>
-                      </View>
-                    </LinearGradient>
-                  </TouchableOpacity>
-                ))}
-
-                <View style={{ height: 20 }} />
               </View>
-            </ScrollView>
-
-            {/* Teams Tab Content */}
-            <View style={{ width: SCREEN_WIDTH, flex: 1 }}>
-              <ScrollView 
-                style={styles.teamsContainer}
+            ) : currentView === "createTeam" ? (
+              /* ── Create Team — Premium Redesign ── */
+              <ScrollView
+                ref={scrollViewRef}
+                style={{ flex: 1, backgroundColor: "#F8FAFC" }}
                 showsVerticalScrollIndicator={false}
+                keyboardShouldPersistTaps="handled"
               >
-                <Text style={styles.teamsTitle}>My Teams</Text>
-                <Text style={styles.teamsSubtitle}>Create or select teams for your matches</Text>
-                
-                {/* Team Options */}
-                <View style={styles.teamOptionsContainer}>
-                  
-                  {/* Select Team Option */}
+                {/* ── Header ── */}
+                <LinearGradient
+                  colors={["#00A66A", "#0F766E", "#064E3B"]}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 1 }}
+                  style={ctStyles.header}
+                >
+                  <View style={ctStyles.headerDeco1} />
+                  <View style={ctStyles.headerDeco2} />
+                  <View style={ctStyles.headerTop}>
+                    <View style={ctStyles.headerSlotBadge}>
+                      <Ionicons name="shield-half" size={12} color="#FFF" />
+                      <Text style={ctStyles.headerSlotTxt}>
+                        TEAM {teamSlot}
+                      </Text>
+                    </View>
+                  </View>
+                  <Text style={ctStyles.headerTitle}>Create Your Team</Text>
+                  <Text style={ctStyles.headerSub}>
+                    Fill in team details to set up your squad
+                  </Text>
+
+                  {/* Progress bar */}
+                  <View style={ctStyles.progressBar}>
+                    {[
+                      !!currentTeamName.trim(),
+                      !!currentCity.trim(),
+                      !!currentMobile && currentMobile.length === 10,
+                      !!currentCaptain.trim(),
+                      !!currentPlayers && parseInt(currentPlayers) >= 11,
+                    ].map((done, i) => (
+                      <View
+                        key={i}
+                        style={[
+                          ctStyles.progressSlot,
+                          done && ctStyles.progressSlotDone,
+                        ]}
+                      />
+                    ))}
+                  </View>
+                  <Text style={ctStyles.progressLabel}>
+                    {
+                      [
+                        currentTeamName,
+                        currentCity,
+                        currentMobile,
+                        currentCaptain,
+                        currentPlayers,
+                      ].filter(Boolean).length
+                    }
+                    /5 fields filled
+                  </Text>
+                </LinearGradient>
+
+                <View style={ctStyles.body}>
+                  {/* ── Team Identity ── */}
+                  <View style={ctStyles.sectionCard}>
+                    <View style={ctStyles.sectionHeader}>
+                      <View style={ctStyles.sectionIconWrap}>
+                        <Ionicons name="shield" size={16} color="#00A66A" />
+                      </View>
+                      <Text style={ctStyles.sectionTitle}>Team Identity</Text>
+                    </View>
+
+                    {/* Team Name */}
+                    <View style={ctStyles.fieldGroup}>
+                      <Text style={ctStyles.fieldLabel}>
+                        Team Name <Text style={ctStyles.req}>*</Text>
+                      </Text>
+                      <View
+                        style={[
+                          ctStyles.fieldInput,
+                          currentTeamName.trim() && ctStyles.fieldInputDone,
+                        ]}
+                      >
+                        <Ionicons
+                          name="shield-outline"
+                          size={18}
+                          color={currentTeamName.trim() ? "#00A66A" : "#94A3B8"}
+                        />
+                        <TextInput
+                          style={ctStyles.fieldText}
+                          placeholder="e.g. Mumbai Warriors"
+                          placeholderTextColor="#94A3B8"
+                          value={currentTeamName}
+                          onChangeText={setCurrentTeamName}
+                        />
+                        {currentTeamName.trim() && (
+                          <Ionicons
+                            name="checkmark-circle"
+                            size={18}
+                            color="#22C55E"
+                          />
+                        )}
+                      </View>
+                    </View>
+
+                    {/* City */}
+                    <View style={ctStyles.fieldGroup}>
+                      <Text style={ctStyles.fieldLabel}>
+                        City / Town <Text style={ctStyles.req}>*</Text>
+                      </Text>
+                      <View
+                        style={[
+                          ctStyles.fieldInput,
+                          currentCity.trim() && ctStyles.fieldInputDone,
+                        ]}
+                      >
+                        <Ionicons
+                          name="location-outline"
+                          size={18}
+                          color={currentCity.trim() ? "#00A66A" : "#94A3B8"}
+                        />
+                        <TextInput
+                          style={ctStyles.fieldText}
+                          placeholder="e.g. Mumbai"
+                          placeholderTextColor="#94A3B8"
+                          value={currentCity}
+                          onChangeText={setCurrentCity}
+                        />
+                        {currentCity.trim() && (
+                          <Ionicons
+                            name="checkmark-circle"
+                            size={18}
+                            color="#22C55E"
+                          />
+                        )}
+                      </View>
+                    </View>
+
+                    {/* Mobile */}
+                    <View style={ctStyles.fieldGroup}>
+                      <Text style={ctStyles.fieldLabel}>
+                        Contact Number <Text style={ctStyles.req}>*</Text>
+                      </Text>
+                      <View style={ctStyles.mobileRow}>
+                        <TouchableOpacity
+                          style={ctStyles.dialCodeBtn}
+                          onPress={() =>
+                            setShowCountryPicker(!showCountryPicker)
+                          }
+                        >
+                          <Text style={ctStyles.dialCodeTxt}>
+                            {countryCode}
+                          </Text>
+                          <Ionicons
+                            name="chevron-down"
+                            size={12}
+                            color="#64748B"
+                          />
+                        </TouchableOpacity>
+                        <View
+                          style={[
+                            ctStyles.fieldInput,
+                            { flex: 1 },
+                            currentMobile.length === 10 &&
+                              ctStyles.fieldInputDone,
+                          ]}
+                        >
+                          <Ionicons
+                            name="call-outline"
+                            size={18}
+                            color={
+                              currentMobile.length === 10
+                                ? "#00A66A"
+                                : "#94A3B8"
+                            }
+                          />
+                          <TextInput
+                            style={ctStyles.fieldText}
+                            placeholder="10 digit number"
+                            placeholderTextColor="#94A3B8"
+                            keyboardType="phone-pad"
+                            maxLength={10}
+                            value={currentMobile}
+                            onChangeText={setCurrentMobile}
+                          />
+                          {currentMobile.length === 10 && (
+                            <Ionicons
+                              name="checkmark-circle"
+                              size={18}
+                              color="#22C55E"
+                            />
+                          )}
+                        </View>
+                      </View>
+                      {showCountryPicker && (
+                        <View style={ctStyles.dialDropdown}>
+                          {[
+                            { code: "+91", flag: "🇮🇳", country: "India" },
+                            { code: "+1", flag: "🇺🇸", country: "USA/Canada" },
+                            { code: "+44", flag: "🇬🇧", country: "UK" },
+                            { code: "+61", flag: "🇦🇺", country: "Australia" },
+                            { code: "+971", flag: "🇦🇪", country: "UAE" },
+                            { code: "+65", flag: "🇸🇬", country: "Singapore" },
+                            { code: "+92", flag: "🇵🇰", country: "Pakistan" },
+                            { code: "+880", flag: "🇧🇩", country: "Bangladesh" },
+                            { code: "+94", flag: "🇱🇰", country: "Sri Lanka" },
+                          ].map((item) => (
+                            <TouchableOpacity
+                              key={item.code}
+                              style={ctStyles.dialOption}
+                              onPress={() => {
+                                setCountryCode(item.code);
+                                setShowCountryPicker(false);
+                              }}
+                            >
+                              <Text style={ctStyles.dialFlag}>{item.flag}</Text>
+                              <Text style={ctStyles.dialCountry}>
+                                {item.country}
+                              </Text>
+                              <Text style={ctStyles.dialCode}>{item.code}</Text>
+                              {countryCode === item.code && (
+                                <Ionicons
+                                  name="checkmark"
+                                  size={14}
+                                  color="#00A66A"
+                                />
+                              )}
+                            </TouchableOpacity>
+                          ))}
+                        </View>
+                      )}
+                    </View>
+                  </View>
+
+                  {/* ── Leadership ── */}
+                  <View style={ctStyles.sectionCard}>
+                    <View style={ctStyles.sectionHeader}>
+                      <View style={ctStyles.sectionIconWrap}>
+                        <Ionicons name="star" size={16} color="#00A66A" />
+                      </View>
+                      <Text style={ctStyles.sectionTitle}>Leadership</Text>
+                    </View>
+
+                    {/* Captain */}
+                    <View style={ctStyles.fieldGroup}>
+                      <Text style={ctStyles.fieldLabel}>
+                        Captain Name <Text style={ctStyles.req}>*</Text>
+                      </Text>
+                      <View
+                        style={[
+                          ctStyles.fieldInput,
+                          currentCaptain.trim() && ctStyles.fieldInputDone,
+                        ]}
+                      >
+                        <Ionicons
+                          name="person-circle-outline"
+                          size={18}
+                          color={currentCaptain.trim() ? "#00A66A" : "#94A3B8"}
+                        />
+                        <TextInput
+                          style={ctStyles.fieldText}
+                          placeholder="e.g. Rohit Sharma"
+                          placeholderTextColor="#94A3B8"
+                          value={currentCaptain}
+                          onChangeText={setCurrentCaptain}
+                        />
+                        {currentCaptain.trim() && (
+                          <View style={ctStyles.captainBadge}>
+                            <Text style={ctStyles.captainBadgeTxt}>C</Text>
+                          </View>
+                        )}
+                      </View>
+                    </View>
+                  </View>
+
+                  {/* ── Squad Size ── */}
+                  <View style={ctStyles.sectionCard}>
+                    <View style={ctStyles.sectionHeader}>
+                      <View style={ctStyles.sectionIconWrap}>
+                        <Ionicons name="people" size={16} color="#00A66A" />
+                      </View>
+                      <Text style={ctStyles.sectionTitle}>Squad Size</Text>
+                    </View>
+
+                    <View style={ctStyles.fieldGroup}>
+                      <Text style={ctStyles.fieldLabel}>
+                        Number of Players <Text style={ctStyles.req}>*</Text>
+                      </Text>
+                      <Text style={ctStyles.fieldHint}>
+                        Min 11 (Playing XI) · Max 20 (with substitutes)
+                      </Text>
+                      <View
+                        style={[
+                          ctStyles.fieldInput,
+                          currentPlayers &&
+                            parseInt(currentPlayers) >= 11 &&
+                            ctStyles.fieldInputDone,
+                        ]}
+                      >
+                        <Ionicons
+                          name="people-outline"
+                          size={18}
+                          color={
+                            currentPlayers && parseInt(currentPlayers) >= 11
+                              ? "#00A66A"
+                              : "#94A3B8"
+                          }
+                        />
+                        <TextInput
+                          style={ctStyles.fieldText}
+                          placeholder="11–20 players"
+                          placeholderTextColor="#94A3B8"
+                          keyboardType="numeric"
+                          maxLength={2}
+                          value={currentPlayers}
+                          onChangeText={setCurrentPlayers}
+                        />
+                        {currentPlayers ? (
+                          parseInt(currentPlayers) >= 11 &&
+                          parseInt(currentPlayers) <= 20 ? (
+                            <Ionicons
+                              name="checkmark-circle"
+                              size={18}
+                              color="#22C55E"
+                            />
+                          ) : (
+                            <Ionicons
+                              name="alert-circle"
+                              size={18}
+                              color="#EF4444"
+                            />
+                          )
+                        ) : null}
+                      </View>
+
+                      {/* Quick select chips */}
+                      <View style={ctStyles.chipRow}>
+                        {[11, 14, 16, 20].map((n) => (
+                          <TouchableOpacity
+                            key={n}
+                            style={[
+                              ctStyles.chip,
+                              currentPlayers === String(n) &&
+                                ctStyles.chipActive,
+                            ]}
+                            onPress={() => setCurrentPlayers(String(n))}
+                          >
+                            <Text
+                              style={[
+                                ctStyles.chipTxt,
+                                currentPlayers === String(n) &&
+                                  ctStyles.chipTxtActive,
+                              ]}
+                            >
+                              {n}
+                            </Text>
+                          </TouchableOpacity>
+                        ))}
+                      </View>
+
+                      {/* Rule cards */}
+                      {currentPlayers && parseInt(currentPlayers) >= 11 && (
+                        <View style={ctStyles.ruleBox}>
+                          <View style={ctStyles.ruleRow}>
+                            <Ionicons
+                              name="baseball"
+                              size={14}
+                              color="#00A66A"
+                            />
+                            <Text style={ctStyles.ruleTxt}>
+                              Playing XI: 11 players
+                            </Text>
+                            <View style={ctStyles.ruleCheck}>
+                              <Ionicons
+                                name="checkmark"
+                                size={12}
+                                color="#FFF"
+                              />
+                            </View>
+                          </View>
+                          <View style={ctStyles.ruleRow}>
+                            <Ionicons
+                              name="swap-horizontal"
+                              size={14}
+                              color="#64748B"
+                            />
+                            <Text style={ctStyles.ruleTxt}>
+                              Substitutes:{" "}
+                              {Math.max(0, parseInt(currentPlayers) - 11)}
+                            </Text>
+                          </View>
+                          <View style={ctStyles.ruleRow}>
+                            <Ionicons name="star" size={14} color="#F59E0B" />
+                            <Text style={ctStyles.ruleTxt}>
+                              Roles needed: Batsmen, Bowlers, WK, All-rounders
+                            </Text>
+                          </View>
+                        </View>
+                      )}
+                    </View>
+                  </View>
+
+                  {/* ── Add Players Section ── */}
+                  <View style={ctStyles.sectionCard}>
+                    <View style={ctStyles.sectionHeader}>
+                      <View style={ctStyles.sectionIconWrap}>
+                        <Ionicons name="person-add" size={16} color="#00A66A" />
+                      </View>
+                      <Text style={ctStyles.sectionTitle}>Add Players</Text>
+                      <Text style={ctStyles.sectionOptional}>Optional</Text>
+                    </View>
+                    <Text style={ctStyles.addPlayersNote}>
+                      Invite players now or after team creation
+                    </Text>
+
+                    <View style={ctStyles.addOptions}>
+                      {/* Team Link */}
+                      <TouchableOpacity
+                        style={ctStyles.addOption}
+                        activeOpacity={0.8}
+                        onPress={() => {
+                          const link = `https://gamelens.app/join/${currentTeamName.replace(/\s+/g, "-").toLowerCase()}-${Date.now().toString(36)}`;
+                          Alert.alert(
+                            "🔗 Team Invite Link",
+                            `Share this link with players:\n\n${link}`,
+                            [
+                              {
+                                text: "Copy Link",
+                                onPress: () =>
+                                  Alert.alert(
+                                    "✅ Copied!",
+                                    "Link copied to clipboard.",
+                                  ),
+                              },
+                              {
+                                text: "Share",
+                                onPress: () =>
+                                  Alert.alert(
+                                    "Shared!",
+                                    "Link shared via WhatsApp, SMS, etc.",
+                                  ),
+                              },
+                              { text: "Close", style: "cancel" },
+                            ],
+                          );
+                        }}
+                      >
+                        <View
+                          style={[
+                            ctStyles.addOptionIcon,
+                            { backgroundColor: "#EFF6FF" },
+                          ]}
+                        >
+                          <Ionicons name="link" size={20} color="#3B82F6" />
+                        </View>
+                        <View style={ctStyles.addOptionInfo}>
+                          <Text style={ctStyles.addOptionTitle}>Team Link</Text>
+                          <Text style={ctStyles.addOptionSub}>
+                            Generate & share invite
+                          </Text>
+                        </View>
+                        <Ionicons
+                          name="chevron-forward"
+                          size={16}
+                          color="#94A3B8"
+                        />
+                      </TouchableOpacity>
+
+                      {/* QR Code */}
+                      <TouchableOpacity
+                        style={ctStyles.addOption}
+                        activeOpacity={0.8}
+                        onPress={() => {
+                          Alert.alert(
+                            "📷 QR Code",
+                            `Team QR Code generated!\n\nTeam: ${currentTeamName || "Your Team"}\nCode: GL-${Date.now().toString(36).toUpperCase()}`,
+                            [
+                              {
+                                text: "Save to Gallery",
+                                onPress: () =>
+                                  Alert.alert("✅ Saved!", "QR code saved."),
+                              },
+                              {
+                                text: "Share",
+                                onPress: () =>
+                                  Alert.alert("Shared!", "QR code shared."),
+                              },
+                              { text: "Close", style: "cancel" },
+                            ],
+                          );
+                        }}
+                      >
+                        <View
+                          style={[
+                            ctStyles.addOptionIcon,
+                            { backgroundColor: "#F0FDF4" },
+                          ]}
+                        >
+                          <Ionicons name="qr-code" size={20} color="#16A34A" />
+                        </View>
+                        <View style={ctStyles.addOptionInfo}>
+                          <Text style={ctStyles.addOptionTitle}>QR Code</Text>
+                          <Text style={ctStyles.addOptionSub}>
+                            Players scan to join
+                          </Text>
+                        </View>
+                        <Ionicons
+                          name="chevron-forward"
+                          size={16}
+                          color="#94A3B8"
+                        />
+                      </TouchableOpacity>
+
+                      {/* From Contacts */}
+                      <TouchableOpacity
+                        style={ctStyles.addOption}
+                        activeOpacity={0.8}
+                        onPress={() => {
+                          Alert.alert(
+                            "📞 Access Contacts",
+                            "Allow GameLens to access your contacts to invite players?",
+                            [
+                              {
+                                text: "Allow",
+                                onPress: () =>
+                                  setTimeout(
+                                    () =>
+                                      Alert.alert(
+                                        "✅ Contacts Loaded",
+                                        "Found 25 contacts. Select players to invite!",
+                                      ),
+                                    800,
+                                  ),
+                              },
+                              { text: "Deny", style: "cancel" },
+                            ],
+                          );
+                        }}
+                      >
+                        <View
+                          style={[
+                            ctStyles.addOptionIcon,
+                            { backgroundColor: "#FFF7ED" },
+                          ]}
+                        >
+                          <Ionicons name="people" size={20} color="#EA580C" />
+                        </View>
+                        <View style={ctStyles.addOptionInfo}>
+                          <Text style={ctStyles.addOptionTitle}>
+                            From Contacts
+                          </Text>
+                          <Text style={ctStyles.addOptionSub}>
+                            Select from phone contacts
+                          </Text>
+                        </View>
+                        <Ionicons
+                          name="chevron-forward"
+                          size={16}
+                          color="#94A3B8"
+                        />
+                      </TouchableOpacity>
+                    </View>
+                  </View>
+
+                  {/* ── Create Button ── */}
                   <TouchableOpacity
-                    style={styles.teamOption}
-                    onPress={() => {
-                      console.log("Select Team pressed - navigating to team selection");
-                      setCurrentView("teamsSelection");
-                    }}
+                    style={ctStyles.createBtn}
+                    onPress={handleSaveTeam}
+                    activeOpacity={0.88}
                   >
                     <LinearGradient
-                      colors={["#059669", "#047857"]}
+                      colors={["#00A66A", "#0F766E", "#064E3B"]}
                       start={{ x: 0, y: 0 }}
-                      end={{ x: 1, y: 1 }}
-                      style={styles.teamOptionGradient}
+                      end={{ x: 1, y: 0 }}
+                      style={ctStyles.createBtnGrad}
                     >
-                      <View style={styles.teamOptionIconContainer}>
-                        <Ionicons name="people" size={32} color="#FFF" />
-                      </View>
-                      <View style={styles.teamOptionContent}>
-                        <Text style={styles.teamOptionTitle}>Select Team</Text>
-                        <Text style={styles.teamOptionDescription}>
-                          Choose from existing teams
-                        </Text>
-                      </View>
-                      <Ionicons name="chevron-forward" size={24} color="#FFF" />
+                      <Ionicons
+                        name="checkmark-circle"
+                        size={22}
+                        color="#FFF"
+                      />
+                      <Text style={ctStyles.createBtnTxt}>Create Team</Text>
                     </LinearGradient>
                   </TouchableOpacity>
 
-                  {/* Create Team Option */}
-                  <TouchableOpacity
-                    style={styles.teamOption}
-                    onPress={() => {
-                      console.log("Create Team pressed");
-                      setCurrentView("createTeam");
-                      setTeamSlot(null); // Clear team slot since this is not from team selection flow
-                    }}
-                  >
-                    <LinearGradient
-                      colors={["#00A66A", "#0F766E"]}
-                      start={{ x: 0, y: 0 }}
-                      end={{ x: 1, y: 1 }}
-                      style={styles.teamOptionGradient}
-                    >
-                      <View style={styles.teamOptionIconContainer}>
-                        <Ionicons name="add-circle" size={32} color="#FFF" />
-                      </View>
-                      <View style={styles.teamOptionContent}>
-                        <Text style={styles.teamOptionTitle}>Create Team</Text>
-                        <Text style={styles.teamOptionDescription}>
-                          Build a new team from scratch
-                        </Text>
-                      </View>
-                      <Ionicons name="chevron-forward" size={24} color="#FFF" />
-                    </LinearGradient>
-                  </TouchableOpacity>
-
+                  <View style={{ height: 80 }} />
                 </View>
+              </ScrollView>
+            ) : currentView === "teamSelection" ? (
+              /* Team Selection View — Premium Redesign */
+              <ScrollView
+                style={{ flex: 1 }}
+                showsVerticalScrollIndicator={false}
+                contentContainerStyle={{ paddingBottom: 100 }}
+              >
+                <View style={{ paddingHorizontal: 16, paddingTop: 20 }}>
+                  {/* ── Team A Card ── */}
+                  <View
+                    style={[
+                      styles.tsTeamCard,
+                      teamAName && styles.tsTeamCardReady,
+                    ]}
+                  >
+                    {/* Accent strip */}
+                    <LinearGradient
+                      colors={["#00A66A", "#064E3B"]}
+                      start={{ x: 0, y: 0 }}
+                      end={{ x: 0, y: 1 }}
+                      style={styles.tsTeamCardStrip}
+                    />
 
-                {/* Recent Teams Section */}
-                <View style={styles.recentTeamsSection}>
-                  <Text style={styles.recentTeamsTitle}>Recent Teams</Text>
-                  
-                  {/* Sample Recent Teams */}
-                  {[
-                    { name: "Mumbai Warriors", players: 15, lastUsed: "2 days ago", color: "#00A66A" },
-                    { name: "Delhi Capitals", players: 12, lastUsed: "1 week ago", color: "#059669" },
-                    { name: "Chennai Kings", players: 18, lastUsed: "2 weeks ago", color: "#059669" }
-                  ].map((team, index) => (
+                    <View style={styles.tsTeamCardInner}>
+                      {/* Logo area */}
+                      <View style={styles.tsTeamLogoWrap}>
+                        {teamAName ? (
+                          <LinearGradient
+                            colors={["#00A66A", "#064E3B"]}
+                            style={styles.tsTeamLogo}
+                          >
+                            <Text style={styles.tsTeamLogoLetter}>
+                              {teamAName.charAt(0).toUpperCase()}
+                            </Text>
+                          </LinearGradient>
+                        ) : (
+                          <View style={styles.tsTeamLogoEmpty}>
+                            <Ionicons
+                              name="shield-outline"
+                              size={28}
+                              color="#CBD5E1"
+                            />
+                          </View>
+                        )}
+                        {teamAName && <View style={styles.tsReadyDot} />}
+                      </View>
+
+                      {/* Info */}
+                      <View style={styles.tsTeamInfo}>
+                        <View style={styles.tsTeamSlotRow}>
+                          <Text style={styles.tsTeamSlot}>HOME</Text>
+                          <View
+                            style={[
+                              styles.tsTeamStatus,
+                              teamAName
+                                ? styles.tsTeamStatusReady
+                                : styles.tsTeamStatusEmpty,
+                            ]}
+                          >
+                            <Text style={styles.tsTeamStatusTxt}>
+                              {teamAName ? "READY" : "NOT SET"}
+                            </Text>
+                          </View>
+                        </View>
+                        <Text style={styles.tsTeamName}>
+                          {teamAName || "Select Team A"}
+                        </Text>
+                        {teamAName ? (
+                          <View style={styles.tsTeamMeta}>
+                            <Ionicons name="people" size={12} color="#64748B" />
+                            <Text style={styles.tsTeamMetaTxt}>
+                              11 Players · Captain assigned
+                            </Text>
+                          </View>
+                        ) : (
+                          <Text style={styles.tsTeamEmptyHint}>
+                            Tap below to select or create
+                          </Text>
+                        )}
+                      </View>
+                    </View>
+
+                    {/* Action Buttons */}
+                    <View style={styles.tsTeamActions}>
+                      <TouchableOpacity
+                        style={styles.tsActionBtnOutline}
+                        onPress={() => handleSelectTeam("A")}
+                        activeOpacity={0.8}
+                      >
+                        <Ionicons
+                          name="people-outline"
+                          size={16}
+                          color="#00A66A"
+                        />
+                        <Text style={styles.tsActionBtnOutlineTxt}>Select</Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity
+                        style={styles.tsActionBtnFill}
+                        onPress={() => handleCreateTeam("A")}
+                        activeOpacity={0.8}
+                      >
+                        <LinearGradient
+                          colors={["#00A66A", "#064E3B"]}
+                          start={{ x: 0, y: 0 }}
+                          end={{ x: 1, y: 0 }}
+                          style={styles.tsActionBtnFillGrad}
+                        >
+                          <Ionicons
+                            name="add-circle-outline"
+                            size={16}
+                            color="#FFF"
+                          />
+                          <Text style={styles.tsActionBtnFillTxt}>Create</Text>
+                        </LinearGradient>
+                      </TouchableOpacity>
+                    </View>
+                  </View>
+
+                  {/* ── VS Section ── */}
+                  <View style={styles.tsVsRow}>
+                    <View style={styles.tsVsLine} />
+                    <LinearGradient
+                      colors={["#F59E0B", "#D97706"]}
+                      style={styles.tsVsCircle}
+                    >
+                      <Text style={styles.tsVsTxt}>VS</Text>
+                    </LinearGradient>
+                    <View style={styles.tsVsLine} />
+                  </View>
+
+                  {/* ── Team B Card ── */}
+                  <View
+                    style={[
+                      styles.tsTeamCard,
+                      teamBName && styles.tsTeamCardReady,
+                    ]}
+                  >
+                    <LinearGradient
+                      colors={["#0F766E", "#064E3B"]}
+                      start={{ x: 0, y: 0 }}
+                      end={{ x: 0, y: 1 }}
+                      style={styles.tsTeamCardStrip}
+                    />
+
+                    <View style={styles.tsTeamCardInner}>
+                      <View style={styles.tsTeamLogoWrap}>
+                        {teamBName ? (
+                          <LinearGradient
+                            colors={["#0F766E", "#064E3B"]}
+                            style={styles.tsTeamLogo}
+                          >
+                            <Text style={styles.tsTeamLogoLetter}>
+                              {teamBName.charAt(0).toUpperCase()}
+                            </Text>
+                          </LinearGradient>
+                        ) : (
+                          <View style={styles.tsTeamLogoEmpty}>
+                            <Ionicons
+                              name="shield-outline"
+                              size={28}
+                              color="#CBD5E1"
+                            />
+                          </View>
+                        )}
+                        {teamBName && <View style={styles.tsReadyDot} />}
+                      </View>
+
+                      <View style={styles.tsTeamInfo}>
+                        <View style={styles.tsTeamSlotRow}>
+                          <Text style={styles.tsTeamSlot}>AWAY</Text>
+                          <View
+                            style={[
+                              styles.tsTeamStatus,
+                              teamBName
+                                ? styles.tsTeamStatusReady
+                                : styles.tsTeamStatusEmpty,
+                            ]}
+                          >
+                            <Text style={styles.tsTeamStatusTxt}>
+                              {teamBName ? "READY" : "NOT SET"}
+                            </Text>
+                          </View>
+                        </View>
+                        <Text style={styles.tsTeamName}>
+                          {teamBName || "Select Team B"}
+                        </Text>
+                        {teamBName ? (
+                          <View style={styles.tsTeamMeta}>
+                            <Ionicons name="people" size={12} color="#64748B" />
+                            <Text style={styles.tsTeamMetaTxt}>
+                              11 Players · Captain assigned
+                            </Text>
+                          </View>
+                        ) : (
+                          <Text style={styles.tsTeamEmptyHint}>
+                            Tap below to select or create
+                          </Text>
+                        )}
+                      </View>
+                    </View>
+
+                    <View style={styles.tsTeamActions}>
+                      <TouchableOpacity
+                        style={styles.tsActionBtnOutline}
+                        onPress={() => handleSelectTeam("B")}
+                        activeOpacity={0.8}
+                      >
+                        <Ionicons
+                          name="people-outline"
+                          size={16}
+                          color="#00A66A"
+                        />
+                        <Text style={styles.tsActionBtnOutlineTxt}>Select</Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity
+                        style={styles.tsActionBtnFill}
+                        onPress={() => handleCreateTeam("B")}
+                        activeOpacity={0.8}
+                      >
+                        <LinearGradient
+                          colors={["#00A66A", "#064E3B"]}
+                          start={{ x: 0, y: 0 }}
+                          end={{ x: 1, y: 0 }}
+                          style={styles.tsActionBtnFillGrad}
+                        >
+                          <Ionicons
+                            name="add-circle-outline"
+                            size={16}
+                            color="#FFF"
+                          />
+                          <Text style={styles.tsActionBtnFillTxt}>Create</Text>
+                        </LinearGradient>
+                      </TouchableOpacity>
+                    </View>
+                  </View>
+
+                  {/* ── Ready indicator ── */}
+                  {(teamAName || teamBName) && (
+                    <View style={styles.tsReadyBar}>
+                      <View
+                        style={[
+                          styles.tsReadyBarSlot,
+                          teamAName && styles.tsReadyBarSlotDone,
+                        ]}
+                      />
+                      <View
+                        style={[
+                          styles.tsReadyBarSlot,
+                          teamBName && styles.tsReadyBarSlotDone,
+                        ]}
+                      />
+                    </View>
+                  )}
+
+                  {/* ── Let's Play ── */}
+                  {teamAName && teamBName && (
                     <TouchableOpacity
-                      key={index}
-                      style={styles.recentTeamCard}
-                      onPress={() => {
-                        Alert.alert(
-                          team.name,
-                          `Players: ${team.players}\nLast Used: ${team.lastUsed}\n\nWhat would you like to do?`,
-                          [
-                            { text: "View Details", onPress: () => Alert.alert("Team Details", `Showing details for ${team.name}`) },
-                            { text: "Edit Team", onPress: () => Alert.alert("Edit Team", `Editing ${team.name}`) },
-                            { text: "Cancel", style: "cancel" }
-                          ]
-                        );
+                      style={styles.tsPlayBtn}
+                      onPress={handleLetsPlay}
+                      activeOpacity={0.88}
+                    >
+                      <LinearGradient
+                        colors={["#F59E0B", "#D97706", "#B45309"]}
+                        start={{ x: 0, y: 0 }}
+                        end={{ x: 1, y: 0 }}
+                        style={styles.tsPlayBtnGrad}
+                      >
+                        <Ionicons name="play-circle" size={24} color="#FFF" />
+                        <Text style={styles.tsPlayBtnTxt}>{"Let's Play!"}</Text>
+                        <Ionicons
+                          name="arrow-forward-circle"
+                          size={22}
+                          color="rgba(255,255,255,0.7)"
+                        />
+                      </LinearGradient>
+                    </TouchableOpacity>
+                  )}
+
+                  {/* ── Empty state hint ── */}
+                  {!teamAName && !teamBName && (
+                    <View style={styles.tsEmptyHint}>
+                      <Ionicons
+                        name="information-circle-outline"
+                        size={18}
+                        color="#94A3B8"
+                      />
+                      <Text style={styles.tsEmptyHintTxt}>
+                        Set both teams to start the match
+                      </Text>
+                    </View>
+                  )}
+                </View>
+              </ScrollView>
+            ) : (
+              /* Matches/Tournaments/Teams View */
+              <Animated.ScrollView
+                ref={horizontalScrollRef}
+                horizontal
+                pagingEnabled
+                showsHorizontalScrollIndicator={false}
+                onScroll={handleScroll}
+                onMomentumScrollEnd={handleHorizontalScrollEnd}
+                onScrollEndDrag={handleMainScrollEndDrag}
+                style={styles.content}
+                scrollEventThrottle={16}
+                nestedScrollEnabled
+              >
+                <ScrollView
+                  style={{ width: SCREEN_WIDTH }}
+                  showsVerticalScrollIndicator={false}
+                >
+                  {/* Animated Start Match Card */}
+                  <Animated.View
+                    style={[
+                      styles.startMatchSection,
+                      {
+                        opacity: fadeAnim,
+                        transform: [{ translateY: slideAnim }],
+                      },
+                    ]}
+                  >
+                    <LinearGradient
+                      colors={["#00A66A", "#0F766E", "#064E3B"]}
+                      start={{ x: 0, y: 0 }}
+                      end={{ x: 1, y: 1 }}
+                      style={styles.startMatchCard}
+                    >
+                      {/* Animated background circles */}
+                      <Animated.View
+                        style={[
+                          styles.bgCircle1,
+                          { transform: [{ scale: pulseAnim }] },
+                        ]}
+                      />
+                      <Animated.View
+                        style={[
+                          styles.bgCircle2,
+                          { transform: [{ scale: pulseAnim }] },
+                        ]}
+                      />
+
+                      <View style={styles.startMatchWrapper}>
+                        <View style={styles.startMatchTop}>
+                          <Animated.View
+                            style={[
+                              styles.startMatchIcon,
+                              { transform: [{ scale: pulseAnim }] },
+                            ]}
+                          >
+                            <LinearGradient
+                              colors={[
+                                "rgba(255,255,255,0.3)",
+                                "rgba(255,255,255,0.1)",
+                              ]}
+                              style={styles.iconGradient}
+                            >
+                              <Ionicons
+                                name="add-circle"
+                                size={28}
+                                color="#FFF"
+                              />
+                            </LinearGradient>
+                          </Animated.View>
+                          <View style={styles.startMatchText}>
+                            <Text style={styles.startMatchTitle}>
+                              Want to start a match?
+                            </Text>
+                            <Text style={styles.startMatchSubtitle}>
+                              Create and manage your cricket matches
+                            </Text>
+                          </View>
+                        </View>
+
+                        <Animated.View
+                          style={{ transform: [{ scale: scaleAnim }] }}
+                        >
+                          <TouchableOpacity
+                            style={styles.startButton}
+                            onPress={handleStartMatch}
+                            activeOpacity={0.8}
+                          >
+                            <LinearGradient
+                              colors={["#FFF", "#F0F0F0"]}
+                              style={styles.startButtonGradient}
+                            >
+                              <Text style={styles.startButtonText}>Start</Text>
+                              <Ionicons
+                                name="arrow-forward"
+                                size={18}
+                                color="#00A66A"
+                              />
+                            </LinearGradient>
+                          </TouchableOpacity>
+                        </Animated.View>
+                      </View>
+                    </LinearGradient>
+                  </Animated.View>
+
+                  {/* Animated Filter Tabs */}
+                  <Animated.View
+                    style={[styles.filterTabs, { opacity: fadeAnim }]}
+                  >
+                    {["your", "participate", "network", "all"].map((filter) => (
+                      <TouchableOpacity
+                        key={filter}
+                        style={[
+                          styles.filterTab,
+                          activeFilter === filter && styles.activeFilterTab,
+                        ]}
+                        onPress={() => setActiveFilter(filter)}
+                      >
+                        {activeFilter === filter ? (
+                          <LinearGradient
+                            colors={["#00A66A", "#0F766E"]}
+                            style={styles.filterGradient}
+                          >
+                            <Text style={styles.activeFilterText}>
+                              {filter.charAt(0).toUpperCase() + filter.slice(1)}
+                            </Text>
+                          </LinearGradient>
+                        ) : (
+                          <Text style={styles.filterText}>
+                            {filter.charAt(0).toUpperCase() + filter.slice(1)}
+                          </Text>
+                        )}
+                      </TouchableOpacity>
+                    ))}
+                  </Animated.View>
+
+                  {/* Animated Matches List */}
+                  {currentMatches.map((match, index) => (
+                    <Animated.View
+                      key={match.id}
+                      style={{
+                        opacity: cardAnimations[index],
+                        transform: [
+                          {
+                            translateY: cardAnimations[index].interpolate({
+                              inputRange: [0, 1],
+                              outputRange: [50, 0],
+                            }),
+                          },
+                          {
+                            scale: cardAnimations[index],
+                          },
+                        ],
                       }}
                     >
-                      <View style={[styles.recentTeamIcon, { backgroundColor: team.color }]}>
-                        <Text style={styles.recentTeamInitial}>{team.name.charAt(0)}</Text>
-                      </View>
-                      <View style={styles.recentTeamInfo}>
-                        <Text style={styles.recentTeamName}>{team.name}</Text>
-                        <Text style={styles.recentTeamMeta}>{team.players} players • {team.lastUsed}</Text>
-                      </View>
-                      <Ionicons name="chevron-forward" size={16} color="#999" />
-                    </TouchableOpacity>
-                  ))}
-                </View>
-
-                {/* Bottom spacing for scroll */}
-                <View style={{ height: 100 }} />
-              </ScrollView>
-            </View>
-          </Animated.ScrollView>
-        )}
-        </AnimatedViewTransition>
-      </ScrollView>
-
-      {/* ───── Tournament Settings Bottom Sheet Modal ───── */}
-      <Modal
-        visible={showTournamentSettings}
-        transparent
-        animationType="slide"
-        onRequestClose={() => setShowTournamentSettings(false)}
-      >
-        <TouchableOpacity
-          style={styles.tsOverlay}
-          activeOpacity={1}
-          onPress={() => setShowTournamentSettings(false)}
-        >
-          <TouchableOpacity
-            activeOpacity={1}
-            style={styles.tsSheet}
-            onPress={(e) => e.stopPropagation()}
-          >
-            {/* Drag handle */}
-            <View style={styles.tsDragHandle} />
-
-            {/* Sheet title */}
-            <View style={styles.tsHeader}>
-              <Text style={styles.tsTitle}>Tournament Settings</Text>
-              <TouchableOpacity onPress={() => setShowTournamentSettings(false)}>
-                <Ionicons name="close-circle" size={26} color="#CCC" />
-              </TouchableOpacity>
-            </View>
-
-            <ScrollView showsVerticalScrollIndicator={false}>
-              {[
-                { label: "Add Teams",                          icon: "people-outline",           danger: false, badge: null },
-                { label: "Rounds (League Matches, Final, etc.)", icon: "git-branch-outline",     danger: false, badge: null },
-                { label: "Groups (Group A, Group B, etc.)",    icon: "grid-outline",             danger: false, badge: null },
-                { label: "Start A Match",                      icon: "baseball-outline",         danger: false, badge: null },
-                { label: "Schedule Matches",                   icon: "calendar-outline",         danger: false, badge: null },
-                { label: "Delete Schedule",                    icon: "trash-bin-outline",        danger: false, badge: null },
-                { label: "Add/Remove Scorers (Admins)",        icon: "person-add-outline",       danger: false, badge: null },
-                { label: "Tournament Officials",               icon: "shield-checkmark-outline", danger: false, badge: null },
-                { label: "Add Live Streamer",                  icon: "videocam-outline",         danger: false, badge: null },
-                { label: "Tournament Awards",                  icon: "ribbon-outline",           danger: false, badge: null },
-                { label: "Tournament Settings",                icon: "settings-outline",         danger: false, badge: "NEW" },
-                { label: "Premium Features",                   icon: "star-outline",             danger: false, badge: null },
-                { label: "Find Scorers / Umpires",             icon: "search-outline",           danger: false, badge: null },
-                { label: "Smart NRR Calculator",               icon: "calculator-outline",       danger: false, badge: null },
-                { label: "Edit/Delete Tournament",             icon: "create-outline",           danger: true,  badge: null },
-              ].map((item, idx) => (
-                <TouchableOpacity
-                  key={idx}
-                  style={[
-                    styles.tsMenuItem,
-                    item.danger && styles.tsMenuItemDanger,
-                  ]}
-                  onPress={() => {
-                    setShowTournamentSettings(false);
-                    setTimeout(() => {
-                      if (item.label === "Edit/Delete Tournament") {
-                        Alert.alert(
-                          "Edit / Delete Tournament",
-                          "What would you like to do?",
-                          [
-                            { text: "Edit Tournament", onPress: () => {} },
-                            { text: "Delete Tournament", style: "destructive", onPress: () => {} },
-                            { text: "Cancel", style: "cancel" },
-                          ]
-                        );
-                      } else {
-                        Alert.alert(item.label, `Opening ${item.label}…`);
-                      }
-                    }, 300);
-                  }}
-                  activeOpacity={0.7}
-                >
-                  <View style={[styles.tsMenuIcon, item.danger && { backgroundColor: "#D1FAE5" }]}>
-                    <Ionicons
-                      name={item.icon as any}
-                      size={20}
-                      color={item.danger ? "#059669" : "#555"}
-                    />
-                  </View>
-                  <Text style={[styles.tsMenuLabel, item.danger && styles.tsMenuLabelDanger]}>
-                    {item.label}
-                  </Text>
-                  <View style={styles.tsMenuRight}>
-                    {item.badge === "NEW" && (
-                      <View style={styles.tsNewBadge}>
-                        <Text style={styles.tsNewBadgeText}>NEW</Text>
-                      </View>
-                    )}
-                    <Ionicons
-                      name="chevron-forward"
-                      size={18}
-                      color={item.danger ? "#059669" : "#CCC"}
-                    />
-                  </View>
-                </TouchableOpacity>
-              ))}
-              <View style={{ height: 24 }} />
-            </ScrollView>
-          </TouchableOpacity>
-        </TouchableOpacity>
-      </Modal>
-
-      {/* Search Modal */}
-      <Modal
-        visible={showSearchModal}
-        transparent
-        animationType="slide"
-        onRequestClose={() => setShowSearchModal(false)}
-      >
-        <View style={styles.searchModalContainer}>
-          <View style={styles.searchModalHeader}>
-            <TouchableOpacity onPress={() => setShowSearchModal(false)}>
-              <Ionicons name="arrow-back" size={24} color="#333" />
-            </TouchableOpacity>
-            <Text style={styles.searchModalTitle}>Search</Text>
-            <View style={{ width: 24 }} />
-          </View>
-          
-          <View style={styles.searchInputContainer}>
-            <Ionicons name="search" size={20} color="#999" />
-            <TextInput
-              style={styles.searchInput}
-              placeholder="Search tournaments, matches..."
-              placeholderTextColor="#999"
-              value={searchQuery}
-              onChangeText={handleSearchChange}
-              autoFocus
-            />
-            {searchQuery.length > 0 && (
-              <TouchableOpacity onPress={() => {
-                setSearchQuery('');
-                setSearchResults({ tournaments: [], matches: [] });
-              }}>
-                <Ionicons name="close-circle" size={20} color="#999" />
-              </TouchableOpacity>
-            )}
-          </View>
-
-          <ScrollView style={styles.searchResults} showsVerticalScrollIndicator={false}>
-            {searchQuery.length === 0 ? (
-              <>
-                <Text style={styles.searchResultsTitle}>Recent Searches</Text>
-                <TouchableOpacity style={styles.searchResultItem}>
-                  <Ionicons name="time-outline" size={20} color="#666" />
-                  <Text style={styles.searchResultText}>Mumbai Premier League</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.searchResultItem}>
-                  <Ionicons name="time-outline" size={20} color="#666" />
-                  <Text style={styles.searchResultText}>T20 Match</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.searchResultItem}>
-                  <Ionicons name="time-outline" size={20} color="#666" />
-                  <Text style={styles.searchResultText}>Wankhede Stadium</Text>
-                </TouchableOpacity>
-              </>
-            ) : (
-              <>
-                {/* Tournament Results */}
-                {searchResults.tournaments.length > 0 && (
-                  <>
-                    <Text style={styles.searchResultsTitle}>
-                      Tournaments ({searchResults.tournaments.length})
-                    </Text>
-                    {searchResults.tournaments.map((tournament: any) => (
                       <TouchableOpacity
-                        key={tournament.id}
-                        style={styles.tournamentCard}
-                        activeOpacity={0.85}
+                        style={styles.matchCard}
                         onPress={() => {
-                          setSelectedTournament(tournament);
-                          setActiveTournamentDetailTab("matches");
-                          setCurrentView("tournamentDetail");
-                          setShowSearchModal(false);
+                          Alert.alert(
+                            match.team,
+                            `${match.type}\nStatus: ${match.status}\nDate: ${match.date}\nTime: ${match.time}\nLocation: ${match.location}\nFormat: ${match.format} (${match.overs})${match.result ? `\nResult: ${match.result}` : ""}`,
+                            [
+                              { text: "Close", style: "cancel" },
+                              match.status === "Live"
+                                ? {
+                                    text: "Watch Live",
+                                    onPress: () =>
+                                      Alert.alert(
+                                        "Live Match",
+                                        "Opening live match view...",
+                                      ),
+                                  }
+                                : match.status === "Upcoming"
+                                  ? {
+                                      text: "Set Reminder",
+                                      onPress: () =>
+                                        Alert.alert(
+                                          "Reminder Set",
+                                          "You'll be notified before the match starts!",
+                                        ),
+                                    }
+                                  : {
+                                      text: "View Scorecard",
+                                      onPress: () =>
+                                        Alert.alert(
+                                          "Scorecard",
+                                          "Opening detailed scorecard...",
+                                        ),
+                                    },
+                            ],
+                          );
                         }}
                       >
                         <LinearGradient
                           colors={["#FFF", "#F8F8F8"]}
-                          style={styles.tournamentCardGradient}
+                          style={styles.matchCardGradient}
                         >
-                          <View style={styles.tournamentHeader}>
-                            <View style={styles.tournamentHeaderLeft}>
-                              <LinearGradient
-                                colors={["#6EE7B7", "#059669"]}
-                                style={styles.tournamentIcon}
-                              >
-                                <Ionicons name="trophy" size={18} color="#FFF" />
-                              </LinearGradient>
-                              <View style={styles.tournamentHeaderInfo}>
-                                <Text style={styles.tournamentName} numberOfLines={1}>
-                                  {tournament.name}
-                                </Text>
-                                <View style={styles.tournamentMeta}>
-                                  <Ionicons name="calendar-outline" size={11} color="#999" />
-                                  <Text style={styles.tournamentMetaText}>
-                                    {tournament.startDate}
-                                  </Text>
-                                </View>
+                          <View style={styles.matchHeader}>
+                            <View style={styles.matchTypeContainer}>
+                              <View style={styles.iconCircle}>
+                                <Ionicons
+                                  name="baseball-outline"
+                                  size={10}
+                                  color="#00A66A"
+                                />
                               </View>
+                              <Text style={styles.matchType}>{match.type}</Text>
                             </View>
                             <LinearGradient
                               colors={
-                                tournament.status === "Ongoing"
-                                  ? ["#00A66A", "#0F766E"]
-                                  : ["#059669", "#0F766E"]
+                                match.status === "Live"
+                                  ? ["#EF4444", "#059669"]
+                                  : match.status === "Upcoming"
+                                    ? ["#F59E0B", "#D97706"]
+                                    : match.status === "Completed"
+                                      ? ["#10B981", "#059669"]
+                                      : ["#00A66A", "#0F766E"]
                               }
-                              style={styles.tournamentStatusBadge}
+                              style={styles.statusBadge}
                             >
-                              <Text style={styles.tournamentStatusText}>
-                                {tournament.status}
+                              {match.status === "Live" && (
+                                <View style={styles.liveIndicator} />
+                              )}
+                              <Text style={styles.statusText}>
+                                {match.status}
                               </Text>
                             </LinearGradient>
                           </View>
 
-                          <View style={styles.tournamentProgressSection}>
-                            <View style={styles.progressBar}>
-                              <View
-                                style={[
-                                  styles.progressFill,
-                                  {
-                                    width: `${tournament.progress}%`,
-                                    backgroundColor:
-                                      tournament.progress > 70
-                                        ? "#00A66A"
-                                        : tournament.progress > 40
-                                        ? "#059669"
-                                        : "#00A66A",
-                                  },
-                                ]}
-                              />
-                            </View>
-                            <Text style={styles.progressText}>
-                              {tournament.progress}% Complete
-                            </Text>
-                          </View>
-
-                          <View style={styles.tournamentStats}>
-                            <View style={styles.tournamentStat}>
-                              <View style={styles.statIcon}>
-                                <Ionicons name="people" size={12} color="#00A66A" />
-                              </View>
-                              <Text style={styles.tournamentStatText}>
-                                {tournament.teams} Teams
-                              </Text>
-                            </View>
-                            <View style={styles.tournamentStat}>
-                              <View style={styles.statIcon}>
-                                <Ionicons name="baseball" size={12} color="#00A66A" />
-                              </View>
-                              <Text style={styles.tournamentStatText}>
-                                {tournament.matches} Matches
-                              </Text>
-                            </View>
-                          </View>
-
-                          <View style={styles.tournamentFooter}>
-                            <TouchableOpacity 
-                              style={[styles.tournamentButton, { flex: 1 }]}
-                              onPress={(e) => {
-                                e.stopPropagation();
-                                setSelectedTournament(tournament);
-                                setActiveTournamentDetailTab("matches");
-                                setCurrentView("tournamentDetail");
-                                setShowSearchModal(false);
-                              }}
-                            >
+                          <View style={styles.matchBody}>
+                            <View style={styles.teamSection}>
                               <LinearGradient
                                 colors={["#00A66A", "#0F766E"]}
-                                style={styles.tournamentButtonGradient}
+                                style={styles.teamInitial}
                               >
-                                <Ionicons name="eye-outline" size={13} color="#FFF" />
-                                <Text style={styles.tournamentButtonText}>View Details</Text>
+                                <Text style={styles.teamInitialText}>
+                                  {match.team.charAt(0)}
+                                </Text>
+                              </LinearGradient>
+                              <View style={styles.teamInfo}>
+                                <Text style={styles.teamName}>
+                                  {match.team}
+                                </Text>
+                                {match.result && (
+                                  <View style={styles.resultContainer}>
+                                    <Ionicons
+                                      name="trophy"
+                                      size={10}
+                                      color="#00A66A"
+                                    />
+                                    <Text style={styles.matchResult}>
+                                      {match.result}
+                                    </Text>
+                                  </View>
+                                )}
+                              </View>
+                            </View>
+
+                            <View style={styles.matchDetails}>
+                              <View style={styles.detailRow}>
+                                <View style={styles.detailIcon}>
+                                  <Ionicons
+                                    name="calendar-outline"
+                                    size={9}
+                                    color="#00A66A"
+                                  />
+                                </View>
+                                <Text style={styles.detailText}>
+                                  {match.date} | {match.overs} | {match.format}
+                                </Text>
+                              </View>
+                              <View style={styles.detailRow}>
+                                <View style={styles.detailIcon}>
+                                  <Ionicons
+                                    name="location-outline"
+                                    size={9}
+                                    color="#00A66A"
+                                  />
+                                </View>
+                                <Text style={styles.detailText}>
+                                  {match.location}
+                                </Text>
+                              </View>
+                            </View>
+
+                            <View style={styles.scheduleContainer}>
+                              <Ionicons
+                                name="time-outline"
+                                size={10}
+                                color="#999"
+                              />
+                              <Text style={styles.matchSchedule}>
+                                Match scheduled to begin on {match.date} at{" "}
+                                {match.time}
+                              </Text>
+                            </View>
+                          </View>
+
+                          <View style={styles.matchFooter}>
+                            <TouchableOpacity style={styles.footerButton}>
+                              <LinearGradient
+                                colors={[
+                                  "rgba(185, 28, 28, 0.1)",
+                                  "rgba(185, 28, 28, 0.05)",
+                                ]}
+                                style={styles.footerButtonGradient}
+                              >
+                                <Ionicons
+                                  name="stats-chart-outline"
+                                  size={14}
+                                  color="#00A66A"
+                                />
+                                <Text style={styles.footerButtonText}>
+                                  Insights
+                                </Text>
+                              </LinearGradient>
+                            </TouchableOpacity>
+                            <View style={styles.footerDivider} />
+                            <TouchableOpacity style={styles.footerButton}>
+                              <LinearGradient
+                                colors={[
+                                  "rgba(185, 28, 28, 0.1)",
+                                  "rgba(185, 28, 28, 0.05)",
+                                ]}
+                                style={styles.footerButtonGradient}
+                              >
+                                <Ionicons
+                                  name="people-outline"
+                                  size={14}
+                                  color="#00A66A"
+                                />
+                                <Text style={styles.footerButtonText}>
+                                  Squads
+                                </Text>
                               </LinearGradient>
                             </TouchableOpacity>
                           </View>
                         </LinearGradient>
                       </TouchableOpacity>
-                    ))}
-                  </>
-                )}
+                    </Animated.View>
+                  ))}
 
-                {/* Match Results */}
-                {searchResults.matches.length > 0 && (
-                  <>
-                    <Text style={[styles.searchResultsTitle, { marginTop: searchResults.tournaments.length > 0 ? 20 : 0 }]}>
-                      Matches ({searchResults.matches.length})
+                  <View style={{ height: 20 }} />
+                </ScrollView>
+
+                {/* Tournaments Tab Content */}
+                <ScrollView
+                  style={{ width: SCREEN_WIDTH }}
+                  showsVerticalScrollIndicator={false}
+                >
+                  <View style={styles.tournamentsContainer}>
+                    {/* Create Tournament Card */}
+                    <TouchableOpacity
+                      style={styles.createTournamentCard}
+                      onPress={() => setCurrentView("createTournament")}
+                    >
+                      <LinearGradient
+                        colors={["#00A66A", "#0F766E", "#064E3B"]}
+                        start={{ x: 0, y: 0 }}
+                        end={{ x: 1, y: 1 }}
+                        style={styles.createTournamentGradient}
+                      >
+                        <View style={styles.createTournamentIcon}>
+                          <Ionicons name="trophy" size={32} color="#FFF" />
+                        </View>
+                        <View style={styles.createTournamentText}>
+                          <Text style={styles.createTournamentTitle}>
+                            Register Tournament
+                          </Text>
+                          <Text style={styles.createTournamentSubtitle}>
+                            Add a tournament / series
+                          </Text>
+                        </View>
+                        <Ionicons name="add-circle" size={28} color="#FFF" />
+                      </LinearGradient>
+                    </TouchableOpacity>
+
+                    {/* Tournament Filter Tabs */}
+                    <Animated.View
+                      style={[styles.filterTabs, { opacity: fadeAnim }]}
+                    >
+                      {["your", "participate", "network", "all"].map(
+                        (filter) => (
+                          <TouchableOpacity
+                            key={filter}
+                            style={[
+                              styles.filterTab,
+                              activeTournamentFilter === filter &&
+                                styles.activeFilterTab,
+                            ]}
+                            onPress={() => setActiveTournamentFilter(filter)}
+                          >
+                            {activeTournamentFilter === filter ? (
+                              <LinearGradient
+                                colors={["#00A66A", "#0F766E"]}
+                                style={styles.filterGradient}
+                              >
+                                <Text style={styles.activeFilterText}>
+                                  {filter.charAt(0).toUpperCase() +
+                                    filter.slice(1)}
+                                </Text>
+                              </LinearGradient>
+                            ) : (
+                              <Text style={styles.filterText}>
+                                {filter.charAt(0).toUpperCase() +
+                                  filter.slice(1)}
+                              </Text>
+                            )}
+                          </TouchableOpacity>
+                        ),
+                      )}
+                    </Animated.View>
+
+                    {/* Tournaments List */}
+                    <Text style={styles.sectionTitle}>
+                      {activeTournamentFilter === "your" && "Your Tournaments"}
+                      {activeTournamentFilter === "participate" &&
+                        "Tournaments to Participate"}
+                      {activeTournamentFilter === "network" &&
+                        "Network Tournaments"}
+                      {activeTournamentFilter === "all" && "All Tournaments"}
                     </Text>
-                    {searchResults.matches.map((match: any) => (
+
+                    {activeTournamentFilter === "your" &&
+                      allTournaments
+                        .filter((t) => t.category === "your")
+                        .map((tournament) => (
+                          <TouchableOpacity
+                            key={tournament.id}
+                            style={styles.tournamentCard}
+                            activeOpacity={0.85}
+                            onPress={() => {
+                              setSelectedTournament(tournament);
+                              setActiveTournamentDetailTab("matches");
+                              setCurrentView("tournamentDetail");
+                            }}
+                          >
+                            <LinearGradient
+                              colors={["#FFF", "#F8F8F8"]}
+                              style={styles.tournamentCardGradient}
+                            >
+                              <View style={styles.tournamentHeader}>
+                                <View style={styles.tournamentHeaderLeft}>
+                                  <LinearGradient
+                                    colors={["#6EE7B7", "#059669"]}
+                                    style={styles.tournamentIcon}
+                                  >
+                                    <Ionicons
+                                      name="trophy"
+                                      size={18}
+                                      color="#FFF"
+                                    />
+                                  </LinearGradient>
+                                  <View style={styles.tournamentHeaderInfo}>
+                                    <Text
+                                      style={styles.tournamentName}
+                                      numberOfLines={1}
+                                    >
+                                      {tournament.name}
+                                    </Text>
+                                    <View style={styles.tournamentMeta}>
+                                      <Ionicons
+                                        name="calendar-outline"
+                                        size={11}
+                                        color="#999"
+                                      />
+                                      <Text style={styles.tournamentMetaText}>
+                                        {tournament.startDate}
+                                      </Text>
+                                    </View>
+                                  </View>
+                                </View>
+                                <LinearGradient
+                                  colors={
+                                    tournament.status === "Ongoing"
+                                      ? ["#00A66A", "#0F766E"]
+                                      : ["#059669", "#0F766E"]
+                                  }
+                                  style={styles.tournamentStatusBadge}
+                                >
+                                  <Text style={styles.tournamentStatusText}>
+                                    {tournament.status}
+                                  </Text>
+                                </LinearGradient>
+                              </View>
+
+                              <View style={styles.tournamentProgressSection}>
+                                <View style={styles.progressBar}>
+                                  <View
+                                    style={[
+                                      styles.progressFill,
+                                      {
+                                        width: `${tournament.progress}%`,
+                                        backgroundColor:
+                                          tournament.progress > 70
+                                            ? "#00A66A"
+                                            : tournament.progress > 40
+                                              ? "#059669"
+                                              : "#00A66A",
+                                      },
+                                    ]}
+                                  />
+                                </View>
+                                <Text style={styles.progressText}>
+                                  {tournament.progress}% Complete
+                                </Text>
+                              </View>
+
+                              <View style={styles.tournamentStats}>
+                                <View style={styles.tournamentStat}>
+                                  <View style={styles.statIcon}>
+                                    <Ionicons
+                                      name="people"
+                                      size={12}
+                                      color="#00A66A"
+                                    />
+                                  </View>
+                                  <Text style={styles.tournamentStatText}>
+                                    {tournament.teams} Teams
+                                  </Text>
+                                </View>
+                                <View style={styles.tournamentStat}>
+                                  <View style={styles.statIcon}>
+                                    <Ionicons
+                                      name="baseball"
+                                      size={12}
+                                      color="#00A66A"
+                                    />
+                                  </View>
+                                  <Text style={styles.tournamentStatText}>
+                                    {tournament.matches} Matches
+                                  </Text>
+                                </View>
+                              </View>
+
+                              <View style={styles.tournamentFooter}>
+                                <TouchableOpacity
+                                  style={[styles.tournamentButton, { flex: 1 }]}
+                                  onPress={(e) => {
+                                    e.stopPropagation();
+                                    setSelectedTournament(tournament);
+                                    setShowTournamentSettings(true);
+                                  }}
+                                >
+                                  <LinearGradient
+                                    colors={["#00A66A", "#0F766E"]}
+                                    style={styles.tournamentButtonGradient}
+                                  >
+                                    <Ionicons
+                                      name="settings-outline"
+                                      size={13}
+                                      color="#FFF"
+                                    />
+                                    <Text style={styles.tournamentButtonText}>
+                                      Manage
+                                    </Text>
+                                  </LinearGradient>
+                                </TouchableOpacity>
+                              </View>
+                            </LinearGradient>
+                          </TouchableOpacity>
+                        ))}
+
+                    {activeTournamentFilter === "participate" &&
+                      allTournaments
+                        .filter((t) => t.category === "participate")
+                        .map((tournament) => (
+                          <TouchableOpacity
+                            key={tournament.id}
+                            style={styles.tournamentCard}
+                            activeOpacity={0.85}
+                            onPress={() => {
+                              setSelectedTournament(tournament);
+                              setActiveTournamentDetailTab("matches");
+                              setCurrentView("tournamentDetail");
+                            }}
+                          >
+                            <LinearGradient
+                              colors={["#FFF", "#F8F8F8"]}
+                              style={styles.tournamentCardGradient}
+                            >
+                              <View style={styles.tournamentHeader}>
+                                <View style={styles.tournamentHeaderLeft}>
+                                  <LinearGradient
+                                    colors={["#6EE7B7", "#059669"]}
+                                    style={styles.tournamentIcon}
+                                  >
+                                    <Ionicons
+                                      name="trophy"
+                                      size={18}
+                                      color="#FFF"
+                                    />
+                                  </LinearGradient>
+                                  <View style={styles.tournamentHeaderInfo}>
+                                    <Text
+                                      style={styles.tournamentName}
+                                      numberOfLines={1}
+                                    >
+                                      {tournament.name}
+                                    </Text>
+                                    <View style={styles.tournamentMeta}>
+                                      <Ionicons
+                                        name="calendar-outline"
+                                        size={11}
+                                        color="#999"
+                                      />
+                                      <Text style={styles.tournamentMetaText}>
+                                        {tournament.startDate}
+                                      </Text>
+                                    </View>
+                                  </View>
+                                </View>
+                                <LinearGradient
+                                  colors={["#00A66A", "#0F766E"]}
+                                  style={styles.tournamentStatusBadge}
+                                >
+                                  <Text style={styles.tournamentStatusText}>
+                                    {tournament.status}
+                                  </Text>
+                                </LinearGradient>
+                              </View>
+
+                              <View style={styles.tournamentProgressSection}>
+                                <View style={styles.progressBar}>
+                                  <View
+                                    style={[
+                                      styles.progressFill,
+                                      {
+                                        width: `${tournament.progress}%`,
+                                        backgroundColor: "#00A66A",
+                                      },
+                                    ]}
+                                  />
+                                </View>
+                                <Text style={styles.progressText}>
+                                  {tournament.progress}% Complete
+                                </Text>
+                              </View>
+
+                              <View style={styles.tournamentStats}>
+                                <View style={styles.tournamentStat}>
+                                  <View style={styles.statIcon}>
+                                    <Ionicons
+                                      name="people"
+                                      size={12}
+                                      color="#00A66A"
+                                    />
+                                  </View>
+                                  <Text style={styles.tournamentStatText}>
+                                    {tournament.teams} Teams
+                                  </Text>
+                                </View>
+                                <View style={styles.tournamentStat}>
+                                  <View style={styles.statIcon}>
+                                    <Ionicons
+                                      name="baseball"
+                                      size={12}
+                                      color="#00A66A"
+                                    />
+                                  </View>
+                                  <Text style={styles.tournamentStatText}>
+                                    {tournament.matches} Matches
+                                  </Text>
+                                </View>
+                              </View>
+
+                              <View style={styles.tournamentFooter}>
+                                <TouchableOpacity
+                                  style={[styles.tournamentButton, { flex: 1 }]}
+                                  onPress={(e) => {
+                                    e.stopPropagation();
+                                    setSelectedTournament(tournament);
+                                    setShowTournamentSettings(true);
+                                  }}
+                                >
+                                  <LinearGradient
+                                    colors={["#00A66A", "#0F766E"]}
+                                    style={styles.tournamentButtonGradient}
+                                  >
+                                    <Ionicons
+                                      name="stats-chart-outline"
+                                      size={13}
+                                      color="#FFF"
+                                    />
+                                    <Text style={styles.tournamentButtonText}>
+                                      Stats
+                                    </Text>
+                                  </LinearGradient>
+                                </TouchableOpacity>
+                              </View>
+                            </LinearGradient>
+                          </TouchableOpacity>
+                        ))}
+
+                    {activeTournamentFilter === "network" &&
+                      allTournaments
+                        .filter((t) => t.category === "network")
+                        .map((tournament) => (
+                          <TouchableOpacity
+                            key={tournament.id}
+                            style={styles.tournamentCard}
+                            activeOpacity={0.85}
+                            onPress={() => {
+                              setSelectedTournament(tournament);
+                              setActiveTournamentDetailTab("matches");
+                              setCurrentView("tournamentDetail");
+                            }}
+                          >
+                            <LinearGradient
+                              colors={["#FFF", "#F8F8F8"]}
+                              style={styles.tournamentCardGradient}
+                            >
+                              <View style={styles.tournamentHeader}>
+                                <View style={styles.tournamentHeaderLeft}>
+                                  <LinearGradient
+                                    colors={["#6EE7B7", "#059669"]}
+                                    style={styles.tournamentIcon}
+                                  >
+                                    <Ionicons
+                                      name="trophy"
+                                      size={18}
+                                      color="#FFF"
+                                    />
+                                  </LinearGradient>
+                                  <View style={styles.tournamentHeaderInfo}>
+                                    <Text
+                                      style={styles.tournamentName}
+                                      numberOfLines={1}
+                                    >
+                                      {tournament.name}
+                                    </Text>
+                                    <View style={styles.tournamentMeta}>
+                                      <Ionicons
+                                        name="calendar-outline"
+                                        size={11}
+                                        color="#999"
+                                      />
+                                      <Text style={styles.tournamentMetaText}>
+                                        {tournament.startDate}
+                                      </Text>
+                                    </View>
+                                  </View>
+                                </View>
+                                <LinearGradient
+                                  colors={
+                                    tournament.status === "Ongoing"
+                                      ? ["#00A66A", "#0F766E"]
+                                      : ["#059669", "#0F766E"]
+                                  }
+                                  style={styles.tournamentStatusBadge}
+                                >
+                                  <Text style={styles.tournamentStatusText}>
+                                    {tournament.status}
+                                  </Text>
+                                </LinearGradient>
+                              </View>
+
+                              <View style={styles.tournamentProgressSection}>
+                                <View style={styles.progressBar}>
+                                  <View
+                                    style={[
+                                      styles.progressFill,
+                                      {
+                                        width: `${tournament.progress}%`,
+                                        backgroundColor:
+                                          tournament.progress > 70
+                                            ? "#00A66A"
+                                            : tournament.progress > 40
+                                              ? "#059669"
+                                              : "#00A66A",
+                                      },
+                                    ]}
+                                  />
+                                </View>
+                                <Text style={styles.progressText}>
+                                  {tournament.progress}% Complete
+                                </Text>
+                              </View>
+
+                              <View style={styles.tournamentStats}>
+                                <View style={styles.tournamentStat}>
+                                  <View style={styles.statIcon}>
+                                    <Ionicons
+                                      name="people"
+                                      size={12}
+                                      color="#00A66A"
+                                    />
+                                  </View>
+                                  <Text style={styles.tournamentStatText}>
+                                    {tournament.teams} Teams
+                                  </Text>
+                                </View>
+                                <View style={styles.tournamentStat}>
+                                  <View style={styles.statIcon}>
+                                    <Ionicons
+                                      name="baseball"
+                                      size={12}
+                                      color="#00A66A"
+                                    />
+                                  </View>
+                                  <Text style={styles.tournamentStatText}>
+                                    {tournament.matches} Matches
+                                  </Text>
+                                </View>
+                              </View>
+
+                              <View style={styles.tournamentFooter}>
+                                <TouchableOpacity
+                                  style={[styles.tournamentButton, { flex: 1 }]}
+                                  onPress={(e) => {
+                                    e.stopPropagation();
+                                    Alert.alert(
+                                      "Join Tournament",
+                                      `Would you like to join ${tournament.name}?`,
+                                      [
+                                        { text: "Cancel", style: "cancel" },
+                                        {
+                                          text: "Join",
+                                          onPress: () =>
+                                            console.log("Joined tournament"),
+                                        },
+                                      ],
+                                    );
+                                  }}
+                                >
+                                  <LinearGradient
+                                    colors={["#00A66A", "#0F766E"]}
+                                    style={styles.tournamentButtonGradient}
+                                  >
+                                    <Ionicons
+                                      name="add-circle-outline"
+                                      size={13}
+                                      color="#FFF"
+                                    />
+                                    <Text style={styles.tournamentButtonText}>
+                                      Join
+                                    </Text>
+                                  </LinearGradient>
+                                </TouchableOpacity>
+                              </View>
+                            </LinearGradient>
+                          </TouchableOpacity>
+                        ))}
+
+                    {activeTournamentFilter === "all" &&
+                      allTournaments.map((tournament) => (
+                        <TouchableOpacity
+                          key={tournament.id}
+                          style={styles.tournamentCard}
+                          activeOpacity={0.85}
+                          onPress={() => {
+                            setSelectedTournament(tournament);
+                            setActiveTournamentDetailTab("matches");
+                            setCurrentView("tournamentDetail");
+                          }}
+                        >
+                          <LinearGradient
+                            colors={["#FFF", "#F8F8F8"]}
+                            style={styles.tournamentCardGradient}
+                          >
+                            <View style={styles.tournamentHeader}>
+                              <View style={styles.tournamentHeaderLeft}>
+                                <LinearGradient
+                                  colors={["#6EE7B7", "#059669"]}
+                                  style={styles.tournamentIcon}
+                                >
+                                  <Ionicons
+                                    name="trophy"
+                                    size={18}
+                                    color="#FFF"
+                                  />
+                                </LinearGradient>
+                                <View style={styles.tournamentHeaderInfo}>
+                                  <Text
+                                    style={styles.tournamentName}
+                                    numberOfLines={1}
+                                  >
+                                    {tournament.name}
+                                  </Text>
+                                  <View style={styles.tournamentMeta}>
+                                    <Ionicons
+                                      name="calendar-outline"
+                                      size={11}
+                                      color="#999"
+                                    />
+                                    <Text style={styles.tournamentMetaText}>
+                                      {tournament.startDate}
+                                    </Text>
+                                  </View>
+                                </View>
+                              </View>
+                              <LinearGradient
+                                colors={
+                                  tournament.status === "Ongoing"
+                                    ? ["#00A66A", "#0F766E"]
+                                    : tournament.status === "Completed"
+                                      ? ["#00A66A", "#0F766E"]
+                                      : ["#059669", "#0F766E"]
+                                }
+                                style={styles.tournamentStatusBadge}
+                              >
+                                <Text style={styles.tournamentStatusText}>
+                                  {tournament.status}
+                                </Text>
+                              </LinearGradient>
+                            </View>
+
+                            <View style={styles.tournamentProgressSection}>
+                              <View style={styles.progressBar}>
+                                <View
+                                  style={[
+                                    styles.progressFill,
+                                    {
+                                      width: `${tournament.progress}%`,
+                                      backgroundColor:
+                                        tournament.progress > 70
+                                          ? "#00A66A"
+                                          : tournament.progress > 40
+                                            ? "#059669"
+                                            : tournament.progress === 100
+                                              ? "#00A66A"
+                                              : "#00A66A",
+                                    },
+                                  ]}
+                                />
+                              </View>
+                              <Text style={styles.progressText}>
+                                {tournament.progress}% Complete
+                              </Text>
+                            </View>
+
+                            <View style={styles.tournamentStats}>
+                              <View style={styles.tournamentStat}>
+                                <View style={styles.statIcon}>
+                                  <Ionicons
+                                    name="people"
+                                    size={12}
+                                    color="#00A66A"
+                                  />
+                                </View>
+                                <Text style={styles.tournamentStatText}>
+                                  {tournament.teams} Teams
+                                </Text>
+                              </View>
+                              <View style={styles.tournamentStat}>
+                                <View style={styles.statIcon}>
+                                  <Ionicons
+                                    name="baseball"
+                                    size={12}
+                                    color="#00A66A"
+                                  />
+                                </View>
+                                <Text style={styles.tournamentStatText}>
+                                  {tournament.matches} Matches
+                                </Text>
+                              </View>
+                            </View>
+
+                            <View style={styles.tournamentFooter}>
+                              <TouchableOpacity
+                                style={[styles.tournamentButton, { flex: 1 }]}
+                                onPress={(e) => {
+                                  e.stopPropagation();
+                                  shareContent({
+                                    title: tournament.name,
+                                    message: `Join and follow the tournament ${tournament.name} on GameLens!`,
+                                    type: "match",
+                                    id: tournament.id,
+                                  });
+                                }}
+                              >
+                                <LinearGradient
+                                  colors={["#00A66A", "#0F766E"]}
+                                  style={styles.tournamentButtonGradient}
+                                >
+                                  <Ionicons
+                                    name="share-social-outline"
+                                    size={13}
+                                    color="#FFF"
+                                  />
+                                  <Text style={styles.tournamentButtonText}>
+                                    Share
+                                  </Text>
+                                </LinearGradient>
+                              </TouchableOpacity>
+                            </View>
+                          </LinearGradient>
+                        </TouchableOpacity>
+                      ))}
+
+                    <View style={{ height: 20 }} />
+                  </View>
+                </ScrollView>
+
+                {/* Teams Tab Content */}
+                <View style={{ width: SCREEN_WIDTH, flex: 1 }}>
+                  <ScrollView
+                    style={styles.teamsContainer}
+                    showsVerticalScrollIndicator={false}
+                  >
+                    <Text style={styles.teamsTitle}>My Teams</Text>
+                    <Text style={styles.teamsSubtitle}>
+                      Create or select teams for your matches
+                    </Text>
+
+                    {/* Team Options */}
+                    <View style={styles.teamOptionsContainer}>
+                      {/* Select Team Option */}
                       <TouchableOpacity
-                        key={match.id}
-                        style={styles.searchMatchItem}
+                        style={styles.teamOption}
                         onPress={() => {
-                          console.log(`Viewing match: ${match.team}`);
-                          setShowSearchModal(false);
+                          console.log(
+                            "Select Team pressed - navigating to team selection",
+                          );
+                          setCurrentView("teamsSelection");
                         }}
                       >
                         <LinearGradient
-                          colors={["#FFF", "#F8F8F8"]}
-                          style={styles.searchMatchGradient}
+                          colors={["#059669", "#047857"]}
+                          start={{ x: 0, y: 0 }}
+                          end={{ x: 1, y: 1 }}
+                          style={styles.teamOptionGradient}
                         >
-                          <View style={styles.searchMatchHeader}>
-                            <View style={[
-                              styles.searchMatchStatus,
-                              { backgroundColor: match.status === "Live" ? "#00A66A" : match.status === "Upcoming" ? "#059669" : "#666" }
-                            ]}>
-                              <Text style={styles.searchMatchStatusText}>
-                                {match.status}
-                              </Text>
-                            </View>
-                            <Text style={styles.searchMatchType}>{match.type}</Text>
+                          <View style={styles.teamOptionIconContainer}>
+                            <Ionicons name="people" size={32} color="#FFF" />
                           </View>
-                          <Text style={styles.searchMatchTeam} numberOfLines={1}>
-                            {match.team}
-                          </Text>
-                          <View style={styles.searchMatchMeta}>
-                            <View style={styles.searchMatchMetaItem}>
-                              <Ionicons name="calendar-outline" size={12} color="#999" />
-                              <Text style={styles.searchMatchMetaText}>{match.date} • {match.time}</Text>
-                            </View>
-                            <View style={styles.searchMatchMetaItem}>
-                              <Ionicons name="location-outline" size={12} color="#999" />
-                              <Text style={styles.searchMatchMetaText} numberOfLines={1}>{match.location}</Text>
-                            </View>
-                            <View style={styles.searchMatchMetaItem}>
-                              <Ionicons name="baseball-outline" size={12} color="#999" />
-                              <Text style={styles.searchMatchMetaText}>{match.format} • {match.overs}</Text>
-                            </View>
+                          <View style={styles.teamOptionContent}>
+                            <Text style={styles.teamOptionTitle}>
+                              Select Team
+                            </Text>
+                            <Text style={styles.teamOptionDescription}>
+                              Choose from existing teams
+                            </Text>
                           </View>
-                          {match.result && (
-                            <Text style={styles.searchMatchResult}>{match.result}</Text>
-                          )}
+                          <Ionicons
+                            name="chevron-forward"
+                            size={24}
+                            color="#FFF"
+                          />
                         </LinearGradient>
                       </TouchableOpacity>
-                    ))}
-                  </>
-                )}
 
-                {/* No Results */}
-                {searchResults.tournaments.length === 0 && searchResults.matches.length === 0 && searchQuery.length > 0 && (
-                  <View style={styles.noResultsContainer}>
-                    <Ionicons name="search-outline" size={48} color="#CCC" />
-                    <Text style={styles.noResultsTitle}>No results found</Text>
-                    <Text style={styles.noResultsText}>
-                      Try searching for tournament names, match teams, or locations
-                    </Text>
-                  </View>
-                )}
-              </>
+                      {/* Create Team Option */}
+                      <TouchableOpacity
+                        style={styles.teamOption}
+                        onPress={() => {
+                          console.log("Create Team pressed");
+                          setCurrentView("createTeam");
+                          setTeamSlot(null); // Clear team slot since this is not from team selection flow
+                        }}
+                      >
+                        <LinearGradient
+                          colors={["#00A66A", "#0F766E"]}
+                          start={{ x: 0, y: 0 }}
+                          end={{ x: 1, y: 1 }}
+                          style={styles.teamOptionGradient}
+                        >
+                          <View style={styles.teamOptionIconContainer}>
+                            <Ionicons
+                              name="add-circle"
+                              size={32}
+                              color="#FFF"
+                            />
+                          </View>
+                          <View style={styles.teamOptionContent}>
+                            <Text style={styles.teamOptionTitle}>
+                              Create Team
+                            </Text>
+                            <Text style={styles.teamOptionDescription}>
+                              Build a new team from scratch
+                            </Text>
+                          </View>
+                          <Ionicons
+                            name="chevron-forward"
+                            size={24}
+                            color="#FFF"
+                          />
+                        </LinearGradient>
+                      </TouchableOpacity>
+                    </View>
+
+                    {/* Recent Teams Section */}
+                    <View style={styles.recentTeamsSection}>
+                      <Text style={styles.recentTeamsTitle}>Recent Teams</Text>
+
+                      {/* TODO(backend): fetch recent teams from API / LocalStorage */}
+                      {(
+                        [] as {
+                          name: string;
+                          players: number;
+                          lastUsed: string;
+                          color: string;
+                        }[]
+                      ).map((team, index) => (
+                        <TouchableOpacity
+                          key={index}
+                          style={styles.recentTeamCard}
+                          onPress={() => {
+                            Alert.alert(
+                              team.name,
+                              `Players: ${team.players}\nLast Used: ${team.lastUsed}\n\nWhat would you like to do?`,
+                              [
+                                {
+                                  text: "View Details",
+                                  onPress: () =>
+                                    Alert.alert(
+                                      "Team Details",
+                                      `Showing details for ${team.name}`,
+                                    ),
+                                },
+                                {
+                                  text: "Edit Team",
+                                  onPress: () =>
+                                    Alert.alert(
+                                      "Edit Team",
+                                      `Editing ${team.name}`,
+                                    ),
+                                },
+                                { text: "Cancel", style: "cancel" },
+                              ],
+                            );
+                          }}
+                        >
+                          <View
+                            style={[
+                              styles.recentTeamIcon,
+                              { backgroundColor: team.color },
+                            ]}
+                          >
+                            <Text style={styles.recentTeamInitial}>
+                              {team.name.charAt(0)}
+                            </Text>
+                          </View>
+                          <View style={styles.recentTeamInfo}>
+                            <Text style={styles.recentTeamName}>
+                              {team.name}
+                            </Text>
+                            <Text style={styles.recentTeamMeta}>
+                              {team.players} players • {team.lastUsed}
+                            </Text>
+                          </View>
+                          <Ionicons
+                            name="chevron-forward"
+                            size={16}
+                            color="#999"
+                          />
+                        </TouchableOpacity>
+                      ))}
+                    </View>
+
+                    {/* Bottom spacing for scroll */}
+                    <View style={{ height: 100 }} />
+                  </ScrollView>
+                </View>
+              </Animated.ScrollView>
             )}
-          </ScrollView>
-        </View>
-      </Modal>
+          </AnimatedViewTransition>
+        </ScrollView>
 
-      {/* Player Selection Modal */}
-      <Modal
-        visible={showPlayerModal}
-        transparent
-        animationType="slide"
-        onRequestClose={() => setShowPlayerModal(false)}
-      >
-        <View style={styles.playerModalContainer}>
-          <View style={styles.playerModalHeader}>
-            <TouchableOpacity onPress={() => setShowPlayerModal(false)}>
-              <Ionicons name="arrow-back" size={24} color="#333" />
+        {/* ───── Tournament Settings Bottom Sheet Modal ───── */}
+        <Modal
+          visible={showTournamentSettings}
+          transparent
+          animationType="slide"
+          onRequestClose={() => setShowTournamentSettings(false)}
+        >
+          <TouchableOpacity
+            style={styles.tsOverlay}
+            activeOpacity={1}
+            onPress={() => setShowTournamentSettings(false)}
+          >
+            <TouchableOpacity
+              activeOpacity={1}
+              style={styles.tsSheet}
+              onPress={(e) => e.stopPropagation()}
+            >
+              {/* Drag handle */}
+              <View style={styles.tsDragHandle} />
+
+              {/* Sheet title */}
+              <View style={styles.tsHeader}>
+                <Text style={styles.tsTitle}>Tournament Settings</Text>
+                <TouchableOpacity
+                  onPress={() => setShowTournamentSettings(false)}
+                >
+                  <Ionicons name="close-circle" size={26} color="#CCC" />
+                </TouchableOpacity>
+              </View>
+
+              <ScrollView showsVerticalScrollIndicator={false}>
+                {[
+                  {
+                    label: "Add Teams",
+                    icon: "people-outline",
+                    danger: false,
+                    badge: null,
+                  },
+                  {
+                    label: "Rounds (League Matches, Final, etc.)",
+                    icon: "git-branch-outline",
+                    danger: false,
+                    badge: null,
+                  },
+                  {
+                    label: "Groups (Group A, Group B, etc.)",
+                    icon: "grid-outline",
+                    danger: false,
+                    badge: null,
+                  },
+                  {
+                    label: "Start A Match",
+                    icon: "baseball-outline",
+                    danger: false,
+                    badge: null,
+                  },
+                  {
+                    label: "Schedule Matches",
+                    icon: "calendar-outline",
+                    danger: false,
+                    badge: null,
+                  },
+                  {
+                    label: "Delete Schedule",
+                    icon: "trash-bin-outline",
+                    danger: false,
+                    badge: null,
+                  },
+                  {
+                    label: "Add/Remove Scorers (Admins)",
+                    icon: "person-add-outline",
+                    danger: false,
+                    badge: null,
+                  },
+                  {
+                    label: "Tournament Officials",
+                    icon: "shield-checkmark-outline",
+                    danger: false,
+                    badge: null,
+                  },
+                  {
+                    label: "Add Live Streamer",
+                    icon: "videocam-outline",
+                    danger: false,
+                    badge: null,
+                  },
+                  {
+                    label: "Tournament Awards",
+                    icon: "ribbon-outline",
+                    danger: false,
+                    badge: null,
+                  },
+                  {
+                    label: "Tournament Settings",
+                    icon: "settings-outline",
+                    danger: false,
+                    badge: "NEW",
+                  },
+                  {
+                    label: "Premium Features",
+                    icon: "star-outline",
+                    danger: false,
+                    badge: null,
+                  },
+                  {
+                    label: "Find Scorers / Umpires",
+                    icon: "search-outline",
+                    danger: false,
+                    badge: null,
+                  },
+                  {
+                    label: "Smart NRR Calculator",
+                    icon: "calculator-outline",
+                    danger: false,
+                    badge: null,
+                  },
+                  {
+                    label: "Edit/Delete Tournament",
+                    icon: "create-outline",
+                    danger: true,
+                    badge: null,
+                  },
+                ].map((item, idx) => (
+                  <TouchableOpacity
+                    key={idx}
+                    style={[
+                      styles.tsMenuItem,
+                      item.danger && styles.tsMenuItemDanger,
+                    ]}
+                    onPress={() => {
+                      setShowTournamentSettings(false);
+                      setTimeout(() => {
+                        if (item.label === "Edit/Delete Tournament") {
+                          Alert.alert(
+                            "Edit / Delete Tournament",
+                            "What would you like to do?",
+                            [
+                              { text: "Edit Tournament", onPress: () => {} },
+                              {
+                                text: "Delete Tournament",
+                                style: "destructive",
+                                onPress: () => {},
+                              },
+                              { text: "Cancel", style: "cancel" },
+                            ],
+                          );
+                        } else {
+                          Alert.alert(item.label, `Opening ${item.label}…`);
+                        }
+                      }, 300);
+                    }}
+                    activeOpacity={0.7}
+                  >
+                    <View
+                      style={[
+                        styles.tsMenuIcon,
+                        item.danger && { backgroundColor: "#D1FAE5" },
+                      ]}
+                    >
+                      <Ionicons
+                        name={item.icon as any}
+                        size={20}
+                        color={item.danger ? "#059669" : "#555"}
+                      />
+                    </View>
+                    <Text
+                      style={[
+                        styles.tsMenuLabel,
+                        item.danger && styles.tsMenuLabelDanger,
+                      ]}
+                    >
+                      {item.label}
+                    </Text>
+                    <View style={styles.tsMenuRight}>
+                      {item.badge === "NEW" && (
+                        <View style={styles.tsNewBadge}>
+                          <Text style={styles.tsNewBadgeText}>NEW</Text>
+                        </View>
+                      )}
+                      <Ionicons
+                        name="chevron-forward"
+                        size={18}
+                        color={item.danger ? "#059669" : "#CCC"}
+                      />
+                    </View>
+                  </TouchableOpacity>
+                ))}
+                <View style={{ height: 24 }} />
+              </ScrollView>
             </TouchableOpacity>
-            <Text style={styles.playerModalTitle}>
-              {playerModalType === "striker" && "Select Striker"}
-              {playerModalType === "nonStriker" && "Select Non-striker"}
-              {playerModalType === "bowler" && "Select Bowler"}
-            </Text>
-            <View style={{ width: 24 }} />
-          </View>
+          </TouchableOpacity>
+        </Modal>
 
-          <ScrollView style={styles.playersList} showsVerticalScrollIndicator={false}>
-            {(playerModalType === "striker" || playerModalType === "nonStriker" ? battingTeamPlayers : bowlingTeamPlayers).map((player) => (
-              <TouchableOpacity
-                key={player.id}
-                style={[
-                  styles.playerItem,
-                  (playerModalType === "striker" && selectedStriker?.id === player.id) ||
-                  (playerModalType === "nonStriker" && selectedNonStriker?.id === player.id) ||
-                  (playerModalType === "bowler" && selectedBowler?.id === player.id)
-                    ? styles.playerItemSelected : null
-                ]}
-                onPress={() => {
-                  // Validation: Don't allow same player for striker and non-striker
-                  if (playerModalType === "striker" && selectedNonStriker?.id === player.id) {
-                    Alert.alert("Invalid Selection", "This player is already selected as Non-striker. Please choose a different player.");
-                    return;
-                  }
-                  if (playerModalType === "nonStriker" && selectedStriker?.id === player.id) {
-                    Alert.alert("Invalid Selection", "This player is already selected as Striker. Please choose a different player.");
-                    return;
-                  }
+        {/* Search Modal */}
+        <Modal
+          visible={showSearchModal}
+          transparent
+          animationType="slide"
+          onRequestClose={() => setShowSearchModal(false)}
+        >
+          <View style={styles.searchModalContainer}>
+            <View style={styles.searchModalHeader}>
+              <TouchableOpacity onPress={() => setShowSearchModal(false)}>
+                <Ionicons name="arrow-back" size={24} color="#333" />
+              </TouchableOpacity>
+              <Text style={styles.searchModalTitle}>Search</Text>
+              <View style={{ width: 24 }} />
+            </View>
 
-                  if (playerModalType === "striker") {
-                    setSelectedStriker(player);
-                  } else if (playerModalType === "nonStriker") {
-                    setSelectedNonStriker(player);
-                  } else if (playerModalType === "bowler") {
-                    setSelectedBowler(player);
-                  }
-                  setShowPlayerModal(false);
-                }}
-              >
-                <View style={styles.playerItemContent}>
-                  <View style={styles.playerAvatar}>
-                    {player.image ? (
-                      <Image source={{ uri: player.image }} style={styles.playerAvatarImage} />
-                    ) : (
-                      <Text style={styles.playerAvatarText}>
-                        {player.name.split(' ').map((n: string) => n[0]).join('')}
+            <View style={styles.searchInputContainer}>
+              <Ionicons name="search" size={20} color="#999" />
+              <TextInput
+                style={styles.searchInput}
+                placeholder="Search tournaments, matches..."
+                placeholderTextColor="#999"
+                value={searchQuery}
+                onChangeText={handleSearchChange}
+                autoFocus
+              />
+              {searchQuery.length > 0 && (
+                <TouchableOpacity
+                  onPress={() => {
+                    setSearchQuery("");
+                    setSearchResults({ tournaments: [], matches: [] });
+                  }}
+                >
+                  <Ionicons name="close-circle" size={20} color="#999" />
+                </TouchableOpacity>
+              )}
+            </View>
+
+            <ScrollView
+              style={styles.searchResults}
+              showsVerticalScrollIndicator={false}
+            >
+              {searchQuery.length === 0 ? (
+                <>
+                  <Text style={styles.searchResultsTitle}>Recent Searches</Text>
+                  <TouchableOpacity style={styles.searchResultItem}>
+                    <Ionicons name="time-outline" size={20} color="#666" />
+                    <Text style={styles.searchResultText}>
+                      Mumbai Premier League
+                    </Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity style={styles.searchResultItem}>
+                    <Ionicons name="time-outline" size={20} color="#666" />
+                    <Text style={styles.searchResultText}>T20 Match</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity style={styles.searchResultItem}>
+                    <Ionicons name="time-outline" size={20} color="#666" />
+                    <Text style={styles.searchResultText}>
+                      Wankhede Stadium
+                    </Text>
+                  </TouchableOpacity>
+                </>
+              ) : (
+                <>
+                  {/* Tournament Results */}
+                  {searchResults.tournaments.length > 0 && (
+                    <>
+                      <Text style={styles.searchResultsTitle}>
+                        Tournaments ({searchResults.tournaments.length})
                       </Text>
+                      {searchResults.tournaments.map((tournament: any) => (
+                        <TouchableOpacity
+                          key={tournament.id}
+                          style={styles.tournamentCard}
+                          activeOpacity={0.85}
+                          onPress={() => {
+                            setSelectedTournament(tournament);
+                            setActiveTournamentDetailTab("matches");
+                            setCurrentView("tournamentDetail");
+                            setShowSearchModal(false);
+                          }}
+                        >
+                          <LinearGradient
+                            colors={["#FFF", "#F8F8F8"]}
+                            style={styles.tournamentCardGradient}
+                          >
+                            <View style={styles.tournamentHeader}>
+                              <View style={styles.tournamentHeaderLeft}>
+                                <LinearGradient
+                                  colors={["#6EE7B7", "#059669"]}
+                                  style={styles.tournamentIcon}
+                                >
+                                  <Ionicons
+                                    name="trophy"
+                                    size={18}
+                                    color="#FFF"
+                                  />
+                                </LinearGradient>
+                                <View style={styles.tournamentHeaderInfo}>
+                                  <Text
+                                    style={styles.tournamentName}
+                                    numberOfLines={1}
+                                  >
+                                    {tournament.name}
+                                  </Text>
+                                  <View style={styles.tournamentMeta}>
+                                    <Ionicons
+                                      name="calendar-outline"
+                                      size={11}
+                                      color="#999"
+                                    />
+                                    <Text style={styles.tournamentMetaText}>
+                                      {tournament.startDate}
+                                    </Text>
+                                  </View>
+                                </View>
+                              </View>
+                              <LinearGradient
+                                colors={
+                                  tournament.status === "Ongoing"
+                                    ? ["#00A66A", "#0F766E"]
+                                    : ["#059669", "#0F766E"]
+                                }
+                                style={styles.tournamentStatusBadge}
+                              >
+                                <Text style={styles.tournamentStatusText}>
+                                  {tournament.status}
+                                </Text>
+                              </LinearGradient>
+                            </View>
+
+                            <View style={styles.tournamentProgressSection}>
+                              <View style={styles.progressBar}>
+                                <View
+                                  style={[
+                                    styles.progressFill,
+                                    {
+                                      width: `${tournament.progress}%`,
+                                      backgroundColor:
+                                        tournament.progress > 70
+                                          ? "#00A66A"
+                                          : tournament.progress > 40
+                                            ? "#059669"
+                                            : "#00A66A",
+                                    },
+                                  ]}
+                                />
+                              </View>
+                              <Text style={styles.progressText}>
+                                {tournament.progress}% Complete
+                              </Text>
+                            </View>
+
+                            <View style={styles.tournamentStats}>
+                              <View style={styles.tournamentStat}>
+                                <View style={styles.statIcon}>
+                                  <Ionicons
+                                    name="people"
+                                    size={12}
+                                    color="#00A66A"
+                                  />
+                                </View>
+                                <Text style={styles.tournamentStatText}>
+                                  {tournament.teams} Teams
+                                </Text>
+                              </View>
+                              <View style={styles.tournamentStat}>
+                                <View style={styles.statIcon}>
+                                  <Ionicons
+                                    name="baseball"
+                                    size={12}
+                                    color="#00A66A"
+                                  />
+                                </View>
+                                <Text style={styles.tournamentStatText}>
+                                  {tournament.matches} Matches
+                                </Text>
+                              </View>
+                            </View>
+
+                            <View style={styles.tournamentFooter}>
+                              <TouchableOpacity
+                                style={[styles.tournamentButton, { flex: 1 }]}
+                                onPress={(e) => {
+                                  e.stopPropagation();
+                                  setSelectedTournament(tournament);
+                                  setActiveTournamentDetailTab("matches");
+                                  setCurrentView("tournamentDetail");
+                                  setShowSearchModal(false);
+                                }}
+                              >
+                                <LinearGradient
+                                  colors={["#00A66A", "#0F766E"]}
+                                  style={styles.tournamentButtonGradient}
+                                >
+                                  <Ionicons
+                                    name="eye-outline"
+                                    size={13}
+                                    color="#FFF"
+                                  />
+                                  <Text style={styles.tournamentButtonText}>
+                                    View Details
+                                  </Text>
+                                </LinearGradient>
+                              </TouchableOpacity>
+                            </View>
+                          </LinearGradient>
+                        </TouchableOpacity>
+                      ))}
+                    </>
+                  )}
+
+                  {/* Match Results */}
+                  {searchResults.matches.length > 0 && (
+                    <>
+                      <Text
+                        style={[
+                          styles.searchResultsTitle,
+                          {
+                            marginTop:
+                              searchResults.tournaments.length > 0 ? 20 : 0,
+                          },
+                        ]}
+                      >
+                        Matches ({searchResults.matches.length})
+                      </Text>
+                      {searchResults.matches.map((match: any) => (
+                        <TouchableOpacity
+                          key={match.id}
+                          style={styles.searchMatchItem}
+                          onPress={() => {
+                            console.log(`Viewing match: ${match.team}`);
+                            setShowSearchModal(false);
+                          }}
+                        >
+                          <LinearGradient
+                            colors={["#FFF", "#F8F8F8"]}
+                            style={styles.searchMatchGradient}
+                          >
+                            <View style={styles.searchMatchHeader}>
+                              <View
+                                style={[
+                                  styles.searchMatchStatus,
+                                  {
+                                    backgroundColor:
+                                      match.status === "Live"
+                                        ? "#00A66A"
+                                        : match.status === "Upcoming"
+                                          ? "#059669"
+                                          : "#666",
+                                  },
+                                ]}
+                              >
+                                <Text style={styles.searchMatchStatusText}>
+                                  {match.status}
+                                </Text>
+                              </View>
+                              <Text style={styles.searchMatchType}>
+                                {match.type}
+                              </Text>
+                            </View>
+                            <Text
+                              style={styles.searchMatchTeam}
+                              numberOfLines={1}
+                            >
+                              {match.team}
+                            </Text>
+                            <View style={styles.searchMatchMeta}>
+                              <View style={styles.searchMatchMetaItem}>
+                                <Ionicons
+                                  name="calendar-outline"
+                                  size={12}
+                                  color="#999"
+                                />
+                                <Text style={styles.searchMatchMetaText}>
+                                  {match.date} • {match.time}
+                                </Text>
+                              </View>
+                              <View style={styles.searchMatchMetaItem}>
+                                <Ionicons
+                                  name="location-outline"
+                                  size={12}
+                                  color="#999"
+                                />
+                                <Text
+                                  style={styles.searchMatchMetaText}
+                                  numberOfLines={1}
+                                >
+                                  {match.location}
+                                </Text>
+                              </View>
+                              <View style={styles.searchMatchMetaItem}>
+                                <Ionicons
+                                  name="baseball-outline"
+                                  size={12}
+                                  color="#999"
+                                />
+                                <Text style={styles.searchMatchMetaText}>
+                                  {match.format} • {match.overs}
+                                </Text>
+                              </View>
+                            </View>
+                            {match.result && (
+                              <Text style={styles.searchMatchResult}>
+                                {match.result}
+                              </Text>
+                            )}
+                          </LinearGradient>
+                        </TouchableOpacity>
+                      ))}
+                    </>
+                  )}
+
+                  {/* No Results */}
+                  {searchResults.tournaments.length === 0 &&
+                    searchResults.matches.length === 0 &&
+                    searchQuery.length > 0 && (
+                      <View style={styles.noResultsContainer}>
+                        <Ionicons
+                          name="search-outline"
+                          size={48}
+                          color="#CCC"
+                        />
+                        <Text style={styles.noResultsTitle}>
+                          No results found
+                        </Text>
+                        <Text style={styles.noResultsText}>
+                          Try searching for tournament names, match teams, or
+                          locations
+                        </Text>
+                      </View>
+                    )}
+                </>
+              )}
+            </ScrollView>
+          </View>
+        </Modal>
+
+        {/* Player Selection Modal */}
+        <Modal
+          visible={showPlayerModal}
+          transparent
+          animationType="slide"
+          onRequestClose={() => setShowPlayerModal(false)}
+        >
+          <View style={styles.playerModalContainer}>
+            <View style={styles.playerModalHeader}>
+              <TouchableOpacity onPress={() => setShowPlayerModal(false)}>
+                <Ionicons name="arrow-back" size={24} color="#333" />
+              </TouchableOpacity>
+              <Text style={styles.playerModalTitle}>
+                {playerModalType === "striker" && "Select Striker"}
+                {playerModalType === "nonStriker" && "Select Non-striker"}
+                {playerModalType === "bowler" && "Select Bowler"}
+              </Text>
+              <View style={{ width: 24 }} />
+            </View>
+
+            <ScrollView
+              style={styles.playersList}
+              showsVerticalScrollIndicator={false}
+            >
+              {(playerModalType === "striker" ||
+              playerModalType === "nonStriker"
+                ? battingTeamPlayers
+                : bowlingTeamPlayers
+              ).map((player) => (
+                <TouchableOpacity
+                  key={player.id}
+                  style={[
+                    styles.playerItem,
+                    (playerModalType === "striker" &&
+                      selectedStriker?.id === player.id) ||
+                    (playerModalType === "nonStriker" &&
+                      selectedNonStriker?.id === player.id) ||
+                    (playerModalType === "bowler" &&
+                      selectedBowler?.id === player.id)
+                      ? styles.playerItemSelected
+                      : null,
+                  ]}
+                  onPress={() => {
+                    // Validation: Don't allow same player for striker and non-striker
+                    if (
+                      playerModalType === "striker" &&
+                      selectedNonStriker?.id === player.id
+                    ) {
+                      Alert.alert(
+                        "Invalid Selection",
+                        "This player is already selected as Non-striker. Please choose a different player.",
+                      );
+                      return;
+                    }
+                    if (
+                      playerModalType === "nonStriker" &&
+                      selectedStriker?.id === player.id
+                    ) {
+                      Alert.alert(
+                        "Invalid Selection",
+                        "This player is already selected as Striker. Please choose a different player.",
+                      );
+                      return;
+                    }
+
+                    if (playerModalType === "striker") {
+                      setSelectedStriker(player);
+                    } else if (playerModalType === "nonStriker") {
+                      setSelectedNonStriker(player);
+                    } else if (playerModalType === "bowler") {
+                      setSelectedBowler(player);
+                    }
+                    setShowPlayerModal(false);
+                  }}
+                >
+                  <View style={styles.playerItemContent}>
+                    <View style={styles.playerAvatar}>
+                      {player.image ? (
+                        <Image
+                          source={{ uri: player.image }}
+                          style={styles.playerAvatarImage}
+                        />
+                      ) : (
+                        <Text style={styles.playerAvatarText}>
+                          {player.name
+                            .split(" ")
+                            .map((n: string) => n[0])
+                            .join("")}
+                        </Text>
+                      )}
+                    </View>
+                    <View style={styles.playerInfo}>
+                      <Text style={styles.playerName}>{player.name}</Text>
+                      <Text style={styles.playerRole}>{player.role}</Text>
+                    </View>
+                    {((playerModalType === "striker" &&
+                      selectedStriker?.id === player.id) ||
+                      (playerModalType === "nonStriker" &&
+                        selectedNonStriker?.id === player.id) ||
+                      (playerModalType === "bowler" &&
+                        selectedBowler?.id === player.id)) && (
+                      <Ionicons
+                        name="checkmark-circle"
+                        size={24}
+                        color="#00A66A"
+                      />
                     )}
                   </View>
-                  <View style={styles.playerInfo}>
-                    <Text style={styles.playerName}>{player.name}</Text>
-                    <Text style={styles.playerRole}>{player.role}</Text>
-                  </View>
-                  {((playerModalType === "striker" && selectedStriker?.id === player.id) ||
-                    (playerModalType === "nonStriker" && selectedNonStriker?.id === player.id) ||
-                    (playerModalType === "bowler" && selectedBowler?.id === player.id)) && (
-                    <Ionicons name="checkmark-circle" size={24} color="#00A66A" />
-                  )}
-                </View>
-              </TouchableOpacity>
-            ))}
-          </ScrollView>
-        </View>
-      </Modal>
+                </TouchableOpacity>
+              ))}
+            </ScrollView>
+          </View>
+        </Modal>
       </View>
     </TabScreenWrapper>
   );
@@ -6191,8 +8098,8 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     paddingHorizontal: 16,
-    paddingTop: Platform.OS === 'ios' ? 44 : 35,
-    height: Platform.OS === 'ios' ? 92 : 83,
+    paddingTop: 35,
+    paddingBottom: 12,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
@@ -6205,31 +8112,15 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   headerBackButton: {
-    padding: 6,
+    padding: 8,
     marginLeft: -8,
-  },
-  headerTitle: {
-    fontSize: 22,
-    fontWeight: "900",
-    color: "#FFF",
-    letterSpacing: -0.5,
-  },
-  headerTitleOrange: {
-    color: "#34D399",
-  },
-  headerTitleTab: {
-    fontWeight: "400",
-    fontSize: 15,
-    color: "#D1FAE5",
-    textTransform: "lowercase",
   },
   headerRight: {
     flexDirection: "row",
-    alignItems: "center",
     gap: 12,
   },
   iconButton: {
-    padding: 6,
+    padding: 8,
     position: "relative",
   },
   notificationDot: {
@@ -10965,6 +12856,21 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     alignItems: "center",
   },
+  endMatchButton: {
+    marginTop: 10,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+    backgroundColor: "#DC2626",
+    paddingHorizontal: 14,
+    paddingVertical: 7,
+    borderRadius: 14,
+  },
+  endMatchButtonText: {
+    color: "#FFF",
+    fontSize: 12,
+    fontWeight: "800",
+  },
   scoringTeamName: {
     fontSize: 14,
     fontWeight: "800",
@@ -11128,24 +13034,48 @@ const styles = StyleSheet.create({
     position: "relative",
   },
   tsHeaderDecoL: {
-    position: "absolute", top: -40, left: -40,
-    width: 140, height: 140, borderRadius: 70,
+    position: "absolute",
+    top: -40,
+    left: -40,
+    width: 140,
+    height: 140,
+    borderRadius: 70,
     backgroundColor: "rgba(185,28,28,0.18)",
   },
   tsHeaderDecoR: {
-    position: "absolute", bottom: -30, right: -30,
-    width: 110, height: 110, borderRadius: 55,
+    position: "absolute",
+    bottom: -30,
+    right: -30,
+    width: 110,
+    height: 110,
+    borderRadius: 55,
     backgroundColor: "rgba(245,158,11,0.12)",
   },
   tsHeaderTop: { marginBottom: 10 },
   tsHeaderBadge: {
-    flexDirection: "row", alignItems: "center", gap: 5,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 5,
     backgroundColor: "rgba(245,158,11,0.18)",
-    paddingHorizontal: 12, paddingVertical: 4, borderRadius: 20,
-    borderWidth: 1, borderColor: "rgba(245,158,11,0.35)",
+    paddingHorizontal: 12,
+    paddingVertical: 4,
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: "rgba(245,158,11,0.35)",
   },
-  tsHeaderBadgeTxt: { fontSize: 10, fontWeight: "800", color: "#F59E0B", letterSpacing: 1.2 },
-  tsHeaderTitle: { fontSize: 26, fontWeight: "900", color: "#FFF", letterSpacing: 0.5, marginBottom: 6 },
+  tsHeaderBadgeTxt: {
+    fontSize: 10,
+    fontWeight: "800",
+    color: "#F59E0B",
+    letterSpacing: 1.2,
+  },
+  tsHeaderTitle: {
+    fontSize: 26,
+    fontWeight: "900",
+    color: "#FFF",
+    letterSpacing: 0.5,
+    marginBottom: 6,
+  },
   tsHeaderSub: { fontSize: 13, color: "#94A3B8", fontWeight: "500" },
 
   tsTeamCard: {
@@ -11181,98 +13111,179 @@ const styles = StyleSheet.create({
   },
   tsTeamLogoWrap: { position: "relative" },
   tsTeamLogo: {
-    width: 60, height: 60, borderRadius: 30,
-    justifyContent: "center", alignItems: "center",
-    shadowColor: "#000", shadowOffset: { width: 0, height: 3 },
-    shadowOpacity: 0.2, shadowRadius: 6, elevation: 4,
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    justifyContent: "center",
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.2,
+    shadowRadius: 6,
+    elevation: 4,
   },
   tsTeamLogoLetter: { fontSize: 26, fontWeight: "900", color: "#FFF" },
   tsTeamLogoEmpty: {
-    width: 60, height: 60, borderRadius: 30,
-    borderWidth: 2, borderColor: "#E2E8F0", borderStyle: "dashed",
-    justifyContent: "center", alignItems: "center",
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    borderWidth: 2,
+    borderColor: "#E2E8F0",
+    borderStyle: "dashed",
+    justifyContent: "center",
+    alignItems: "center",
     backgroundColor: "#F8FAFC",
   },
   tsReadyDot: {
-    position: "absolute", bottom: 2, right: 2,
-    width: 14, height: 14, borderRadius: 7,
+    position: "absolute",
+    bottom: 2,
+    right: 2,
+    width: 14,
+    height: 14,
+    borderRadius: 7,
     backgroundColor: "#22C55E",
-    borderWidth: 2, borderColor: "#FFF",
+    borderWidth: 2,
+    borderColor: "#FFF",
   },
   tsTeamInfo: { flex: 1 },
-  tsTeamSlotRow: { flexDirection: "row", alignItems: "center", gap: 8, marginBottom: 4 },
-  tsTeamSlot: { fontSize: 10, fontWeight: "800", color: "#00A66A", letterSpacing: 1.2 },
+  tsTeamSlotRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+    marginBottom: 4,
+  },
+  tsTeamSlot: {
+    fontSize: 10,
+    fontWeight: "800",
+    color: "#00A66A",
+    letterSpacing: 1.2,
+  },
   tsTeamStatus: {
-    paddingHorizontal: 7, paddingVertical: 2, borderRadius: 10,
+    paddingHorizontal: 7,
+    paddingVertical: 2,
+    borderRadius: 10,
   },
   tsTeamStatusReady: { backgroundColor: "#DCFCE7" },
   tsTeamStatusEmpty: { backgroundColor: "#F1F5F9" },
   tsTeamStatusTxt: { fontSize: 9, fontWeight: "700", color: "#374151" },
-  tsTeamName: { fontSize: 17, fontWeight: "800", color: "#0F172A", marginBottom: 4 },
+  tsTeamName: {
+    fontSize: 17,
+    fontWeight: "800",
+    color: "#0F172A",
+    marginBottom: 4,
+  },
   tsTeamMeta: { flexDirection: "row", alignItems: "center", gap: 5 },
   tsTeamMetaTxt: { fontSize: 11, color: "#64748B", fontWeight: "500" },
   tsTeamEmptyHint: { fontSize: 11, color: "#94A3B8", fontStyle: "italic" },
   tsTeamActions: {
-    flexDirection: "row", gap: 10,
-    paddingHorizontal: 16, paddingBottom: 16,
+    flexDirection: "row",
+    gap: 10,
+    paddingHorizontal: 16,
+    paddingBottom: 16,
   },
   tsActionBtnOutline: {
-    flex: 1, flexDirection: "row", alignItems: "center", justifyContent: "center",
-    gap: 6, paddingVertical: 11, borderRadius: 12,
-    borderWidth: 1.5, borderColor: "#00A66A",
+    flex: 1,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 6,
+    paddingVertical: 11,
+    borderRadius: 12,
+    borderWidth: 1.5,
+    borderColor: "#00A66A",
     backgroundColor: "#FFF9F9",
   },
   tsActionBtnOutlineTxt: { fontSize: 13, fontWeight: "700", color: "#00A66A" },
   tsActionBtnFill: {
-    flex: 1, borderRadius: 12, overflow: "hidden",
-    shadowColor: "#00A66A", shadowOffset: { width: 0, height: 3 },
-    shadowOpacity: 0.25, shadowRadius: 6, elevation: 4,
+    flex: 1,
+    borderRadius: 12,
+    overflow: "hidden",
+    shadowColor: "#00A66A",
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.25,
+    shadowRadius: 6,
+    elevation: 4,
   },
   tsActionBtnFillGrad: {
-    flexDirection: "row", alignItems: "center", justifyContent: "center",
-    gap: 6, paddingVertical: 11,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 6,
+    paddingVertical: 11,
   },
   tsActionBtnFillTxt: { fontSize: 13, fontWeight: "700", color: "#FFF" },
 
   tsVsRow: {
-    flexDirection: "row", alignItems: "center",
-    marginVertical: 14, paddingHorizontal: 4,
+    flexDirection: "row",
+    alignItems: "center",
+    marginVertical: 14,
+    paddingHorizontal: 4,
   },
   tsVsLine: { flex: 1, height: 1.5, backgroundColor: "#E2E8F0" },
   tsVsCircle: {
-    width: 48, height: 48, borderRadius: 24,
-    justifyContent: "center", alignItems: "center",
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    justifyContent: "center",
+    alignItems: "center",
     marginHorizontal: 14,
-    shadowColor: "#F59E0B", shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.4, shadowRadius: 8, elevation: 6,
+    shadowColor: "#F59E0B",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.4,
+    shadowRadius: 8,
+    elevation: 6,
   },
   tsVsTxt: { fontSize: 15, fontWeight: "900", color: "#FFF", letterSpacing: 1 },
 
   tsReadyBar: {
-    flexDirection: "row", gap: 8,
-    marginTop: 16, marginBottom: 8,
+    flexDirection: "row",
+    gap: 8,
+    marginTop: 16,
+    marginBottom: 8,
   },
   tsReadyBarSlot: {
-    flex: 1, height: 4, borderRadius: 2, backgroundColor: "#E2E8F0",
+    flex: 1,
+    height: 4,
+    borderRadius: 2,
+    backgroundColor: "#E2E8F0",
   },
   tsReadyBarSlotDone: { backgroundColor: "#22C55E" },
 
   tsPlayBtn: {
-    marginTop: 16, borderRadius: 16, overflow: "hidden",
-    shadowColor: "#F59E0B", shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.4, shadowRadius: 12, elevation: 8,
+    marginTop: 16,
+    borderRadius: 16,
+    overflow: "hidden",
+    shadowColor: "#F59E0B",
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.4,
+    shadowRadius: 12,
+    elevation: 8,
   },
   tsPlayBtnGrad: {
-    flexDirection: "row", alignItems: "center", justifyContent: "center",
-    paddingVertical: 17, gap: 10,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    paddingVertical: 17,
+    gap: 10,
   },
-  tsPlayBtnTxt: { fontSize: 18, fontWeight: "900", color: "#FFF", letterSpacing: 0.5 },
+  tsPlayBtnTxt: {
+    fontSize: 18,
+    fontWeight: "900",
+    color: "#FFF",
+    letterSpacing: 0.5,
+  },
 
   tsEmptyHint: {
-    flexDirection: "row", alignItems: "center", justifyContent: "center",
-    gap: 6, marginTop: 20, paddingVertical: 12,
-    backgroundColor: "#F8FAFC", borderRadius: 12,
-    borderWidth: 1, borderColor: "#E2E8F0",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 6,
+    marginTop: 20,
+    paddingVertical: 12,
+    backgroundColor: "#F8FAFC",
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: "#E2E8F0",
   },
   tsEmptyHintTxt: { fontSize: 13, color: "#94A3B8", fontWeight: "500" },
 });
@@ -11280,141 +13291,273 @@ const styles = StyleSheet.create({
 // ── Create Team Styles (ctStyles) ────────────────────────────────
 const ctStyles = StyleSheet.create({
   header: {
-    paddingTop: 44, paddingBottom: 20, paddingHorizontal: 16,
-    alignItems: "center", overflow: "hidden", position: "relative",
+    paddingTop: 44,
+    paddingBottom: 20,
+    paddingHorizontal: 16,
+    alignItems: "center",
+    overflow: "hidden",
+    position: "relative",
   },
   headerDeco1: {
-    position: "absolute", top: -40, right: -30,
-    width: 110, height: 110, borderRadius: 55,
+    position: "absolute",
+    top: -40,
+    right: -30,
+    width: 110,
+    height: 110,
+    borderRadius: 55,
     backgroundColor: "rgba(255,255,255,0.07)",
   },
   headerDeco2: {
-    position: "absolute", bottom: -20, left: -20,
-    width: 80, height: 80, borderRadius: 40,
+    position: "absolute",
+    bottom: -20,
+    left: -20,
+    width: 80,
+    height: 80,
+    borderRadius: 40,
     backgroundColor: "rgba(0,0,0,0.12)",
   },
   headerTop: { marginBottom: 6 },
   headerSlotBadge: {
-    flexDirection: "row", alignItems: "center", gap: 4,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 4,
     backgroundColor: "rgba(255,255,255,0.18)",
-    paddingHorizontal: 10, paddingVertical: 3, borderRadius: 16,
-    borderWidth: 1, borderColor: "rgba(255,255,255,0.3)",
+    paddingHorizontal: 10,
+    paddingVertical: 3,
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.3)",
   },
-  headerSlotTxt: { fontSize: 10, fontWeight: "800", color: "#FFF", letterSpacing: 1 },
-  headerTitle: { fontSize: 18, fontWeight: "900", color: "#FFF", marginBottom: 4 },
-  headerSub: { fontSize: 11, color: "rgba(255,255,255,0.75)", fontWeight: "500", marginBottom: 12 },
+  headerSlotTxt: {
+    fontSize: 10,
+    fontWeight: "800",
+    color: "#FFF",
+    letterSpacing: 1,
+  },
+  headerTitle: {
+    fontSize: 18,
+    fontWeight: "900",
+    color: "#FFF",
+    marginBottom: 4,
+  },
+  headerSub: {
+    fontSize: 11,
+    color: "rgba(255,255,255,0.75)",
+    fontWeight: "500",
+    marginBottom: 12,
+  },
   progressBar: { flexDirection: "row", gap: 5, width: "100%", marginBottom: 4 },
-  progressSlot: { flex: 1, height: 3, borderRadius: 2, backgroundColor: "rgba(255,255,255,0.25)" },
+  progressSlot: {
+    flex: 1,
+    height: 3,
+    borderRadius: 2,
+    backgroundColor: "rgba(255,255,255,0.25)",
+  },
   progressSlotDone: { backgroundColor: "#FFF" },
-  progressLabel: { fontSize: 10, color: "rgba(255,255,255,0.65)", fontWeight: "600" },
+  progressLabel: {
+    fontSize: 10,
+    color: "rgba(255,255,255,0.65)",
+    fontWeight: "600",
+  },
 
   body: { padding: 10, gap: 8 },
 
   sectionCard: {
-    backgroundColor: "#FFF", borderRadius: 12, padding: 12,
-    borderWidth: 1, borderColor: "#F1F5F9",
-    shadowColor: "#000", shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.05, shadowRadius: 4, elevation: 2,
+    backgroundColor: "#FFF",
+    borderRadius: 12,
+    padding: 12,
+    borderWidth: 1,
+    borderColor: "#F1F5F9",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 4,
+    elevation: 2,
   },
-  sectionHeader: { flexDirection: "row", alignItems: "center", gap: 6, marginBottom: 10 },
+  sectionHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+    marginBottom: 10,
+  },
   sectionIconWrap: {
-    width: 24, height: 24, borderRadius: 6,
-    backgroundColor: "#F0FFF8", justifyContent: "center", alignItems: "center",
+    width: 24,
+    height: 24,
+    borderRadius: 6,
+    backgroundColor: "#F0FFF8",
+    justifyContent: "center",
+    alignItems: "center",
   },
   sectionTitle: { fontSize: 13, fontWeight: "800", color: "#0F172A", flex: 1 },
   sectionOptional: {
-    fontSize: 10, color: "#94A3B8", fontWeight: "600",
-    backgroundColor: "#F1F5F9", paddingHorizontal: 6, paddingVertical: 2, borderRadius: 8,
+    fontSize: 10,
+    color: "#94A3B8",
+    fontWeight: "600",
+    backgroundColor: "#F1F5F9",
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    borderRadius: 8,
   },
 
   fieldGroup: { marginBottom: 8 },
-  fieldLabel: { fontSize: 11, fontWeight: "700", color: "#475569", marginBottom: 4 },
+  fieldLabel: {
+    fontSize: 11,
+    fontWeight: "700",
+    color: "#475569",
+    marginBottom: 4,
+  },
   fieldHint: { fontSize: 10, color: "#94A3B8", marginBottom: 4 },
   req: { color: "#EF4444" },
   fieldInput: {
-    flexDirection: "row", alignItems: "center", gap: 8,
-    backgroundColor: "#F8FAFC", borderRadius: 10,
-    borderWidth: 1.5, borderColor: "#E2E8F0",
-    paddingHorizontal: 10, paddingVertical: 5,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+    backgroundColor: "#F8FAFC",
+    borderRadius: 10,
+    borderWidth: 1.5,
+    borderColor: "#E2E8F0",
+    paddingHorizontal: 10,
+    paddingVertical: 5,
   },
   fieldInputDone: { borderColor: "#BBF7D0", backgroundColor: "#F0FFF4" },
   fieldText: { flex: 1, fontSize: 13, color: "#0F172A", fontWeight: "500" },
 
   mobileRow: { flexDirection: "row", gap: 6 },
   dialCodeBtn: {
-    flexDirection: "row", alignItems: "center", gap: 3,
-    backgroundColor: "#F8FAFC", borderRadius: 10,
-    borderWidth: 1.5, borderColor: "#E2E8F0",
-    paddingHorizontal: 10, paddingVertical: 9,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 3,
+    backgroundColor: "#F8FAFC",
+    borderRadius: 10,
+    borderWidth: 1.5,
+    borderColor: "#E2E8F0",
+    paddingHorizontal: 10,
+    paddingVertical: 9,
   },
   dialCodeTxt: { fontSize: 13, fontWeight: "700", color: "#0F172A" },
   dialDropdown: {
-    marginTop: 4, backgroundColor: "#FFF", borderRadius: 10,
-    borderWidth: 1, borderColor: "#E2E8F0",
-    shadowColor: "#000", shadowOffset: { width: 0, height: 3 },
-    shadowOpacity: 0.08, shadowRadius: 6, elevation: 4,
+    marginTop: 4,
+    backgroundColor: "#FFF",
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: "#E2E8F0",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.08,
+    shadowRadius: 6,
+    elevation: 4,
     overflow: "hidden",
   },
   dialOption: {
-    flexDirection: "row", alignItems: "center", gap: 8,
-    paddingHorizontal: 12, paddingVertical: 9,
-    borderBottomWidth: 1, borderBottomColor: "#F8FAFC",
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+    paddingHorizontal: 12,
+    paddingVertical: 9,
+    borderBottomWidth: 1,
+    borderBottomColor: "#F8FAFC",
   },
   dialFlag: { fontSize: 16 },
   dialCountry: { flex: 1, fontSize: 12, color: "#374151", fontWeight: "500" },
   dialCode: { fontSize: 12, color: "#64748B", fontWeight: "600" },
 
   captainBadge: {
-    width: 18, height: 18, borderRadius: 9,
-    backgroundColor: "#F59E0B", justifyContent: "center", alignItems: "center",
+    width: 18,
+    height: 18,
+    borderRadius: 9,
+    backgroundColor: "#F59E0B",
+    justifyContent: "center",
+    alignItems: "center",
   },
   captainBadgeTxt: { fontSize: 10, fontWeight: "900", color: "#FFF" },
 
   chipRow: { flexDirection: "row", gap: 6, marginTop: 6 },
   chip: {
-    paddingHorizontal: 12, paddingVertical: 5, borderRadius: 16,
-    borderWidth: 1.5, borderColor: "#E2E8F0", backgroundColor: "#F8FAFC",
+    paddingHorizontal: 12,
+    paddingVertical: 5,
+    borderRadius: 16,
+    borderWidth: 1.5,
+    borderColor: "#E2E8F0",
+    backgroundColor: "#F8FAFC",
   },
   chipActive: { borderColor: "#00A66A", backgroundColor: "#F0FFF8" },
   chipTxt: { fontSize: 12, fontWeight: "700", color: "#64748B" },
   chipTxtActive: { color: "#00A66A" },
 
   ruleBox: {
-    marginTop: 8, backgroundColor: "#F8FAFC",
-    borderRadius: 8, padding: 10, gap: 6,
-    borderLeftWidth: 3, borderLeftColor: "#00A66A",
+    marginTop: 8,
+    backgroundColor: "#F8FAFC",
+    borderRadius: 8,
+    padding: 10,
+    gap: 6,
+    borderLeftWidth: 3,
+    borderLeftColor: "#00A66A",
   },
   ruleRow: { flexDirection: "row", alignItems: "center", gap: 6 },
   ruleTxt: { fontSize: 11, color: "#475569", flex: 1 },
   ruleCheck: {
-    width: 14, height: 14, borderRadius: 7,
-    backgroundColor: "#22C55E", justifyContent: "center", alignItems: "center",
+    width: 14,
+    height: 14,
+    borderRadius: 7,
+    backgroundColor: "#22C55E",
+    justifyContent: "center",
+    alignItems: "center",
   },
 
-  addPlayersNote: { fontSize: 11, color: "#94A3B8", marginBottom: 8, fontStyle: "italic" },
+  addPlayersNote: {
+    fontSize: 11,
+    color: "#94A3B8",
+    marginBottom: 8,
+    fontStyle: "italic",
+  },
   addOptions: { gap: 7 },
   addOption: {
-    flexDirection: "row", alignItems: "center", gap: 10,
-    backgroundColor: "#F8FAFC", borderRadius: 10, padding: 10,
-    borderWidth: 1, borderColor: "#F1F5F9",
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
+    backgroundColor: "#F8FAFC",
+    borderRadius: 10,
+    padding: 10,
+    borderWidth: 1,
+    borderColor: "#F1F5F9",
   },
   addOptionIcon: {
-    width: 36, height: 36, borderRadius: 10,
-    justifyContent: "center", alignItems: "center",
+    width: 36,
+    height: 36,
+    borderRadius: 10,
+    justifyContent: "center",
+    alignItems: "center",
   },
   addOptionInfo: { flex: 1 },
-  addOptionTitle: { fontSize: 13, fontWeight: "700", color: "#0F172A", marginBottom: 1 },
+  addOptionTitle: {
+    fontSize: 13,
+    fontWeight: "700",
+    color: "#0F172A",
+    marginBottom: 1,
+  },
   addOptionSub: { fontSize: 10, color: "#64748B" },
 
   createBtn: {
-    borderRadius: 13, overflow: "hidden",
-    shadowColor: "#00A66A", shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3, shadowRadius: 8, elevation: 6,
+    borderRadius: 13,
+    overflow: "hidden",
+    shadowColor: "#00A66A",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 6,
     marginTop: 4,
   },
   createBtnGrad: {
-    flexDirection: "row", alignItems: "center", justifyContent: "center",
-    paddingVertical: 14, gap: 8,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    paddingVertical: 14,
+    gap: 8,
   },
-  createBtnTxt: { fontSize: 14, fontWeight: "800", color: "#FFF", letterSpacing: 0.2 },
+  createBtnTxt: {
+    fontSize: 14,
+    fontWeight: "800",
+    color: "#FFF",
+    letterSpacing: 0.2,
+  },
 });

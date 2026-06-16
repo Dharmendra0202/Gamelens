@@ -3,20 +3,23 @@ import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
 import React, { useEffect, useRef, useState } from "react";
 import {
-  Animated,
-  Dimensions,
-  Easing,
-  ImageBackground,
-  KeyboardAvoidingView,
-  Platform,
-  SafeAreaView,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
+    Alert,
+    Animated,
+    Dimensions,
+    Easing,
+    ImageBackground,
+    KeyboardAvoidingView,
+    Platform,
+    ScrollView,
+    StyleSheet,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    View,
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+
+import { useAuth } from "@/hooks/use-auth";
 
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
 const CRICKET_HERO_IMAGE =
@@ -382,6 +385,7 @@ const splashStyles = StyleSheet.create({
 // ─── Auth Screens ───────────────────────────────────────────────────────────────
 export default function AuthScreen() {
   const router = useRouter();
+  const { session, isLoading: authLoading, signIn, signUp } = useAuth();
   const [currentScreen, setCurrentScreen] = useState<ScreenType>("splash");
 
   // Login state
@@ -455,12 +459,101 @@ export default function AuthScreen() {
   };
 
   const handleSplashFinish = () => {
+    // If user is already authenticated, skip to main app.
+    if (session) {
+      router.replace("/(tabs)/home");
+      return;
+    }
     setCurrentScreen("login");
     fadeIn();
   };
 
-  const handleLogin = () => router.replace("/(tabs)/home");
-  const handleSignup = () => router.replace("/(tabs)/home");
+  // ── Auth loading & error state ──
+  const [authError, setAuthError] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Auto-redirect if session exists after auth state changes.
+  useEffect(() => {
+    if (session && currentScreen !== "splash") {
+      router.replace("/(tabs)/home");
+    }
+  }, [session, currentScreen, router]);
+
+  const handleLogin = async () => {
+    setAuthError("");
+
+    // Validate
+    if (!username.trim()) {
+      setAuthError("Please enter your email.");
+      return;
+    }
+    if (!password) {
+      setAuthError("Please enter your password.");
+      return;
+    }
+
+    setIsSubmitting(true);
+    const { error } = await signIn(username.trim(), password);
+    setIsSubmitting(false);
+
+    if (error) {
+      setAuthError(error);
+      return;
+    }
+
+    // Navigation happens via the useEffect above when session updates.
+  };
+
+  const handleSignup = async () => {
+    setAuthError("");
+
+    // Validate
+    if (!fullName.trim()) {
+      setAuthError("Please enter your full name.");
+      return;
+    }
+    if (!email.trim()) {
+      setAuthError("Please enter your email.");
+      return;
+    }
+    if (!signupPassword) {
+      setAuthError("Please enter a password.");
+      return;
+    }
+    if (signupPassword.length < 6) {
+      setAuthError("Password must be at least 6 characters.");
+      return;
+    }
+    if (signupPassword !== confirmPassword) {
+      setAuthError("Passwords do not match.");
+      return;
+    }
+
+    setIsSubmitting(true);
+    const { error } = await signUp(
+      email.trim(),
+      signupPassword,
+      fullName.trim(),
+    );
+    setIsSubmitting(false);
+
+    if (error) {
+      setAuthError(error);
+      return;
+    }
+
+    // If Supabase requires email confirmation, inform the user.
+    // Otherwise the onAuthStateChange listener will auto-navigate.
+    Alert.alert(
+      "Account Created!",
+      "Please check your email to verify your account, then log in.",
+      [{ text: "OK", onPress: () => switchScreen("login") }],
+    );
+  };
+
+  const handleForgotPassword = () => {
+    router.push("/forgot-password" as never);
+  };
 
   if (currentScreen === "splash") {
     return <SplashScreen onFinish={handleSplashFinish} />;
@@ -484,7 +577,10 @@ export default function AuthScreen() {
           <Animated.View
             style={[
               styles.authContent,
-              { opacity: screenOpacity, transform: [{ translateY: screenY }, { scale: screenScale }] },
+              {
+                opacity: screenOpacity,
+                transform: [{ translateY: screenY }, { scale: screenScale }],
+              },
             ]}
           >
             {/* Logo + brand */}
@@ -513,6 +609,13 @@ export default function AuthScreen() {
             <View style={styles.card}>
               <Text style={styles.loginTitle}>Welcome back 👋</Text>
               <Text style={styles.loginSubtitle}>Sign in to continue</Text>
+
+              {authError && currentScreen === "login" ? (
+                <View style={styles.errorBanner}>
+                  <Ionicons name="alert-circle" size={16} color="#DC2626" />
+                  <Text style={styles.errorBannerText}>{authError}</Text>
+                </View>
+              ) : null}
 
               <View
                 style={[styles.inputWrap, userFocus && styles.inputWrapFocused]}
@@ -558,7 +661,7 @@ export default function AuthScreen() {
 
               <TouchableOpacity
                 style={styles.forgotPassword}
-                onPress={() => console.log("Forgot password clicked")}
+                onPress={handleForgotPassword}
               >
                 <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
               </TouchableOpacity>
@@ -579,7 +682,9 @@ export default function AuthScreen() {
                   end={{ x: 1, y: 1 }}
                   style={styles.loginButtonGrad}
                 >
-                  <Text style={styles.loginButtonText}>Log In</Text>
+                  <Text style={styles.loginButtonText}>
+                    {isSubmitting ? "Signing in..." : "Log In"}
+                  </Text>
                   <Ionicons name="arrow-forward" size={18} color="#FFF" />
                 </LinearGradient>
               </TouchableOpacity>
@@ -636,7 +741,10 @@ export default function AuthScreen() {
         <Animated.View
           style={[
             styles.authContent,
-            { opacity: screenOpacity, transform: [{ translateY: screenY }, { scale: screenScale }] },
+            {
+              opacity: screenOpacity,
+              transform: [{ translateY: screenY }, { scale: screenScale }],
+            },
           ]}
         >
           <View style={styles.heroBanner}>
@@ -664,6 +772,13 @@ export default function AuthScreen() {
           <View style={styles.card}>
             <Text style={styles.signupTitle}>Create Account</Text>
             <Text style={styles.loginSubtitle}>Join the cricket community</Text>
+
+            {authError && currentScreen === "signup" ? (
+              <View style={styles.errorBanner}>
+                <Ionicons name="alert-circle" size={16} color="#DC2626" />
+                <Text style={styles.errorBannerText}>{authError}</Text>
+              </View>
+            ) : null}
 
             {[
               {
@@ -734,7 +849,9 @@ export default function AuthScreen() {
                 end={{ x: 1, y: 1 }}
                 style={styles.loginButtonGrad}
               >
-                <Text style={styles.loginButtonText}>Create Account</Text>
+                <Text style={styles.loginButtonText}>
+                  {isSubmitting ? "Creating..." : "Create Account"}
+                </Text>
                 <Ionicons name="arrow-forward" size={18} color="#FFF" />
               </LinearGradient>
             </TouchableOpacity>
@@ -1050,5 +1167,26 @@ const styles = StyleSheet.create({
     color: "#0F172A",
     fontWeight: "800",
     marginBottom: 4,
+  },
+
+  // Auth error banner
+  errorBanner: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+    backgroundColor: "#FEF2F2",
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: "#FECACA",
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    marginBottom: 14,
+  },
+  errorBannerText: {
+    flex: 1,
+    fontSize: 13,
+    fontWeight: "600",
+    color: "#DC2626",
+    lineHeight: 18,
   },
 });

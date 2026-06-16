@@ -9,49 +9,53 @@
 **App name:** GameLens (package: `gamelens`)  
 **Purpose:** A grassroots cricket companion for India — lets players start & score matches, run tournaments, discover opponents, shop for gear, and connect with the cricket community.  
 **Platform:** Android (primary), iOS-ready  
-**Status:** Active development  
+**Status:** Active development
 
 ---
 
 ## 2. Tech Stack
 
 ### Frontend
-| Layer | Technology | Version |
-|-------|-----------|---------|
-| Framework | React Native | 0.81.5 |
-| UI Library | React | 19.1.0 |
-| Dev toolchain | Expo SDK | ~54.0.x |
-| Language | TypeScript | ~5.9.2 |
-| Navigation | Expo Router (file-based) | ~6.0.x |
-| Tab navigation | React Navigation Bottom Tabs | ^7.4.0 |
-| Animations | React Native Reanimated + Animated API | ~4.1.1 |
-| Gestures | React Native Gesture Handler | ~2.28.0 |
-| Icons | @expo/vector-icons (Ionicons) | ^15.0.3 |
-| Gradients | expo-linear-gradient | ~15.0.8 |
-| Images | expo-image, ImageBackground | ~3.0.11 |
-| SVG | react-native-svg | ^15.12.1 |
+
+| Layer          | Technology                             | Version  |
+| -------------- | -------------------------------------- | -------- |
+| Framework      | React Native                           | 0.81.5   |
+| UI Library     | React                                  | 19.1.0   |
+| Dev toolchain  | Expo SDK                               | ~54.0.x  |
+| Language       | TypeScript                             | ~5.9.2   |
+| Navigation     | Expo Router (file-based)               | ~6.0.x   |
+| Tab navigation | React Navigation Bottom Tabs           | ^7.4.0   |
+| Animations     | React Native Reanimated + Animated API | ~4.1.1   |
+| Gestures       | React Native Gesture Handler           | ~2.28.0  |
+| Icons          | @expo/vector-icons (Ionicons)          | ^15.0.3  |
+| Gradients      | expo-linear-gradient                   | ~15.0.8  |
+| Images         | expo-image, ImageBackground            | ~3.0.11  |
+| SVG            | react-native-svg                       | ^15.12.1 |
 
 ### Backend / Services
-| Service | Purpose |
-|---------|---------|
-| None currently | All data is local/dummy |
-| expo-location | GPS for nearby grounds |
-| expo-image-picker | Photo library access |
-| expo-linking | Deep links, WhatsApp redirect |
-| expo-haptics | Haptic feedback |
+
+| Service           | Purpose                       |
+| ----------------- | ----------------------------- |
+| None currently    | All data is local/dummy       |
+| expo-location     | GPS for nearby grounds        |
+| expo-image-picker | Photo library access          |
+| expo-linking      | Deep links, WhatsApp redirect |
+| expo-haptics      | Haptic feedback               |
 
 ### Build & Distribution
-| Tool | Purpose |
-|------|---------|
-| EAS (Expo Application Services) | Cloud builds |
-| Gradle + Android SDK | Local Android builds |
-| adb | Device install & debug |
+
+| Tool                            | Purpose                |
+| ------------------------------- | ---------------------- |
+| EAS (Expo Application Services) | Cloud builds           |
+| Gradle + Android SDK            | Local Android builds   |
+| adb                             | Device install & debug |
 
 ### Accounts
-| Service | Account |
-|---------|---------|
+
+| Service    | Account                                     |
+| ---------- | ------------------------------------------- |
 | Expo / EAS | `gamelens` — `gamelensdharmendra@gmail.com` |
-| GitHub | `Dharmendra0202/crickbuz` |
+| GitHub     | `Dharmendra0202/crickbuz`                   |
 
 ---
 
@@ -105,19 +109,21 @@
 ## 4. Screen Architecture & Features
 
 ### `app/index.tsx` — Auth Flow
+
 State machine: `splash → login → signup`
 
-| Screen | Features |
-|--------|---------|
-| **Splash** | Animated logo, pitch lines, ring ripple, wordmark reveal, auto-transition |
-| **Login** | Username + password inputs, focus states, green gradient CTA, social login (G/f/Twitter), screen fade transitions |
-| **Signup** | Full Name + Email + Password + Confirm Password, hero card, animated screen transitions |
+| Screen     | Features                                                                                                          |
+| ---------- | ----------------------------------------------------------------------------------------------------------------- |
+| **Splash** | Animated logo, pitch lines, ring ripple, wordmark reveal, auto-transition                                         |
+| **Login**  | Username + password inputs, focus states, green gradient CTA, social login (G/f/Twitter), screen fade transitions |
+| **Signup** | Full Name + Email + Password + Confirm Password, hero card, animated screen transitions                           |
 
 Both auth screens use `KeyboardAvoidingView` + `ScrollView` to prevent keyboard push-up.
 
 ---
 
 ### `app/(tabs)/home.tsx` — Home
+
 - **Header:** Green gradient, menu button, search, chat, notifications
 - **Profile card:** Editable — name, phone, role, location, batting/bowling style, avatar (image picker)
 - **Quick actions bar:** Start Match, New Tourney, Find Players, Store
@@ -146,6 +152,7 @@ search
 ```
 
 **Key features:**
+
 - **Matches tab:** Filter by your/participate/network/all, match cards, start match flow
 - **Tournaments tab:** Create tournament form (banner+logo upload, dates, categories), tournament detail (matches/points table/leaderboard/teams), settings bottom sheet with 15 options
 - **Teams tab:** Create team or select existing
@@ -156,6 +163,7 @@ search
 ---
 
 ### `app/(tabs)/looking.tsx` — Looking
+
 - Composer for posting looking requests (opponent/tournament/player)
 - Quick action cards with pre-filled templates
 - Community post feed with reply + message actions
@@ -163,6 +171,7 @@ search
 ---
 
 ### `app/(tabs)/community.tsx` — Community
+
 - 3 tabs: Feed / Groups / Events
 - Post cards with like/comment/share
 - Group list + join button
@@ -171,6 +180,7 @@ search
 ---
 
 ### `app/(tabs)/store.tsx` — Store
+
 - Header with cart badge
 - Search bar
 - Featured deals (horizontal scroll)
@@ -194,9 +204,13 @@ Expo Router file-based routing:
 ```
 
 **Cross-tab deep linking** via `router.push` with params:
+
 ```ts
-router.push({ pathname: '/(tabs)/my-cricket', params: { action: 'startMatch' } });
-router.push({ pathname: '/(tabs)/my-cricket', params: { tab: 'tournaments' } });
+router.push({
+  pathname: "/(tabs)/my-cricket",
+  params: { action: "startMatch" },
+});
+router.push({ pathname: "/(tabs)/my-cricket", params: { tab: "tournaments" } });
 ```
 
 Tab bar: `position: absolute`, height 60, white bg, red active tint (`#B91C1C`).
@@ -205,25 +219,25 @@ Tab bar: `position: absolute`, height 60, white bg, red active tint (`#B91C1C`).
 
 ## 6. Components
 
-| Component | Props | Purpose |
-|-----------|-------|---------|
-| `ThemedText` | `lightColor?`, `darkColor?`, `type?` (default/title/defaultSemiBold/subtitle/link) | Text that respects color scheme |
-| `ThemedView` | `lightColor?`, `darkColor?` | View that respects color scheme |
-| `ExternalLink` | `href` | Opens URL in in-app browser |
-| `HapticTab` | (tab button props) | Tab press triggers haptic |
-| `Collapsible` | `title` | Expand/collapse section |
-| `IconSymbol` | `name`, `size`, `color` | SF Symbols (iOS) / MaterialIcons (Android) |
-| `ParallaxScrollView` | `headerImage`, `headerBackgroundColor` | Parallax header scroll |
+| Component            | Props                                                                              | Purpose                                    |
+| -------------------- | ---------------------------------------------------------------------------------- | ------------------------------------------ |
+| `ThemedText`         | `lightColor?`, `darkColor?`, `type?` (default/title/defaultSemiBold/subtitle/link) | Text that respects color scheme            |
+| `ThemedView`         | `lightColor?`, `darkColor?`                                                        | View that respects color scheme            |
+| `ExternalLink`       | `href`                                                                             | Opens URL in in-app browser                |
+| `HapticTab`          | (tab button props)                                                                 | Tab press triggers haptic                  |
+| `Collapsible`        | `title`                                                                            | Expand/collapse section                    |
+| `IconSymbol`         | `name`, `size`, `color`                                                            | SF Symbols (iOS) / MaterialIcons (Android) |
+| `ParallaxScrollView` | `headerImage`, `headerBackgroundColor`                                             | Parallax header scroll                     |
 
 ---
 
 ## 7. Hooks
 
-| Hook | File | Purpose |
-|------|------|---------|
-| `useColorScheme` | `hooks/use-color-scheme.ts` | Returns `'light'` or `'dark'` (native) |
-| `useColorScheme` | `hooks/use-color-scheme.web.ts` | Web-specific override |
-| `useThemeColor` | `hooks/use-theme-color.ts` | Resolves color from `Colors[theme][colorName]` with prop override |
+| Hook             | File                            | Purpose                                                           |
+| ---------------- | ------------------------------- | ----------------------------------------------------------------- |
+| `useColorScheme` | `hooks/use-color-scheme.ts`     | Returns `'light'` or `'dark'` (native)                            |
+| `useColorScheme` | `hooks/use-color-scheme.web.ts` | Web-specific override                                             |
+| `useThemeColor`  | `hooks/use-theme-color.ts`      | Resolves color from `Colors[theme][colorName]` with prop override |
 
 **Platform file split pattern:** `.web.ts` variant auto-used on web by Metro.
 
@@ -232,12 +246,14 @@ Tab bar: `position: absolute`, height 60, white bg, red active tint (`#B91C1C`).
 ## 8. Theme & Styling
 
 ### Colors (`constants/theme.ts`)
+
 ```ts
 Colors.light = { text: '#11181C', background: '#fff', tint: '#B91C1C', ... }
 Colors.dark  = { text: '#ECEDEE', background: '#151718', tint: '#fff', ... }
 ```
 
 ### Home screen uses green theme (`#00A66A / #0F766E / #064E3B`)
+
 ### Auth, my-cricket, community, store use red theme (`#B91C1C / #991B1B / #7F1D1D`)
 
 All styles use `StyleSheet.create()`. No external CSS-in-JS library. Responsive sizing uses `Dimensions.get('window')` for splash/auth screens.
@@ -247,21 +263,28 @@ All styles use `StyleSheet.create()`. No external CSS-in-JS library. Responsive 
 ## 9. Key Architectural Patterns
 
 ### View State Machine
+
 `my-cricket.tsx` manages 16 views via `currentView` state instead of navigation routes — avoids deep nesting and preserves all match state in memory.
 
 ### Score History / Undo Stack
+
 ```ts
 const [scoreHistory, setScoreHistory] = useState([]);
 // push snapshot before each action
-const saveScoreSnapshot = () => setScoreHistory(h => [...h, currentState]);
+const saveScoreSnapshot = () => setScoreHistory((h) => [...h, currentState]);
 // undo restores last snapshot
-const undoScore = () => { restore(scoreHistory.at(-1)); setScoreHistory(h => h.slice(0, -1)); }
+const undoScore = () => {
+  restore(scoreHistory.at(-1));
+  setScoreHistory((h) => h.slice(0, -1));
+};
 ```
 
 ### Cross-Tab Deep Linking
+
 Home drawer triggers `my-cricket` screen with `params` via Expo Router. `useFocusEffect` in `my-cricket` reads params on every focus event.
 
 ### Reusable Render Helpers (in `my-cricket.tsx`)
+
 ```ts
 const renderTextInput = (label, value, onChange, placeholder, required, keyboardType) => (...)
 const renderChipGroup = (items, selected, onSelect, activeColor) => (...)
@@ -270,6 +293,7 @@ const renderPitchTypeSelector = () => (...)
 ```
 
 ### Platform File Split
+
 ```
 hooks/use-color-scheme.ts      ← iOS + Android
 hooks/use-color-scheme.web.ts  ← Web (auto-resolved by Metro)
@@ -280,6 +304,7 @@ hooks/use-color-scheme.web.ts  ← Web (auto-resolved by Metro)
 ## 10. Coding Standards
 
 ### Naming
+
 - **Files:** kebab-case (`my-cricket.tsx`, `use-color-scheme.ts`)
 - **Components:** PascalCase (`ThemedText`, `HomeScreen`)
 - **Hooks:** camelCase with `use` prefix
@@ -288,12 +313,14 @@ hooks/use-color-scheme.web.ts  ← Web (auto-resolved by Metro)
 - **Constants:** SCREAMING_SNAKE (`SCREEN_WIDTH`, `CARD_MARGIN`)
 
 ### TypeScript
+
 - Explicit types for all state: `useState<ScreenType>('splash')`
 - Union types for view states: `type ScreenType = 'splash' | 'login' | 'signup'`
 - `as const` for readonly tuples
 - `any` cast for Ionicons names: `name={icon as any}`
 
 ### Component structure
+
 1. Imports
 2. Constants (SCREEN_WIDTH, colors)
 3. Type definitions
@@ -308,6 +335,7 @@ hooks/use-color-scheme.web.ts  ← Web (auto-resolved by Metro)
 ## 11. Environment & Config
 
 ### `app.json` (key fields)
+
 ```json
 {
   "name": "gamelens",
@@ -319,6 +347,7 @@ hooks/use-color-scheme.web.ts  ← Web (auto-resolved by Metro)
 ```
 
 ### `eas.json` (build profiles)
+
 ```json
 {
   "build": {
@@ -336,6 +365,7 @@ No `.env` file — no secrets currently in the codebase.
 ## 12. Development Workflow
 
 ### Start dev server
+
 ```bash
 npm start
 # or
@@ -343,6 +373,7 @@ npx expo start
 ```
 
 ### Build APK locally (Android)
+
 ```bash
 npx expo prebuild --platform android   # generates android/ folder (one-time)
 cd android
@@ -351,17 +382,21 @@ adb install app/build/outputs/apk/release/app-release.apk
 ```
 
 ### Cloud build (EAS)
+
 ```bash
 eas build -p android --profile preview   # queued on Expo servers
 ```
+
 Monitor at: `expo.dev/accounts/gamelens/projects/gamelens`
 
 ### Lint
+
 ```bash
 npm run lint
 ```
 
 ### Reset to blank Expo starter
+
 ```bash
 npm run reset-project
 ```
@@ -370,23 +405,23 @@ npm run reset-project
 
 ## 13. Important Dependencies
 
-| Package | Why it matters |
-|---------|---------------|
-| `expo-router` | All navigation — changing routing approach would require rewrite |
-| `expo-linear-gradient` | Used heavily in headers, buttons, cards |
-| `@expo/vector-icons` | Ionicons used on every screen |
-| `expo-image-picker` | Tournament banner/logo + profile photo |
-| `expo-location` | GPS-based nearby grounds in match setup |
-| `react-native-reanimated` | Required by gesture handler; used for complex animations |
-| `expo-linking` | WhatsApp auth redirect |
+| Package                   | Why it matters                                                   |
+| ------------------------- | ---------------------------------------------------------------- |
+| `expo-router`             | All navigation — changing routing approach would require rewrite |
+| `expo-linear-gradient`    | Used heavily in headers, buttons, cards                          |
+| `@expo/vector-icons`      | Ionicons used on every screen                                    |
+| `expo-image-picker`       | Tournament banner/logo + profile photo                           |
+| `expo-location`           | GPS-based nearby grounds in match setup                          |
+| `react-native-reanimated` | Required by gesture handler; used for complex animations         |
+| `expo-linking`            | WhatsApp auth redirect                                           |
 
 ---
 
 ## 14. Known Issues / Tech Debt
 
-- All data is **dummy/hardcoded** — no real backend or API
+- Dummy/hardcoded data **removed** — all lists now start empty with `// TODO(backend):` markers (see `DUMMY_DATA_AUDIT.md`)
+- Backend target is **Supabase** — client in `services/supabase.ts`, stubs in `services/api.ts`, AsyncStorage bridge in `services/storage.ts` (see `BACKEND_SPEC.md`)
+- New input flow: `app/setup/players.tsx` → `app/setup/match.tsx` → scoring; profile at `app/profile/setup.tsx`
+- Live scoring auto-saves to AsyncStorage; "Resume Match?" prompt on open (my-cricket.tsx)
 - `my-cricket.tsx` is 3000+ lines — candidate for splitting into sub-screens
-- `SafeAreaView` deprecation warning in `index.tsx`
-- No authentication logic — login/signup navigates directly to home
-- `CRICKET_GEAR_IMAGE` declared but unused in `index.tsx`
-- `.substr()` deprecated in `index.tsx` (use `.substring()`)
+- No authentication logic yet — login/signup navigates directly to home (Supabase Auth pending)

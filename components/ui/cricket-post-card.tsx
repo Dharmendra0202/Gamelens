@@ -1,17 +1,8 @@
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import React from 'react';
-import { StyleSheet, Text, TouchableOpacity, View, Image } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { shareContent } from '@/utils/share';
-
-export interface CricketComment {
-  id: number;
-  user: string;
-  initials: string;
-  color: string;
-  time: string;
-  text: string;
-}
 
 export interface CricketPost {
   id: number;
@@ -23,12 +14,8 @@ export interface CricketPost {
   content: string;
   tags?: string[];
   hasMedia?: boolean;
-  mediaUri?: string;
-  mediaType?: 'image' | 'video';
-  location?: string;
   likes: number;
   comments: number;
-  commentsList?: CricketComment[];
   shares: number;
   liked: boolean;
   saved: boolean;
@@ -41,10 +28,9 @@ interface CricketPostCardProps {
   onComment: (post: CricketPost) => void;
   onShare: (id: number) => void;
   onSave: (id: number) => void;
-  onDelete?: (id: number) => void;
 }
 
-export function CricketPostCard({ post, onLike, onComment, onShare, onSave, onDelete }: CricketPostCardProps) {
+export function CricketPostCard({ post, onLike, onComment, onShare, onSave }: CricketPostCardProps) {
   return (
     <View style={styles.postCard}>
       {/* Header */}
@@ -61,20 +47,11 @@ export function CricketPostCard({ post, onLike, onComment, onShare, onSave, onDe
               <Ionicons name="checkmark-circle" size={14} color="#00A66A" style={{ marginLeft: 4 }} />
             )}
           </View>
-          <Text style={styles.postMetaRow}>
-            {post.role} · {post.time}
-            {post.location ? ` · 📍 ${post.location}` : ''}
-          </Text>
+          <Text style={styles.postMetaRow}>{post.role} · {post.time}</Text>
         </View>
-        {onDelete ? (
-          <TouchableOpacity style={styles.postMoreBtn} onPress={() => onDelete(post.id)}>
-            <Ionicons name="trash-outline" size={18} color="#EF4444" />
-          </TouchableOpacity>
-        ) : (
-          <TouchableOpacity style={styles.postMoreBtn}>
-            <Ionicons name="ellipsis-horizontal" size={18} color="#999" />
-          </TouchableOpacity>
-        )}
+        <TouchableOpacity style={styles.postMoreBtn}>
+          <Ionicons name="ellipsis-horizontal" size={18} color="#999" />
+        </TouchableOpacity>
       </View>
 
       {/* Content */}
@@ -91,43 +68,20 @@ export function CricketPostCard({ post, onLike, onComment, onShare, onSave, onDe
         </View>
       )}
 
-      {/* Media Rendering */}
+      {/* Media */}
       {post.hasMedia && (
         <View style={styles.postMediaBox}>
-          {post.mediaUri ? (
-            post.mediaType === 'video' ? (
-              <View style={{ position: 'relative', height: 200, width: '100%' }}>
-                <Image
-                  source={{ uri: post.mediaUri }}
-                  style={{ width: '100%', height: '100%', borderRadius: 12 }}
-                  resizeMode="cover"
-                />
-                <View style={[StyleSheet.absoluteFill, { backgroundColor: 'rgba(0,0,0,0.3)', justifyContent: 'center', alignItems: 'center', borderRadius: 12 }]}>
-                  <View style={{ width: 50, height: 50, borderRadius: 25, backgroundColor: 'rgba(0,0,0,0.5)', justifyContent: 'center', alignItems: 'center', borderWidth: 2, borderColor: '#FFF' }}>
-                    <Ionicons name="play" size={24} color="#FFF" style={{ marginLeft: 3 }} />
-                  </View>
-                </View>
-              </View>
-            ) : (
-              <Image
-                source={{ uri: post.mediaUri }}
-                style={{ width: '100%', height: 200, borderRadius: 12 }}
-                resizeMode="cover"
-              />
-            )
-          ) : (
-            <LinearGradient colors={['#064E3B', '#0F766E', '#059669']} style={styles.postMediaGradient}>
-              <Ionicons name="images-outline" size={36} color="rgba(255,255,255,0.5)" />
-              <Text style={styles.postMediaLabel}>Match Highlights</Text>
-            </LinearGradient>
-          )}
+          <LinearGradient colors={['#064E3B', '#0F766E', '#059669']} style={styles.postMediaGradient}>
+            <Ionicons name="images-outline" size={36} color="rgba(255,255,255,0.5)" />
+            <Text style={styles.postMediaLabel}>Match Highlights</Text>
+          </LinearGradient>
         </View>
       )}
 
       {/* Stats */}
       <View style={styles.postStatsRow}>
         <View style={styles.postStatsLeft}>
-          <View style={likeIconRowStyle}>
+          <View style={styles.likeIconRow}>
             <View style={styles.likeIconBg}>
               <Ionicons name="heart" size={9} color="#FFF" />
             </View>
@@ -167,9 +121,6 @@ export function CricketPostCard({ post, onLike, onComment, onShare, onSave, onDe
     </View>
   );
 }
-
-// Fixed styling name for standard React Native web support
-const likeIconRowStyle = { flexDirection: 'row' as const };
 
 const styles = StyleSheet.create({
   postCard: {
@@ -278,6 +229,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 6,
+  },
+  likeIconRow: {
+    flexDirection: 'row',
   },
   likeIconBg: {
     width: 18,
