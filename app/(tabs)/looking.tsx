@@ -147,16 +147,36 @@ export default function LookingScreen() {
   return (
     <TabScreenWrapper>
       <View style={styles.container}>
+        {/* Header */}
         <LinearGradient
           colors={["#00A66A", "#0F766E", "#064E3B"]}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 1 }}
           style={styles.header}
         >
-          <Text style={styles.headerTitle}>Looking</Text>
-          <Text style={styles.headerSubtitle}>
-            Find opponents, players, and cricket posts near you
-          </Text>
+          <View style={styles.headerLeft}>
+            <Text style={styles.headerTitle}>Looking</Text>
+          </View>
+          <View style={styles.headerRight}>
+            <TouchableOpacity
+              style={styles.iconButton}
+              onPress={() => console.log("Search clicked")}
+            >
+              <Ionicons name="search" size={22} color="#FFF" />
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.iconButton}
+              onPress={() => console.log("Filter clicked")}
+            >
+              <Ionicons name="options-outline" size={22} color="#FFF" />
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.iconButton}
+              onPress={() => console.log("Notifications clicked")}
+            >
+              <Ionicons name="notifications-outline" size={22} color="#FFF" />
+            </TouchableOpacity>
+          </View>
         </LinearGradient>
 
         <ScrollView
@@ -383,21 +403,27 @@ const styles = StyleSheet.create({
     backgroundColor: "#F0F7F4",
   },
   header: {
-    paddingHorizontal: 18,
-    paddingTop: 44,
-    paddingBottom: 18,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingHorizontal: 14,
+    paddingTop: 40,
+    paddingBottom: 10,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.25,
+    shadowRadius: 6,
+    elevation: 6,
   },
+  headerLeft: { flexDirection: "row", alignItems: "center", gap: 2 },
   headerTitle: {
     color: "#FFF",
-    fontSize: 26,
+    fontSize: 22,
     fontWeight: "800",
+    letterSpacing: 1,
   },
-  headerSubtitle: {
-    color: "#D1FAE5",
-    fontSize: 14,
-    lineHeight: 20,
-    marginTop: 4,
-  },
+  headerRight: { flexDirection: "row", gap: 1, marginRight: -4 },
+  iconButton: { padding: 6 },
   content: {
     padding: 16,
     paddingBottom: 92,

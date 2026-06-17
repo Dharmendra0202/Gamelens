@@ -1499,6 +1499,7 @@ export default function MyCricketScreen() {
                   <Ionicons name="arrow-back" size={24} color="#FFF" />
                 </TouchableOpacity>
               )}
+              <Text style={styles.headerTitle}>My Cricket</Text>
             </View>
 
             <View style={styles.headerRight}>
@@ -1506,24 +1507,14 @@ export default function MyCricketScreen() {
                 style={styles.iconButton}
                 onPress={() => setShowSearchModal(true)}
               >
-                <Ionicons name="search" size={24} color="#FFF" />
+                <Ionicons name="search" size={22} color="#FFF" />
               </TouchableOpacity>
               <TouchableOpacity style={styles.iconButton}>
-                <View style={styles.notificationDot} />
-                <Ionicons name="chatbubble-outline" size={24} color="#FFF" />
+                <Ionicons name="chatbubble-outline" size={22} color="#FFF" />
               </TouchableOpacity>
-              {currentView === "tournamentDetail" ? (
-                <TouchableOpacity
-                  style={styles.iconButton}
-                  onPress={() => setShowTournamentSettings(true)}
-                >
-                  <Ionicons name="settings-outline" size={24} color="#FFF" />
-                </TouchableOpacity>
-              ) : (
-                <TouchableOpacity style={styles.iconButton}>
-                  <Ionicons name="filter" size={24} color="#FFF" />
-                </TouchableOpacity>
-              )}
+              <TouchableOpacity style={styles.iconButton}>
+                <Ionicons name="notifications-outline" size={22} color="#FFF" />
+              </TouchableOpacity>
             </View>
           </LinearGradient>
         </Animated.View>
@@ -8097,30 +8088,38 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    paddingHorizontal: 16,
-    paddingTop: 35,
-    paddingBottom: 12,
+    paddingHorizontal: 14,
+    paddingTop: 40,
+    paddingBottom: 10,
     shadowColor: "#000",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 8,
-    elevation: 8,
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.25,
+    shadowRadius: 6,
+    elevation: 6,
   },
   headerLeft: {
     flex: 1,
     flexDirection: "row",
     alignItems: "center",
+    gap: 2,
+  },
+  headerTitle: {
+    fontSize: 22,
+    fontWeight: "800",
+    color: "#FFF",
+    letterSpacing: 1,
   },
   headerBackButton: {
-    padding: 8,
+    padding: 4,
     marginLeft: -8,
   },
   headerRight: {
     flexDirection: "row",
-    gap: 12,
+    gap: 1,
+    marginRight: -4,
   },
   iconButton: {
-    padding: 8,
+    padding: 6,
     position: "relative",
   },
   notificationDot: {
@@ -13291,9 +13290,9 @@ const styles = StyleSheet.create({
 // ── Create Team Styles (ctStyles) ────────────────────────────────
 const ctStyles = StyleSheet.create({
   header: {
-    paddingTop: 44,
-    paddingBottom: 20,
-    paddingHorizontal: 16,
+    paddingTop: 40,
+    paddingBottom: 10,
+    paddingHorizontal: 14,
     alignItems: "center",
     overflow: "hidden",
     position: "relative",

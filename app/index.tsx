@@ -882,7 +882,6 @@ const styles = StyleSheet.create({
   },
   scrollContent: {
     flexGrow: 1,
-    justifyContent: "center",
     alignItems: "center",
     width: SCREEN_WIDTH,
     backgroundColor: "#F0F7F4",
