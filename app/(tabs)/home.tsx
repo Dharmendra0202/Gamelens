@@ -414,347 +414,90 @@ export default function HomeScreen() {
         </LinearGradient>
 
         <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
-          {/* ── Premium Profile Card ── */}
-          <Animated.View
-            style={{
-              opacity: profileAnim,
-              transform: [
-                {
-                  translateY: profileAnim.interpolate({
-                    inputRange: [0, 1],
-                    outputRange: [16, 0],
-                  }),
-                },
-              ],
-            }}
+          {/* ── Stories / Status Row (like Instagram) ── */}
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={styles.storiesRow}
           >
+            {/* Add your status */}
             <TouchableOpacity
-              style={styles.profileCard}
-              onPress={openProfileEditor}
-              activeOpacity={0.88}
-            >
-              <LinearGradient
-                colors={["#064E3B", "#0F766E", "#00A66A"]}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 1 }}
-                style={styles.profileCardGradient}
-              >
-                {/* Avatar */}
-                <View style={styles.profileAvatarWrap}>
-                  <View style={styles.profileAvatarRing}>
-                    <View style={styles.profileAvatarInner}>
-                      {profile.imageUri ? (
-                        <Image
-                          source={{ uri: profile.imageUri }}
-                          style={styles.profileAvatarImg}
-                        />
-                      ) : (
-                        <Text style={styles.profileAvatarInitials}>
-                          {profileInitials}
-                        </Text>
-                      )}
-                    </View>
-                  </View>
-                  <View style={styles.profileOnlineDot} />
-                </View>
-                {/* Info */}
-                <View style={styles.profileCardInfo}>
-                  <Text style={styles.profileCardName} numberOfLines={1}>
-                    {profile.name || "Complete your profile"}
-                  </Text>
-                  {!profile.name ? (
-                    <TouchableOpacity
-                      style={styles.completeProfilePrompt}
-                      onPress={() => router.push("/profile/setup")}
-                    >
-                      <Ionicons name="person-add" size={11} color="#fff" />
-                      <Text style={styles.completeProfilePromptTxt}>
-                        Set up your cricket profile
-                      </Text>
-                    </TouchableOpacity>
-                  ) : (
-                    <View style={styles.profileCardRole}>
-                      <Ionicons name="ribbon" size={11} color="#6EE7B7" />
-                      <Text style={styles.profileCardRoleTxt}>
-                        {profile.role} · {profile.location}
-                      </Text>
-                    </View>
-                  )}
-                  <View style={styles.profileCardStats}>
-                    <View style={styles.profileCardStat}>
-                      <Text style={styles.profileCardStatVal}>
-                        {profile.friends}
-                      </Text>
-                      <Text style={styles.profileCardStatLbl}>Friends</Text>
-                    </View>
-                    <View style={styles.profileCardStatDiv} />
-                    <View style={styles.profileCardStat}>
-                      <Text style={styles.profileCardStatVal}>
-                        {profile.posts}
-                      </Text>
-                      <Text style={styles.profileCardStatLbl}>Posts</Text>
-                    </View>
-                    <View style={styles.profileCardStatDiv} />
-                    <View style={styles.profileCardStat}>
-                      <Text style={styles.profileCardStatVal}>
-                        {supaProfile?.matches_played ?? 0}
-                      </Text>
-                      <Text style={styles.profileCardStatLbl}>Matches</Text>
-                    </View>
-                  </View>
-                </View>
-                {/* Edit badge */}
-                <View style={styles.profileEditBadge}>
-                  <Ionicons name="pencil" size={13} color="#FFF" />
-                </View>
-              </LinearGradient>
-            </TouchableOpacity>
-          </Animated.View>
-
-          {/* ── Live & Upcoming Matches (replaces Quick Actions position) ── */}
-          <Animated.View
-            style={{
-              opacity: matchesAnim,
-              transform: [
-                {
-                  translateY: matchesAnim.interpolate({
-                    inputRange: [0, 1],
-                    outputRange: [20, 0],
-                  }),
-                },
-              ],
-            }}
-          >
-            <View style={styles.matchesSection}>
-              <SectionHeader
-                title="Live & Upcoming"
-                subtitle="Matches scheduled near you"
-                right={
-                  <TouchableOpacity
-                    style={styles.locationPill}
-                    onPress={() => console.log("Location clicked")}
-                  >
-                    <Ionicons name="location" size={12} color="#00A66A" />
-                    <Text style={styles.locationPillTxt}>Mumbai</Text>
-                    <Ionicons name="chevron-down" size={11} color="#00A66A" />
-                  </TouchableOpacity>
+              style={styles.storyItem}
+              activeOpacity={0.8}
+              onPress={async () => {
+                const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
+                if (!permission.granted) return;
+                const result = await ImagePicker.launchImageLibraryAsync({
+                  mediaTypes: ["images"],
+                  allowsEditing: true,
+                  aspect: [9, 16],
+                  quality: 0.85,
+                });
+                if (!result.canceled && result.assets[0]?.uri) {
+                  // TODO(backend): upload story to Supabase storage
+                  console.log("Story selected:", result.assets[0].uri);
                 }
-                style={{ paddingHorizontal: 0, marginBottom: 14 }}
-              />
-
-              <ScrollView
-                horizontal
-                showsHorizontalScrollIndicator={false}
-                snapToInterval={CARD_SPACING}
-                decelerationRate="fast"
-                contentContainerStyle={styles.matchScrollContent}
-                onScroll={(event) => {
-                  const scrollPosition = event.nativeEvent.contentOffset.x;
-                  const index = Math.round(scrollPosition / CARD_SPACING);
-                  setActiveMatchIndex(index);
-                }}
-                scrollEventThrottle={16}
-              >
-                {matches.map((match) => (
-                  <TouchableOpacity
-                    key={match.id}
-                    style={styles.matchCardContainer}
-                    onPress={() =>
-                      console.log(`Viewing ${match.team1} vs ${match.team2}`)
-                    }
-                    activeOpacity={0.92}
-                  >
-                    <LinearGradient
-                      colors={
-                        match.badge === "LIVE"
-                          ? ["#064E3B", "#0F766E"]
-                          : ["#FFF", "#F8FAFB"]
-                      }
-                      style={styles.matchCard}
-                    >
-                      {/* Card Header */}
-                      <View style={styles.matchCardHeader}>
-                        <View
-                          style={[
-                            styles.statusBadge,
-                            match.badge === "LIVE"
-                              ? styles.statusBadgeLive
-                              : styles.statusBadgeUpcoming,
-                          ]}
-                        >
-                          <View
-                            style={
-                              match.badge === "LIVE"
-                                ? styles.livePulseDot
-                                : styles.upcomingDot
-                            }
-                          />
-                          <Text
-                            style={[
-                              styles.statusBadgeText,
-                              match.badge === "LIVE"
-                                ? styles.statusBadgeTextLive
-                                : styles.statusBadgeTextUpcoming,
-                            ]}
-                          >
-                            {match.badge}
-                          </Text>
-                        </View>
-                        <Text
-                          style={[
-                            styles.matchTimeText,
-                            match.badge === "LIVE" && { color: "#6EE7B7" },
-                          ]}
-                        >
-                          {match.time}
-                        </Text>
-                      </View>
-
-                      {/* Team 1 */}
-                      <View style={styles.matchTeamRow}>
-                        <View style={styles.matchTeamLeft}>
-                          <View style={styles.teamLogoWrapper}>
-                            <Text style={styles.teamLogoText}>
-                              {match.team1
-                                .split(" ")
-                                .map((n: string) => n[0])
-                                .join("")}
-                            </Text>
-                          </View>
-                          <Text
-                            style={[
-                              styles.teamNameText,
-                              match.badge === "LIVE" && { color: "#FFF" },
-                            ]}
-                            numberOfLines={1}
-                          >
-                            {match.team1}
-                          </Text>
-                        </View>
-                        <Text
-                          style={[
-                            styles.teamScoreText,
-                            match.badge === "LIVE" && {
-                              color: "#6EE7B7",
-                              fontWeight: "700",
-                            },
-                          ]}
-                        >
-                          {match.badge === "LIVE"
-                            ? "124/4 (14.2)"
-                            : "Yet to bat"}
-                        </Text>
-                      </View>
-
-                      {/* Team 2 */}
-                      <View style={styles.matchTeamRow}>
-                        <View style={styles.matchTeamLeft}>
-                          <View
-                            style={[
-                              styles.teamLogoWrapper,
-                              { backgroundColor: "#0EA5E9" },
-                            ]}
-                          >
-                            <Text style={styles.teamLogoText}>
-                              {match.team2
-                                .split(" ")
-                                .map((n: string) => n[0])
-                                .join("")}
-                            </Text>
-                          </View>
-                          <Text
-                            style={[
-                              styles.teamNameText,
-                              match.badge === "LIVE" && { color: "#E2E8F0" },
-                            ]}
-                            numberOfLines={1}
-                          >
-                            {match.team2}
-                          </Text>
-                        </View>
-                        <Text
-                          style={[
-                            styles.teamScoreText,
-                            match.badge === "LIVE" && { color: "#CBD5E1" },
-                          ]}
-                        >
-                          {match.badge === "LIVE"
-                            ? "92/2 (11.0)"
-                            : "Yet to bat"}
-                        </Text>
-                      </View>
-
-                      <View
-                        style={[
-                          styles.cardDivider,
-                          match.badge === "LIVE" && {
-                            backgroundColor: "rgba(255,255,255,0.15)",
-                          },
-                        ]}
-                      />
-
-                      {/* Card Footer */}
-                      <View style={styles.matchCardFooter}>
-                        <View style={styles.venueInfo}>
-                          <Ionicons
-                            name="compass-outline"
-                            size={13}
-                            color={match.badge === "LIVE" ? "#6EE7B7" : "#666"}
-                          />
-                          <Text
-                            style={[
-                              styles.venueText,
-                              match.badge === "LIVE" && { color: "#A7F3D0" },
-                            ]}
-                            numberOfLines={1}
-                          >
-                            {match.location}
-                          </Text>
-                        </View>
-                        <TouchableOpacity
-                          style={[
-                            styles.cardActionButton,
-                            match.badge === "LIVE" &&
-                              styles.cardActionButtonLive,
-                          ]}
-                          onPress={() => console.log("Card action clicked")}
-                        >
-                          <Text
-                            style={[
-                              styles.cardActionText,
-                              match.badge === "LIVE" && { color: "#064E3B" },
-                            ]}
-                          >
-                            Details
-                          </Text>
-                          <Ionicons
-                            name="chevron-forward"
-                            size={14}
-                            color={
-                              match.badge === "LIVE" ? "#064E3B" : "#00A66A"
-                            }
-                          />
-                        </TouchableOpacity>
-                      </View>
-                    </LinearGradient>
-                  </TouchableOpacity>
-                ))}
-              </ScrollView>
-
-              {/* Pagination Dots */}
-              <View style={styles.paginationDots}>
-                {matches.map((_, index) => (
-                  <View
-                    key={index}
-                    style={[
-                      styles.dot,
-                      activeMatchIndex === index && styles.activeDot,
-                    ]}
-                  />
-                ))}
+              }}
+            >
+              <View style={styles.storyAvatarCreate}>
+                <View style={styles.storyCreateInner}>
+                  {profile.imageUri ? (
+                    <Image
+                      source={{ uri: profile.imageUri }}
+                      style={styles.storyAvatarImg}
+                    />
+                  ) : (
+                    <Text style={styles.storyAvatarInitials}>
+                      {profileInitials}
+                    </Text>
+                  )}
+                </View>
+                <View style={styles.storyAddDot}>
+                  <Ionicons name="add" size={12} color="#FFF" />
+                </View>
               </View>
+              <Text style={styles.storyName}>
+                Add Status
+              </Text>
+            </TouchableOpacity>
+          </ScrollView>
+
+          {/* ── Divider below stories ── */}
+          <View style={styles.storiesDivider} />
+
+          {/* ── Create Post Bar ── */}
+          <TouchableOpacity
+            style={styles.createPostBar}
+            activeOpacity={0.85}
+            onPress={() => setShowCreatePostModal(true)}
+          >
+            <View style={styles.createPostAvatarSmall}>
+              {profile.imageUri ? (
+                <Image
+                  source={{ uri: profile.imageUri }}
+                  style={{ width: 36, height: 36, borderRadius: 18 }}
+                />
+              ) : (
+                <Text style={styles.createPostInitialsSmall}>
+                  {profileInitials}
+                </Text>
+              )}
             </View>
-          </Animated.View>
+            <View style={styles.createPostInputFake}>
+              <Text style={styles.createPostPlaceholderTxt}>
+                Share your match story, tips or opinions...
+              </Text>
+            </View>
+            <View style={styles.createPostActions}>
+              <Ionicons name="image-outline" size={20} color="#00A66A" />
+              <Ionicons
+                name="videocam-outline"
+                size={20}
+                color="#0F766E"
+                style={{ marginLeft: 10 }}
+              />
+            </View>
+          </TouchableOpacity>
 
           {/* ── Cricket Community Feed ── */}
           <View style={styles.feedSection}>
@@ -774,103 +517,6 @@ export default function HomeScreen() {
                 <Text style={styles.feedFilterTxt}>Filter</Text>
               </TouchableOpacity>
             </View>
-
-            {/* Story-style Active Users Row */}
-            <ScrollView
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              contentContainerStyle={styles.storiesRow}
-            >
-              {/* Your story (create) */}
-              <TouchableOpacity
-                style={styles.storyItem}
-                activeOpacity={0.8}
-                onPress={() => setShowCreatePostModal(true)}
-              >
-                <View style={styles.storyAvatarCreate}>
-                  <View style={styles.storyCreateInner}>
-                    {profile.imageUri ? (
-                      <Image
-                        source={{ uri: profile.imageUri }}
-                        style={styles.storyAvatarImg}
-                      />
-                    ) : (
-                      <Text style={styles.storyAvatarInitials}>
-                        {profileInitials}
-                      </Text>
-                    )}
-                  </View>
-                  <View style={styles.storyAddDot}>
-                    <Ionicons name="add" size={12} color="#FFF" />
-                  </View>
-                </View>
-                <Text style={styles.storyName} numberOfLines={1}>
-                  Your Story
-                </Text>
-              </TouchableOpacity>
-              {communityUsers.map((u) => (
-                <TouchableOpacity
-                  key={u.id}
-                  style={styles.storyItem}
-                  activeOpacity={0.8}
-                >
-                  <View
-                    style={[
-                      styles.storyAvatarRing,
-                      { borderColor: u.active ? "#00A66A" : "#DDD" },
-                    ]}
-                  >
-                    <View
-                      style={[
-                        styles.storyAvatarInner,
-                        { backgroundColor: u.color },
-                      ]}
-                    >
-                      <Text style={styles.storyAvatarInitials}>
-                        {u.initials}
-                      </Text>
-                    </View>
-                  </View>
-                  <Text style={styles.storyName} numberOfLines={1}>
-                    {u.shortName}
-                  </Text>
-                </TouchableOpacity>
-              ))}
-            </ScrollView>
-
-            {/* Create Post Bar */}
-            <TouchableOpacity
-              style={styles.createPostBar}
-              activeOpacity={0.85}
-              onPress={() => setShowCreatePostModal(true)}
-            >
-              <View style={styles.createPostAvatarSmall}>
-                {profile.imageUri ? (
-                  <Image
-                    source={{ uri: profile.imageUri }}
-                    style={{ width: 36, height: 36, borderRadius: 18 }}
-                  />
-                ) : (
-                  <Text style={styles.createPostInitialsSmall}>
-                    {profileInitials}
-                  </Text>
-                )}
-              </View>
-              <View style={styles.createPostInputFake}>
-                <Text style={styles.createPostPlaceholderTxt}>
-                  Share your match story, tips or opinions...
-                </Text>
-              </View>
-              <View style={styles.createPostActions}>
-                <Ionicons name="image-outline" size={20} color="#00A66A" />
-                <Ionicons
-                  name="videocam-outline"
-                  size={20}
-                  color="#0F766E"
-                  style={{ marginLeft: 10 }}
-                />
-              </View>
-            </TouchableOpacity>
 
             {/* Feed Tabs */}
             <View style={styles.feedTabsRow}>
@@ -5802,12 +5448,20 @@ const styles = StyleSheet.create({
     borderColor: "#00A66A33",
   },
   feedFilterTxt: { fontSize: 12, fontWeight: "600", color: "#00A66A" },
-  storiesRow: { paddingHorizontal: 16, paddingBottom: 16, gap: 12 },
-  storyItem: { alignItems: "center", width: 60 },
+  storiesRow: { paddingHorizontal: 7, paddingTop: 5, paddingBottom: 3, gap: 12 },
+  storiesDivider: {
+    width: "85%",
+    height: 2,
+    backgroundColor: "#E0E0E0",
+    borderRadius: 1,
+    alignSelf: "center",
+    marginVertical: 8,
+  },
+  storyItem: { alignItems: "center", width: 70 },
   storyAvatarCreate: {
     width: 60,
-    height: 60,
-    borderRadius: 30,
+    height: 58,
+    borderRadius: 20,
     position: "relative",
   },
   storyCreateInner: {
@@ -5850,7 +5504,7 @@ const styles = StyleSheet.create({
   },
   storyAvatarInitials: { fontSize: 16, fontWeight: "800", color: "#FFF" },
   storyName: {
-    fontSize: 10,
+    fontSize: 11,
     fontWeight: "500",
     color: "#555",
     marginTop: 5,
@@ -6074,7 +5728,7 @@ const styles = StyleSheet.create({
   createModalInput: {
     fontSize: 16,
     color: "#222",
-    lineHeight: 24,
+    lineHeight: 20,
     minHeight: 120,
     textAlignVertical: "top",
   },
