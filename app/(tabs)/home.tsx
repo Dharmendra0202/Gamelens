@@ -5501,7 +5501,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     paddingHorizontal: 14,
-    paddingTop: 44,
+    paddingTop: 40,
     paddingBottom: 10,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 3 },
@@ -5509,7 +5509,7 @@ const styles = StyleSheet.create({
     shadowRadius: 6,
     elevation: 6,
   },
-  headerLeft: { flexDirection: "row", alignItems: "center", gap: 10 },
+  headerLeft: { flexDirection: "row", alignItems: "center", gap: 2 },
   menuButton: { padding: 4 },
   headerTitle: {
     fontSize: 22,
@@ -5518,8 +5518,8 @@ const styles = StyleSheet.create({
     letterSpacing: 1,
   },
   headerTitleOrange: { color: "#6EE7B7" },
-  headerRight: { flexDirection: "row", gap: 6, marginRight: -2 },
-  iconButton: { padding: 7 },
+  headerRight: { flexDirection: "row", gap: 1, marginRight: -4 },
+  iconButton: { padding: 6 },
 
   // ── Premium Profile Card ─────────────────────────────────────────
   profileCard: {

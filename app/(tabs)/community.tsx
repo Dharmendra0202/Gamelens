@@ -97,13 +97,18 @@ export default function CommunityScreen() {
           end={{ x: 1, y: 1 }}
           style={styles.header}
         >
-          <Text style={styles.headerTitle}>Community</Text>
+          <View style={styles.headerLeft}>
+            <Text style={styles.headerTitle}>Community</Text>
+          </View>
           <View style={styles.headerRight}>
             <TouchableOpacity style={styles.iconButton}>
-              <Ionicons name="search" size={24} color="#FFF" />
+              <Ionicons name="search" size={22} color="#FFF" />
             </TouchableOpacity>
             <TouchableOpacity style={styles.iconButton}>
-              <Ionicons name="notifications-outline" size={24} color="#FFF" />
+              <Ionicons name="chatbubble-outline" size={22} color="#FFF" />
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.iconButton}>
+              <Ionicons name="notifications-outline" size={22} color="#FFF" />
             </TouchableOpacity>
           </View>
         </LinearGradient>
@@ -326,26 +331,29 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    paddingHorizontal: 16,
-    paddingTop: 35,
-    paddingBottom: 12,
+    paddingHorizontal: 14,
+    paddingTop: 40,
+    paddingBottom: 10,
     shadowColor: "#000",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 8,
-    elevation: 8,
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.25,
+    shadowRadius: 6,
+    elevation: 6,
   },
+  headerLeft: { flexDirection: "row", alignItems: "center", gap: 2 },
   headerTitle: {
-    fontSize: 24,
-    fontWeight: "bold",
+    fontSize: 22,
+    fontWeight: "800",
     color: "#FFF",
+    letterSpacing: 1,
   },
   headerRight: {
     flexDirection: "row",
-    gap: 12,
+    gap: 1,
+    marginRight: -4,
   },
   iconButton: {
-    padding: 8,
+    padding: 6,
   },
   tabsContainer: {
     flexDirection: "row",
