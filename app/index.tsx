@@ -394,6 +394,8 @@ export default function AuthScreen() {
   const [userFocus, setUserFocus] = useState(false);
   const [passFocus, setPassFocus] = useState(false);
   const [loginPressed, setLoginPressed] = useState(false);
+  const [loginRole, setLoginRole] = useState<"user" | "turf_owner" | "admin">("user");
+  const [showLoginDrawer, setShowLoginDrawer] = useState(false);
 
   // Signup state
   const [fullName, setFullName] = useState("");
@@ -691,28 +693,61 @@ export default function AuthScreen() {
 
               <View style={styles.dividerRow}>
                 <View style={styles.dividerLine} />
-                <Text style={styles.orText}>or sign in with</Text>
+                <Text style={styles.orText}>or</Text>
                 <View style={styles.dividerLine} />
               </View>
 
-              <View style={styles.socialContainer}>
-                {(["G", "f"] as const).map((label, i) => (
+              {/* Google button with expandable drawer */}
+              <View style={styles.drawerContainer}>
+                <View style={styles.googleRow}>
                   <TouchableOpacity
-                    key={i}
-                    style={styles.socialButton}
+                    style={styles.googleButton}
                     activeOpacity={0.75}
-                    onPress={() => console.log(`${label} login clicked`)}
+                    onPress={() => console.log("Google login clicked")}
                   >
-                    <Text style={styles.socialIcon}>{label}</Text>
+                    <Text style={styles.socialIcon}>G</Text>
+                    <Text style={styles.googleLabel}>Sign in with Google</Text>
                   </TouchableOpacity>
-                ))}
-                <TouchableOpacity
-                  style={styles.socialButton}
-                  activeOpacity={0.75}
-                  onPress={() => console.log("Twitter login clicked")}
-                >
-                  <Ionicons name="logo-twitter" size={22} color="#0EA5E9" />
-                </TouchableOpacity>
+                  <TouchableOpacity
+                    style={styles.drawerChevron}
+                    activeOpacity={0.6}
+                    onPress={() => setShowLoginDrawer(!showLoginDrawer)}
+                  >
+                    <Ionicons
+                      name={showLoginDrawer ? "chevron-up" : "chevron-down"}
+                      size={18}
+                      color="#94A3B8"
+                    />
+                  </TouchableOpacity>
+                </View>
+
+                {showLoginDrawer && (
+                  <View style={styles.drawerOptions}>
+                    <TouchableOpacity
+                      style={styles.drawerOption}
+                      activeOpacity={0.75}
+                      onPress={() => {
+                        setLoginRole("turf_owner");
+                        console.log("Login as Turf Owner");
+                      }}
+                    >
+                      <Ionicons name="football-outline" size={18} color="#0F766E" />
+                      <Text style={styles.drawerOptionText}>Login as Turf Owner</Text>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity
+                      style={[styles.drawerOption, { borderBottomWidth: 0 }]}
+                      activeOpacity={0.75}
+                      onPress={() => {
+                        setLoginRole("admin");
+                        console.log("Login as Admin");
+                      }}
+                    >
+                      <Ionicons name="shield-outline" size={18} color="#7C3AED" />
+                      <Text style={styles.drawerOptionText}>Login as Admin</Text>
+                    </TouchableOpacity>
+                  </View>
+                )}
               </View>
 
               <View style={styles.signupContainer}>
@@ -885,7 +920,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     width: SCREEN_WIDTH,
     backgroundColor: "#F0F7F4",
-    paddingVertical: 32,
+    paddingVertical: 50,
   },
   authContent: {
     width: "100%",
@@ -925,14 +960,14 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(15, 118, 110, 0.22)",
   },
   cricketIcon: {
-    fontSize: 44,
+    fontSize: 48,
   },
   appName: {
-    fontSize: 34,
+    fontSize: 30,
     fontWeight: "900",
     color: "#0F172A",
     letterSpacing: 3,
-    marginBottom: 8,
+    marginBottom: 5,
     textShadowColor: "rgba(0,166,106,0.12)",
     textShadowOffset: { width: 0, height: 4 },
     textShadowRadius: 12,
@@ -962,13 +997,13 @@ const styles = StyleSheet.create({
     color: "#0F172A",
     fontWeight: "800",
     letterSpacing: 0.2,
-    marginBottom: 4,
+    marginBottom: 2,
   },
   loginSubtitle: {
     fontSize: 14,
     color: "#64748B",
     fontWeight: "500",
-    marginBottom: 24,
+    marginBottom: 14,
   },
 
   // Inputs
@@ -978,9 +1013,9 @@ const styles = StyleSheet.create({
     width: "100%",
     backgroundColor: "#F8FAFC",
     borderRadius: 16,
-    borderWidth: 1.5,
+    borderWidth: 1,
     borderColor: "#E2EAE6",
-    marginBottom: 14,
+    marginBottom: 10,
     paddingHorizontal: 14,
     shadowColor: "#0F766E",
     shadowOffset: { width: 0, height: 4 },
@@ -1007,7 +1042,7 @@ const styles = StyleSheet.create({
   },
   forgotPassword: {
     alignSelf: "flex-end",
-    marginBottom: 20,
+    marginBottom: 10,
     paddingVertical: 2,
   },
   forgotPasswordText: {
@@ -1026,7 +1061,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.35,
     shadowRadius: 20,
     elevation: 10,
-    marginBottom: 24,
+    marginBottom: 12,
   },
   loginButtonPressed: {
     shadowOpacity: 0.15,
@@ -1050,7 +1085,7 @@ const styles = StyleSheet.create({
   dividerRow: {
     flexDirection: "row",
     alignItems: "center",
-    marginBottom: 18,
+    marginBottom: 12,
     gap: 10,
   },
   dividerLine: {
@@ -1064,32 +1099,60 @@ const styles = StyleSheet.create({
     fontWeight: "600",
   },
 
-  // Social
-  socialContainer: {
-    flexDirection: "row",
-    gap: 14,
-    marginBottom: 24,
-    justifyContent: "center",
-  },
-  socialButton: {
-    width: 54,
-    height: 54,
-    backgroundColor: "#F8FAFC",
-    borderRadius: 16,
-    justifyContent: "center",
-    alignItems: "center",
-    borderWidth: 1.5,
-    borderColor: "#E2EAE6",
-    shadowColor: "#0F766E",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.06,
-    shadowRadius: 10,
-    elevation: 3,
-  },
+  // Social & Drawer
   socialIcon: {
-    fontSize: 22,
+    fontSize: 18,
     fontWeight: "800",
     color: "#2563EB",
+  },
+  drawerContainer: {
+    width: "100%",
+    borderRadius: 14,
+    borderWidth: 1.5,
+    borderColor: "#E2EAE6",
+    backgroundColor: "#F8FAFC",
+    overflow: "hidden",
+    marginBottom: 20,
+  },
+  googleButton: {
+    flex: 1,
+    flexDirection: "row",
+    alignItems: "center",
+    paddingVertical: 14,
+    paddingLeft: 16,
+    gap: 10,
+  },
+  googleRow: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  drawerChevron: {
+    paddingVertical: 14,
+    paddingHorizontal: 14,
+  },
+  googleLabel: {
+    flex: 1,
+    fontSize: 14,
+    fontWeight: "600",
+    color: "#0F172A",
+  },
+  drawerOptions: {
+    borderTopWidth: 1,
+    borderTopColor: "#E2EAE6",
+  },
+  drawerOption: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingVertical: 14,
+    paddingHorizontal: 16,
+    gap: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: "#E2EAE6",
+  },
+  drawerOptionText: {
+    fontSize: 14,
+    fontWeight: "600",
+    color: "#0F172A",
   },
 
   // Signup row
