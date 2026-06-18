@@ -18,7 +18,7 @@ import HomeScreen from './home';
 import LookingScreen from './looking';
 import MyCricketScreen from './my-cricket';
 import CommunityScreen from './community';
-import StoreScreen from './store';
+import StoreScreen from './Turf hub';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 const TAB_BAR_HEIGHT = 60;
@@ -28,7 +28,7 @@ const TABS = [
   { key: 'looking', label: 'Looking', icon: 'search-outline' as const, iconFocused: 'search' as const },
   { key: 'my-cricket', label: 'My Cricket', icon: 'baseball-outline' as const, iconFocused: 'baseball' as const },
   { key: 'community', label: 'Community', icon: 'people-outline' as const, iconFocused: 'people' as const },
-  { key: 'store', label: 'Store', icon: 'bag-outline' as const, iconFocused: 'bag' as const },
+  { key: 'store', label: 'Turf Hub', icon: 'bag-outline' as const, iconFocused: 'bag' as const },
 ];
 
 // Animated tab icon
