@@ -18,7 +18,7 @@ import HomeScreen from './home';
 import LookingScreen from './looking';
 import MyCricketScreen from './my-cricket';
 import CommunityScreen from './community';
-import StoreScreen from './store';
+import StoreScreen from './Turf hub';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 const TAB_BAR_HEIGHT = 60;
