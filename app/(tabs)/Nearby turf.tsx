@@ -1,8 +1,14 @@
 import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
-import React, { useState } from "react";
+import * as Location from "expo-location";
+import React, { useEffect, useState } from "react";
 import {
+  ActivityIndicator,
+  Alert,
   Dimensions,
+  Linking,
+  Platform,
+  RefreshControl,
   ScrollView,
   StyleSheet,
   Text,
@@ -13,20 +19,72 @@ import {
 
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
 
-type FilterType = "all" | "cricket" | "football" | "badminton" | "multi";
+type TurfFilter = "all" | "nearby" | "available";
 
 export default function NearbyTurfScreen() {
   const [searchQuery, setSearchQuery] = useState("");
-  const [activeFilter, setActiveFilter] = useState<FilterType>("all");
-  const [sortBy, setSortBy] = useState<"distance" | "price" | "rating">("distance");
+  const [activeFilter, setActiveFilter] = useState<TurfFilter>("all");
+  const [locationGranted, setLocationGranted] = useState(false);
+  const [loadingLocation, setLoadingLocation] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
+  const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null);
 
-  const filters: { key: FilterType; label: string; icon: string }[] = [
-    { key: "all", label: "All", icon: "grid-outline" },
-    { key: "cricket", label: "Cricket", icon: "baseball-outline" },
-    { key: "football", label: "Football", icon: "football-outline" },
-    { key: "badminton", label: "Badminton", icon: "tennisball-outline" },
-    { key: "multi", label: "Multi-sport", icon: "fitness-outline" },
+  const filters: { key: TurfFilter; label: string }[] = [
+    { key: "all", label: "All" },
+    { key: "nearby", label: "Nearby" },
+    { key: "available", label: "Available Now" },
   ];
+
+  const requestLocation = async () => {
+    setLoadingLocation(true);
+    try {
+      const { status } = await Location.requestForegroundPermissionsAsync();
+      if (status === "granted") {
+        setLocationGranted(true);
+        const loc = await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.Balanced });
+        setUserLocation({ lat: loc.coords.latitude, lng: loc.coords.longitude });
+      } else {
+        Alert.alert(
+          "Location Required",
+          "Please enable location access in settings to find nearby cricket turfs.",
+          [
+            { text: "Cancel", style: "cancel" },
+            { text: "Open Settings", onPress: () => Linking.openSettings() },
+          ]
+        );
+      }
+    } catch (err) {
+      Alert.alert("Error", "Could not get your location. Please try again.");
+    } finally {
+      setLoadingLocation(false);
+    }
+  };
+
+  // Check location on mount
+  useEffect(() => {
+    (async () => {
+      const { status } = await Location.getForegroundPermissionsAsync();
+      if (status === "granted") {
+        setLocationGranted(true);
+        try {
+          const loc = await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.Balanced });
+          setUserLocation({ lat: loc.coords.latitude, lng: loc.coords.longitude });
+        } catch {}
+      }
+    })();
+  }, []);
+
+  const onRefresh = async () => {
+    setRefreshing(true);
+    if (locationGranted) {
+      try {
+        const loc = await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.Balanced });
+        setUserLocation({ lat: loc.coords.latitude, lng: loc.coords.longitude });
+      } catch {}
+    }
+    // TODO: Refresh turf list from backend
+    setTimeout(() => setRefreshing(false), 1000);
+  };
 
   return (
     <View style={styles.container}>
@@ -43,11 +101,8 @@ export default function NearbyTurfScreen() {
           </Text>
         </View>
         <View style={styles.headerRight}>
-          <TouchableOpacity style={styles.iconButton}>
-            <Ionicons name="search" size={22} color="#FFF" />
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.iconButton}>
-            <Ionicons name="filter-outline" size={22} color="#FFF" />
+          <TouchableOpacity style={styles.iconButton} onPress={requestLocation}>
+            <Ionicons name="navigate-outline" size={22} color="#FFF" />
           </TouchableOpacity>
           <TouchableOpacity style={styles.iconButton}>
             <Ionicons name="notifications-outline" size={22} color="#FFF" />
@@ -55,17 +110,22 @@ export default function NearbyTurfScreen() {
         </View>
       </LinearGradient>
 
-      <ScrollView showsVerticalScrollIndicator={false} style={styles.content}>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        style={styles.content}
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#0F766E" />}
+      >
         {/* Search Bar */}
         <View style={styles.searchSection}>
           <View style={styles.searchBar}>
             <Ionicons name="search" size={18} color="#94A3B8" />
             <TextInput
               style={styles.searchInput}
-              placeholder="Search turfs, locations..."
+              placeholder="Search cricket turfs nearby..."
               placeholderTextColor="#94A3B8"
               value={searchQuery}
               onChangeText={setSearchQuery}
+              returnKeyType="search"
             />
             {searchQuery.length > 0 && (
               <TouchableOpacity onPress={() => setSearchQuery("")}>
@@ -74,7 +134,8 @@ export default function NearbyTurfScreen() {
             )}
           </View>
         </View>
-        {/* Sport Filters */}
+
+        {/* Filters */}
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
@@ -83,96 +144,75 @@ export default function NearbyTurfScreen() {
           {filters.map((filter) => (
             <TouchableOpacity
               key={filter.key}
-              style={[
-                styles.filterChip,
-                activeFilter === filter.key && styles.filterChipActive,
-              ]}
+              style={[styles.filterChip, activeFilter === filter.key && styles.filterChipActive]}
               onPress={() => setActiveFilter(filter.key)}
               activeOpacity={0.8}
             >
-              <Ionicons
-                name={filter.icon as any}
-                size={16}
-                color={activeFilter === filter.key ? "#FFF" : "#0F766E"}
-              />
-              <Text
-                style={[
-                  styles.filterText,
-                  activeFilter === filter.key && styles.filterTextActive,
-                ]}
-              >
+              <Text style={[styles.filterText, activeFilter === filter.key && styles.filterTextActive]}>
                 {filter.label}
               </Text>
             </TouchableOpacity>
           ))}
         </ScrollView>
 
-        {/* Sort Options */}
-        <View style={styles.sortRow}>
-          <Text style={styles.sortLabel}>Sort by:</Text>
-          {(["distance", "price", "rating"] as const).map((option) => (
-            <TouchableOpacity
-              key={option}
-              style={[styles.sortChip, sortBy === option && styles.sortChipActive]}
-              onPress={() => setSortBy(option)}
-            >
-              <Text style={[styles.sortText, sortBy === option && styles.sortTextActive]}>
-                {option.charAt(0).toUpperCase() + option.slice(1)}
-              </Text>
-            </TouchableOpacity>
-          ))}
-        </View>
-
-        {/* Location Access Card */}
-        <View style={styles.locationCard}>
-          <View style={styles.locationIconWrap}>
-            <Ionicons name="location" size={28} color="#0F766E" />
+        {/* Location Status */}
+        {locationGranted && userLocation && (
+          <View style={styles.locationStatus}>
+            <Ionicons name="location" size={14} color="#059669" />
+            <Text style={styles.locationStatusText}>
+              Location active • Pull to refresh
+            </Text>
           </View>
-          <Text style={styles.locationTitle}>Enable Location</Text>
-          <Text style={styles.locationDesc}>
-            Allow location access to find turfs near you and get accurate distance info
-          </Text>
-          <TouchableOpacity style={styles.locationBtn} activeOpacity={0.8}>
-            <LinearGradient
-              colors={["#0F766E", "#064E3B"]}
-              style={styles.locationBtnGrad}
-            >
-              <Ionicons name="navigate" size={16} color="#FFF" />
-              <Text style={styles.locationBtnText}>Enable Location</Text>
-            </LinearGradient>
-          </TouchableOpacity>
-        </View>
+        )}
 
-        {/* Empty State — No Turfs */}
-        <View style={styles.emptySection}>
-          <View style={styles.emptyIconWrap}>
-            <Ionicons name="football-outline" size={52} color="#CBD5E1" />
-          </View>
-          <Text style={styles.emptyTitle}>No turfs found nearby</Text>
-          <Text style={styles.emptyDesc}>
-            Enable location or try searching for a specific area to discover available turfs
-          </Text>
-        </View>
-
-        {/* How it works */}
-        <View style={styles.howItWorksCard}>
-          <Text style={styles.howTitle}>How it works</Text>
-          {[
-            { step: "1", icon: "search-outline", title: "Search", desc: "Find turfs by sport, location or name" },
-            { step: "2", icon: "calendar-outline", title: "Book", desc: "Choose a time slot that suits you" },
-            { step: "3", icon: "football-outline", title: "Play", desc: "Show up and enjoy your game" },
-          ].map((item, index) => (
-            <View key={index} style={styles.howStep}>
-              <View style={styles.howStepNum}>
-                <Text style={styles.howStepNumText}>{item.step}</Text>
-              </View>
-              <View style={styles.howStepContent}>
-                <Text style={styles.howStepTitle}>{item.title}</Text>
-                <Text style={styles.howStepDesc}>{item.desc}</Text>
-              </View>
+        {/* Location Access Card — shown when no permission */}
+        {!locationGranted && (
+          <View style={styles.locationCard}>
+            <View style={styles.locationIconWrap}>
+              <LinearGradient colors={["#D1FAE5", "#A7F3D0"]} style={styles.locationIconGrad}>
+                <Ionicons name="location" size={32} color="#059669" />
+              </LinearGradient>
             </View>
-          ))}
-        </View>
+            <Text style={styles.locationTitle}>Find Cricket Turfs Near You</Text>
+            <Text style={styles.locationDesc}>
+              Enable location to discover cricket grounds, practice nets, and turf facilities in your area
+            </Text>
+            <TouchableOpacity
+              style={styles.locationBtn}
+              onPress={requestLocation}
+              activeOpacity={0.85}
+              disabled={loadingLocation}
+            >
+              <LinearGradient colors={["#00A66A", "#064E3B"]} style={styles.locationBtnGrad}>
+                {loadingLocation ? (
+                  <ActivityIndicator size="small" color="#FFF" />
+                ) : (
+                  <>
+                    <Ionicons name="navigate" size={18} color="#FFF" />
+                    <Text style={styles.locationBtnText}>Enable Location</Text>
+                  </>
+                )}
+              </LinearGradient>
+            </TouchableOpacity>
+          </View>
+        )}
+
+        {/* Empty State — No turfs found */}
+        {locationGranted && (
+          <View style={styles.emptyCard}>
+            <View style={styles.emptyIconWrap}>
+              <Ionicons name="baseball-outline" size={48} color="#CBD5E1" />
+            </View>
+            <Text style={styles.emptyTitle}>No cricket turfs found</Text>
+            <Text style={styles.emptyDesc}>
+              We're still building our turf network in your area. Check back soon or try a different location.
+            </Text>
+            <TouchableOpacity style={styles.retryBtn} onPress={onRefresh}>
+              <Ionicons name="refresh" size={16} color="#0F766E" />
+              <Text style={styles.retryBtnText}>Refresh</Text>
+            </TouchableOpacity>
+          </View>
+        )}
 
         <View style={{ height: 80 }} />
       </ScrollView>
@@ -181,9 +221,9 @@ export default function NearbyTurfScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#F0FDF4" },
+  container: { flex: 1, backgroundColor: "#F8FDF9" },
 
-  // Header — matches home screen
+  // Header
   header: {
     flexDirection: "row",
     justifyContent: "space-between",
@@ -203,105 +243,99 @@ const styles = StyleSheet.create({
   headerRight: { flexDirection: "row", gap: 1, marginRight: -4 },
   iconButton: { padding: 6 },
 
+  content: { flex: 1 },
+
   // Search
-  searchSection: { paddingHorizontal: 16, paddingTop: 14, paddingBottom: 6 },
+  searchSection: { paddingHorizontal: 16, paddingTop: 14, paddingBottom: 4 },
   searchBar: {
     flexDirection: "row",
     alignItems: "center",
     backgroundColor: "#FFF",
     borderRadius: 14,
     paddingHorizontal: 14,
-    paddingVertical: 10,
+    paddingVertical: 12,
     gap: 10,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.04,
-    shadowRadius: 4,
-    elevation: 2,
+    shadowColor: "#0F766E",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.06,
+    shadowRadius: 8,
+    elevation: 3,
   },
   searchInput: { flex: 1, fontSize: 14, color: "#0F172A", fontWeight: "500" },
 
-  // Content
-  content: { flex: 1 },
-
   // Filters
-  filterRow: { paddingHorizontal: 16, paddingVertical: 14, gap: 8 },
+  filterRow: { paddingHorizontal: 16, paddingVertical: 12, gap: 8 },
   filterChip: {
-    flexDirection: "row",
-    alignItems: "center",
-    paddingHorizontal: 14,
+    paddingHorizontal: 16,
     paddingVertical: 9,
-    borderRadius: 12,
+    borderRadius: 20,
     backgroundColor: "#FFF",
     borderWidth: 1.5,
     borderColor: "#D1FAE5",
-    gap: 6,
   },
   filterChipActive: { backgroundColor: "#0F766E", borderColor: "#0F766E" },
   filterText: { fontSize: 13, fontWeight: "600", color: "#0F766E" },
   filterTextActive: { color: "#FFF" },
 
-  // Sort
-  sortRow: {
+  // Location Status
+  locationStatus: {
     flexDirection: "row",
     alignItems: "center",
-    paddingHorizontal: 16,
-    marginBottom: 16,
-    gap: 8,
+    justifyContent: "center",
+    paddingVertical: 8,
+    gap: 6,
   },
-  sortLabel: { fontSize: 12, color: "#64748B", fontWeight: "500" },
-  sortChip: {
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 8,
-    backgroundColor: "#FFF",
-    borderWidth: 1,
-    borderColor: "#E2E8F0",
-  },
-  sortChipActive: { backgroundColor: "#064E3B", borderColor: "#064E3B" },
-  sortText: { fontSize: 12, fontWeight: "600", color: "#64748B" },
-  sortTextActive: { color: "#FFF" },
+  locationStatusText: { fontSize: 12, color: "#059669", fontWeight: "500" },
 
   // Location Card
   locationCard: {
     backgroundColor: "#FFF",
     marginHorizontal: 16,
-    borderRadius: 20,
-    padding: 24,
+    borderRadius: 22,
+    padding: 28,
     alignItems: "center",
+    marginTop: 8,
     marginBottom: 20,
     shadowColor: "#0F766E",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.06,
-    shadowRadius: 12,
-    elevation: 3,
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.08,
+    shadowRadius: 16,
+    elevation: 4,
   },
-  locationIconWrap: {
-    width: 64,
-    height: 64,
-    borderRadius: 32,
-    backgroundColor: "#D1FAE5",
+  locationIconWrap: { marginBottom: 18 },
+  locationIconGrad: {
+    width: 72,
+    height: 72,
+    borderRadius: 36,
     alignItems: "center",
     justifyContent: "center",
-    marginBottom: 16,
   },
-  locationTitle: { fontSize: 18, fontWeight: "700", color: "#0F172A", marginBottom: 8 },
-  locationDesc: { fontSize: 13, color: "#64748B", textAlign: "center", lineHeight: 20, marginBottom: 18 },
-  locationBtn: { width: "100%", borderRadius: 14, overflow: "hidden" },
+  locationTitle: { fontSize: 20, fontWeight: "800", color: "#0F172A", marginBottom: 10, textAlign: "center" },
+  locationDesc: { fontSize: 14, color: "#64748B", textAlign: "center", lineHeight: 22, marginBottom: 22, paddingHorizontal: 8 },
+  locationBtn: { width: "100%", borderRadius: 16, overflow: "hidden" },
   locationBtnGrad: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    paddingVertical: 14,
+    paddingVertical: 16,
     gap: 8,
   },
-  locationBtnText: { fontSize: 15, fontWeight: "700", color: "#FFF" },
+  locationBtnText: { fontSize: 16, fontWeight: "700", color: "#FFF" },
 
-  // Empty State
-  emptySection: {
+  // Empty Card
+  emptyCard: {
+    backgroundColor: "#FFF",
+    marginHorizontal: 16,
+    borderRadius: 20,
+    padding: 32,
     alignItems: "center",
-    paddingVertical: 30,
-    paddingHorizontal: 40,
+    marginTop: 8,
+    marginBottom: 20,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.04,
+    shadowRadius: 8,
+    elevation: 2,
   },
   emptyIconWrap: {
     width: 80,
@@ -310,40 +344,62 @@ const styles = StyleSheet.create({
     backgroundColor: "#F1F5F9",
     alignItems: "center",
     justifyContent: "center",
-    marginBottom: 16,
+    marginBottom: 18,
   },
-  emptyTitle: { fontSize: 16, fontWeight: "700", color: "#334155", marginBottom: 8 },
-  emptyDesc: { fontSize: 13, color: "#94A3B8", textAlign: "center", lineHeight: 20 },
+  emptyTitle: { fontSize: 17, fontWeight: "700", color: "#334155", marginBottom: 8 },
+  emptyDesc: { fontSize: 13, color: "#94A3B8", textAlign: "center", lineHeight: 20, marginBottom: 18 },
+  retryBtn: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: 18,
+    paddingVertical: 10,
+    borderRadius: 10,
+    backgroundColor: "#D1FAE5",
+    gap: 6,
+  },
+  retryBtnText: { fontSize: 13, fontWeight: "600", color: "#0F766E" },
 
-  // How it works
-  howItWorksCard: {
+  // Info Card
+  infoCard: {
     backgroundColor: "#FFF",
     marginHorizontal: 16,
     borderRadius: 20,
     padding: 20,
+    marginBottom: 16,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.04,
     shadowRadius: 8,
     elevation: 2,
   },
-  howTitle: { fontSize: 16, fontWeight: "700", color: "#0F172A", marginBottom: 16 },
-  howStep: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginBottom: 16,
-    gap: 14,
-  },
-  howStepNum: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
+  infoTitle: { fontSize: 16, fontWeight: "700", color: "#0F172A", marginBottom: 16 },
+  infoRow: { flexDirection: "row", alignItems: "center", marginBottom: 14, gap: 12 },
+  infoIconBg: {
+    width: 40,
+    height: 40,
+    borderRadius: 12,
     backgroundColor: "#D1FAE5",
     alignItems: "center",
     justifyContent: "center",
   },
-  howStepNumText: { fontSize: 14, fontWeight: "800", color: "#0F766E" },
-  howStepContent: { flex: 1 },
-  howStepTitle: { fontSize: 14, fontWeight: "700", color: "#0F172A" },
-  howStepDesc: { fontSize: 12, color: "#64748B", marginTop: 2 },
+  infoContent: { flex: 1 },
+  infoLabel: { fontSize: 14, fontWeight: "600", color: "#0F172A" },
+  infoDesc: { fontSize: 12, color: "#94A3B8", marginTop: 2 },
+
+  // Tip Card
+  tipCard: {
+    marginHorizontal: 16,
+    borderRadius: 16,
+    overflow: "hidden",
+    marginBottom: 16,
+  },
+  tipGrad: {
+    flexDirection: "row",
+    alignItems: "flex-start",
+    padding: 16,
+    gap: 12,
+  },
+  tipContent: { flex: 1 },
+  tipTitle: { fontSize: 13, fontWeight: "700", color: "#059669" },
+  tipText: { fontSize: 12, color: "#334155", marginTop: 4, lineHeight: 18 },
 });
