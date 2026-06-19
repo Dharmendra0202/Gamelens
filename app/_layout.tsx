@@ -59,6 +59,14 @@ export default function RootLayout() {
               options={{ headerShown: false }}
             />
             <Stack.Screen
+              name="turf-management"
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="admin"
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
               name="modal"
               options={{
                 presentation: "transparentModal",

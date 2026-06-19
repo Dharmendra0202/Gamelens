@@ -58,8 +58,17 @@ export default function HomeScreen() {
   const { signOut, profile: supaProfile } = useAuth();
 
   const handleLogout = async () => {
-    await signOut();
-    router.replace("/");
+    try {
+      setShowMenuDrawer(false);
+      await signOut();
+      while (router.canGoBack()) {
+        router.back();
+      }
+      router.replace("/");
+    } catch (e) {
+      console.error("Logout error:", e);
+      router.replace("/");
+    }
   };
   const [selectedPlayer, setSelectedPlayer] = useState<any>(null);
   const [showPlayerModal, setShowPlayerModal] = useState(false);
@@ -1938,7 +1947,6 @@ export default function HomeScreen() {
                     },
                   ]}
                   onPress={() => {
-                    setShowMenuDrawer(false);
                     handleLogout();
                   }}
                 >

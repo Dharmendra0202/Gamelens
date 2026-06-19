@@ -17,18 +17,18 @@ import {
 import HomeScreen from './home';
 import LookingScreen from './looking';
 import MyCricketScreen from './my-cricket';
-import CommunityScreen from './community';
-import StoreScreen from './Turf hub';
+import CommunityScreen from './Nearby turf';
+import StoreScreen from './Profile';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
-const TAB_BAR_HEIGHT = 60;
+const TAB_BAR_HEIGHT = 50;
 
 const TABS = [
   { key: 'home', label: 'Home', icon: 'home' as const, iconFocused: 'home' as const },
   { key: 'looking', label: 'Looking', icon: 'search-outline' as const, iconFocused: 'search' as const },
   { key: 'my-cricket', label: 'My Cricket', icon: 'baseball-outline' as const, iconFocused: 'baseball' as const },
-  { key: 'community', label: 'Community', icon: 'people-outline' as const, iconFocused: 'people' as const },
-  { key: 'store', label: 'Turf Hub', icon: 'bag-outline' as const, iconFocused: 'bag' as const },
+  { key: 'community', label: 'Nearby Turf', icon: 'location-outline' as const, iconFocused: 'location' as const },
+  { key: 'store', label: 'Profile', icon: 'person-outline' as const, iconFocused: 'person' as const },
 ];
 
 // Animated tab icon
@@ -63,7 +63,7 @@ function AnimatedTabIcon({
 
   return (
     <Animated.View style={{ transform: [{ scale }], opacity }}>
-      <Ionicons name={name} size={20} color={color} />
+      <Ionicons name={name} size={21} color={color} />
     </Animated.View>
   );
 }
@@ -252,8 +252,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFF',
     borderTopWidth: 1,
     borderTopColor: '#E5E5E5',
-    paddingTop: 5,
-    paddingBottom: 5,
+    paddingTop: 2,
+    paddingBottom: 1,
     ...Platform.select({
       ios: {
         shadowColor: '#000',
