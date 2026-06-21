@@ -1,9 +1,10 @@
 import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import {
   Alert,
+  Animated,
   ScrollView,
   StyleSheet,
   Switch,
@@ -17,7 +18,6 @@ import { useAuth } from "@/hooks/use-auth";
 export default function ProfileScreen() {
   const router = useRouter();
   const { signOut, profile } = useAuth();
-  const [darkMode, setDarkMode] = useState(false);
   const [notifications, setNotifications] = useState(true);
   const [biometricLock, setBiometricLock] = useState(false);
 
@@ -65,230 +65,252 @@ export default function ProfileScreen() {
       case "Help & Support":
         router.push("/help-support" as never);
         break;
-      case "Special Offers":
-        router.push("/special-offers" as never);
-        break;
     }
   };
 
+  // Animated press scale for menu items
+  const createPressAnim = () => {
+    const scale = useRef(new Animated.Value(1)).current;
+    const onPressIn = () => Animated.spring(scale, { toValue: 0.96, useNativeDriver: true, tension: 200, friction: 10 }).start();
+    const onPressOut = () => Animated.spring(scale, { toValue: 1, useNativeDriver: true, tension: 200, friction: 10 }).start();
+    return { scale, onPressIn, onPressOut };
+  };
+
+  const menuItems = [
+    { icon: "shield-checkmark-outline", label: "Your Dashboard", desc: "Manage your bookings and services", color: "#0D9488" },
+    { icon: "calendar-outline", label: "My Bookings", desc: "View your upcoming bookings", color: "#2563EB" },
+    { icon: "location-outline", label: "Saved Addresses", desc: "Manage your locations", color: "#7C3AED" },
+    { icon: "card-outline", label: "Payment Methods", desc: "Cards, UPI, and saved options", color: "#059669" },
+    { icon: "headset-outline", label: "Help & Support", desc: "Call, chat, or raise a ticket", color: "#DC2626" },
+  ];
+
   return (
     <View style={styles.container}>
-      <ScrollView showsVerticalScrollIndicator={false}>
-        {/* Profile Header Card */}
-        <LinearGradient
-          colors={["#0D9488", "#0F766E", "#064E3B"]}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 1 }}
-          style={styles.headerCard}
-        >
+      {/* Background gradient overlay */}
+      <LinearGradient
+        colors={["#0F766E", "#064E3B", "#0B3D2E", "#091E1A"]}
+        locations={[0, 0.3, 0.6, 1]}
+        style={StyleSheet.absoluteFill}
+      />
+
+      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 90 }}>
+        {/* Profile Header */}
+        <View style={styles.headerSection}>
           <View style={styles.profileRow}>
             <View style={styles.avatar}>
-              <Text style={styles.avatarText}>{initials}</Text>
+              <LinearGradient
+                colors={["rgba(255,255,255,0.2)", "rgba(255,255,255,0.05)"]}
+                style={styles.avatarInner}
+              >
+                <Text style={styles.avatarText}>{initials}</Text>
+              </LinearGradient>
             </View>
             <View style={styles.profileInfo}>
               <Text style={styles.profileName}>{userName}</Text>
-              <Text style={styles.profileEmail}>{userPhone}</Text>
+              <Text style={styles.profileSub}>{userPhone}</Text>
             </View>
-            <TouchableOpacity style={styles.editBtn} onPress={handleEditProfile}>
-              <Ionicons name="create-outline" size={16} color="#0F766E" />
+            <TouchableOpacity style={styles.editBtn} onPress={handleEditProfile} activeOpacity={0.7}>
+              <Ionicons name="create-outline" size={15} color="#A7F3D0" />
               <Text style={styles.editBtnText}>Edit</Text>
             </TouchableOpacity>
           </View>
 
-          {/* Sign in with Google */}
-          <TouchableOpacity style={styles.googleBtn} onPress={() => Alert.alert("Google Sign In", "Google authentication coming soon.")}>
-            <Text style={styles.googleIcon}>G</Text>
+          {/* Google Sign-in Glass Pill */}
+          <TouchableOpacity style={styles.googlePill} activeOpacity={0.75}>
+            <Text style={styles.googleG}>G</Text>
             <Text style={styles.googleText}>Sign in with Google</Text>
-            <Ionicons name="arrow-forward" size={18} color="#FFF" />
+            <Ionicons name="arrow-forward" size={16} color="rgba(255,255,255,0.5)" />
           </TouchableOpacity>
-        </LinearGradient>
-
-        {/* Stats Row */}
-        <View style={styles.statsCard}>
-          <View style={styles.statItem}>
-            <Text style={styles.statValue}>{profile?.matches_played || 0}</Text>
-            <Text style={styles.statLabel}>Matches</Text>
-          </View>
-          <View style={styles.statDivider} />
-          <View style={styles.statItem}>
-            <Text style={styles.statValue}>{profile?.friends_count || 0}</Text>
-            <Text style={styles.statLabel}>Friends</Text>
-          </View>
-          <View style={styles.statDivider} />
-          <View style={styles.statItem}>
-            <Text style={styles.statValue}>{profile?.posts_count || 0}</Text>
-            <Text style={styles.statLabel}>Posts</Text>
-          </View>
         </View>
 
-        {/* Quick Actions */}
-        <View style={styles.sectionHeader}>
-          <Text style={styles.sectionTitle}>Quick Actions</Text>
-        </View>
-        <View style={styles.menuCard}>
+        {/* Stats Glass Chips */}
+        <View style={styles.statsRow}>
           {[
-            { icon: "shield-checkmark-outline", label: "Your Dashboard", desc: "Manage your bookings and services", color: "#0D9488" },
-            { icon: "calendar-outline", label: "My Bookings", desc: "View your upcoming bookings", color: "#2563EB" },
-            { icon: "location-outline", label: "Saved Addresses", desc: "Manage your locations", color: "#7C3AED" },
-            { icon: "card-outline", label: "Payment Methods", desc: "Cards, UPI, and saved options", color: "#059669" },
-            { icon: "headset-outline", label: "Help & Support", desc: "Call, chat, or raise a ticket", color: "#DC2626" },
-          ].map((item, index) => (
-            <TouchableOpacity
-              key={index}
-              style={[styles.menuItem, index === 4 && { borderBottomWidth: 0 }]}
-              onPress={() => handleMenuPress(item.label)}
-              activeOpacity={0.7}
-            >
-              <View style={[styles.menuIconBg, { backgroundColor: item.color + "12" }]}>
-                <Ionicons name={item.icon as any} size={22} color={item.color} />
-              </View>
-              <View style={styles.menuTextWrap}>
-                <Text style={styles.menuLabel}>{item.label}</Text>
-                <Text style={styles.menuDesc}>{item.desc}</Text>
-              </View>
-              <Ionicons name="chevron-forward" size={18} color="#CBD5E1" />
-            </TouchableOpacity>
+            { value: profile?.matches_played || 0, label: "Matches", icon: "baseball-outline" },
+            { value: profile?.friends_count || 0, label: "Friends", icon: "people-outline" },
+            { value: profile?.posts_count || 0, label: "Posts", icon: "chatbubble-outline" },
+          ].map((stat, i) => (
+            <View key={i} style={styles.statChip}>
+              <LinearGradient
+                colors={["rgba(255,255,255,0.12)", "rgba(255,255,255,0.04)"]}
+                style={styles.statChipGrad}
+              >
+                <Ionicons name={stat.icon as any} size={16} color="rgba(167,243,208,0.7)" />
+                <Text style={styles.statValue}>{stat.value}</Text>
+                <Text style={styles.statLabel}>{stat.label}</Text>
+              </LinearGradient>
+            </View>
           ))}
         </View>
 
-        {/* Preferences */}
+        {/* Quick Actions — Glass Tiles */}
+        <View style={styles.sectionHeader}>
+          <Text style={styles.sectionTitle}>Quick Actions</Text>
+        </View>
+        <View style={styles.glassCard}>
+          <LinearGradient
+            colors={["rgba(255,255,255,0.08)", "rgba(255,255,255,0.02)"]}
+            style={styles.glassCardInner}
+          >
+            {menuItems.map((item, index) => (
+              <TouchableOpacity
+                key={index}
+                style={[styles.menuTile, index === menuItems.length - 1 && { borderBottomWidth: 0 }]}
+                onPress={() => handleMenuPress(item.label)}
+                activeOpacity={0.7}
+              >
+                <View style={[styles.menuIconWrap, { backgroundColor: item.color + "20" }]}>
+                  <Ionicons name={item.icon as any} size={20} color={item.color} />
+                </View>
+                <View style={styles.menuTextWrap}>
+                  <Text style={styles.menuLabel}>{item.label}</Text>
+                  <Text style={styles.menuDesc}>{item.desc}</Text>
+                </View>
+                <Ionicons name="chevron-forward" size={16} color="rgba(255,255,255,0.25)" />
+              </TouchableOpacity>
+            ))}
+          </LinearGradient>
+        </View>
+
+        {/* Preferences — Glass */}
         <View style={styles.sectionHeader}>
           <Text style={styles.sectionTitle}>Preferences</Text>
-          <Text style={styles.sectionSubtitle}>Control experience</Text>
+          <Text style={styles.sectionSub}>Control experience</Text>
         </View>
-        <View style={styles.menuCard}>
-          <View style={styles.prefItem}>
-            <View style={[styles.menuIconBg, { backgroundColor: "#1E293B12" }]}>
-              <Ionicons name="moon-outline" size={22} color="#1E293B" />
+        <View style={styles.glassCard}>
+          <LinearGradient
+            colors={["rgba(255,255,255,0.08)", "rgba(255,255,255,0.02)"]}
+            style={styles.glassCardInner}
+          >
+            <View style={styles.prefRow}>
+              <View style={[styles.menuIconWrap, { backgroundColor: "rgba(220,38,38,0.15)" }]}>
+                <Ionicons name="notifications-outline" size={20} color="#F87171" />
+              </View>
+              <Text style={styles.prefLabel}>Notifications</Text>
+              <Switch
+                value={notifications}
+                onValueChange={setNotifications}
+                trackColor={{ false: "rgba(255,255,255,0.1)", true: "#0D9488" }}
+                thumbColor="#FFF"
+              />
             </View>
-            <Text style={styles.prefLabel}>Dark mode</Text>
-            <Switch
-              value={darkMode}
-              onValueChange={setDarkMode}
-              trackColor={{ false: "#E2E8F0", true: "#0D9488" }}
-              thumbColor="#FFF"
-            />
-          </View>
 
-          <View style={styles.prefDivider} />
+            <View style={styles.prefDivider} />
 
-          <View style={styles.prefItem}>
-            <View style={[styles.menuIconBg, { backgroundColor: "#DC262612" }]}>
-              <Ionicons name="notifications-outline" size={22} color="#DC2626" />
+            <View style={styles.prefRow}>
+              <View style={[styles.menuIconWrap, { backgroundColor: "rgba(100,116,139,0.15)" }]}>
+                <Ionicons name="finger-print-outline" size={20} color="#94A3B8" />
+              </View>
+              <Text style={styles.prefLabel}>Biometric lock</Text>
+              <Switch
+                value={biometricLock}
+                onValueChange={setBiometricLock}
+                trackColor={{ false: "rgba(255,255,255,0.1)", true: "#0D9488" }}
+                thumbColor="#FFF"
+              />
             </View>
-            <Text style={styles.prefLabel}>Notifications</Text>
-            <Switch
-              value={notifications}
-              onValueChange={setNotifications}
-              trackColor={{ false: "#E2E8F0", true: "#0D9488" }}
-              thumbColor="#FFF"
-            />
-          </View>
-
-          <View style={styles.prefDivider} />
-
-          <View style={styles.prefItem}>
-            <View style={[styles.menuIconBg, { backgroundColor: "#64748B12" }]}>
-              <Ionicons name="finger-print-outline" size={22} color="#64748B" />
-            </View>
-            <Text style={styles.prefLabel}>Biometric lock</Text>
-            <Switch
-              value={biometricLock}
-              onValueChange={setBiometricLock}
-              trackColor={{ false: "#E2E8F0", true: "#0D9488" }}
-              thumbColor="#FFF"
-            />
-          </View>
+          </LinearGradient>
         </View>
 
-        {/* Logout Button */}
+        {/* Logout — Premium Red Glass */}
         <TouchableOpacity style={styles.logoutBtn} onPress={handleLogout} activeOpacity={0.8}>
-          <Ionicons name="log-out-outline" size={20} color="#DC2626" />
-          <Text style={styles.logoutText}>Logout</Text>
+          <LinearGradient
+            colors={["rgba(220,38,38,0.2)", "rgba(185,28,28,0.12)"]}
+            style={styles.logoutGrad}
+          >
+            <Ionicons name="log-out-outline" size={20} color="#FCA5A5" />
+            <Text style={styles.logoutText}>Logout</Text>
+          </LinearGradient>
         </TouchableOpacity>
 
         {/* Version */}
         <Text style={styles.versionText}>Version 1.0.0</Text>
-
-        <View style={{ height: 80 }} />
       </ScrollView>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#F8FAFC" },
+  container: { flex: 1 },
 
-  // Header Card
-  headerCard: {
-    paddingTop: 50,
-    paddingBottom: 20,
+  // Header
+  headerSection: {
+    paddingTop: 52,
+    paddingBottom: 24,
     paddingHorizontal: 20,
-    borderBottomLeftRadius: 24,
-    borderBottomRightRadius: 24,
   },
   profileRow: {
     flexDirection: "row",
     alignItems: "center",
-    marginBottom: 18,
+    marginBottom: 20,
   },
   avatar: {
-    width: 56,
-    height: 56,
-    borderRadius: 28,
-    backgroundColor: "rgba(255,255,255,0.2)",
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    borderWidth: 2,
+    borderColor: "rgba(167,243,208,0.3)",
+    overflow: "hidden",
+  },
+  avatarInner: {
+    flex: 1,
     alignItems: "center",
     justifyContent: "center",
-    borderWidth: 2,
-    borderColor: "rgba(255,255,255,0.4)",
   },
-  avatarText: { fontSize: 20, fontWeight: "800", color: "#FFF" },
+  avatarText: { fontSize: 22, fontWeight: "800", color: "#FFF" },
   profileInfo: { flex: 1, marginLeft: 14 },
-  profileName: { fontSize: 20, fontWeight: "800", color: "#FFF" },
-  profileEmail: { fontSize: 13, color: "rgba(255,255,255,0.65)", marginTop: 2 },
+  profileName: { fontSize: 21, fontWeight: "800", color: "#FFF", letterSpacing: 0.3 },
+  profileSub: { fontSize: 13, color: "rgba(167,243,208,0.6)", marginTop: 3 },
   editBtn: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#FFF",
+    backgroundColor: "rgba(255,255,255,0.08)",
+    borderWidth: 1,
+    borderColor: "rgba(167,243,208,0.2)",
     paddingHorizontal: 12,
     paddingVertical: 8,
     borderRadius: 10,
-    gap: 4,
+    gap: 5,
   },
-  editBtnText: { fontSize: 13, fontWeight: "600", color: "#0F766E" },
+  editBtnText: { fontSize: 12, fontWeight: "600", color: "#A7F3D0" },
 
-  // Google Button
-  googleBtn: {
+  // Google Pill
+  googlePill: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "rgba(255,255,255,0.15)",
+    backgroundColor: "rgba(255,255,255,0.06)",
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.1)",
     borderRadius: 14,
-    paddingVertical: 10,
-    paddingHorizontal: 12,
-    gap: 12,
+    paddingVertical: 11,
+    paddingHorizontal: 16,
+    gap: 10,
   },
-  googleIcon: { fontSize: 18, fontWeight: "800", color: "#FFF" },
-  googleText: { flex: 1, fontSize: 14, fontWeight: "600", color: "#FFF" },
+  googleG: { fontSize: 16, fontWeight: "800", color: "#FFF" },
+  googleText: { flex: 1, fontSize: 14, fontWeight: "600", color: "rgba(255,255,255,0.8)" },
 
-  // Stats Card
-  statsCard: {
+  // Stats
+  statsRow: {
     flexDirection: "row",
-    backgroundColor: "#FFF",
-    marginHorizontal: 2,
-    marginTop: -1,
-    // borderRadius: ,
-    paddingVertical: 8,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.05,
-    shadowRadius: 10,
-    elevation: 3,
-    marginBottom: 15,
+    paddingHorizontal: 16,
+    gap: 10,
+    marginBottom: 28,
   },
-  statItem: { flex: 1, alignItems: "center" },
-  statValue: { fontSize: 22, fontWeight: "800", color: "#0F172A" },
-  statLabel: { fontSize: 12, color: "#64748B", marginTop: 4, fontWeight: "500" },
-  statDivider: { width: 1, backgroundColor: "#E2E8F0" },
+  statChip: {
+    flex: 1,
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.08)",
+    overflow: "hidden",
+  },
+  statChipGrad: {
+    alignItems: "center",
+    paddingVertical: 16,
+    paddingHorizontal: 8,
+    gap: 4,
+  },
+  statValue: { fontSize: 22, fontWeight: "800", color: "#FFF", marginTop: 4 },
+  statLabel: { fontSize: 11, color: "rgba(167,243,208,0.5)", fontWeight: "500" },
 
   // Section Header
   sectionHeader: {
@@ -296,74 +318,79 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     paddingHorizontal: 20,
-    marginBottom: 7,
+    marginBottom: 12,
   },
-  sectionTitle: { fontSize: 16, fontWeight: "700", color: "#0F172A" },
-  sectionSubtitle: { fontSize: 12, color: "#64748B" },
+  sectionTitle: { fontSize: 15, fontWeight: "700", color: "rgba(255,255,255,0.75)", letterSpacing: 0.5 },
+  sectionSub: { fontSize: 11, color: "rgba(167,243,208,0.4)" },
 
-  // Menu Card
-  menuCard: {
-    backgroundColor: "#FFF",
+  // Glass Card
+  glassCard: {
     marginHorizontal: 16,
-    borderRadius: 10,
-    paddingHorizontal: 16,
-    marginBottom: 15,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.06,
-    shadowRadius: 6,
-    elevation: 3,
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.08)",
+    overflow: "hidden",
+    marginBottom: 24,
   },
-  menuItem: {
+  glassCardInner: {
+    paddingHorizontal: 16,
+    paddingVertical: 4,
+  },
+
+  // Menu Tiles
+  menuTile: {
     flexDirection: "row",
     alignItems: "center",
-    paddingVertical: 11,
-    borderBottomWidth: 1.3,
-    borderBottomColor: "#e9ebedff",
+    paddingVertical: 15,
+    borderBottomWidth: 1,
+    borderBottomColor: "rgba(255,255,255,0.05)",
     gap: 12,
   },
-  menuIconBg: {
+  menuIconWrap: {
     width: 40,
     height: 40,
-    borderRadius: 11,
+    borderRadius: 12,
     alignItems: "center",
     justifyContent: "center",
   },
   menuTextWrap: { flex: 1 },
-  menuLabel: { fontSize: 15, fontWeight: "600", color: "#0F172A" },
-  menuDesc: { fontSize: 12, color: "#94A3B8", marginTop: 2 },
+  menuLabel: { fontSize: 15, fontWeight: "600", color: "rgba(255,255,255,0.9)" },
+  menuDesc: { fontSize: 12, color: "rgba(255,255,255,0.35)", marginTop: 2 },
 
   // Preferences
-  prefItem: {
+  prefRow: {
     flexDirection: "row",
     alignItems: "center",
-    paddingVertical: 4.5,
-    gap: 10,
-    borderBottomWidth:0.5,
-    borderBottomColor: "#e9ebedff",  
+    paddingVertical: 13,
+    gap: 12,
   },
-  prefLabel: { flex: 1, fontSize: 15, fontWeight: "600", color: "#0F172A" },
-  prefDivider: { height: 1, backgroundColor: "#F1F5F9" },
+  prefLabel: { flex: 1, fontSize: 15, fontWeight: "600", color: "rgba(255,255,255,0.9)" },
+  prefDivider: { height: 1, backgroundColor: "rgba(255,255,255,0.05)" },
 
   // Logout
   logoutBtn: {
+    marginHorizontal: 16,
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: "rgba(220,38,38,0.2)",
+    overflow: "hidden",
+    marginTop: 4,
+  },
+  logoutGrad: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    marginHorizontal: 16,
-    backgroundColor: "#FEE2E2",
-    borderRadius: 14,
     paddingVertical: 16,
     gap: 8,
-    marginTop: 8,
   },
-  logoutText: { fontSize: 16, fontWeight: "700", color: "#DC2626" },
+  logoutText: { fontSize: 16, fontWeight: "700", color: "#FCA5A5" },
 
   // Version
   versionText: {
     textAlign: "center",
-    fontSize: 12,
-    color: "#94A3B8",
-    marginTop: 16,
+    fontSize: 11,
+    color: "rgba(255,255,255,0.2)",
+    marginTop: 20,
+    letterSpacing: 0.5,
   },
 });
