@@ -67,6 +67,26 @@ export default function RootLayout() {
               options={{ headerShown: false }}
             />
             <Stack.Screen
+              name="my-bookings"
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="saved-addresses"
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="payment-methods"
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="help-support"
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="special-offers"
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
               name="modal"
               options={{
                 presentation: "transparentModal",

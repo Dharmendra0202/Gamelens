@@ -4,7 +4,6 @@ import { useRouter } from "expo-router";
 import React, { useState } from "react";
 import {
   Alert,
-  Linking,
   ScrollView,
   StyleSheet,
   Switch,
@@ -51,26 +50,23 @@ export default function ProfileScreen() {
 
   const handleMenuPress = (label: string) => {
     switch (label) {
-      case "Admin Dashboard":
+      case "Your Dashboard":
         router.push("/admin" as never);
         break;
       case "My Bookings":
-        Alert.alert("My Bookings", "No upcoming bookings yet.");
+        router.push("/my-bookings" as never);
         break;
       case "Saved Addresses":
-        Alert.alert("Saved Addresses", "No saved addresses yet. This feature is coming soon.");
+        router.push("/saved-addresses" as never);
         break;
       case "Payment Methods":
-        Alert.alert("Payment Methods", "No payment methods saved. This feature is coming soon.");
+        router.push("/payment-methods" as never);
         break;
       case "Help & Support":
-        Alert.alert("Help & Support", "Need help?", [
-          { text: "Cancel", style: "cancel" },
-          { text: "Email Us", onPress: () => Linking.openURL("mailto:support@gamelens.app") },
-        ]);
+        router.push("/help-support" as never);
         break;
       case "Special Offers":
-        Alert.alert("Special Offers", "No offers available right now. Check back soon!");
+        router.push("/special-offers" as never);
         break;
     }
   };
@@ -131,16 +127,15 @@ export default function ProfileScreen() {
         </View>
         <View style={styles.menuCard}>
           {[
-            { icon: "shield-checkmark-outline", label: "Admin Dashboard", desc: "Manage bookings and services", color: "#0D9488" },
+            { icon: "shield-checkmark-outline", label: "Your Dashboard", desc: "Manage your bookings and services", color: "#0D9488" },
             { icon: "calendar-outline", label: "My Bookings", desc: "View your upcoming bookings", color: "#2563EB" },
             { icon: "location-outline", label: "Saved Addresses", desc: "Manage your locations", color: "#7C3AED" },
             { icon: "card-outline", label: "Payment Methods", desc: "Cards, UPI, and saved options", color: "#059669" },
             { icon: "headset-outline", label: "Help & Support", desc: "Call, chat, or raise a ticket", color: "#DC2626" },
-            { icon: "gift-outline", label: "Special Offers", desc: "Explore available deals", color: "#D97706" },
           ].map((item, index) => (
             <TouchableOpacity
               key={index}
-              style={[styles.menuItem, index === 5 && { borderBottomWidth: 0 }]}
+              style={[styles.menuItem, index === 4 && { borderBottomWidth: 0 }]}
               onPress={() => handleMenuPress(item.label)}
               activeOpacity={0.7}
             >
@@ -268,8 +263,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "rgba(255,255,255,0.15)",
     borderRadius: 14,
-    paddingVertical: 12,
-    paddingHorizontal: 16,
+    paddingVertical: 10,
+    paddingHorizontal: 12,
     gap: 12,
   },
   googleIcon: { fontSize: 18, fontWeight: "800", color: "#FFF" },
@@ -279,16 +274,16 @@ const styles = StyleSheet.create({
   statsCard: {
     flexDirection: "row",
     backgroundColor: "#FFF",
-    marginHorizontal: 16,
+    marginHorizontal: 2,
     marginTop: -1,
-    borderRadius: 16,
-    paddingVertical: 18,
+    // borderRadius: ,
+    paddingVertical: 8,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.05,
     shadowRadius: 10,
     elevation: 3,
-    marginBottom: 20,
+    marginBottom: 15,
   },
   statItem: { flex: 1, alignItems: "center" },
   statValue: { fontSize: 22, fontWeight: "800", color: "#0F172A" },
@@ -301,7 +296,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     paddingHorizontal: 20,
-    marginBottom: 10,
+    marginBottom: 7,
   },
   sectionTitle: { fontSize: 16, fontWeight: "700", color: "#0F172A" },
   sectionSubtitle: { fontSize: 12, color: "#64748B" },
@@ -310,27 +305,27 @@ const styles = StyleSheet.create({
   menuCard: {
     backgroundColor: "#FFF",
     marginHorizontal: 16,
-    borderRadius: 18,
+    borderRadius: 10,
     paddingHorizontal: 16,
-    marginBottom: 24,
+    marginBottom: 15,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.04,
+    shadowOpacity: 0.06,
     shadowRadius: 6,
-    elevation: 2,
+    elevation: 3,
   },
   menuItem: {
     flexDirection: "row",
     alignItems: "center",
-    paddingVertical: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: "#F1F5F9",
+    paddingVertical: 11,
+    borderBottomWidth: 1.3,
+    borderBottomColor: "#e9ebedff",
     gap: 12,
   },
   menuIconBg: {
-    width: 42,
-    height: 42,
-    borderRadius: 12,
+    width: 40,
+    height: 40,
+    borderRadius: 11,
     alignItems: "center",
     justifyContent: "center",
   },
@@ -342,8 +337,10 @@ const styles = StyleSheet.create({
   prefItem: {
     flexDirection: "row",
     alignItems: "center",
-    paddingVertical: 14,
-    gap: 12,
+    paddingVertical: 4.5,
+    gap: 10,
+    borderBottomWidth:0.5,
+    borderBottomColor: "#e9ebedff",  
   },
   prefLabel: { flex: 1, fontSize: 15, fontWeight: "600", color: "#0F172A" },
   prefDivider: { height: 1, backgroundColor: "#F1F5F9" },
