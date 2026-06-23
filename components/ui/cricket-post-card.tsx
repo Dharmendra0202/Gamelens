@@ -35,7 +35,7 @@ export function CricketPostCard({ post, onLike, onComment, onShare, onSave }: Cr
     <View style={styles.postCard}>
       {/* Header */}
       <View style={styles.postHeader}>
-        <View style={[styles.postAvatarRing, { borderColor: post.verified ? '#00A66A' : 'transparent' }]}>
+        <View style={[styles.postAvatarRing, { borderColor: post.verified ? '#B71C1C' : 'transparent' }]}>
           <View style={[styles.postAvatar, { backgroundColor: post.color }]}>
             <Text style={styles.postAvatarInitials}>{post.initials}</Text>
           </View>
@@ -44,7 +44,7 @@ export function CricketPostCard({ post, onLike, onComment, onShare, onSave }: Cr
           <View style={styles.postUserNameRow}>
             <Text style={styles.postUserName}>{post.user}</Text>
             {post.verified && (
-              <Ionicons name="checkmark-circle" size={14} color="#00A66A" style={{ marginLeft: 4 }} />
+              <Ionicons name="checkmark-circle" size={14} color="#B71C1C" style={{ marginLeft: 4 }} />
             )}
           </View>
           <Text style={styles.postMetaRow}>{post.role} · {post.time}</Text>
@@ -71,7 +71,7 @@ export function CricketPostCard({ post, onLike, onComment, onShare, onSave }: Cr
       {/* Media */}
       {post.hasMedia && (
         <View style={styles.postMediaBox}>
-          <LinearGradient colors={['#064E3B', '#0F766E', '#059669']} style={styles.postMediaGradient}>
+          <LinearGradient colors={['#8B0000', '#8B0000', '#059669']} style={styles.postMediaGradient}>
             <Ionicons name="images-outline" size={36} color="rgba(255,255,255,0.5)" />
             <Text style={styles.postMediaLabel}>Match Highlights</Text>
           </LinearGradient>
@@ -85,7 +85,7 @@ export function CricketPostCard({ post, onLike, onComment, onShare, onSave }: Cr
             <View style={styles.likeIconBg}>
               <Ionicons name="heart" size={9} color="#FFF" />
             </View>
-            <View style={[styles.likeIconBg, { backgroundColor: '#0F766E', marginLeft: -4 }]}>
+            <View style={[styles.likeIconBg, { backgroundColor: '#8B0000', marginLeft: -4 }]}>
               <Ionicons name="thumbs-up" size={9} color="#FFF" />
             </View>
           </View>
@@ -114,7 +114,7 @@ export function CricketPostCard({ post, onLike, onComment, onShare, onSave }: Cr
           <Ionicons
             name={post.saved ? 'bookmark' : 'bookmark-outline'}
             size={19}
-            color={post.saved ? '#00A66A' : '#666'}
+            color={post.saved ? '#B71C1C' : '#666'}
           />
         </TouchableOpacity>
       </View>
@@ -193,13 +193,13 @@ const styles = StyleSheet.create({
     marginTop: 8,
   },
   postTag: {
-    backgroundColor: '#F0FFF8',
+    backgroundColor: '#FBE9E7',
     borderRadius: 8,
     paddingHorizontal: 8,
     paddingVertical: 3,
   },
   postTagTxt: {
-    color: '#00A66A',
+    color: '#B71C1C',
     fontSize: 12,
     fontWeight: '600',
   },

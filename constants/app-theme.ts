@@ -1,49 +1,37 @@
 /**
- * App-specific design tokens shared across screens.
- * For dark/light Colors, see constants/theme.ts.
+ * App-specific design tokens — re-exports from the new @/theme system.
+ * Kept for backward compatibility with existing imports.
  */
+import { BorderRadius, Colors, Spacing } from "@/theme";
 
 export const AppColors = {
-  // Brand green
-  green: '#00A66A',
-  greenDark: '#0F766E',
-  greenDeep: '#064E3B',
-  greenLight: '#D1FAE5',
-  greenBg: '#F0FFF8',
+  // Brand (now red-based)
+  green: Colors.primary,
+  greenDark: Colors.primaryDark,
+  greenDeep: Colors.primaryDark,
+  greenLight: Colors.primaryLight,
+  greenBg: Colors.background,
 
   // Brand red
-  red: '#B91C1C',
-  redDark: '#991B1B',
-  redDeep: '#7F1D1D',
+  red: Colors.primary,
+  redDark: Colors.primaryDark,
+  redDeep: Colors.primaryDark,
 
   // Neutrals
-  text: '#222',
-  textSecondary: '#666',
-  textMuted: '#999',
-  border: '#E5E5E5',
-  borderLight: '#F4F4F4',
-  bg: '#F0F7F4',
+  text: Colors.textPrimary,
+  textSecondary: Colors.textSecondary,
+  textMuted: Colors.textMuted,
+  border: Colors.border,
+  borderLight: Colors.borderLight,
+  bg: Colors.background,
 
   // Status
-  like: '#EF4444',
-  verified: '#00A66A',
+  like: Colors.error,
+  verified: Colors.success,
 } as const;
 
-export const AppSpacing = {
-  xs: 4,
-  sm: 8,
-  md: 12,
-  lg: 16,
-  xl: 20,
-  xxl: 24,
-} as const;
+export const AppSpacing = Spacing;
 
-export const AppRadius = {
-  sm: 8,
-  md: 12,
-  lg: 16,
-  xl: 20,
-  full: 999,
-} as const;
+export const AppRadius = BorderRadius;
 
 export const TAB_BAR_HEIGHT = 60;

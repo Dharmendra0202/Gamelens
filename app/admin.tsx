@@ -62,21 +62,21 @@ export default function AdminScreen() {
           <Text style={styles.menuTitle}>Administration</Text>
 
           {[
-            { icon: "people", label: "User Management", color: "#2563EB" },
-            { icon: "football", label: "Turf Management", color: "#0F766E" },
+            { icon: "people", label: "User Management", color: "#B71C1C" },
+            { icon: "football", label: "Turf Management", color: "#8B0000" },
             { icon: "trophy", label: "Tournament Control", color: "#D97706" },
             { icon: "bar-chart-outline", label: "Reports & Analytics", color: "#7C3AED" },
-            { icon: "megaphone-outline", label: "Announcements", color: "#DC2626" },
+            { icon: "megaphone-outline", label: "Announcements", color: "#D32F2F" },
             { icon: "flag-outline", label: "Reported Content", color: "#E11D48" },
-            { icon: "card-outline", label: "Payments", color: "#059669" },
-            { icon: "cog-outline", label: "Platform Settings", color: "#64748B" },
+            { icon: "card-outline", label: "Payments", color: "#C62828" },
+            { icon: "cog-outline", label: "Platform Settings", color: "#616161" },
           ].map((item, index) => (
             <TouchableOpacity key={index} style={styles.menuItem} activeOpacity={0.7}>
               <View style={[styles.menuIconBg, { backgroundColor: item.color + "15" }]}>
                 <Ionicons name={item.icon as any} size={20} color={item.color} />
               </View>
               <Text style={styles.menuItemText}>{item.label}</Text>
-              <Ionicons name="chevron-forward" size={18} color="#94A3B8" />
+              <Ionicons name="chevron-forward" size={18} color="#9E9E9E" />
             </TouchableOpacity>
           ))}
         </View>
@@ -144,12 +144,12 @@ const styles = StyleSheet.create({
   statNumber: {
     fontSize: 22,
     fontWeight: "800",
-    color: "#0F172A",
+    color: "#212121",
     marginTop: 8,
   },
   statLabel: {
     fontSize: 11,
-    color: "#64748B",
+    color: "#616161",
     fontWeight: "500",
     marginTop: 4,
     textAlign: "center",
@@ -167,7 +167,7 @@ const styles = StyleSheet.create({
   menuTitle: {
     fontSize: 16,
     fontWeight: "700",
-    color: "#0F172A",
+    color: "#212121",
     marginBottom: 16,
   },
   menuItem: {
@@ -188,7 +188,7 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: 15,
     fontWeight: "600",
-    color: "#0F172A",
+    color: "#212121",
     marginLeft: 12,
   },
 });

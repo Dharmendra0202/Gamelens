@@ -59,12 +59,12 @@ export default function ForgotPasswordScreen() {
             onPress={() => router.back()}
             style={styles.backBtn}
           >
-            <Ionicons name="arrow-back" size={22} color="#0F172A" />
+            <Ionicons name="arrow-back" size={22} color="#212121" />
           </TouchableOpacity>
 
           <View style={styles.card}>
             <View style={styles.iconWrap}>
-              <Ionicons name="lock-open-outline" size={32} color="#00A66A" />
+              <Ionicons name="lock-open-outline" size={32} color="#B71C1C" />
             </View>
             <Text style={styles.title}>Reset Password</Text>
             <Text style={styles.subtitle}>
@@ -74,7 +74,7 @@ export default function ForgotPasswordScreen() {
 
             {error ? (
               <View style={styles.errorBanner}>
-                <Ionicons name="alert-circle" size={16} color="#DC2626" />
+                <Ionicons name="alert-circle" size={16} color="#D32F2F" />
                 <Text style={styles.errorText}>{error}</Text>
               </View>
             ) : null}
@@ -83,13 +83,13 @@ export default function ForgotPasswordScreen() {
               <Ionicons
                 name="mail-outline"
                 size={18}
-                color="#94A3B8"
+                color="#9E9E9E"
                 style={styles.inputIcon}
               />
               <TextInput
                 style={styles.input}
                 placeholder="Email address"
-                placeholderTextColor="#94A3B8"
+                placeholderTextColor="#9E9E9E"
                 value={email}
                 onChangeText={setEmail}
                 keyboardType="email-address"
@@ -105,7 +105,7 @@ export default function ForgotPasswordScreen() {
               activeOpacity={0.88}
             >
               <LinearGradient
-                colors={["#00C47A", "#00A66A"]}
+                colors={["#D32F2F", "#B71C1C"]}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 1 }}
                 style={styles.buttonGrad}
@@ -120,7 +120,7 @@ export default function ForgotPasswordScreen() {
               onPress={() => router.back()}
               style={styles.backLink}
             >
-              <Ionicons name="arrow-back" size={14} color="#2563EB" />
+              <Ionicons name="arrow-back" size={14} color="#B71C1C" />
               <Text style={styles.backLinkText}>Back to Login</Text>
             </TouchableOpacity>
           </View>
@@ -133,7 +133,7 @@ export default function ForgotPasswordScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#F0F7F4",
+    backgroundColor: "#F5F5F5",
   },
   content: {
     flex: 1,
@@ -153,35 +153,35 @@ const styles = StyleSheet.create({
     paddingHorizontal: 22,
     paddingTop: 32,
     paddingBottom: 28,
-    shadowColor: "#0F766E",
+    shadowColor: "#8B0000",
     shadowOffset: { width: 0, height: 16 },
     shadowOpacity: 0.1,
     shadowRadius: 32,
     elevation: 10,
     borderWidth: 1,
-    borderColor: "rgba(0,166,106,0.1)",
+    borderColor: "rgba(183,28,28,0.1)",
     alignItems: "center",
   },
   iconWrap: {
     width: 64,
     height: 64,
     borderRadius: 32,
-    backgroundColor: "#F0FFF8",
+    backgroundColor: "#FBE9E7",
     alignItems: "center",
     justifyContent: "center",
     marginBottom: 16,
     borderWidth: 1,
-    borderColor: "#D1FAE5",
+    borderColor: "#FFCDD2",
   },
   title: {
     fontSize: 22,
     fontWeight: "800",
-    color: "#0F172A",
+    color: "#212121",
     marginBottom: 8,
   },
   subtitle: {
     fontSize: 14,
-    color: "#64748B",
+    color: "#616161",
     fontWeight: "500",
     textAlign: "center",
     lineHeight: 20,
@@ -191,7 +191,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 8,
-    backgroundColor: "#FEF2F2",
+    backgroundColor: "#FBE9E7",
     borderRadius: 12,
     borderWidth: 1,
     borderColor: "#FECACA",
@@ -204,17 +204,17 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: 13,
     fontWeight: "600",
-    color: "#DC2626",
+    color: "#D32F2F",
     lineHeight: 18,
   },
   inputWrap: {
     flexDirection: "row",
     alignItems: "center",
     width: "100%",
-    backgroundColor: "#F8FAFC",
+    backgroundColor: "#FAFAFA",
     borderRadius: 16,
     borderWidth: 1.5,
-    borderColor: "#E2EAE6",
+    borderColor: "#E0E0E0",
     marginBottom: 18,
     paddingHorizontal: 14,
   },
@@ -225,7 +225,7 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingVertical: 15,
     fontSize: 15,
-    color: "#0F172A",
+    color: "#212121",
     fontWeight: "500",
   },
   button: {
@@ -256,7 +256,7 @@ const styles = StyleSheet.create({
     gap: 6,
   },
   backLinkText: {
-    color: "#2563EB",
+    color: "#B71C1C",
     fontSize: 14,
     fontWeight: "700",
   },

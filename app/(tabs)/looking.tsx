@@ -149,7 +149,7 @@ export default function LookingScreen() {
       <View style={styles.container}>
         {/* Header */}
         <LinearGradient
-          colors={["#00A66A", "#0F766E", "#064E3B"]}
+          colors={["#B71C1C", "#8B0000", "#8B0000"]}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 1 }}
           style={styles.header}
@@ -219,7 +219,7 @@ export default function LookingScreen() {
                   ]}
                   onPress={() => selectAction("opponent")}
                 >
-                  <Ionicons name="search-outline" size={18} color="#00A66A" />
+                  <Ionicons name="search-outline" size={18} color="#B71C1C" />
                   <Text style={styles.composerButtonText}>Opponent</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
@@ -230,7 +230,7 @@ export default function LookingScreen() {
                   ]}
                   onPress={() => selectAction("tournament")}
                 >
-                  <Ionicons name="trophy-outline" size={18} color="#00A66A" />
+                  <Ionicons name="trophy-outline" size={18} color="#B71C1C" />
                   <Text style={styles.composerButtonText}>Tournament</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
@@ -272,7 +272,7 @@ export default function LookingScreen() {
                   onPress={() => selectAction(action.id)}
                 >
                   <View style={styles.quickActionIcon}>
-                    <Ionicons name={action.icon} size={22} color="#00A66A" />
+                    <Ionicons name={action.icon} size={22} color="#B71C1C" />
                   </View>
                   <View style={styles.quickActionText}>
                     <Text style={styles.quickActionTitle}>{action.title}</Text>
@@ -374,7 +374,7 @@ export default function LookingScreen() {
                             hasContacted ? "checkmark-circle" : "send-outline"
                           }
                           size={18}
-                          color={hasContacted ? "#00A66A" : "#666"}
+                          color={hasContacted ? "#B71C1C" : "#666"}
                         />
                         <Text
                           style={[
@@ -400,7 +400,7 @@ export default function LookingScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#F0F7F4",
+    backgroundColor: "#F5F5F5",
   },
   header: {
     flexDirection: "row",
@@ -433,7 +433,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     padding: 14,
     borderWidth: 1,
-    borderColor: "#F4F4F4",
+    borderColor: "#F0F0F0",
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.06,
@@ -449,12 +449,12 @@ const styles = StyleSheet.create({
     width: 42,
     height: 42,
     borderRadius: 21,
-    backgroundColor: "#D1FAE5",
+    backgroundColor: "#FFCDD2",
     alignItems: "center",
     justifyContent: "center",
   },
   avatarText: {
-    color: "#00A66A",
+    color: "#B71C1C",
     fontSize: 12,
     fontWeight: "800",
   },
@@ -482,14 +482,14 @@ const styles = StyleSheet.create({
     gap: 6,
     paddingHorizontal: 10,
     borderRadius: 12,
-    backgroundColor: "#F0FFF8",
+    backgroundColor: "#FBE9E7",
   },
   activeComposerButton: {
     borderWidth: 1,
-    borderColor: "#00A66A",
+    borderColor: "#B71C1C",
   },
   composerButtonText: {
-    color: "#00A66A",
+    color: "#B71C1C",
     fontSize: 13,
     fontWeight: "700",
   },
@@ -498,7 +498,7 @@ const styles = StyleSheet.create({
     marginLeft: "auto",
     justifyContent: "center",
     borderRadius: 20,
-    backgroundColor: "#00A66A",
+    backgroundColor: "#B71C1C",
     paddingHorizontal: 18,
   },
   disabledPostButton: {
@@ -518,7 +518,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFF",
     borderRadius: 20,
     borderWidth: 1,
-    borderColor: "#F4F4F4",
+    borderColor: "#F0F0F0",
     paddingHorizontal: 14,
     flexDirection: "row",
     alignItems: "center",
@@ -530,14 +530,14 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   activeQuickActionCard: {
-    borderColor: "#00A66A",
-    backgroundColor: "#F0FFF8",
+    borderColor: "#B71C1C",
+    backgroundColor: "#FBE9E7",
   },
   quickActionIcon: {
     width: 44,
     height: 44,
     borderRadius: 22,
-    backgroundColor: "#D1FAE5",
+    backgroundColor: "#FFCDD2",
     alignItems: "center",
     justifyContent: "center",
   },
@@ -560,7 +560,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFF",
     borderRadius: 20,
     borderWidth: 1,
-    borderColor: "#F4F4F4",
+    borderColor: "#F0F0F0",
     padding: 16,
     marginBottom: 12,
     shadowColor: "#000",
@@ -602,12 +602,12 @@ const styles = StyleSheet.create({
   },
   postTag: {
     borderRadius: 12,
-    backgroundColor: "#F0FFF8",
+    backgroundColor: "#FBE9E7",
     paddingHorizontal: 9,
     paddingVertical: 5,
   },
   postTagText: {
-    color: "#00A66A",
+    color: "#B71C1C",
     fontSize: 11,
     fontWeight: "800",
   },
@@ -653,12 +653,12 @@ const styles = StyleSheet.create({
     fontWeight: "700",
   },
   activeFooterAction: {
-    backgroundColor: "#F0FFF8",
+    backgroundColor: "#FBE9E7",
     borderRadius: 12,
     paddingHorizontal: 8,
     paddingVertical: 5,
   },
   activeFooterActionText: {
-    color: "#00A66A",
+    color: "#B71C1C",
   },
 });

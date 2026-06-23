@@ -81,7 +81,7 @@ export default function MatchSetupScreen() {
   return (
     <SafeAreaView style={styles.container} edges={["top", "bottom"]}>
       <LinearGradient
-        colors={["#00A66A", "#0F766E", "#064E3B"]}
+        colors={["#B71C1C", "#8B0000", "#8B0000"]}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
         style={styles.header}
@@ -118,7 +118,7 @@ export default function MatchSetupScreen() {
                 overs.length > 0 && !oversValid && styles.inputError,
               ]}
               placeholder="1 - 50"
-              placeholderTextColor="#94A3B8"
+              placeholderTextColor="#9E9E9E"
               keyboardType="number-pad"
               value={overs}
               onChangeText={(t) => setOvers(t.replace(/[^0-9]/g, ""))}
@@ -152,7 +152,7 @@ export default function MatchSetupScreen() {
             <TextInput
               style={styles.input}
               placeholder="Optional"
-              placeholderTextColor="#94A3B8"
+              placeholderTextColor="#9E9E9E"
               value={venue}
               onChangeText={setVenue}
             />
@@ -213,7 +213,7 @@ export default function MatchSetupScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#F0F7F4",
+    backgroundColor: "#F5F5F5",
   },
   header: {
     flexDirection: "row",
@@ -244,19 +244,19 @@ const styles = StyleSheet.create({
     paddingVertical: 18,
     marginBottom: 20,
     borderWidth: 1,
-    borderColor: "#E2EAE6",
+    borderColor: "#E0E0E0",
   },
   matchupText: {
     flex: 1,
     fontSize: 16,
     fontWeight: "800",
-    color: "#0F172A",
+    color: "#212121",
     textAlign: "center",
   },
   vs: {
     fontSize: 13,
     fontWeight: "700",
-    color: "#00A66A",
+    color: "#B71C1C",
   },
   fieldWrap: {
     marginBottom: 16,
@@ -264,28 +264,28 @@ const styles = StyleSheet.create({
   label: {
     fontSize: 13,
     fontWeight: "700",
-    color: "#334155",
+    color: "#424242",
     marginBottom: 8,
   },
   required: {
-    color: "#DC2626",
+    color: "#D32F2F",
   },
   input: {
-    backgroundColor: "#F8FAFC",
+    backgroundColor: "#FAFAFA",
     borderRadius: 14,
     borderWidth: 1.5,
-    borderColor: "#E2EAE6",
+    borderColor: "#E0E0E0",
     paddingHorizontal: 14,
     paddingVertical: 14,
     fontSize: 15,
     fontWeight: "600",
-    color: "#0F172A",
+    color: "#212121",
   },
   inputError: {
-    borderColor: "#DC2626",
+    borderColor: "#D32F2F",
   },
   errorText: {
-    color: "#DC2626",
+    color: "#D32F2F",
     fontSize: 12,
     fontWeight: "600",
     marginTop: 6,
@@ -293,12 +293,12 @@ const styles = StyleSheet.create({
   dateText: {
     fontSize: 15,
     fontWeight: "600",
-    color: "#0F172A",
+    color: "#212121",
   },
   footer: {
     padding: 16,
     borderTopWidth: 1,
-    borderTopColor: "#E2EAE6",
+    borderTopColor: "#E0E0E0",
     backgroundColor: "#FFF",
   },
   submitButton: {
@@ -306,12 +306,12 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     gap: 10,
-    backgroundColor: "#00A66A",
+    backgroundColor: "#B71C1C",
     borderRadius: 18,
     paddingVertical: 16,
   },
   submitButtonDisabled: {
-    backgroundColor: "#CBD5E1",
+    backgroundColor: "#BDBDBD",
   },
   submitButtonText: {
     color: "#FFF",

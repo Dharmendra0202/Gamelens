@@ -231,14 +231,14 @@ export function CreatePostModal({ visible, onClose, onPost, userName, userInitia
             <ScrollView contentContainerStyle={styles.createModalBody} keyboardShouldPersistTaps="handled">
               {/* User Section */}
               <View style={styles.createModalAvatarRow}>
-                <View style={[styles.postAvatar, { backgroundColor: '#00A66A' }]}>
+                <View style={[styles.postAvatar, { backgroundColor: '#B71C1C' }]}>
                   <Text style={styles.postAvatarInitials}>{userInitials}</Text>
                 </View>
                 <View style={{ marginLeft: 12, flex: 1 }}>
                   <Text style={styles.createModalUserName}>{userName}</Text>
                   <View style={styles.pillsRow}>
                     <View style={styles.audiencePill}>
-                      <Ionicons name="earth" size={11} color="#00A66A" />
+                      <Ionicons name="earth" size={11} color="#B71C1C" />
                       <Text style={styles.audiencePillTxt}>Everyone</Text>
                     </View>
                     {location ? (
@@ -332,7 +332,7 @@ export function CreatePostModal({ visible, onClose, onPost, userName, userInitia
                           setShowLocationPicker(false);
                         }}
                       >
-                        <Ionicons name="location-outline" size={14} color={location === stadium ? '#FFF' : '#00A66A'} />
+                        <Ionicons name="location-outline" size={14} color={location === stadium ? '#FFF' : '#B71C1C'} />
                         <Text style={[styles.locationCardTxt, location === stadium && styles.locationCardTxtActive]} numberOfLines={1}>
                           {stadium.split(',')[0]}
                         </Text>
@@ -347,11 +347,11 @@ export function CreatePostModal({ visible, onClose, onPost, userName, userInitia
             <View style={styles.createModalToolbar}>
               <View style={styles.toolbarActionLeft}>
                 <TouchableOpacity style={styles.toolbarBtn} onPress={pickMedia} disabled={isPosting}>
-                  <Ionicons name="image-outline" size={23} color="#00A66A" />
+                  <Ionicons name="image-outline" size={23} color="#B71C1C" />
                 </TouchableOpacity>
 
                 <TouchableOpacity style={styles.toolbarBtn} onPress={takePhoto} disabled={isPosting}>
-                  <Ionicons name="camera-outline" size={23} color="#0F766E" />
+                  <Ionicons name="camera-outline" size={23} color="#8B0000" />
                 </TouchableOpacity>
 
                 <TouchableOpacity
@@ -429,7 +429,7 @@ const styles = StyleSheet.create({
     letterSpacing: -0.3,
   },
   createModalPostBtn: {
-    backgroundColor: '#00A66A',
+    backgroundColor: '#B71C1C',
     paddingHorizontal: 18,
     paddingVertical: 8,
     borderRadius: 20,
@@ -482,17 +482,17 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 4,
-    backgroundColor: '#F0FFF8',
+    backgroundColor: '#FBE9E7',
     paddingHorizontal: 8,
     paddingVertical: 3,
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: '#00A66A22',
+    borderColor: '#B71C1C22',
   },
   audiencePillTxt: {
     fontSize: 11,
     fontWeight: '600',
-    color: '#00A66A',
+    color: '#B71C1C',
   },
   createModalInput: {
     fontSize: 16,
@@ -563,8 +563,8 @@ const styles = StyleSheet.create({
     borderColor: '#E4E4E7',
   },
   tagPillActive: {
-    backgroundColor: '#00A66A',
-    borderColor: '#00A66A',
+    backgroundColor: '#B71C1C',
+    borderColor: '#B71C1C',
   },
   tagPillTxt: {
     fontSize: 12,
@@ -614,8 +614,8 @@ const styles = StyleSheet.create({
     elevation: 1,
   },
   locationCardActive: {
-    backgroundColor: '#00A66A',
-    borderColor: '#00A66A',
+    backgroundColor: '#B71C1C',
+    borderColor: '#B71C1C',
   },
   locationCardTxt: {
     fontSize: 11,

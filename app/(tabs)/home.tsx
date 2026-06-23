@@ -384,7 +384,7 @@ export default function HomeScreen() {
       <View style={styles.container}>
         {/* Header */}
         <LinearGradient
-          colors={["#00A66A", "#0F766E", "#064E3B"]}
+          colors={["#B71C1C", "#8B0000", "#8B0000"]}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 1 }}
           style={styles.header}
@@ -498,11 +498,11 @@ export default function HomeScreen() {
               </Text>
             </View>
             <View style={styles.createPostActions}>
-              <Ionicons name="image-outline" size={20} color="#00A66A" />
+              <Ionicons name="image-outline" size={20} color="#B71C1C" />
               <Ionicons
                 name="videocam-outline"
                 size={20}
-                color="#0F766E"
+                color="#8B0000"
                 style={{ marginLeft: 10 }}
               />
             </View>
@@ -522,7 +522,7 @@ export default function HomeScreen() {
                 style={styles.feedFilterBtn}
                 activeOpacity={0.8}
               >
-                <Ionicons name="options-outline" size={18} color="#00A66A" />
+                <Ionicons name="options-outline" size={18} color="#B71C1C" />
                 <Text style={styles.feedFilterTxt}>Filter</Text>
               </TouchableOpacity>
             </View>
@@ -607,7 +607,7 @@ export default function HomeScreen() {
                       id: Date.now(),
                       user: profile.name,
                       initials: profileInitials,
-                      color: "#00A66A",
+                      color: "#B71C1C",
                       role: profile.role,
                       time: "Just now",
                       content: newPostText.trim(),
@@ -634,7 +634,7 @@ export default function HomeScreen() {
                     style={[
                       styles.postAvatar,
                       {
-                        backgroundColor: "#00A66A",
+                        backgroundColor: "#B71C1C",
                         width: 44,
                         height: 44,
                         borderRadius: 22,
@@ -650,9 +650,9 @@ export default function HomeScreen() {
                       {profile.name}
                     </Text>
                     <View style={styles.audiencePill}>
-                      <Ionicons name="earth" size={11} color="#00A66A" />
+                      <Ionicons name="earth" size={11} color="#B71C1C" />
                       <Text style={styles.audiencePillTxt}>Everyone</Text>
-                      <Ionicons name="chevron-down" size={11} color="#00A66A" />
+                      <Ionicons name="chevron-down" size={11} color="#B71C1C" />
                     </View>
                   </View>
                 </View>
@@ -668,16 +668,16 @@ export default function HomeScreen() {
               </View>
               <View style={styles.createModalToolbar}>
                 <TouchableOpacity style={styles.toolbarBtn}>
-                  <Ionicons name="image-outline" size={22} color="#00A66A" />
+                  <Ionicons name="image-outline" size={22} color="#B71C1C" />
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.toolbarBtn}>
-                  <Ionicons name="videocam-outline" size={22} color="#0F766E" />
+                  <Ionicons name="videocam-outline" size={22} color="#8B0000" />
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.toolbarBtn}>
-                  <Ionicons name="mic-outline" size={22} color="#059669" />
+                  <Ionicons name="mic-outline" size={22} color="#C62828" />
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.toolbarBtn}>
-                  <Ionicons name="pricetag-outline" size={22} color="#6EE7B7" />
+                  <Ionicons name="pricetag-outline" size={22} color="#EF9A9A" />
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.toolbarBtn}>
                   <Ionicons name="location-outline" size={22} color="#34D399" />
@@ -804,7 +804,7 @@ export default function HomeScreen() {
                     <View
                       style={[
                         styles.commentAvatar,
-                        { backgroundColor: "#00A66A" },
+                        { backgroundColor: "#B71C1C" },
                       ]}
                     >
                       <Text style={styles.commentInitials}>
@@ -830,7 +830,7 @@ export default function HomeScreen() {
                           id: Date.now(),
                           user: profile.name,
                           initials: profileInitials,
-                          color: "#00A66A",
+                          color: "#B71C1C",
                           time: "Just now",
                           text: newCommentText.trim(),
                         };
@@ -1189,7 +1189,7 @@ export default function HomeScreen() {
               </TouchableOpacity>
               <Text style={styles.chatModalTitle}>Messages</Text>
               <TouchableOpacity>
-                <Ionicons name="create-outline" size={24} color="#00A66A" />
+                <Ionicons name="create-outline" size={24} color="#B71C1C" />
               </TouchableOpacity>
             </View>
 
@@ -1212,7 +1212,7 @@ export default function HomeScreen() {
 
               <TouchableOpacity style={styles.chatItem}>
                 <View
-                  style={[styles.chatAvatar, { backgroundColor: "#059669" }]}
+                  style={[styles.chatAvatar, { backgroundColor: "#C62828" }]}
                 >
                   <Text style={styles.chatAvatarText}>PP</Text>
                 </View>
@@ -1229,7 +1229,7 @@ export default function HomeScreen() {
 
               <TouchableOpacity style={styles.chatItem}>
                 <View
-                  style={[styles.chatAvatar, { backgroundColor: "#0F766E" }]}
+                  style={[styles.chatAvatar, { backgroundColor: "#8B0000" }]}
                 >
                   <Text style={styles.chatAvatarText}>TW</Text>
                 </View>
@@ -1255,7 +1255,7 @@ export default function HomeScreen() {
           <View style={styles.profileModalOverlay}>
             <View style={styles.profileEditor}>
               <LinearGradient
-                colors={["#064E3B", "#0F766E"]}
+                colors={["#8B0000", "#8B0000"]}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 0 }}
                 style={styles.profileEditorHeaderGradient}
@@ -1290,7 +1290,7 @@ export default function HomeScreen() {
                     <View
                       style={[
                         styles.profileHeroAvatarRing,
-                        { borderColor: "#00A66A" },
+                        { borderColor: "#B71C1C" },
                       ]}
                     >
                       <View style={styles.profileHeroAvatar}>
@@ -1369,7 +1369,7 @@ export default function HomeScreen() {
                       <Ionicons
                         name="person-outline"
                         size={18}
-                        color="#00A66A"
+                        color="#B71C1C"
                       />
                     </View>
                     <View style={styles.profileConfigInputWrapper}>
@@ -1388,7 +1388,7 @@ export default function HomeScreen() {
 
                   <View style={styles.profileConfigInputContainer}>
                     <View style={styles.profileConfigIconBox}>
-                      <Ionicons name="call-outline" size={18} color="#00A66A" />
+                      <Ionicons name="call-outline" size={18} color="#B71C1C" />
                     </View>
                     <View style={styles.profileConfigInputWrapper}>
                       <Text style={styles.profileConfigLabel}>PHONE</Text>
@@ -1410,7 +1410,7 @@ export default function HomeScreen() {
                       <Ionicons
                         name="location-outline"
                         size={18}
-                        color="#00A66A"
+                        color="#B71C1C"
                       />
                     </View>
                     <View style={styles.profileConfigInputWrapper}>
@@ -1439,7 +1439,7 @@ export default function HomeScreen() {
                       <Ionicons
                         name="ribbon-outline"
                         size={18}
-                        color="#0F766E"
+                        color="#8B0000"
                       />
                     </View>
                     <View style={styles.profileConfigInputWrapper}>
@@ -1467,7 +1467,7 @@ export default function HomeScreen() {
                         <Ionicons
                           name="flash-outline"
                           size={18}
-                          color="#0F766E"
+                          color="#8B0000"
                         />
                       </View>
                       <View style={styles.profileConfigInputWrapper}>
@@ -1500,7 +1500,7 @@ export default function HomeScreen() {
                         <Ionicons
                           name="bowling-ball-outline"
                           size={18}
-                          color="#0F766E"
+                          color="#8B0000"
                         />
                       </View>
                       <View style={styles.profileConfigInputWrapper}>
@@ -1536,7 +1536,7 @@ export default function HomeScreen() {
                         <Ionicons
                           name="people-outline"
                           size={18}
-                          color="#064E3B"
+                          color="#8B0000"
                         />
                       </View>
                       <View style={styles.profileConfigInputWrapper}>
@@ -1570,7 +1570,7 @@ export default function HomeScreen() {
                         <Ionicons
                           name="document-text-outline"
                           size={18}
-                          color="#064E3B"
+                          color="#8B0000"
                         />
                       </View>
                       <View style={styles.profileConfigInputWrapper}>
@@ -1742,7 +1742,7 @@ export default function HomeScreen() {
                   <Ionicons
                     name="chevron-forward"
                     size={16}
-                    color="#00A66A"
+                    color="#B71C1C"
                     style={{ marginLeft: "auto" }}
                   />
                 </TouchableOpacity>
@@ -1793,7 +1793,7 @@ export default function HomeScreen() {
                   <Ionicons
                     name="chevron-forward"
                     size={16}
-                    color="#00A66A"
+                    color="#B71C1C"
                     style={{ marginLeft: "auto" }}
                   />
                 </TouchableOpacity>
@@ -1812,7 +1812,7 @@ export default function HomeScreen() {
                   <Ionicons
                     name="chevron-forward"
                     size={16}
-                    color="#00A66A"
+                    color="#B71C1C"
                     style={{ marginLeft: "auto" }}
                   />
                 </TouchableOpacity>
@@ -1831,7 +1831,7 @@ export default function HomeScreen() {
                   <Ionicons
                     name="chevron-forward"
                     size={16}
-                    color="#00A66A"
+                    color="#B71C1C"
                     style={{ marginLeft: "auto" }}
                   />
                 </TouchableOpacity>
@@ -1850,7 +1850,7 @@ export default function HomeScreen() {
                   <Ionicons
                     name="chevron-forward"
                     size={16}
-                    color="#00A66A"
+                    color="#B71C1C"
                     style={{ marginLeft: "auto" }}
                   />
                 </TouchableOpacity>
@@ -1869,7 +1869,7 @@ export default function HomeScreen() {
                   <Ionicons
                     name="chevron-forward"
                     size={16}
-                    color="#00A66A"
+                    color="#B71C1C"
                     style={{ marginLeft: "auto" }}
                   />
                 </TouchableOpacity>
@@ -1888,7 +1888,7 @@ export default function HomeScreen() {
                   <Ionicons
                     name="chevron-forward"
                     size={16}
-                    color="#00A66A"
+                    color="#B71C1C"
                     style={{ marginLeft: "auto" }}
                   />
                 </TouchableOpacity>
@@ -1911,7 +1911,7 @@ export default function HomeScreen() {
                   <Ionicons
                     name="chevron-forward"
                     size={16}
-                    color="#00A66A"
+                    color="#B71C1C"
                     style={{ marginLeft: "auto" }}
                   />
                 </TouchableOpacity>
@@ -1930,7 +1930,7 @@ export default function HomeScreen() {
                   <Ionicons
                     name="chevron-forward"
                     size={16}
-                    color="#00A66A"
+                    color="#B71C1C"
                     style={{ marginLeft: "auto" }}
                   />
                 </TouchableOpacity>
@@ -1942,7 +1942,7 @@ export default function HomeScreen() {
                     {
                       marginTop: 12,
                       borderTopWidth: 1,
-                      borderTopColor: "#E5E5E5",
+                      borderTopColor: "#E0E0E0",
                       paddingTop: 16,
                     },
                   ]}
@@ -1953,22 +1953,22 @@ export default function HomeScreen() {
                   <View
                     style={[
                       styles.drawerMenuIcon,
-                      { backgroundColor: "#FEF2F2" },
+                      { backgroundColor: "#FBE9E7" },
                     ]}
                   >
                     <Ionicons
                       name="log-out-outline"
                       size={20}
-                      color="#DC2626"
+                      color="#D32F2F"
                     />
                   </View>
-                  <Text style={[styles.drawerMenuText, { color: "#DC2626" }]}>
+                  <Text style={[styles.drawerMenuText, { color: "#D32F2F" }]}>
                     Logout
                   </Text>
                   <Ionicons
                     name="chevron-forward"
                     size={16}
-                    color="#DC2626"
+                    color="#D32F2F"
                     style={{ marginLeft: "auto" }}
                   />
                 </TouchableOpacity>
@@ -2003,7 +2003,7 @@ export default function HomeScreen() {
                 activeOpacity={0.9}
               >
                 <LinearGradient
-                  colors={["#00A66A", "#0F766E", "#064E3B"]}
+                  colors={["#B71C1C", "#8B0000", "#8B0000"]}
                   start={{ x: 0, y: 0 }}
                   end={{ x: 1, y: 1 }}
                   style={styles.matchOptionGradient}
@@ -2034,7 +2034,7 @@ export default function HomeScreen() {
                 activeOpacity={0.9}
               >
                 <LinearGradient
-                  colors={["#00A66A", "#0F766E", "#064E3B"]}
+                  colors={["#B71C1C", "#8B0000", "#8B0000"]}
                   start={{ x: 0, y: 0 }}
                   end={{ x: 1, y: 1 }}
                   style={styles.matchOptionGradient}
@@ -2066,7 +2066,7 @@ export default function HomeScreen() {
         >
           <View style={styles.fullModalContainer}>
             <LinearGradient
-              colors={["#00A66A", "#0F766E", "#064E3B"]}
+              colors={["#B71C1C", "#8B0000", "#8B0000"]}
               style={styles.fullModalHeader}
             >
               <TouchableOpacity
@@ -2083,7 +2083,7 @@ export default function HomeScreen() {
               showsVerticalScrollIndicator={false}
             >
               <View style={styles.storeHeroBanner}>
-                <Ionicons name="bag" size={48} color="#00A66A" />
+                <Ionicons name="bag" size={48} color="#B71C1C" />
                 <Text style={styles.storeHeroTitle}>Official Cricket Gear</Text>
                 <Text style={styles.storeHeroSubtitle}>
                   Premium equipment for every cricketer
@@ -2157,7 +2157,7 @@ export default function HomeScreen() {
                   activeOpacity={0.85}
                 >
                   <View style={styles.storeProductImageBox}>
-                    <Ionicons name="bag-handle" size={36} color="#00A66A" />
+                    <Ionicons name="bag-handle" size={36} color="#B71C1C" />
                     {item.badge && (
                       <View style={styles.storeBadge}>
                         <Text style={styles.storeBadgeText}>{item.badge}</Text>
@@ -2213,7 +2213,7 @@ export default function HomeScreen() {
         >
           <View style={styles.fullModalContainer}>
             <LinearGradient
-              colors={["#00A66A", "#0F766E", "#064E3B"]}
+              colors={["#B71C1C", "#8B0000", "#8B0000"]}
               style={styles.fullModalHeader}
             >
               <TouchableOpacity
@@ -2253,7 +2253,7 @@ export default function HomeScreen() {
                   team: "India",
                   stat: "892 pts",
                   initials: "VK",
-                  color: "#00A66A",
+                  color: "#B71C1C",
                 },
                 {
                   rank: 2,
@@ -2261,7 +2261,7 @@ export default function HomeScreen() {
                   team: "India",
                   stat: "845 pts",
                   initials: "RS",
-                  color: "#0F766E",
+                  color: "#8B0000",
                 },
                 {
                   rank: 3,
@@ -2269,7 +2269,7 @@ export default function HomeScreen() {
                   team: "Australia",
                   stat: "820 pts",
                   initials: "SS",
-                  color: "#059669",
+                  color: "#C62828",
                 },
                 {
                   rank: 4,
@@ -2293,7 +2293,7 @@ export default function HomeScreen() {
                   team: "Pakistan",
                   stat: "754 pts",
                   initials: "BA",
-                  color: "#6EE7B7",
+                  color: "#EF9A9A",
                 },
                 {
                   rank: 7,
@@ -2301,7 +2301,7 @@ export default function HomeScreen() {
                   team: "Australia",
                   stat: "731 pts",
                   initials: "DW",
-                  color: "#00A66A",
+                  color: "#B71C1C",
                 },
                 {
                   rank: 8,
@@ -2309,7 +2309,7 @@ export default function HomeScreen() {
                   team: "India",
                   stat: "718 pts",
                   initials: "KR",
-                  color: "#0F766E",
+                  color: "#8B0000",
                 },
               ].map((player) => (
                 <View
@@ -2352,7 +2352,7 @@ export default function HomeScreen() {
         >
           <View style={styles.fullModalContainer}>
             <LinearGradient
-              colors={["#00A66A", "#0F766E", "#064E3B"]}
+              colors={["#B71C1C", "#8B0000", "#8B0000"]}
               style={styles.fullModalHeader}
             >
               <TouchableOpacity
@@ -2388,21 +2388,21 @@ export default function HomeScreen() {
                   winner: "Rohit Sharma",
                   team: "India",
                   icon: "baseball",
-                  color: "#00A66A",
+                  color: "#B71C1C",
                 },
                 {
                   award: "Best Bowler",
                   winner: "Jasprit Bumrah",
                   team: "India",
                   icon: "radio-button-on",
-                  color: "#0F766E",
+                  color: "#8B0000",
                 },
                 {
                   award: "Best All-Rounder",
                   winner: "Hardik Pandya",
                   team: "India",
                   icon: "star",
-                  color: "#059669",
+                  color: "#C62828",
                 },
                 {
                   award: "Best Wicket Keeper",
@@ -2423,7 +2423,7 @@ export default function HomeScreen() {
                   winner: "Rohit Sharma",
                   team: "India",
                   icon: "ribbon",
-                  color: "#00A66A",
+                  color: "#B71C1C",
                 },
               ].map((item, i) => (
                 <View key={i} style={styles.awardCard}>
@@ -2461,7 +2461,7 @@ export default function HomeScreen() {
         >
           <View style={styles.fullModalContainer}>
             <LinearGradient
-              colors={["#00A66A", "#0F766E", "#064E3B"]}
+              colors={["#B71C1C", "#8B0000", "#8B0000"]}
               style={styles.fullModalHeader}
             >
               <TouchableOpacity
@@ -2570,7 +2570,7 @@ export default function HomeScreen() {
         >
           <View style={styles.fullModalContainer}>
             <LinearGradient
-              colors={["#00A66A", "#0F766E", "#064E3B"]}
+              colors={["#B71C1C", "#8B0000", "#8B0000"]}
               style={styles.fullModalHeader}
             >
               <TouchableOpacity
@@ -2588,7 +2588,7 @@ export default function HomeScreen() {
             >
               <TouchableOpacity style={styles.createClubBtn}>
                 <LinearGradient
-                  colors={["#00A66A", "#0F766E"]}
+                  colors={["#B71C1C", "#8B0000"]}
                   style={styles.createClubGradient}
                 >
                   <Ionicons name="add-circle" size={22} color="#FFF" />
@@ -2606,7 +2606,7 @@ export default function HomeScreen() {
                   matches: 25,
                   founded: "2018",
                   initials: "MW",
-                  color: "#00A66A",
+                  color: "#B71C1C",
                 },
                 {
                   name: "Delhi Strikers Club",
@@ -2615,7 +2615,7 @@ export default function HomeScreen() {
                   matches: 20,
                   founded: "2019",
                   initials: "DS",
-                  color: "#0F766E",
+                  color: "#8B0000",
                 },
                 {
                   name: "Bangalore Challengers",
@@ -2624,7 +2624,7 @@ export default function HomeScreen() {
                   matches: 22,
                   founded: "2017",
                   initials: "BC",
-                  color: "#059669",
+                  color: "#C62828",
                 },
                 {
                   name: "Chennai Kings CC",
@@ -2695,7 +2695,7 @@ export default function HomeScreen() {
         >
           <View style={styles.fullModalContainer}>
             <LinearGradient
-              colors={["#00A66A", "#0F766E", "#064E3B"]}
+              colors={["#B71C1C", "#8B0000", "#8B0000"]}
               style={styles.fullModalHeader}
             >
               <TouchableOpacity
@@ -2712,7 +2712,7 @@ export default function HomeScreen() {
               showsVerticalScrollIndicator={false}
             >
               <View style={styles.contactHero}>
-                <Ionicons name="headset" size={56} color="#00A66A" />
+                <Ionicons name="headset" size={56} color="#B71C1C" />
                 <Text style={styles.contactHeroTitle}>
                   We are here to help!
                 </Text>
@@ -2755,7 +2755,7 @@ export default function HomeScreen() {
                     <Ionicons
                       name={item.icon as any}
                       size={24}
-                      color="#00A66A"
+                      color="#B71C1C"
                     />
                   </View>
                   <View style={styles.contactInfo}>
@@ -2763,7 +2763,7 @@ export default function HomeScreen() {
                     <Text style={styles.contactValue}>{item.value}</Text>
                     <Text style={styles.contactSub}>{item.sub}</Text>
                   </View>
-                  <Ionicons name="chevron-forward" size={20} color="#00A66A" />
+                  <Ionicons name="chevron-forward" size={20} color="#B71C1C" />
                 </TouchableOpacity>
               ))}
               <View style={styles.contactFormSection}>
@@ -2790,7 +2790,7 @@ export default function HomeScreen() {
                 />
                 <TouchableOpacity style={styles.contactSendBtn}>
                   <LinearGradient
-                    colors={["#00A66A", "#0F766E"]}
+                    colors={["#B71C1C", "#8B0000"]}
                     style={styles.contactSendGradient}
                   >
                     <Ionicons name="send" size={18} color="#FFF" />
@@ -2812,7 +2812,7 @@ export default function HomeScreen() {
         >
           <View style={styles.fullModalContainer}>
             <LinearGradient
-              colors={["#00A66A", "#0F766E", "#064E3B"]}
+              colors={["#B71C1C", "#8B0000", "#8B0000"]}
               style={styles.fullModalHeader}
             >
               <TouchableOpacity
@@ -2844,7 +2844,7 @@ export default function HomeScreen() {
                 <View style={styles.shareReferralCodeRow}>
                   <Text style={styles.shareReferralCode}>GAME2024</Text>
                   <TouchableOpacity style={styles.shareCopyBtn}>
-                    <Ionicons name="copy" size={18} color="#00A66A" />
+                    <Ionicons name="copy" size={18} color="#B71C1C" />
                     <Text style={styles.shareCopyText}>Copy</Text>
                   </TouchableOpacity>
                 </View>
@@ -2863,7 +2863,7 @@ export default function HomeScreen() {
                     color: "#1877F2",
                   },
                   { icon: "logo-twitter", label: "Twitter", color: "#1DA1F2" },
-                  { icon: "mail", label: "Email", color: "#00A66A" },
+                  { icon: "mail", label: "Email", color: "#B71C1C" },
                   {
                     icon: "logo-instagram",
                     label: "Instagram",
@@ -2920,7 +2920,7 @@ export default function HomeScreen() {
         >
           <View style={styles.fullModalContainer}>
             <LinearGradient
-              colors={["#00A66A", "#0F766E", "#064E3B"]}
+              colors={["#B71C1C", "#8B0000", "#8B0000"]}
               style={styles.fullModalHeader}
             >
               <TouchableOpacity
@@ -3004,7 +3004,7 @@ export default function HomeScreen() {
                       <Ionicons
                         name={tag.icon as any}
                         size={18}
-                        color="#00A66A"
+                        color="#B71C1C"
                       />
                       <Text style={styles.rateTagText}>{tag.title}</Text>
                     </View>
@@ -3018,7 +3018,7 @@ export default function HomeScreen() {
                     onPress={() => setRatingSubmitted(true)}
                   >
                     <LinearGradient
-                      colors={["#00A66A", "#0F766E"]}
+                      colors={["#B71C1C", "#8B0000"]}
                       style={styles.rateSubmitGradient}
                     >
                       <Text style={styles.rateSubmitText}>Submit Rating</Text>
@@ -3044,7 +3044,7 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#F0F7F4",
+    backgroundColor: "#F5F5F5",
   },
   content: {
     flex: 1,
@@ -3071,12 +3071,12 @@ const styles = StyleSheet.create({
     gap: 4,
     paddingHorizontal: 12,
     paddingVertical: 6,
-    backgroundColor: "#D1FAE5",
+    backgroundColor: "#FFCDD2",
     borderRadius: 16,
   },
   locationText: {
     fontSize: 14,
-    color: "#00A66A",
+    color: "#B71C1C",
     fontWeight: "600",
   },
   matchCardImage: {
@@ -3093,7 +3093,7 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   matchBadge: {
-    backgroundColor: "#00A66A",
+    backgroundColor: "#B71C1C",
     paddingHorizontal: 12,
     paddingVertical: 4,
     borderRadius: 12,
@@ -3122,7 +3122,7 @@ const styles = StyleSheet.create({
   matchVs: {
     fontSize: 12,
     fontWeight: "bold",
-    color: "#94A3B8",
+    color: "#9E9E9E",
     marginHorizontal: 10,
   },
   matchLocation: {
@@ -3137,7 +3137,7 @@ const styles = StyleSheet.create({
     color: "#FFF",
   },
   joinMatchButton: {
-    backgroundColor: "#00A66A",
+    backgroundColor: "#B71C1C",
     paddingVertical: 12,
     borderRadius: 8,
     alignItems: "center",
@@ -3158,18 +3158,18 @@ const styles = StyleSheet.create({
     width: 8,
     height: 8,
     borderRadius: 4,
-    backgroundColor: "#6EE7B7",
+    backgroundColor: "#EF9A9A",
   },
   activeDot: {
     width: 24,
-    backgroundColor: "#00A66A",
+    backgroundColor: "#B71C1C",
   },
   bannerSection: {
     paddingHorizontal: 16,
     marginBottom: 8,
   },
   banner: {
-    backgroundColor: "#0F766E",
+    backgroundColor: "#8B0000",
     borderRadius: 16,
     padding: 20,
     flexDirection: "row",
@@ -3197,11 +3197,11 @@ const styles = StyleSheet.create({
   },
   bannerSubtitle: {
     fontSize: 14,
-    color: "#6EE7B7",
+    color: "#EF9A9A",
     marginBottom: 12,
   },
   bannerButton: {
-    backgroundColor: "#6EE7B7",
+    backgroundColor: "#EF9A9A",
     paddingHorizontal: 20,
     paddingVertical: 8,
     borderRadius: 20,
@@ -3210,7 +3210,7 @@ const styles = StyleSheet.create({
   bannerButtonText: {
     fontSize: 14,
     fontWeight: "600",
-    color: "#0F766E",
+    color: "#8B0000",
   },
   bannerIcon: {
     marginLeft: 16,
@@ -3224,7 +3224,7 @@ const styles = StyleSheet.create({
   },
   seeAll: {
     fontSize: 14,
-    color: "#00A66A",
+    color: "#B71C1C",
     fontWeight: "600",
   },
   playersListContainer: {
@@ -3233,7 +3233,7 @@ const styles = StyleSheet.create({
   playerListItem: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#F0F7F4",
+    backgroundColor: "#F5F5F5",
     borderRadius: 12,
     padding: 12,
     gap: 12,
@@ -3242,7 +3242,7 @@ const styles = StyleSheet.create({
     width: 28,
     height: 28,
     borderRadius: 14,
-    backgroundColor: "#00A66A",
+    backgroundColor: "#B71C1C",
     justifyContent: "center",
     alignItems: "center",
   },
@@ -3286,7 +3286,7 @@ const styles = StyleSheet.create({
   },
   playerListRole: {
     fontSize: 12,
-    color: "#00A66A",
+    color: "#B71C1C",
     fontWeight: "600",
   },
   playerDivider: {
@@ -3309,24 +3309,24 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     borderWidth: 1,
-    borderColor: "#00A66A",
+    borderColor: "#B71C1C",
   },
   seeMoreButton: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "#F0F7F4",
+    backgroundColor: "#F5F5F5",
     borderRadius: 12,
     padding: 14,
     gap: 8,
     borderWidth: 1,
-    borderColor: "#6EE7B7",
+    borderColor: "#EF9A9A",
     borderStyle: "dashed",
   },
   seeMoreText: {
     fontSize: 14,
     fontWeight: "600",
-    color: "#00A66A",
+    color: "#B71C1C",
   },
   playerAvatar: {
     width: 80,
@@ -3393,17 +3393,17 @@ const styles = StyleSheet.create({
   productPrice: {
     fontSize: 14,
     fontWeight: "bold",
-    color: "#00A66A",
+    color: "#B71C1C",
   },
   addToCartButton: {
-    backgroundColor: "#00A66A",
+    backgroundColor: "#B71C1C",
     width: 32,
     height: 32,
     borderRadius: 16,
     justifyContent: "center",
     alignItems: "center",
     elevation: 2,
-    shadowColor: "#00A66A",
+    shadowColor: "#B71C1C",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.3,
     shadowRadius: 3,
@@ -3462,7 +3462,7 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   followButton: {
-    backgroundColor: "#00A66A",
+    backgroundColor: "#B71C1C",
     paddingHorizontal: 40,
     paddingVertical: 12,
     borderRadius: 24,
@@ -3484,7 +3484,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     padding: 16,
     borderBottomWidth: 1,
-    borderBottomColor: "#E5E5E5",
+    borderBottomColor: "#E0E0E0",
   },
   searchModalTitle: {
     fontSize: 18,
@@ -3494,7 +3494,7 @@ const styles = StyleSheet.create({
   searchInputContainer: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#D1FAE5",
+    backgroundColor: "#FFCDD2",
     margin: 16,
     paddingHorizontal: 16,
     paddingVertical: 12,
@@ -3537,7 +3537,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     padding: 16,
     borderBottomWidth: 1,
-    borderBottomColor: "#E5E5E5",
+    borderBottomColor: "#E0E0E0",
   },
   chatModalTitle: {
     fontSize: 18,
@@ -3558,7 +3558,7 @@ const styles = StyleSheet.create({
     width: 50,
     height: 50,
     borderRadius: 25,
-    backgroundColor: "#00A66A",
+    backgroundColor: "#B71C1C",
     justifyContent: "center",
     alignItems: "center",
     marginRight: 12,
@@ -3590,7 +3590,7 @@ const styles = StyleSheet.create({
     color: "#999",
   },
   chatBadge: {
-    backgroundColor: "#00A66A",
+    backgroundColor: "#B71C1C",
     borderRadius: 10,
     paddingHorizontal: 6,
     paddingVertical: 2,
@@ -3647,7 +3647,7 @@ const styles = StyleSheet.create({
   profileSaveTxt: {
     fontSize: 13,
     fontWeight: "800",
-    color: "#0F766E",
+    color: "#8B0000",
   },
   profileEditorBody: {
     padding: 16,
@@ -3679,7 +3679,7 @@ const styles = StyleSheet.create({
     width: "100%",
     height: "100%",
     borderRadius: 47,
-    backgroundColor: "#00A66A",
+    backgroundColor: "#B71C1C",
     justifyContent: "center",
     alignItems: "center",
     overflow: "hidden",
@@ -3700,7 +3700,7 @@ const styles = StyleSheet.create({
     width: 34,
     height: 34,
     borderRadius: 17,
-    backgroundColor: "#0F766E",
+    backgroundColor: "#8B0000",
     justifyContent: "center",
     alignItems: "center",
     borderWidth: 3,
@@ -3842,7 +3842,7 @@ const styles = StyleSheet.create({
     width: 60,
     height: 60,
     borderRadius: 30,
-    backgroundColor: "#00A66A",
+    backgroundColor: "#B71C1C",
     justifyContent: "center",
     alignItems: "center",
     marginRight: 12,
@@ -3889,7 +3889,7 @@ const styles = StyleSheet.create({
   progressFill: {
     width: "50%",
     height: "100%",
-    backgroundColor: "#00A66A",
+    backgroundColor: "#B71C1C",
   },
   progressText: {
     fontSize: 14,
@@ -3917,7 +3917,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   drawerMenuBadge: {
-    backgroundColor: "#E5E5E5",
+    backgroundColor: "#E0E0E0",
     borderRadius: 12,
     paddingHorizontal: 8,
     paddingVertical: 2,
@@ -4020,7 +4020,7 @@ const styles = StyleSheet.create({
   },
   searchPlayerStats: {
     fontSize: 12,
-    color: "#00A66A",
+    color: "#B71C1C",
     fontWeight: "500",
   },
   searchMatchItem: {
@@ -4035,7 +4035,7 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   searchMatchBadge: {
-    backgroundColor: "#00A66A",
+    backgroundColor: "#B71C1C",
     paddingHorizontal: 8,
     paddingVertical: 2,
     borderRadius: 8,
@@ -4084,7 +4084,7 @@ const styles = StyleSheet.create({
   },
   searchProductPrice: {
     fontSize: 14,
-    color: "#00A66A",
+    color: "#B71C1C",
     fontWeight: "600",
   },
   noResultsContainer: {
@@ -4183,7 +4183,7 @@ const styles = StyleSheet.create({
   storeProductImageBox: {
     width: 100,
     height: 120,
-    backgroundColor: "#D1FAE5",
+    backgroundColor: "#FFCDD2",
     justifyContent: "center",
     alignItems: "center",
   },
@@ -4191,7 +4191,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: 8,
     left: 0,
-    backgroundColor: "#00A66A",
+    backgroundColor: "#B71C1C",
     paddingHorizontal: 6,
     paddingVertical: 2,
     borderTopRightRadius: 6,
@@ -4208,7 +4208,7 @@ const styles = StyleSheet.create({
   },
   storeProductCategory: {
     fontSize: 11,
-    color: "#00A66A",
+    color: "#B71C1C",
     fontWeight: "600",
     textTransform: "uppercase",
     marginBottom: 2,
@@ -4239,7 +4239,7 @@ const styles = StyleSheet.create({
   storePrice: {
     fontSize: 16,
     fontWeight: "bold",
-    color: "#00A66A",
+    color: "#B71C1C",
   },
   storeOriginalPrice: {
     fontSize: 13,
@@ -4249,7 +4249,7 @@ const styles = StyleSheet.create({
   storeAddCartBtn: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#00A66A",
+    backgroundColor: "#B71C1C",
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 8,
@@ -4282,7 +4282,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
   lbTabActive: {
-    backgroundColor: "#00A66A",
+    backgroundColor: "#B71C1C",
   },
   lbTabText: {
     fontSize: 14,
@@ -4352,7 +4352,7 @@ const styles = StyleSheet.create({
   lbStat: {
     fontSize: 15,
     fontWeight: "bold",
-    color: "#00A66A",
+    color: "#B71C1C",
   },
 
   // ===== Awards Styles =====
@@ -4418,7 +4418,7 @@ const styles = StyleSheet.create({
   },
   awardTeam: {
     fontSize: 13,
-    color: "#00A66A",
+    color: "#B71C1C",
     marginTop: 2,
   },
 
@@ -4440,7 +4440,7 @@ const styles = StyleSheet.create({
     width: 52,
     height: 52,
     borderRadius: 26,
-    backgroundColor: "#00A66A",
+    backgroundColor: "#B71C1C",
     justifyContent: "center",
     alignItems: "center",
     marginRight: 12,
@@ -4461,7 +4461,7 @@ const styles = StyleSheet.create({
   },
   assocCity: {
     fontSize: 12,
-    color: "#00A66A",
+    color: "#B71C1C",
     marginBottom: 4,
   },
   assocStats: {
@@ -4474,17 +4474,17 @@ const styles = StyleSheet.create({
     marginLeft: 4,
   },
   assocJoinBtn: {
-    backgroundColor: "#D1FAE5",
+    backgroundColor: "#FFCDD2",
     paddingHorizontal: 14,
     paddingVertical: 7,
     borderRadius: 20,
     borderWidth: 1,
-    borderColor: "#00A66A",
+    borderColor: "#B71C1C",
   },
   assocJoinText: {
     fontSize: 13,
     fontWeight: "600",
-    color: "#00A66A",
+    color: "#B71C1C",
   },
 
   // ===== Clubs Styles =====
@@ -4560,17 +4560,17 @@ const styles = StyleSheet.create({
     marginLeft: 4,
   },
   clubJoinBtn: {
-    backgroundColor: "#D1FAE5",
+    backgroundColor: "#FFCDD2",
     paddingHorizontal: 14,
     paddingVertical: 7,
     borderRadius: 20,
     borderWidth: 1,
-    borderColor: "#00A66A",
+    borderColor: "#B71C1C",
   },
   clubJoinText: {
     fontSize: 13,
     fontWeight: "600",
-    color: "#00A66A",
+    color: "#B71C1C",
   },
 
   // ===== Contact Styles =====
@@ -4614,7 +4614,7 @@ const styles = StyleSheet.create({
     width: 48,
     height: 48,
     borderRadius: 24,
-    backgroundColor: "#D1FAE5",
+    backgroundColor: "#FFCDD2",
     justifyContent: "center",
     alignItems: "center",
     marginRight: 14,
@@ -4666,7 +4666,7 @@ const styles = StyleSheet.create({
     color: "#333",
     marginBottom: 10,
     borderWidth: 1,
-    borderColor: "#E5E5E5",
+    borderColor: "#E0E0E0",
   },
   contactSendBtn: {
     borderRadius: 12,
@@ -4703,7 +4703,7 @@ const styles = StyleSheet.create({
     width: 80,
     height: 80,
     borderRadius: 20,
-    backgroundColor: "#00A66A",
+    backgroundColor: "#B71C1C",
     justifyContent: "center",
     alignItems: "center",
     marginBottom: 12,
@@ -4750,7 +4750,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    backgroundColor: "#D1FAE5",
+    backgroundColor: "#FFCDD2",
     borderRadius: 10,
     paddingHorizontal: 16,
     paddingVertical: 12,
@@ -4761,7 +4761,7 @@ const styles = StyleSheet.create({
   shareReferralCode: {
     fontSize: 22,
     fontWeight: "bold",
-    color: "#00A66A",
+    color: "#B71C1C",
     letterSpacing: 2,
   },
   shareCopyBtn: {
@@ -4772,7 +4772,7 @@ const styles = StyleSheet.create({
   shareCopyText: {
     fontSize: 14,
     fontWeight: "600",
-    color: "#00A66A",
+    color: "#B71C1C",
   },
   shareViaLabel: {
     fontSize: 14,
@@ -4864,7 +4864,7 @@ const styles = StyleSheet.create({
   rateLabel: {
     fontSize: 16,
     fontWeight: "600",
-    color: "#00A66A",
+    color: "#B71C1C",
     textAlign: "center",
     marginBottom: 20,
     minHeight: 24,
@@ -4932,7 +4932,7 @@ const styles = StyleSheet.create({
     marginBottom: 32,
   },
   ratingDoneBtn: {
-    backgroundColor: "#00A66A",
+    backgroundColor: "#B71C1C",
     paddingHorizontal: 48,
     paddingVertical: 14,
     borderRadius: 28,
@@ -4953,7 +4953,7 @@ const styles = StyleSheet.create({
   },
   profileRoleText: {
     fontSize: 13,
-    color: "#00A66A",
+    color: "#B71C1C",
     fontWeight: "600",
   },
   profileStatsRow: {
@@ -4999,7 +4999,7 @@ const styles = StyleSheet.create({
     gap: 4,
   },
   statusBadgeLive: {
-    backgroundColor: "#FEE2E2",
+    backgroundColor: "#FFCDD2",
   },
   statusBadgeUpcoming: {
     backgroundColor: "#F3F4F6",
@@ -5047,7 +5047,7 @@ const styles = StyleSheet.create({
     width: 32,
     height: 32,
     borderRadius: 16,
-    backgroundColor: "#00A66A",
+    backgroundColor: "#B71C1C",
     justifyContent: "center",
     alignItems: "center",
   },
@@ -5096,7 +5096,7 @@ const styles = StyleSheet.create({
   cardActionText: {
     fontSize: 12,
     fontWeight: "600",
-    color: "#00A66A",
+    color: "#B71C1C",
   },
   bannerTag: {
     flexDirection: "row",
@@ -5118,7 +5118,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#F59E0B",
   },
   rank2Bg: {
-    backgroundColor: "#94A3B8",
+    backgroundColor: "#9E9E9E",
   },
   rankWhiteText: {
     color: "#FFF",
@@ -5171,7 +5171,7 @@ const styles = StyleSheet.create({
     color: "#FFF",
     letterSpacing: 1,
   },
-  headerTitleOrange: { color: "#6EE7B7" },
+  headerTitleOrange: { color: "#EF9A9A" },
   headerRight: { flexDirection: "row", gap: 1, marginRight: -4 },
   iconButton: { padding: 6 },
 
@@ -5183,7 +5183,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     overflow: "hidden",
     elevation: 6,
-    shadowColor: "#00A66A",
+    shadowColor: "#B71C1C",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.25,
     shadowRadius: 12,
@@ -5260,7 +5260,7 @@ const styles = StyleSheet.create({
   profileCardStats: { flexDirection: "row", alignItems: "center", gap: 12 },
   profileCardStat: { alignItems: "center" },
   profileCardStatVal: { fontSize: 15, fontWeight: "800", color: "#FFF" },
-  profileCardStatLbl: { fontSize: 10, color: "#6EE7B7", fontWeight: "500" },
+  profileCardStatLbl: { fontSize: 10, color: "#EF9A9A", fontWeight: "500" },
   profileCardStatDiv: {
     width: 1,
     height: 24,
@@ -5290,17 +5290,17 @@ const styles = StyleSheet.create({
     marginBottom: 14,
   },
   matchesSectionTitle: { fontSize: 17, fontWeight: "800", color: "#0A2416" },
-  matchesSectionSub: { fontSize: 12, color: "#64748B", marginTop: 2 },
+  matchesSectionSub: { fontSize: 12, color: "#616161", marginTop: 2 },
   locationPill: {
     flexDirection: "row",
     alignItems: "center",
     gap: 4,
-    backgroundColor: "#D1FAE5",
+    backgroundColor: "#FFCDD2",
     paddingHorizontal: 10,
     paddingVertical: 5,
     borderRadius: 20,
   },
-  locationPillTxt: { fontSize: 12, color: "#00A66A", fontWeight: "700" },
+  locationPillTxt: { fontSize: 12, color: "#B71C1C", fontWeight: "700" },
   matchScrollContent: { paddingHorizontal: 16 },
   matchCardContainer: { marginRight: CARD_MARGIN, width: CARD_WIDTH },
   matchCard: {
@@ -5315,7 +5315,7 @@ const styles = StyleSheet.create({
     shadowRadius: 6,
   },
   cardActionButtonLive: {
-    backgroundColor: "#6EE7B7",
+    backgroundColor: "#EF9A9A",
     paddingHorizontal: 10,
     paddingVertical: 4,
     borderRadius: 20,
@@ -5336,7 +5336,7 @@ const styles = StyleSheet.create({
     marginBottom: 14,
   },
   profilesSectionTitle: { fontSize: 17, fontWeight: "800", color: "#0A2416" },
-  profilesSectionSub: { fontSize: 12, color: "#64748B", marginTop: 2 },
+  profilesSectionSub: { fontSize: 12, color: "#616161", marginTop: 2 },
   playerCardsScroll: { paddingHorizontal: 16, gap: 12 },
   playerCard: {
     width: 148,
@@ -5425,7 +5425,7 @@ const styles = StyleSheet.create({
     paddingVertical: 6,
     borderRadius: 20,
   },
-  playerCardFollowTxt: { fontSize: 11, fontWeight: "700", color: "#00A66A" },
+  playerCardFollowTxt: { fontSize: 11, fontWeight: "700", color: "#B71C1C" },
 
   // Community Feed
   feedSection: { marginTop: 8, backgroundColor: "#F8F9FA" },
@@ -5451,11 +5451,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     paddingVertical: 7,
     borderRadius: 20,
-    backgroundColor: "#F0FFF8",
+    backgroundColor: "#FBE9E7",
     borderWidth: 1,
-    borderColor: "#00A66A33",
+    borderColor: "#B71C1C33",
   },
-  feedFilterTxt: { fontSize: 12, fontWeight: "600", color: "#00A66A" },
+  feedFilterTxt: { fontSize: 12, fontWeight: "600", color: "#B71C1C" },
   storiesRow: { paddingHorizontal: 7, paddingTop: 5, paddingBottom: 3, gap: 12 },
   storiesDivider: {
     width: "85%",
@@ -5478,7 +5478,7 @@ const styles = StyleSheet.create({
     borderRadius: 30,
     backgroundColor: "#E8FFF4",
     borderWidth: 2.5,
-    borderColor: "#00A66A",
+    borderColor: "#B71C1C",
     alignItems: "center",
     justifyContent: "center",
     overflow: "hidden",
@@ -5491,7 +5491,7 @@ const styles = StyleSheet.create({
     width: 20,
     height: 20,
     borderRadius: 10,
-    backgroundColor: "#00A66A",
+    backgroundColor: "#B71C1C",
     alignItems: "center",
     justifyContent: "center",
     borderWidth: 2,
@@ -5538,7 +5538,7 @@ const styles = StyleSheet.create({
     width: 36,
     height: 36,
     borderRadius: 18,
-    backgroundColor: "#00A66A",
+    backgroundColor: "#B71C1C",
     alignItems: "center",
     justifyContent: "center",
     marginRight: 10,
@@ -5569,7 +5569,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     backgroundColor: "#F0F0F0",
   },
-  feedTabActive: { backgroundColor: "#00A66A" },
+  feedTabActive: { backgroundColor: "#B71C1C" },
   feedTabTxt: { fontSize: 13, fontWeight: "600", color: "#666" },
   feedTabTxtActive: { color: "#FFF" },
   postCard: {
@@ -5584,7 +5584,7 @@ const styles = StyleSheet.create({
     shadowRadius: 10,
     elevation: 3,
     borderWidth: 1,
-    borderColor: "#F4F4F4",
+    borderColor: "#F0F0F0",
   },
   postHeader: { flexDirection: "row", alignItems: "center", marginBottom: 12 },
   postAvatarRing: {
@@ -5620,12 +5620,12 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   postTag: {
-    backgroundColor: "#F0FFF8",
+    backgroundColor: "#FBE9E7",
     paddingHorizontal: 10,
     paddingVertical: 4,
     borderRadius: 12,
   },
-  postTagTxt: { fontSize: 12, color: "#00A66A", fontWeight: "600" },
+  postTagTxt: { fontSize: 12, color: "#B71C1C", fontWeight: "600" },
   postMediaBox: {
     borderRadius: 14,
     overflow: "hidden",
@@ -5706,7 +5706,7 @@ const styles = StyleSheet.create({
   createModalCancel: { fontSize: 15, color: "#888", fontWeight: "500" },
   createModalTitle: { fontSize: 16, fontWeight: "700", color: "#111" },
   createModalPostBtn: {
-    backgroundColor: "#00A66A",
+    backgroundColor: "#B71C1C",
     paddingHorizontal: 18,
     paddingVertical: 8,
     borderRadius: 20,
@@ -5723,16 +5723,16 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 4,
-    backgroundColor: "#F0FFF8",
+    backgroundColor: "#FBE9E7",
     paddingHorizontal: 10,
     paddingVertical: 4,
     borderRadius: 12,
     marginTop: 4,
     alignSelf: "flex-start",
     borderWidth: 1,
-    borderColor: "#00A66A33",
+    borderColor: "#B71C1C33",
   },
-  audiencePillTxt: { fontSize: 11, fontWeight: "600", color: "#00A66A" },
+  audiencePillTxt: { fontSize: 11, fontWeight: "600", color: "#B71C1C" },
   createModalInput: {
     fontSize: 16,
     color: "#222",
@@ -5830,7 +5830,7 @@ const styles = StyleSheet.create({
     width: 36,
     height: 36,
     borderRadius: 18,
-    backgroundColor: "#00A66A",
+    backgroundColor: "#B71C1C",
     justifyContent: "center",
     alignItems: "center",
   },

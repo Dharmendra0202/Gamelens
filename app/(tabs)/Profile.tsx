@@ -80,7 +80,7 @@ export default function ProfileScreen() {
       <ScrollView showsVerticalScrollIndicator={false}>
         {/* Profile Header Card */}
         <LinearGradient
-          colors={["#0D9488", "#0F766E", "#064E3B"]}
+          colors={["#0D9488", "#8B0000", "#8B0000"]}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 1 }}
           style={styles.headerCard}
@@ -94,7 +94,7 @@ export default function ProfileScreen() {
               <Text style={styles.profileEmail}>{userPhone}</Text>
             </View>
             <TouchableOpacity style={styles.editBtn} onPress={handleEditProfile}>
-              <Ionicons name="create-outline" size={16} color="#0F766E" />
+              <Ionicons name="create-outline" size={16} color="#8B0000" />
               <Text style={styles.editBtnText}>Edit</Text>
             </TouchableOpacity>
           </View>
@@ -132,10 +132,10 @@ export default function ProfileScreen() {
         <View style={styles.menuCard}>
           {[
             { icon: "shield-checkmark-outline", label: "Admin Dashboard", desc: "Manage bookings and services", color: "#0D9488" },
-            { icon: "calendar-outline", label: "My Bookings", desc: "View your upcoming bookings", color: "#2563EB" },
+            { icon: "calendar-outline", label: "My Bookings", desc: "View your upcoming bookings", color: "#B71C1C" },
             { icon: "location-outline", label: "Saved Addresses", desc: "Manage your locations", color: "#7C3AED" },
-            { icon: "card-outline", label: "Payment Methods", desc: "Cards, UPI, and saved options", color: "#059669" },
-            { icon: "headset-outline", label: "Help & Support", desc: "Call, chat, or raise a ticket", color: "#DC2626" },
+            { icon: "card-outline", label: "Payment Methods", desc: "Cards, UPI, and saved options", color: "#C62828" },
+            { icon: "headset-outline", label: "Help & Support", desc: "Call, chat, or raise a ticket", color: "#D32F2F" },
             { icon: "gift-outline", label: "Special Offers", desc: "Explore available deals", color: "#D97706" },
           ].map((item, index) => (
             <TouchableOpacity
@@ -151,7 +151,7 @@ export default function ProfileScreen() {
                 <Text style={styles.menuLabel}>{item.label}</Text>
                 <Text style={styles.menuDesc}>{item.desc}</Text>
               </View>
-              <Ionicons name="chevron-forward" size={18} color="#CBD5E1" />
+              <Ionicons name="chevron-forward" size={18} color="#BDBDBD" />
             </TouchableOpacity>
           ))}
         </View>
@@ -178,8 +178,8 @@ export default function ProfileScreen() {
           <View style={styles.prefDivider} />
 
           <View style={styles.prefItem}>
-            <View style={[styles.menuIconBg, { backgroundColor: "#DC262612" }]}>
-              <Ionicons name="notifications-outline" size={22} color="#DC2626" />
+            <View style={[styles.menuIconBg, { backgroundColor: "#D32F2F12" }]}>
+              <Ionicons name="notifications-outline" size={22} color="#D32F2F" />
             </View>
             <Text style={styles.prefLabel}>Notifications</Text>
             <Switch
@@ -194,7 +194,7 @@ export default function ProfileScreen() {
 
           <View style={styles.prefItem}>
             <View style={[styles.menuIconBg, { backgroundColor: "#64748B12" }]}>
-              <Ionicons name="finger-print-outline" size={22} color="#64748B" />
+              <Ionicons name="finger-print-outline" size={22} color="#616161" />
             </View>
             <Text style={styles.prefLabel}>Biometric lock</Text>
             <Switch
@@ -208,7 +208,7 @@ export default function ProfileScreen() {
 
         {/* Logout Button */}
         <TouchableOpacity style={styles.logoutBtn} onPress={handleLogout} activeOpacity={0.8}>
-          <Ionicons name="log-out-outline" size={20} color="#DC2626" />
+          <Ionicons name="log-out-outline" size={20} color="#D32F2F" />
           <Text style={styles.logoutText}>Logout</Text>
         </TouchableOpacity>
 
@@ -222,7 +222,7 @@ export default function ProfileScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#F8FAFC" },
+  container: { flex: 1, backgroundColor: "#FAFAFA" },
 
   // Header Card
   headerCard: {
@@ -260,7 +260,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     gap: 4,
   },
-  editBtnText: { fontSize: 13, fontWeight: "600", color: "#0F766E" },
+  editBtnText: { fontSize: 13, fontWeight: "600", color: "#8B0000" },
 
   // Google Button
   googleBtn: {
@@ -291,8 +291,8 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   statItem: { flex: 1, alignItems: "center" },
-  statValue: { fontSize: 22, fontWeight: "800", color: "#0F172A" },
-  statLabel: { fontSize: 12, color: "#64748B", marginTop: 4, fontWeight: "500" },
+  statValue: { fontSize: 22, fontWeight: "800", color: "#212121" },
+  statLabel: { fontSize: 12, color: "#616161", marginTop: 4, fontWeight: "500" },
   statDivider: { width: 1, backgroundColor: "#E2E8F0" },
 
   // Section Header
@@ -303,8 +303,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     marginBottom: 10,
   },
-  sectionTitle: { fontSize: 16, fontWeight: "700", color: "#0F172A" },
-  sectionSubtitle: { fontSize: 12, color: "#64748B" },
+  sectionTitle: { fontSize: 16, fontWeight: "700", color: "#212121" },
+  sectionSubtitle: { fontSize: 12, color: "#616161" },
 
   // Menu Card
   menuCard: {
@@ -335,8 +335,8 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   menuTextWrap: { flex: 1 },
-  menuLabel: { fontSize: 15, fontWeight: "600", color: "#0F172A" },
-  menuDesc: { fontSize: 12, color: "#94A3B8", marginTop: 2 },
+  menuLabel: { fontSize: 15, fontWeight: "600", color: "#212121" },
+  menuDesc: { fontSize: 12, color: "#9E9E9E", marginTop: 2 },
 
   // Preferences
   prefItem: {
@@ -345,7 +345,7 @@ const styles = StyleSheet.create({
     paddingVertical: 14,
     gap: 12,
   },
-  prefLabel: { flex: 1, fontSize: 15, fontWeight: "600", color: "#0F172A" },
+  prefLabel: { flex: 1, fontSize: 15, fontWeight: "600", color: "#212121" },
   prefDivider: { height: 1, backgroundColor: "#F1F5F9" },
 
   // Logout
@@ -354,19 +354,19 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     marginHorizontal: 16,
-    backgroundColor: "#FEE2E2",
+    backgroundColor: "#FFCDD2",
     borderRadius: 14,
     paddingVertical: 16,
     gap: 8,
     marginTop: 8,
   },
-  logoutText: { fontSize: 16, fontWeight: "700", color: "#DC2626" },
+  logoutText: { fontSize: 16, fontWeight: "700", color: "#D32F2F" },
 
   // Version
   versionText: {
     textAlign: "center",
     fontSize: 12,
-    color: "#94A3B8",
+    color: "#9E9E9E",
     marginTop: 16,
   },
 });

@@ -31,13 +31,13 @@ export default function TurfManagementScreen() {
   const [turfContact, setTurfContact] = useState("");
 
   const menuItems: { key: TurfView; icon: string; label: string; color: string }[] = [
-    { key: "dashboard", icon: "grid-outline", label: "Dashboard", color: "#0F766E" },
-    { key: "turfs", icon: "football-outline", label: "My Turfs", color: "#2563EB" },
+    { key: "dashboard", icon: "grid-outline", label: "Dashboard", color: "#8B0000" },
+    { key: "turfs", icon: "football-outline", label: "My Turfs", color: "#B71C1C" },
     { key: "bookings", icon: "calendar-outline", label: "Bookings", color: "#7C3AED" },
     { key: "slots", icon: "time-outline", label: "Time Slots", color: "#D97706" },
-    { key: "pricing", icon: "pricetag-outline", label: "Pricing", color: "#DC2626" },
-    { key: "analytics", icon: "stats-chart-outline", label: "Analytics", color: "#059669" },
-    { key: "settings", icon: "settings-outline", label: "Settings", color: "#64748B" },
+    { key: "pricing", icon: "pricetag-outline", label: "Pricing", color: "#D32F2F" },
+    { key: "analytics", icon: "stats-chart-outline", label: "Analytics", color: "#C62828" },
+    { key: "settings", icon: "settings-outline", label: "Settings", color: "#616161" },
   ];
 
   const resetTurfForm = () => {
@@ -73,7 +73,7 @@ export default function TurfManagementScreen() {
     <ScrollView showsVerticalScrollIndicator={false} style={styles.viewContent}>
       {/* Overview Card — Key Metrics */}
       <LinearGradient
-        colors={["#0F766E", "#064E3B"]}
+        colors={["#8B0000", "#8B0000"]}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
         style={styles.overviewCard}
@@ -105,8 +105,8 @@ export default function TurfManagementScreen() {
       <Text style={styles.dashSectionHeading}>Management</Text>
       <View style={styles.managementGrid}>
         <TouchableOpacity style={styles.mgmtCard} onPress={() => setCurrentView("turfs")}>
-          <View style={[styles.mgmtIconBg, { backgroundColor: "#D1FAE5" }]}>
-            <Ionicons name="football-outline" size={24} color="#059669" />
+          <View style={[styles.mgmtIconBg, { backgroundColor: "#FFCDD2" }]}>
+            <Ionicons name="football-outline" size={24} color="#C62828" />
           </View>
           <Text style={styles.mgmtLabel}>My Turfs</Text>
           <Text style={styles.mgmtDesc}>View & manage</Text>
@@ -129,8 +129,8 @@ export default function TurfManagementScreen() {
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.mgmtCard} onPress={() => setCurrentView("pricing")}>
-          <View style={[styles.mgmtIconBg, { backgroundColor: "#FEE2E2" }]}>
-            <Ionicons name="pricetag-outline" size={24} color="#DC2626" />
+          <View style={[styles.mgmtIconBg, { backgroundColor: "#FFCDD2" }]}>
+            <Ionicons name="pricetag-outline" size={24} color="#D32F2F" />
           </View>
           <Text style={styles.mgmtLabel}>Pricing</Text>
           <Text style={styles.mgmtDesc}>Set rates</Text>
@@ -142,26 +142,26 @@ export default function TurfManagementScreen() {
       <View style={styles.insightsCard}>
         <TouchableOpacity style={styles.insightRow} onPress={() => setCurrentView("analytics")}>
           <View style={[styles.insightIcon, { backgroundColor: "#DBEAFE" }]}>
-            <Ionicons name="stats-chart" size={20} color="#2563EB" />
+            <Ionicons name="stats-chart" size={20} color="#B71C1C" />
           </View>
           <View style={styles.insightText}>
             <Text style={styles.insightTitle}>Analytics & Reports</Text>
             <Text style={styles.insightSub}>Track revenue, bookings & performance</Text>
           </View>
-          <Ionicons name="chevron-forward" size={18} color="#CBD5E1" />
+          <Ionicons name="chevron-forward" size={18} color="#BDBDBD" />
         </TouchableOpacity>
 
         <View style={styles.insightDivider} />
 
         <TouchableOpacity style={styles.insightRow} onPress={() => setCurrentView("settings")}>
           <View style={[styles.insightIcon, { backgroundColor: "#F1F5F9" }]}>
-            <Ionicons name="settings-outline" size={20} color="#64748B" />
+            <Ionicons name="settings-outline" size={20} color="#616161" />
           </View>
           <View style={styles.insightText}>
             <Text style={styles.insightTitle}>Settings</Text>
             <Text style={styles.insightSub}>Profile, notifications & preferences</Text>
           </View>
-          <Ionicons name="chevron-forward" size={18} color="#CBD5E1" />
+          <Ionicons name="chevron-forward" size={18} color="#BDBDBD" />
         </TouchableOpacity>
       </View>
 
@@ -169,7 +169,7 @@ export default function TurfManagementScreen() {
       <Text style={styles.dashSectionHeading}>Recent Activity</Text>
       <View style={styles.activityCard}>
         <View style={styles.emptyStateSmall}>
-          <Ionicons name="time-outline" size={40} color="#CBD5E1" />
+          <Ionicons name="time-outline" size={40} color="#BDBDBD" />
           <Text style={styles.emptySmallText}>No activity yet</Text>
           <Text style={styles.emptySmallSub}>Bookings and updates will show here</Text>
         </View>
@@ -189,7 +189,7 @@ export default function TurfManagementScreen() {
         </TouchableOpacity>
       </View>
       <View style={styles.emptyState}>
-        <Ionicons name="football-outline" size={56} color="#CBD5E1" />
+        <Ionicons name="football-outline" size={56} color="#BDBDBD" />
         <Text style={styles.emptyTitle}>No turfs added yet</Text>
         <Text style={styles.emptySubtitle}>Add your first turf to start receiving bookings</Text>
         <TouchableOpacity style={styles.emptyAction} onPress={() => setCurrentView("addTurf")}>
@@ -205,7 +205,7 @@ export default function TurfManagementScreen() {
         <Text style={styles.viewTitle}>Bookings</Text>
       </View>
       <View style={styles.emptyState}>
-        <Ionicons name="calendar-outline" size={56} color="#CBD5E1" />
+        <Ionicons name="calendar-outline" size={56} color="#BDBDBD" />
         <Text style={styles.emptyTitle}>No bookings yet</Text>
         <Text style={styles.emptySubtitle}>When customers book your turf, they'll appear here</Text>
       </View>
@@ -218,7 +218,7 @@ export default function TurfManagementScreen() {
         <Text style={styles.viewTitle}>Time Slots</Text>
       </View>
       <View style={styles.emptyState}>
-        <Ionicons name="time-outline" size={56} color="#CBD5E1" />
+        <Ionicons name="time-outline" size={56} color="#BDBDBD" />
         <Text style={styles.emptyTitle}>No time slots configured</Text>
         <Text style={styles.emptySubtitle}>Add a turf first, then configure available time slots</Text>
       </View>
@@ -231,7 +231,7 @@ export default function TurfManagementScreen() {
         <Text style={styles.viewTitle}>Pricing</Text>
       </View>
       <View style={styles.emptyState}>
-        <Ionicons name="pricetag-outline" size={56} color="#CBD5E1" />
+        <Ionicons name="pricetag-outline" size={56} color="#BDBDBD" />
         <Text style={styles.emptyTitle}>No pricing set</Text>
         <Text style={styles.emptySubtitle}>Add a turf first, then set pricing for different slots</Text>
       </View>
@@ -244,7 +244,7 @@ export default function TurfManagementScreen() {
         <Text style={styles.viewTitle}>Analytics</Text>
       </View>
       <View style={styles.emptyState}>
-        <Ionicons name="stats-chart-outline" size={56} color="#CBD5E1" />
+        <Ionicons name="stats-chart-outline" size={56} color="#BDBDBD" />
         <Text style={styles.emptyTitle}>No data available</Text>
         <Text style={styles.emptySubtitle}>Analytics will appear once you start receiving bookings</Text>
       </View>
@@ -258,12 +258,12 @@ export default function TurfManagementScreen() {
       </View>
       <View style={styles.sectionCard}>
         {[
-          { icon: "person-outline", label: "Profile", color: "#2563EB" },
+          { icon: "person-outline", label: "Profile", color: "#B71C1C" },
           { icon: "notifications-outline", label: "Notifications", color: "#7C3AED" },
-          { icon: "card-outline", label: "Payment Methods", color: "#059669" },
+          { icon: "card-outline", label: "Payment Methods", color: "#C62828" },
           { icon: "help-circle-outline", label: "Help & Support", color: "#D97706" },
-          { icon: "document-text-outline", label: "Terms & Conditions", color: "#64748B" },
-          { icon: "log-out-outline", label: "Logout", color: "#DC2626" },
+          { icon: "document-text-outline", label: "Terms & Conditions", color: "#616161" },
+          { icon: "log-out-outline", label: "Logout", color: "#D32F2F" },
         ].map((item, index) => (
           <TouchableOpacity
             key={index}
@@ -275,10 +275,10 @@ export default function TurfManagementScreen() {
             <View style={[styles.settingsIconBg, { backgroundColor: item.color + "15" }]}>
               <Ionicons name={item.icon as any} size={20} color={item.color} />
             </View>
-            <Text style={[styles.settingsLabel, item.label === "Logout" && { color: "#DC2626" }]}>
+            <Text style={[styles.settingsLabel, item.label === "Logout" && { color: "#D32F2F" }]}>
               {item.label}
             </Text>
-            <Ionicons name="chevron-forward" size={18} color="#94A3B8" />
+            <Ionicons name="chevron-forward" size={18} color="#9E9E9E" />
           </TouchableOpacity>
         ))}
       </View>
@@ -296,7 +296,7 @@ export default function TurfManagementScreen() {
           <TextInput
             style={styles.formInput}
             placeholder="Enter turf name"
-            placeholderTextColor="#94A3B8"
+            placeholderTextColor="#9E9E9E"
             value={turfName}
             onChangeText={setTurfName}
           />
@@ -307,7 +307,7 @@ export default function TurfManagementScreen() {
           <TextInput
             style={styles.formInput}
             placeholder="Enter full address"
-            placeholderTextColor="#94A3B8"
+            placeholderTextColor="#9E9E9E"
             value={turfLocation}
             onChangeText={setTurfLocation}
           />
@@ -318,7 +318,7 @@ export default function TurfManagementScreen() {
           <TextInput
             style={styles.formInput}
             placeholder="e.g. 5-a-side, 7-a-side, 11-a-side"
-            placeholderTextColor="#94A3B8"
+            placeholderTextColor="#9E9E9E"
             value={turfSize}
             onChangeText={setTurfSize}
           />
@@ -329,7 +329,7 @@ export default function TurfManagementScreen() {
           <TextInput
             style={styles.formInput}
             placeholder="Enter price"
-            placeholderTextColor="#94A3B8"
+            placeholderTextColor="#9E9E9E"
             keyboardType="numeric"
             value={turfPrice}
             onChangeText={setTurfPrice}
@@ -341,7 +341,7 @@ export default function TurfManagementScreen() {
           <TextInput
             style={styles.formInput}
             placeholder="Enter phone number"
-            placeholderTextColor="#94A3B8"
+            placeholderTextColor="#9E9E9E"
             keyboardType="phone-pad"
             value={turfContact}
             onChangeText={setTurfContact}
@@ -360,7 +360,7 @@ export default function TurfManagementScreen() {
             setCurrentView("turfs");
           }}
         >
-          <LinearGradient colors={["#0F766E", "#064E3B"]} style={styles.submitBtnGrad}>
+          <LinearGradient colors={["#8B0000", "#8B0000"]} style={styles.submitBtnGrad}>
             <Text style={styles.submitBtnText}>Add Turf</Text>
             <Ionicons name="checkmark" size={20} color="#FFF" />
           </LinearGradient>
@@ -398,7 +398,7 @@ export default function TurfManagementScreen() {
     <View style={styles.container}>
       {/* Header */}
       <LinearGradient
-        colors={["#0F766E", "#064E3B"]}
+        colors={["#8B0000", "#8B0000"]}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
         style={styles.header}
@@ -440,7 +440,7 @@ export default function TurfManagementScreen() {
           <TouchableOpacity style={styles.sidebarDismiss} onPress={() => setShowSidebar(false)} />
           <View style={styles.sidebar}>
             <View style={styles.sidebarHeader}>
-              <LinearGradient colors={["#0F766E", "#064E3B"]} style={styles.sidebarHeaderGrad}>
+              <LinearGradient colors={["#8B0000", "#8B0000"]} style={styles.sidebarHeaderGrad}>
                 <Ionicons name="football" size={28} color="#FFF" />
                 <Text style={styles.sidebarTitle}>Turf Manager</Text>
               </LinearGradient>
@@ -462,7 +462,7 @@ export default function TurfManagementScreen() {
                   <Ionicons
                     name={item.icon as any}
                     size={20}
-                    color={currentView === item.key ? "#0F766E" : "#64748B"}
+                    color={currentView === item.key ? "#8B0000" : "#616161"}
                   />
                   <Text
                     style={[
@@ -477,7 +477,7 @@ export default function TurfManagementScreen() {
             </ScrollView>
 
             <TouchableOpacity style={styles.sidebarLogout} onPress={() => router.replace("/")}>
-              <Ionicons name="log-out-outline" size={20} color="#DC2626" />
+              <Ionicons name="log-out-outline" size={20} color="#D32F2F" />
               <Text style={styles.sidebarLogoutText}>Back to Login</Text>
             </TouchableOpacity>
           </View>
@@ -507,7 +507,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     marginBottom: 20,
   },
-  viewTitle: { fontSize: 22, fontWeight: "800", color: "#0F172A" },
+  viewTitle: { fontSize: 22, fontWeight: "800", color: "#212121" },
 
   // Stats Grid
   statsGrid: {
@@ -521,7 +521,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFF",
     borderRadius: 16,
     padding: 18,
-    shadowColor: "#0F766E",
+    shadowColor: "#8B0000",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.06,
     shadowRadius: 12,
@@ -535,8 +535,8 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     marginBottom: 12,
   },
-  statValue: { fontSize: 24, fontWeight: "800", color: "#0F172A" },
-  statLabel: { fontSize: 12, color: "#64748B", fontWeight: "500", marginTop: 4 },
+  statValue: { fontSize: 24, fontWeight: "800", color: "#212121" },
+  statLabel: { fontSize: 12, color: "#616161", fontWeight: "500", marginTop: 4 },
 
   // Dashboard - Overview Card
   overviewCard: {
@@ -562,7 +562,7 @@ const styles = StyleSheet.create({
   overviewCtaText: { fontSize: 13, fontWeight: "600", color: "#A7F3D0" },
 
   // Section Heading
-  dashSectionHeading: { fontSize: 16, fontWeight: "700", color: "#0F172A", marginBottom: 12, marginTop: 4 },
+  dashSectionHeading: { fontSize: 16, fontWeight: "700", color: "#212121", marginBottom: 12, marginTop: 4 },
 
   // Management Grid
   managementGrid: { flexDirection: "row", flexWrap: "wrap", gap: 12, marginBottom: 24 },
@@ -585,8 +585,8 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     marginBottom: 12,
   },
-  mgmtLabel: { fontSize: 14, fontWeight: "700", color: "#0F172A" },
-  mgmtDesc: { fontSize: 11, color: "#94A3B8", marginTop: 3 },
+  mgmtLabel: { fontSize: 14, fontWeight: "700", color: "#212121" },
+  mgmtDesc: { fontSize: 11, color: "#9E9E9E", marginTop: 3 },
 
   // Insights Card
   insightsCard: {
@@ -608,8 +608,8 @@ const styles = StyleSheet.create({
   },
   insightIcon: { width: 40, height: 40, borderRadius: 12, alignItems: "center", justifyContent: "center" },
   insightText: { flex: 1 },
-  insightTitle: { fontSize: 14, fontWeight: "700", color: "#0F172A" },
-  insightSub: { fontSize: 11, color: "#94A3B8", marginTop: 2 },
+  insightTitle: { fontSize: 14, fontWeight: "700", color: "#212121" },
+  insightSub: { fontSize: 11, color: "#9E9E9E", marginTop: 2 },
   insightDivider: { height: 1, backgroundColor: "#F1F5F9", marginHorizontal: 16 },
 
   // Activity Card
@@ -625,8 +625,8 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   emptyStateSmall: { alignItems: "center", paddingVertical: 24 },
-  emptySmallText: { fontSize: 14, fontWeight: "600", color: "#94A3B8", marginTop: 10 },
-  emptySmallSub: { fontSize: 12, color: "#CBD5E1", marginTop: 4 },
+  emptySmallText: { fontSize: 14, fontWeight: "600", color: "#9E9E9E", marginTop: 10 },
+  emptySmallSub: { fontSize: 12, color: "#BDBDBD", marginTop: 4 },
 
   // Section Card (for other views)
   sectionCard: {
@@ -640,17 +640,17 @@ const styles = StyleSheet.create({
     shadowRadius: 8,
     elevation: 2,
   },
-  sectionTitle: { fontSize: 16, fontWeight: "700", color: "#0F172A", marginBottom: 16 },
+  sectionTitle: { fontSize: 16, fontWeight: "700", color: "#212121", marginBottom: 16 },
   emptyState: {
     alignItems: "center",
     paddingVertical: 40,
     paddingHorizontal: 20,
   },
-  emptyTitle: { fontSize: 16, fontWeight: "700", color: "#334155", marginTop: 16 },
-  emptySubtitle: { fontSize: 13, color: "#94A3B8", textAlign: "center", marginTop: 6, lineHeight: 20 },
+  emptyTitle: { fontSize: 16, fontWeight: "700", color: "#424242", marginTop: 16 },
+  emptySubtitle: { fontSize: 13, color: "#9E9E9E", textAlign: "center", marginTop: 6, lineHeight: 20 },
   emptyAction: {
     marginTop: 20,
-    backgroundColor: "#0F766E",
+    backgroundColor: "#8B0000",
     paddingHorizontal: 20,
     paddingVertical: 12,
     borderRadius: 12,
@@ -661,7 +661,7 @@ const styles = StyleSheet.create({
   addBtn: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#0F766E",
+    backgroundColor: "#8B0000",
     paddingHorizontal: 14,
     paddingVertical: 8,
     borderRadius: 10,
@@ -681,16 +681,16 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   formGroup: { marginBottom: 18 },
-  formLabel: { fontSize: 13, fontWeight: "600", color: "#334155", marginBottom: 8 },
+  formLabel: { fontSize: 13, fontWeight: "600", color: "#424242", marginBottom: 8 },
   formInput: {
-    backgroundColor: "#F8FAFC",
+    backgroundColor: "#FAFAFA",
     borderRadius: 12,
     borderWidth: 1.5,
     borderColor: "#E2E8F0",
     paddingHorizontal: 14,
     paddingVertical: 14,
     fontSize: 15,
-    color: "#0F172A",
+    color: "#212121",
   },
   submitBtn: { width: "100%", borderRadius: 14, overflow: "hidden", marginTop: 8 },
   submitBtnGrad: {
@@ -702,7 +702,7 @@ const styles = StyleSheet.create({
   },
   submitBtnText: { fontSize: 16, fontWeight: "700", color: "#FFF" },
   cancelBtn: { alignItems: "center", paddingVertical: 14, marginTop: 8 },
-  cancelBtnText: { fontSize: 14, fontWeight: "600", color: "#64748B" },
+  cancelBtnText: { fontSize: 14, fontWeight: "600", color: "#616161" },
 
   // Settings
   settingsItem: {
@@ -719,7 +719,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  settingsLabel: { flex: 1, fontSize: 15, fontWeight: "600", color: "#0F172A", marginLeft: 12 },
+  settingsLabel: { flex: 1, fontSize: 15, fontWeight: "600", color: "#212121", marginLeft: 12 },
 
   // Sidebar
   sidebarOverlay: { flex: 1, flexDirection: "row", backgroundColor: "rgba(0,0,0,0.4)" },
@@ -752,8 +752,8 @@ const styles = StyleSheet.create({
     gap: 14,
   },
   sidebarItemActive: { backgroundColor: "#F0FDF4" },
-  sidebarItemText: { fontSize: 15, fontWeight: "600", color: "#64748B" },
-  sidebarItemTextActive: { color: "#0F766E", fontWeight: "700" },
+  sidebarItemText: { fontSize: 15, fontWeight: "600", color: "#616161" },
+  sidebarItemTextActive: { color: "#8B0000", fontWeight: "700" },
   sidebarLogout: {
     flexDirection: "row",
     alignItems: "center",
@@ -762,5 +762,5 @@ const styles = StyleSheet.create({
     borderTopColor: "#F1F5F9",
     gap: 12,
   },
-  sidebarLogoutText: { fontSize: 15, fontWeight: "600", color: "#DC2626" },
+  sidebarLogoutText: { fontSize: 15, fontWeight: "600", color: "#D32F2F" },
 });

@@ -304,7 +304,7 @@ export default function ProfileSetupScreen() {
   return (
     <SafeAreaView style={styles.container} edges={["top", "bottom"]}>
       <LinearGradient
-        colors={["#00A66A", "#0F766E", "#064E3B"]}
+        colors={["#B71C1C", "#8B0000", "#8B0000"]}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
         style={styles.header}
@@ -371,7 +371,7 @@ export default function ProfileSetupScreen() {
             <TextInput
               style={styles.input}
               placeholder="Your full name"
-              placeholderTextColor="#94A3B8"
+              placeholderTextColor="#9E9E9E"
               value={fullName}
               onChangeText={setFullName}
             />
@@ -384,7 +384,7 @@ export default function ProfileSetupScreen() {
             <TextInput
               style={styles.input}
               placeholder="alphanumeric_underscore"
-              placeholderTextColor="#94A3B8"
+              placeholderTextColor="#9E9E9E"
               value={username}
               onChangeText={handleUsernameChange}
               autoCapitalize="none"
@@ -406,7 +406,7 @@ export default function ProfileSetupScreen() {
               <TextInput
                 style={[styles.input, { flex: 1 }]}
                 placeholder="XXXXXXXXXX"
-                placeholderTextColor="#94A3B8"
+                placeholderTextColor="#9E9E9E"
                 value={phoneNumber}
                 onChangeText={(t) => setPhoneNumber(t.replace(/[^0-9]/g, ""))}
                 keyboardType="phone-pad"
@@ -422,7 +422,7 @@ export default function ProfileSetupScreen() {
               <TextInput
                 style={[styles.input, { flex: 1 }]}
                 placeholder="City / Area"
-                placeholderTextColor="#94A3B8"
+                placeholderTextColor="#9E9E9E"
                 value={location}
                 onChangeText={setLocation}
               />
@@ -448,7 +448,7 @@ export default function ProfileSetupScreen() {
               <TextInput
                 style={[styles.input, { flex: 1 }]}
                 placeholder={heightUnit === "cm" ? "e.g. 175" : "e.g. 5.9"}
-                placeholderTextColor="#94A3B8"
+                placeholderTextColor="#9E9E9E"
                 value={height}
                 onChangeText={(t) => setHeight(t.replace(/[^0-9.]/g, ""))}
                 keyboardType="decimal-pad"
@@ -468,7 +468,7 @@ export default function ProfileSetupScreen() {
             <TextInput
               style={styles.input}
               placeholder="e.g. 72"
-              placeholderTextColor="#94A3B8"
+              placeholderTextColor="#9E9E9E"
               value={weightKg}
               onChangeText={(t) => setWeightKg(t.replace(/[^0-9.]/g, ""))}
               keyboardType="decimal-pad"
@@ -558,7 +558,7 @@ export default function ProfileSetupScreen() {
 // ─── Styles ─────────────────────────────────────────────────────────────────────
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#F0F7F4" },
+  container: { flex: 1, backgroundColor: "#F5F5F5" },
   header: {
     flexDirection: "row",
     alignItems: "center",
@@ -576,17 +576,17 @@ const styles = StyleSheet.create({
     width: 104,
     height: 104,
     borderRadius: 52,
-    backgroundColor: "#D1FAE5",
+    backgroundColor: "#FFCDD2",
   },
   avatarPlaceholder: {
     width: 104,
     height: 104,
     borderRadius: 52,
-    backgroundColor: "#D1FAE5",
+    backgroundColor: "#FFCDD2",
     alignItems: "center",
     justifyContent: "center",
   },
-  avatarInitials: { fontSize: 34, fontWeight: "800", color: "#00A66A" },
+  avatarInitials: { fontSize: 34, fontWeight: "800", color: "#B71C1C" },
   cameraBadge: {
     position: "absolute",
     right: 2,
@@ -594,7 +594,7 @@ const styles = StyleSheet.create({
     width: 32,
     height: 32,
     borderRadius: 16,
-    backgroundColor: "#00A66A",
+    backgroundColor: "#B71C1C",
     alignItems: "center",
     justifyContent: "center",
     borderWidth: 2,
@@ -611,51 +611,51 @@ const styles = StyleSheet.create({
     padding: 16,
     marginBottom: 20,
     borderWidth: 1,
-    borderColor: "#E2EAE6",
+    borderColor: "#E0E0E0",
   },
   statItem: { flex: 1, alignItems: "center" },
-  statValue: { fontSize: 18, fontWeight: "800", color: "#0F172A" },
+  statValue: { fontSize: 18, fontWeight: "800", color: "#212121" },
   statLabel: {
     fontSize: 12,
     fontWeight: "600",
-    color: "#64748B",
+    color: "#616161",
     marginTop: 2,
   },
-  statDivider: { width: 1, height: 32, backgroundColor: "#E2EAE6" },
+  statDivider: { width: 1, height: 32, backgroundColor: "#E0E0E0" },
 
   // Section title
   sectionTitle: {
     fontSize: 16,
     fontWeight: "800",
-    color: "#0F172A",
+    color: "#212121",
     marginBottom: 14,
     marginTop: 4,
   },
 
   // Fields
   fieldWrap: { marginBottom: 16 },
-  label: { fontSize: 13, fontWeight: "700", color: "#334155", marginBottom: 8 },
-  required: { color: "#DC2626" },
+  label: { fontSize: 13, fontWeight: "700", color: "#424242", marginBottom: 8 },
+  required: { color: "#D32F2F" },
   input: {
-    backgroundColor: "#F8FAFC",
+    backgroundColor: "#FAFAFA",
     borderRadius: 14,
     borderWidth: 1.5,
-    borderColor: "#E2EAE6",
+    borderColor: "#E0E0E0",
     paddingHorizontal: 14,
     paddingVertical: 14,
     fontSize: 15,
     fontWeight: "600",
-    color: "#0F172A",
+    color: "#212121",
   },
-  inputText: { fontSize: 15, fontWeight: "600", color: "#0F172A" },
-  placeholder: { color: "#94A3B8" },
+  inputText: { fontSize: 15, fontWeight: "600", color: "#212121" },
+  placeholder: { color: "#9E9E9E" },
   phoneRow: { flexDirection: "row", gap: 10 },
   countryCodeInput: { width: 64, textAlign: "center" },
   locationRow: { flexDirection: "row", gap: 10 },
   gpsButton: {
     width: 48,
     borderRadius: 14,
-    backgroundColor: "#00A66A",
+    backgroundColor: "#B71C1C",
     alignItems: "center",
     justifyContent: "center",
   },
@@ -664,17 +664,17 @@ const styles = StyleSheet.create({
   footer: {
     padding: 16,
     borderTopWidth: 1,
-    borderTopColor: "#E2EAE6",
+    borderTopColor: "#E0E0E0",
     backgroundColor: "#FFF",
   },
   saveButton: {
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "#00A66A",
+    backgroundColor: "#B71C1C",
     borderRadius: 18,
     paddingVertical: 16,
   },
-  saveButtonDisabled: { backgroundColor: "#CBD5E1" },
+  saveButtonDisabled: { backgroundColor: "#BDBDBD" },
   saveButtonText: {
     color: "#FFF",
     fontSize: 16,

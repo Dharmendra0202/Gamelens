@@ -126,7 +126,7 @@ export default function PlayerSetupScreen() {
             <Text style={styles.playerIndexText}>{index + 1}</Text>
           </View>
           <Text style={styles.playerName}>{item.name}</Text>
-          <Ionicons name="reorder-three-outline" size={20} color="#CBD5E1" />
+          <Ionicons name="reorder-three-outline" size={20} color="#BDBDBD" />
         </View>
       </Swipeable>
     ),
@@ -146,7 +146,7 @@ export default function PlayerSetupScreen() {
       <TextInput
         style={styles.teamNameInput}
         placeholder={`Team ${team} name`}
-        placeholderTextColor="#94A3B8"
+        placeholderTextColor="#9E9E9E"
         value={name}
         onChangeText={setName}
         maxLength={MAX_TEAM_NAME}
@@ -156,7 +156,7 @@ export default function PlayerSetupScreen() {
         <TextInput
           style={styles.addInput}
           placeholder="Player name"
-          placeholderTextColor="#94A3B8"
+          placeholderTextColor="#9E9E9E"
           value={draft}
           onChangeText={setDraft}
           onSubmitEditing={() => addPlayer(team)}
@@ -192,7 +192,7 @@ export default function PlayerSetupScreen() {
     <GestureHandlerRootView style={{ flex: 1 }}>
       <SafeAreaView style={styles.container} edges={["top", "bottom"]}>
         <LinearGradient
-          colors={["#00A66A", "#0F766E", "#064E3B"]}
+          colors={["#B71C1C", "#8B0000", "#8B0000"]}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 1 }}
           style={styles.header}
@@ -261,7 +261,7 @@ export default function PlayerSetupScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#F0F7F4",
+    backgroundColor: "#F5F5F5",
   },
   header: {
     flexDirection: "row",
@@ -288,8 +288,8 @@ const styles = StyleSheet.create({
     padding: 16,
     marginBottom: 16,
     borderWidth: 1,
-    borderColor: "#E2EAE6",
-    shadowColor: "#0F766E",
+    borderColor: "#E0E0E0",
+    shadowColor: "#8B0000",
     shadowOffset: { width: 0, height: 6 },
     shadowOpacity: 0.06,
     shadowRadius: 14,
@@ -298,21 +298,21 @@ const styles = StyleSheet.create({
   teamLabel: {
     fontSize: 13,
     fontWeight: "800",
-    color: "#00A66A",
+    color: "#B71C1C",
     letterSpacing: 1,
     textTransform: "uppercase",
     marginBottom: 10,
   },
   teamNameInput: {
-    backgroundColor: "#F8FAFC",
+    backgroundColor: "#FAFAFA",
     borderRadius: 14,
     borderWidth: 1.5,
-    borderColor: "#E2EAE6",
+    borderColor: "#E0E0E0",
     paddingHorizontal: 14,
     paddingVertical: 13,
     fontSize: 15,
     fontWeight: "700",
-    color: "#0F172A",
+    color: "#212121",
     marginBottom: 14,
   },
   addRow: {
@@ -322,19 +322,19 @@ const styles = StyleSheet.create({
   },
   addInput: {
     flex: 1,
-    backgroundColor: "#F8FAFC",
+    backgroundColor: "#FAFAFA",
     borderRadius: 14,
     borderWidth: 1.5,
-    borderColor: "#E2EAE6",
+    borderColor: "#E0E0E0",
     paddingHorizontal: 14,
     paddingVertical: 12,
     fontSize: 15,
-    color: "#0F172A",
+    color: "#212121",
   },
   addButton: {
     width: 48,
     borderRadius: 14,
-    backgroundColor: "#00A66A",
+    backgroundColor: "#B71C1C",
     alignItems: "center",
     justifyContent: "center",
   },
@@ -354,23 +354,23 @@ const styles = StyleSheet.create({
     width: 26,
     height: 26,
     borderRadius: 13,
-    backgroundColor: "#D1FAE5",
+    backgroundColor: "#FFCDD2",
     alignItems: "center",
     justifyContent: "center",
   },
   playerIndexText: {
     fontSize: 12,
     fontWeight: "800",
-    color: "#00A66A",
+    color: "#B71C1C",
   },
   playerName: {
     flex: 1,
     fontSize: 15,
     fontWeight: "600",
-    color: "#1F2937",
+    color: "#212121",
   },
   deleteAction: {
-    backgroundColor: "#DC2626",
+    backgroundColor: "#D32F2F",
     justifyContent: "center",
     alignItems: "center",
     width: 88,
@@ -385,20 +385,20 @@ const styles = StyleSheet.create({
   },
   emptyHint: {
     fontSize: 13,
-    color: "#94A3B8",
+    color: "#9E9E9E",
     fontStyle: "italic",
     paddingVertical: 4,
   },
   countHint: {
     fontSize: 12,
     fontWeight: "600",
-    color: "#64748B",
+    color: "#616161",
     marginTop: 4,
   },
   footer: {
     padding: 16,
     borderTopWidth: 1,
-    borderTopColor: "#E2EAE6",
+    borderTopColor: "#E0E0E0",
     backgroundColor: "#FFF",
   },
   startButton: {
@@ -406,12 +406,12 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     gap: 10,
-    backgroundColor: "#00A66A",
+    backgroundColor: "#B71C1C",
     borderRadius: 18,
     paddingVertical: 16,
   },
   startButtonDisabled: {
-    backgroundColor: "#CBD5E1",
+    backgroundColor: "#BDBDBD",
   },
   startButtonText: {
     color: "#FFF",

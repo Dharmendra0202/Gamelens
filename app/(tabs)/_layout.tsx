@@ -1,34 +1,59 @@
-import { Ionicons } from '@expo/vector-icons';
-import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { TabNavigatorProvider } from '@/contexts/TabNavigatorContext';
+import { TabNavigatorProvider } from "@/contexts/TabNavigatorContext";
+import { Ionicons } from "@expo/vector-icons";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
-  Animated,
-  Dimensions,
-  Easing,
-  Platform,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+    Animated,
+    Dimensions,
+    Easing,
+    Platform,
+    ScrollView,
+    StyleSheet,
+    Text,
+    TouchableOpacity,
+    View,
+} from "react-native";
 
 // Import all tab screens directly — rendered side-by-side in pager
-import HomeScreen from './home';
-import LookingScreen from './looking';
-import MyCricketScreen from './my-cricket';
-import CommunityScreen from './Nearby turf';
-import StoreScreen from './Profile';
+import HomeScreen from "./home";
+import LookingScreen from "./looking";
+import MyCricketScreen from "./my-cricket";
+import CommunityScreen from "./Nearby turf";
+import StoreScreen from "./Profile";
 
-const { width: SCREEN_WIDTH } = Dimensions.get('window');
+const { width: SCREEN_WIDTH } = Dimensions.get("window");
 const TAB_BAR_HEIGHT = 50;
 
 const TABS = [
-  { key: 'home', label: 'Home', icon: 'home' as const, iconFocused: 'home' as const },
-  { key: 'looking', label: 'Looking', icon: 'search-outline' as const, iconFocused: 'search' as const },
-  { key: 'my-cricket', label: 'My Cricket', icon: 'baseball-outline' as const, iconFocused: 'baseball' as const },
-  { key: 'community', label: 'Nearby Turf', icon: 'location-outline' as const, iconFocused: 'location' as const },
-  { key: 'store', label: 'Profile', icon: 'person-outline' as const, iconFocused: 'person' as const },
+  {
+    key: "home",
+    label: "Home",
+    icon: "home" as const,
+    iconFocused: "home" as const,
+  },
+  {
+    key: "looking",
+    label: "Looking",
+    icon: "search-outline" as const,
+    iconFocused: "search" as const,
+  },
+  {
+    key: "my-cricket",
+    label: "Sport",
+    icon: "baseball-outline" as const,
+    iconFocused: "baseball" as const,
+  },
+  {
+    key: "community",
+    label: "Nearby Turf",
+    icon: "location-outline" as const,
+    iconFocused: "location" as const,
+  },
+  {
+    key: "store",
+    label: "Profile",
+    icon: "person-outline" as const,
+    iconFocused: "person" as const,
+  },
 ];
 
 // Animated tab icon
@@ -95,7 +120,7 @@ function TabIndicator({ focused }: { focused: boolean }) {
         width,
         height: 3,
         borderRadius: 1.5,
-        backgroundColor: '#B91C1C',
+        backgroundColor: "#B71C1C",
         opacity,
         marginTop: 2,
       }}
@@ -119,26 +144,35 @@ export default function TabLayout() {
   const isProgrammaticScroll = useRef(false);
 
   // Jump to tab — instant scroll, zero navigation lifecycle overhead
-  const goToTab = useCallback((index: number) => {
-    isProgrammaticScroll.current = true;
-    scrollRef.current?.scrollTo({ x: index * SCREEN_WIDTH, animated: true });
-    setActiveIndex(index);
-    // Programmatic animation updates scrollX directly to match target
-    Animated.spring(scrollX, {
-      toValue: index * SCREEN_WIDTH,
-      useNativeDriver: false,
-    }).start();
-    setTimeout(() => {
-      isProgrammaticScroll.current = false;
-    }, 350);
-  }, [scrollX]);
+  const goToTab = useCallback(
+    (index: number) => {
+      isProgrammaticScroll.current = true;
+      scrollRef.current?.scrollTo({ x: index * SCREEN_WIDTH, animated: true });
+      setActiveIndex(index);
+      // Programmatic animation updates scrollX directly to match target
+      Animated.spring(scrollX, {
+        toValue: index * SCREEN_WIDTH,
+        useNativeDriver: false,
+      }).start();
+      setTimeout(() => {
+        isProgrammaticScroll.current = false;
+      }, 350);
+    },
+    [scrollX],
+  );
 
   // Live sync active index from user swipe
   const handleScroll = useCallback(
     (e: any) => {
       if (isProgrammaticScroll.current) return;
-      const pageIndex = Math.round(e.nativeEvent.contentOffset.x / SCREEN_WIDTH);
-      if (pageIndex >= 0 && pageIndex < TABS.length && pageIndex !== activeIndex) {
+      const pageIndex = Math.round(
+        e.nativeEvent.contentOffset.x / SCREEN_WIDTH,
+      );
+      if (
+        pageIndex >= 0 &&
+        pageIndex < TABS.length &&
+        pageIndex !== activeIndex
+      ) {
         setActiveIndex(pageIndex);
       }
     },
@@ -146,86 +180,96 @@ export default function TabLayout() {
   );
 
   return (
-    <TabNavigatorProvider value={{ goToMainTab: goToTab, activeMainTab: activeIndex }}>
-    <View style={styles.root}>
-      {/* ── Pager: all 5 screens side-by-side ── */}
-      <ScrollView
-        ref={scrollRef}
-        horizontal
-        pagingEnabled
-        showsHorizontalScrollIndicator={false}
-        scrollEventThrottle={16}
-        decelerationRate="fast"
-        bounces={false}
-        onScroll={Animated.event(
-          [{ nativeEvent: { contentOffset: { x: scrollX } } }],
-          {
-            useNativeDriver: false,
-            listener: handleScroll,
-          }
-        )}
-        directionalLockEnabled
-        style={styles.pager}
-        contentContainerStyle={{ width: SCREEN_WIDTH * TABS.length }}
-      >
-        {TAB_SCREENS.map((Screen, index) => (
-          <View
-            key={TABS[index].key}
-            style={[styles.tabPage, { width: SCREEN_WIDTH, paddingBottom: TAB_BAR_HEIGHT }]}
-          >
-            <Screen />
-          </View>
-        ))}
-      </ScrollView>
-
-      {/* ── Custom Bottom Tab Bar ── */}
-      <View style={styles.tabBar}>
-        {/* Real-time sliding indicator line */}
-        <Animated.View
-          style={{
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            width: 24,
-            height: 3,
-            borderRadius: 1.5,
-            backgroundColor: '#B91C1C',
-            transform: [
-              {
-                translateX: scrollX.interpolate({
-                  inputRange: [0, SCREEN_WIDTH * (TABS.length - 1)],
-                  outputRange: [
-                    (SCREEN_WIDTH / 5 - 24) / 2,
-                    (SCREEN_WIDTH / 5 - 24) / 2 + (SCREEN_WIDTH / 5) * (TABS.length - 1),
-                  ],
-                }),
-              },
-            ],
-            zIndex: 10,
-          }}
-        />
-
-        {TABS.map((tab, index) => {
-          const focused = activeIndex === index;
-          const color = focused ? '#B91C1C' : '#999';
-          const iconName = focused ? tab.iconFocused : tab.icon;
-
-          return (
-            <TouchableOpacity
-              key={tab.key}
-              style={styles.tabItem}
-              onPress={() => goToTab(index)}
-              activeOpacity={0.7}
+    <TabNavigatorProvider
+      value={{ goToMainTab: goToTab, activeMainTab: activeIndex }}
+    >
+      <View style={styles.root}>
+        {/* ── Pager: all 5 screens side-by-side ── */}
+        <ScrollView
+          ref={scrollRef}
+          horizontal
+          pagingEnabled
+          showsHorizontalScrollIndicator={false}
+          scrollEventThrottle={16}
+          decelerationRate="fast"
+          bounces={false}
+          onScroll={Animated.event(
+            [{ nativeEvent: { contentOffset: { x: scrollX } } }],
+            {
+              useNativeDriver: false,
+              listener: handleScroll,
+            },
+          )}
+          directionalLockEnabled
+          style={styles.pager}
+          contentContainerStyle={{ width: SCREEN_WIDTH * TABS.length }}
+        >
+          {TAB_SCREENS.map((Screen, index) => (
+            <View
+              key={TABS[index].key}
+              style={[
+                styles.tabPage,
+                { width: SCREEN_WIDTH, paddingBottom: TAB_BAR_HEIGHT },
+              ]}
             >
-              <View style={styles.tabItemInner}>
-                <AnimatedTabIcon name={iconName} color={color} focused={focused} />
-              </View>
-              <Text style={[styles.tabLabel, { color }]}>{tab.label}</Text>
-            </TouchableOpacity>
-          );
-        })}
+              <Screen />
+            </View>
+          ))}
+        </ScrollView>
+
+        {/* ── Custom Bottom Tab Bar ── */}
+        <View style={styles.tabBar}>
+          {/* Real-time sliding indicator line */}
+          <Animated.View
+            style={{
+              position: "absolute",
+              top: 0,
+              left: 0,
+              width: 24,
+              height: 3,
+              borderRadius: 1.5,
+              backgroundColor: "#B71C1C",
+              transform: [
+                {
+                  translateX: scrollX.interpolate({
+                    inputRange: [0, SCREEN_WIDTH * (TABS.length - 1)],
+                    outputRange: [
+                      (SCREEN_WIDTH / 5 - 24) / 2,
+                      (SCREEN_WIDTH / 5 - 24) / 2 +
+                        (SCREEN_WIDTH / 5) * (TABS.length - 1),
+                    ],
+                  }),
+                },
+              ],
+              zIndex: 10,
+            }}
+          />
+
+          {TABS.map((tab, index) => {
+            const focused = activeIndex === index;
+            const color = focused ? "#B71C1C" : "#9E9E9E";
+            const iconName = focused ? tab.iconFocused : tab.icon;
+
+            return (
+              <TouchableOpacity
+                key={tab.key}
+                style={styles.tabItem}
+                onPress={() => goToTab(index)}
+                activeOpacity={0.7}
+              >
+                <View style={styles.tabItemInner}>
+                  <AnimatedTabIcon
+                    name={iconName}
+                    color={color}
+                    focused={focused}
+                  />
+                </View>
+                <Text style={[styles.tabLabel, { color }]}>{tab.label}</Text>
+              </TouchableOpacity>
+            );
+          })}
+        </View>
       </View>
-    </View>
     </TabNavigatorProvider>
   );
 }
@@ -233,51 +277,52 @@ export default function TabLayout() {
 const styles = StyleSheet.create({
   root: {
     flex: 1,
-    backgroundColor: '#FFF',
+    backgroundColor: "#F5F5F5",
   },
   pager: {
     flex: 1,
   },
   tabPage: {
     flex: 1,
-    overflow: 'hidden',
+    overflow: "hidden",
   },
   tabBar: {
-    position: 'absolute',
+    position: "absolute",
     left: 0,
     right: 0,
     bottom: 0,
     height: TAB_BAR_HEIGHT,
-    flexDirection: 'row',
-    backgroundColor: '#FFF',
-    borderTopWidth: 1,
-    borderTopColor: '#E5E5E5',
+    flexDirection: "row",
+    backgroundColor: "#FFFFFF",
+    borderTopWidth: 0,
     paddingTop: 2,
     paddingBottom: 1,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
     ...Platform.select({
       ios: {
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: -2 },
-        shadowOpacity: 0.06,
-        shadowRadius: 8,
+        shadowColor: "#000",
+        shadowOffset: { width: 0, height: -4 },
+        shadowOpacity: 0.08,
+        shadowRadius: 12,
       },
       android: {
-        elevation: 8,
+        elevation: 12,
       },
     }),
   },
   tabItem: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'flex-start',
+    alignItems: "center",
+    justifyContent: "flex-start",
     paddingTop: 4,
   },
   tabItemInner: {
-    alignItems: 'center',
+    alignItems: "center",
   },
   tabLabel: {
     fontSize: 11,
-    fontWeight: '600',
+    fontWeight: "600",
     marginTop: 2,
   },
 });

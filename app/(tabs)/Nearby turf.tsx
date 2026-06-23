@@ -90,7 +90,7 @@ export default function NearbyTurfScreen() {
     <View style={styles.container}>
       {/* Header — same as other tabs */}
       <LinearGradient
-        colors={["#00A66A", "#0F766E", "#064E3B"]}
+        colors={["#B71C1C", "#8B0000", "#8B0000"]}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
         style={styles.header}
@@ -113,23 +113,23 @@ export default function NearbyTurfScreen() {
       <ScrollView
         showsVerticalScrollIndicator={false}
         style={styles.content}
-        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#0F766E" />}
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#8B0000" />}
       >
         {/* Search Bar */}
         <View style={styles.searchSection}>
           <View style={styles.searchBar}>
-            <Ionicons name="search" size={18} color="#94A3B8" />
+            <Ionicons name="search" size={18} color="#9E9E9E" />
             <TextInput
               style={styles.searchInput}
               placeholder="Search cricket turfs nearby..."
-              placeholderTextColor="#94A3B8"
+              placeholderTextColor="#9E9E9E"
               value={searchQuery}
               onChangeText={setSearchQuery}
               returnKeyType="search"
             />
             {searchQuery.length > 0 && (
               <TouchableOpacity onPress={() => setSearchQuery("")}>
-                <Ionicons name="close-circle" size={18} color="#94A3B8" />
+                <Ionicons name="close-circle" size={18} color="#9E9E9E" />
               </TouchableOpacity>
             )}
           </View>
@@ -158,7 +158,7 @@ export default function NearbyTurfScreen() {
         {/* Location Status */}
         {locationGranted && userLocation && (
           <View style={styles.locationStatus}>
-            <Ionicons name="location" size={14} color="#059669" />
+            <Ionicons name="location" size={14} color="#C62828" />
             <Text style={styles.locationStatusText}>
               Location active • Pull to refresh
             </Text>
@@ -169,8 +169,8 @@ export default function NearbyTurfScreen() {
         {!locationGranted && (
           <View style={styles.locationCard}>
             <View style={styles.locationIconWrap}>
-              <LinearGradient colors={["#D1FAE5", "#A7F3D0"]} style={styles.locationIconGrad}>
-                <Ionicons name="location" size={32} color="#059669" />
+              <LinearGradient colors={["#FFCDD2", "#A7F3D0"]} style={styles.locationIconGrad}>
+                <Ionicons name="location" size={32} color="#C62828" />
               </LinearGradient>
             </View>
             <Text style={styles.locationTitle}>Find Cricket Turfs Near You</Text>
@@ -183,7 +183,7 @@ export default function NearbyTurfScreen() {
               activeOpacity={0.85}
               disabled={loadingLocation}
             >
-              <LinearGradient colors={["#00A66A", "#064E3B"]} style={styles.locationBtnGrad}>
+              <LinearGradient colors={["#B71C1C", "#8B0000"]} style={styles.locationBtnGrad}>
                 {loadingLocation ? (
                   <ActivityIndicator size="small" color="#FFF" />
                 ) : (
@@ -201,14 +201,14 @@ export default function NearbyTurfScreen() {
         {locationGranted && (
           <View style={styles.emptyCard}>
             <View style={styles.emptyIconWrap}>
-              <Ionicons name="baseball-outline" size={48} color="#CBD5E1" />
+              <Ionicons name="baseball-outline" size={48} color="#BDBDBD" />
             </View>
             <Text style={styles.emptyTitle}>No cricket turfs found</Text>
             <Text style={styles.emptyDesc}>
               We're still building our turf network in your area. Check back soon or try a different location.
             </Text>
             <TouchableOpacity style={styles.retryBtn} onPress={onRefresh}>
-              <Ionicons name="refresh" size={16} color="#0F766E" />
+              <Ionicons name="refresh" size={16} color="#8B0000" />
               <Text style={styles.retryBtnText}>Refresh</Text>
             </TouchableOpacity>
           </View>
@@ -239,7 +239,7 @@ const styles = StyleSheet.create({
   },
   headerLeft: { flexDirection: "row", alignItems: "center", gap: 2 },
   headerTitle: { fontSize: 22, fontWeight: "800", color: "#FFF", letterSpacing: 1 },
-  headerTitleAccent: { color: "#6EE7B7" },
+  headerTitleAccent: { color: "#EF9A9A" },
   headerRight: { flexDirection: "row", gap: 1, marginRight: -4 },
   iconButton: { padding: 6 },
 
@@ -255,13 +255,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
     paddingVertical: 12,
     gap: 10,
-    shadowColor: "#0F766E",
+    shadowColor: "#8B0000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.06,
     shadowRadius: 8,
     elevation: 3,
   },
-  searchInput: { flex: 1, fontSize: 14, color: "#0F172A", fontWeight: "500" },
+  searchInput: { flex: 1, fontSize: 14, color: "#212121", fontWeight: "500" },
 
   // Filters
   filterRow: { paddingHorizontal: 16, paddingVertical: 12, gap: 8 },
@@ -271,10 +271,10 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     backgroundColor: "#FFF",
     borderWidth: 1.5,
-    borderColor: "#D1FAE5",
+    borderColor: "#FFCDD2",
   },
-  filterChipActive: { backgroundColor: "#0F766E", borderColor: "#0F766E" },
-  filterText: { fontSize: 13, fontWeight: "600", color: "#0F766E" },
+  filterChipActive: { backgroundColor: "#8B0000", borderColor: "#8B0000" },
+  filterText: { fontSize: 13, fontWeight: "600", color: "#8B0000" },
   filterTextActive: { color: "#FFF" },
 
   // Location Status
@@ -285,7 +285,7 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     gap: 6,
   },
-  locationStatusText: { fontSize: 12, color: "#059669", fontWeight: "500" },
+  locationStatusText: { fontSize: 12, color: "#C62828", fontWeight: "500" },
 
   // Location Card
   locationCard: {
@@ -296,7 +296,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginTop: 8,
     marginBottom: 20,
-    shadowColor: "#0F766E",
+    shadowColor: "#8B0000",
     shadowOffset: { width: 0, height: 6 },
     shadowOpacity: 0.08,
     shadowRadius: 16,
@@ -310,8 +310,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  locationTitle: { fontSize: 20, fontWeight: "800", color: "#0F172A", marginBottom: 10, textAlign: "center" },
-  locationDesc: { fontSize: 14, color: "#64748B", textAlign: "center", lineHeight: 22, marginBottom: 22, paddingHorizontal: 8 },
+  locationTitle: { fontSize: 20, fontWeight: "800", color: "#212121", marginBottom: 10, textAlign: "center" },
+  locationDesc: { fontSize: 14, color: "#616161", textAlign: "center", lineHeight: 22, marginBottom: 22, paddingHorizontal: 8 },
   locationBtn: { width: "100%", borderRadius: 16, overflow: "hidden" },
   locationBtnGrad: {
     flexDirection: "row",
@@ -346,18 +346,18 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     marginBottom: 18,
   },
-  emptyTitle: { fontSize: 17, fontWeight: "700", color: "#334155", marginBottom: 8 },
-  emptyDesc: { fontSize: 13, color: "#94A3B8", textAlign: "center", lineHeight: 20, marginBottom: 18 },
+  emptyTitle: { fontSize: 17, fontWeight: "700", color: "#424242", marginBottom: 8 },
+  emptyDesc: { fontSize: 13, color: "#9E9E9E", textAlign: "center", lineHeight: 20, marginBottom: 18 },
   retryBtn: {
     flexDirection: "row",
     alignItems: "center",
     paddingHorizontal: 18,
     paddingVertical: 10,
     borderRadius: 10,
-    backgroundColor: "#D1FAE5",
+    backgroundColor: "#FFCDD2",
     gap: 6,
   },
-  retryBtnText: { fontSize: 13, fontWeight: "600", color: "#0F766E" },
+  retryBtnText: { fontSize: 13, fontWeight: "600", color: "#8B0000" },
 
   // Info Card
   infoCard: {
@@ -372,19 +372,19 @@ const styles = StyleSheet.create({
     shadowRadius: 8,
     elevation: 2,
   },
-  infoTitle: { fontSize: 16, fontWeight: "700", color: "#0F172A", marginBottom: 16 },
+  infoTitle: { fontSize: 16, fontWeight: "700", color: "#212121", marginBottom: 16 },
   infoRow: { flexDirection: "row", alignItems: "center", marginBottom: 14, gap: 12 },
   infoIconBg: {
     width: 40,
     height: 40,
     borderRadius: 12,
-    backgroundColor: "#D1FAE5",
+    backgroundColor: "#FFCDD2",
     alignItems: "center",
     justifyContent: "center",
   },
   infoContent: { flex: 1 },
-  infoLabel: { fontSize: 14, fontWeight: "600", color: "#0F172A" },
-  infoDesc: { fontSize: 12, color: "#94A3B8", marginTop: 2 },
+  infoLabel: { fontSize: 14, fontWeight: "600", color: "#212121" },
+  infoDesc: { fontSize: 12, color: "#9E9E9E", marginTop: 2 },
 
   // Tip Card
   tipCard: {
@@ -400,6 +400,6 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   tipContent: { flex: 1 },
-  tipTitle: { fontSize: 13, fontWeight: "700", color: "#059669" },
-  tipText: { fontSize: 12, color: "#334155", marginTop: 4, lineHeight: 18 },
+  tipTitle: { fontSize: 13, fontWeight: "700", color: "#C62828" },
+  tipText: { fontSize: 12, color: "#424242", marginTop: 4, lineHeight: 18 },
 });

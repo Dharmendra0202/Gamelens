@@ -14,19 +14,19 @@ import * as Location from "expo-location";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import React, { useEffect, useRef, useState } from "react";
 import {
-    Alert,
-    Animated,
-    BackHandler,
-    Dimensions,
-    Easing,
-    Image,
-    Modal,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View,
+  Alert,
+  Animated,
+  BackHandler,
+  Dimensions,
+  Easing,
+  Image,
+  Modal,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from "react-native";
 
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
@@ -215,9 +215,9 @@ export default function MyCricketScreen() {
     {
       id: "leather",
       label: "Leather",
-      color: "#00A66A",
-      seamColor: "#D1FAE5",
-      shadowColor: "#064E3B",
+      color: "#B71C1C",
+      seamColor: "#FFCDD2",
+      shadowColor: "#8B0000",
     },
     {
       id: "other",
@@ -738,14 +738,14 @@ export default function MyCricketScreen() {
             style={styles.calendarNavButton}
             onPress={() => changeTournamentCalendarMonth(-1)}
           >
-            <Ionicons name="chevron-back" size={18} color="#00A66A" />
+            <Ionicons name="chevron-back" size={18} color="#B71C1C" />
           </TouchableOpacity>
           <Text style={styles.calendarTitle}>{monthLabel}</Text>
           <TouchableOpacity
             style={styles.calendarNavButton}
             onPress={() => changeTournamentCalendarMonth(1)}
           >
-            <Ionicons name="chevron-forward" size={18} color="#00A66A" />
+            <Ionicons name="chevron-forward" size={18} color="#B71C1C" />
           </TouchableOpacity>
         </View>
 
@@ -1437,7 +1437,7 @@ export default function MyCricketScreen() {
         {/* Header - Always show except when specified */}
         <Animated.View style={{ opacity: fadeAnim }}>
           <LinearGradient
-            colors={["#00A66A", "#0F766E", "#064E3B"]}
+            colors={["#B71C1C", "#8B0000", "#8B0000"]}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 1 }}
             style={styles.header}
@@ -1499,7 +1499,7 @@ export default function MyCricketScreen() {
                   <Ionicons name="arrow-back" size={24} color="#FFF" />
                 </TouchableOpacity>
               )}
-              <Text style={styles.headerTitle}>My Cricket</Text>
+              <Text style={styles.headerTitle}>My Sports</Text>
             </View>
 
             <View style={styles.headerRight}>
@@ -1530,7 +1530,7 @@ export default function MyCricketScreen() {
                 left: 0,
                 width: SCREEN_WIDTH / 3 - 32,
                 height: 3,
-                backgroundColor: "#00A66A",
+                backgroundColor: "#B71C1C",
                 transform: [
                   {
                     translateX: scrollX.interpolate({
@@ -1599,7 +1599,7 @@ export default function MyCricketScreen() {
                             <Ionicons
                               name="image-outline"
                               size={34}
-                              color="#00A66A"
+                              color="#B71C1C"
                             />
                             <Text style={styles.emptyBannerTitle}>
                               Tournament banner
@@ -1630,7 +1630,7 @@ export default function MyCricketScreen() {
                           <Ionicons
                             name="shield-outline"
                             size={34}
-                            color="#00A66A"
+                            color="#B71C1C"
                           />
                         )}
                         <View style={styles.logoCameraBadge}>
@@ -1733,7 +1733,7 @@ export default function MyCricketScreen() {
                             size={20}
                             color={
                               activeTournamentDateField === field
-                                ? "#00A66A"
+                                ? "#B71C1C"
                                 : "#666"
                             }
                           />
@@ -1779,7 +1779,7 @@ export default function MyCricketScreen() {
                       ["ROUGH", "CEMENT", "TURF", "ASTROTURF", "MATTING"],
                       tournamentPitchType,
                       setTournamentPitchType,
-                      "#00A66A",
+                      "#B71C1C",
                     )}
                   </View>
 
@@ -1796,7 +1796,7 @@ export default function MyCricketScreen() {
                       ],
                       tournamentMatchType,
                       setTournamentMatchType,
-                      "#00A66A",
+                      "#B71C1C",
                     )}
                   </View>
 
@@ -1929,7 +1929,7 @@ export default function MyCricketScreen() {
                     }}
                   >
                     <LinearGradient
-                      colors={["#00A66A", "#0F766E", "#064E3B"]}
+                      colors={["#B71C1C", "#8B0000", "#8B0000"]}
                       start={{ x: 0, y: 0 }}
                       end={{ x: 1, y: 1 }}
                       style={styles.nextButtonGradient}
@@ -1946,7 +1946,7 @@ export default function MyCricketScreen() {
               <View style={styles.tdContainer}>
                 {/* Hero Banner */}
                 <LinearGradient
-                  colors={["#064E3B", "#00A66A", "#059669"]}
+                  colors={["#8B0000", "#B71C1C", "#C62828"]}
                   start={{ x: 0, y: 0 }}
                   end={{ x: 1, y: 1 }}
                   style={styles.tdHero}
@@ -1981,7 +1981,7 @@ export default function MyCricketScreen() {
                           {
                             backgroundColor:
                               selectedTournament.status === "Ongoing"
-                                ? "#4CAF50"
+                                ? "#10B981"
                                 : "#FFA500",
                           },
                         ]}
@@ -2112,8 +2112,8 @@ export default function MyCricketScreen() {
                                 {
                                   backgroundColor:
                                     m.status === "upcoming"
-                                      ? "#FF9800"
-                                      : "#17A2B8",
+                                      ? "#F59E0B"
+                                      : "#B71C1C",
                                 },
                               ]}
                             >
@@ -2130,7 +2130,7 @@ export default function MyCricketScreen() {
                           <View style={styles.tdMatchTeams}>
                             <View style={styles.tdTeamCol}>
                               <LinearGradient
-                                colors={["#00A66A", "#064E3B"]}
+                                colors={["#B71C1C", "#8B0000"]}
                                 style={styles.tdTeamAvatar}
                               >
                                 <Text style={styles.tdTeamAvatarText}>
@@ -2184,14 +2184,14 @@ export default function MyCricketScreen() {
                           key={m.id}
                           style={[
                             styles.tdMatchCard,
-                            { borderLeftColor: "#4CAF50", borderLeftWidth: 3 },
+                            { borderLeftColor: "#10B981", borderLeftWidth: 3 },
                           ]}
                         >
                           <View style={styles.tdMatchHeader}>
                             <View
                               style={[
                                 styles.tdMatchBadge,
-                                { backgroundColor: "#4CAF50" },
+                                { backgroundColor: "#10B981" },
                               ]}
                             >
                               <Text style={styles.tdMatchBadgeText}>
@@ -2202,7 +2202,7 @@ export default function MyCricketScreen() {
                           <View style={styles.tdMatchTeams}>
                             <View style={styles.tdTeamCol}>
                               <LinearGradient
-                                colors={["#00A66A", "#064E3B"]}
+                                colors={["#B71C1C", "#8B0000"]}
                                 style={styles.tdTeamAvatar}
                               >
                                 <Text style={styles.tdTeamAvatarText}>
@@ -2232,12 +2232,12 @@ export default function MyCricketScreen() {
                             <Ionicons
                               name="trophy-outline"
                               size={13}
-                              color="#4CAF50"
+                              color="#10B981"
                             />
                             <Text
                               style={[
                                 styles.tdMatchVenue,
-                                { color: "#4CAF50", fontWeight: "700" },
+                                { color: "#10B981", fontWeight: "700" },
                               ]}
                             >
                               {m.winner} won by {m.margin}
@@ -2258,7 +2258,7 @@ export default function MyCricketScreen() {
                       <Text style={styles.tdSectionTitle}>Points Table</Text>
                       {/* Header */}
                       <LinearGradient
-                        colors={["#00A66A", "#064E3B"]}
+                        colors={["#B71C1C", "#8B0000"]}
                         style={styles.tdPtsHeader}
                       >
                         {["#", "Team", "P", "W", "L", "NRR", "Pts"].map(
@@ -2333,7 +2333,7 @@ export default function MyCricketScreen() {
                             ]}
                           >
                             <LinearGradient
-                              colors={["#00A66A", "#064E3B"]}
+                              colors={["#B71C1C", "#8B0000"]}
                               style={styles.tdTeamDot}
                             >
                               <Text style={styles.tdTeamDotText}>
@@ -2347,7 +2347,7 @@ export default function MyCricketScreen() {
                               <Ionicons
                                 name="checkmark-circle"
                                 size={12}
-                                color="#4CAF50"
+                                color="#10B981"
                                 style={{ marginLeft: 4 }}
                               />
                             )}
@@ -2366,7 +2366,7 @@ export default function MyCricketScreen() {
                               {
                                 flex: 1,
                                 textAlign: "center",
-                                color: "#4CAF50",
+                                color: "#10B981",
                                 fontWeight: "700",
                               },
                             ]}
@@ -2393,7 +2393,7 @@ export default function MyCricketScreen() {
                                 flex: 1,
                                 textAlign: "center",
                                 color: row.nrr.startsWith("+")
-                                  ? "#4CAF50"
+                                  ? "#10B981"
                                   : "#E63946",
                                 fontSize: 11,
                               },
@@ -2408,7 +2408,7 @@ export default function MyCricketScreen() {
                                 flex: 1,
                                 textAlign: "center",
                                 fontWeight: "800",
-                                color: "#00A66A",
+                                color: "#B71C1C",
                               },
                             ]}
                           >
@@ -2421,7 +2421,7 @@ export default function MyCricketScreen() {
                           <Ionicons
                             name="checkmark-circle"
                             size={14}
-                            color="#4CAF50"
+                            color="#10B981"
                           />
                           <Text style={styles.tdLegendText}>
                             Qualified for playoffs
@@ -2537,7 +2537,7 @@ export default function MyCricketScreen() {
                           }}
                         >
                           <LinearGradient
-                            colors={["#00A66A", "#0F766E"]}
+                            colors={["#B71C1C", "#8B0000"]}
                             style={styles.simpleTeamMgmtButtonGradient}
                           >
                             <Ionicons
@@ -2562,7 +2562,7 @@ export default function MyCricketScreen() {
                           }
                         >
                           <LinearGradient
-                            colors={["#059669", "#047857"]}
+                            colors={["#C62828", "#047857"]}
                             style={styles.simpleTeamMgmtButtonGradient}
                           >
                             <Ionicons
@@ -2592,7 +2592,7 @@ export default function MyCricketScreen() {
                     }}
                   >
                     <LinearGradient
-                      colors={["#00A66A", "#064E3B"]}
+                      colors={["#B71C1C", "#8B0000"]}
                       style={styles.tdBottomBtnGrad}
                     >
                       <Ionicons
@@ -2939,7 +2939,7 @@ export default function MyCricketScreen() {
                             ]}
                           >
                             <LinearGradient
-                              colors={["#17A2B8", "#138496"]}
+                              colors={["#B71C1C", "#138496"]}
                               style={styles.teamIconSmall}
                             >
                               <Text style={styles.teamIconSmallText}>
@@ -2954,7 +2954,7 @@ export default function MyCricketScreen() {
                           <Text
                             style={[
                               styles.pointsTableCell,
-                              { color: "#4CAF50", fontWeight: "600" },
+                              { color: "#10B981", fontWeight: "600" },
                             ]}
                           >
                             {row.w}
@@ -2972,7 +2972,7 @@ export default function MyCricketScreen() {
                               styles.pointsTableCell,
                               {
                                 color: row.nrr.startsWith("+")
-                                  ? "#4CAF50"
+                                  ? "#10B981"
                                   : "#E63946",
                               },
                             ]}
@@ -2997,7 +2997,7 @@ export default function MyCricketScreen() {
                         <View
                           style={[
                             styles.legendDot,
-                            { backgroundColor: "#4CAF50" },
+                            { backgroundColor: "#10B981" },
                           ]}
                         />
                         <Text style={styles.legendText}>
@@ -3228,7 +3228,7 @@ export default function MyCricketScreen() {
                         >
                           <View style={styles.teamItemHeader}>
                             <LinearGradient
-                              colors={["#00A66A", "#0F766E"]}
+                              colors={["#B71C1C", "#8B0000"]}
                               style={styles.teamItemIcon}
                             >
                               <Text style={styles.teamItemIconText}>
@@ -3246,8 +3246,8 @@ export default function MyCricketScreen() {
                             <LinearGradient
                               colors={
                                 team.status === "Active"
-                                  ? ["#00A66A", "#0F766E"]
-                                  : ["#059669", "#0F766E"]
+                                  ? ["#B71C1C", "#8B0000"]
+                                  : ["#C62828", "#8B0000"]
                               }
                               style={styles.teamItemStatus}
                             >
@@ -3261,7 +3261,7 @@ export default function MyCricketScreen() {
                               <Ionicons
                                 name="people"
                                 size={14}
-                                color="#00A66A"
+                                color="#B71C1C"
                               />
                               <Text style={styles.teamItemStatText}>
                                 {team.players} Players
@@ -3295,7 +3295,7 @@ export default function MyCricketScreen() {
                         }}
                       >
                         <LinearGradient
-                          colors={["#00A66A", "#0F766E"]}
+                          colors={["#B71C1C", "#8B0000"]}
                           start={{ x: 0, y: 0 }}
                           end={{ x: 1, y: 1 }}
                           style={styles.modalOptionGradient}
@@ -3331,7 +3331,7 @@ export default function MyCricketScreen() {
                         }}
                       >
                         <LinearGradient
-                          colors={["#00A66A", "#0F766E"]}
+                          colors={["#B71C1C", "#8B0000"]}
                           start={{ x: 0, y: 0 }}
                           end={{ x: 1, y: 1 }}
                           style={styles.modalOptionGradient}
@@ -3365,7 +3365,7 @@ export default function MyCricketScreen() {
                         }}
                       >
                         <LinearGradient
-                          colors={["#00A66A", "#0F766E"]}
+                          colors={["#B71C1C", "#8B0000"]}
                           start={{ x: 0, y: 0 }}
                           end={{ x: 1, y: 1 }}
                           style={styles.modalOptionGradient}
@@ -3405,7 +3405,7 @@ export default function MyCricketScreen() {
                         }}
                       >
                         <LinearGradient
-                          colors={["#059669", "#00A66A"]}
+                          colors={["#C62828", "#B71C1C"]}
                           start={{ x: 0, y: 0 }}
                           end={{ x: 1, y: 1 }}
                           style={styles.modalOptionGradient}
@@ -3485,7 +3485,7 @@ export default function MyCricketScreen() {
                     }}
                   >
                     <LinearGradient
-                      colors={["#20B2AA", "#17A2B8"]}
+                      colors={["#20B2AA", "#B71C1C"]}
                       start={{ x: 0, y: 0 }}
                       end={{ x: 1, y: 1 }}
                       style={styles.addTeamsOptionGradient}
@@ -3593,7 +3593,7 @@ export default function MyCricketScreen() {
                     }}
                   >
                     <LinearGradient
-                      colors={["#10B981", "#059669"]}
+                      colors={["#10B981", "#C62828"]}
                       start={{ x: 0, y: 0 }}
                       end={{ x: 1, y: 1 }}
                       style={styles.addTeamsOptionGradient}
@@ -3622,7 +3622,7 @@ export default function MyCricketScreen() {
                     }}
                   >
                     <LinearGradient
-                      colors={["#EF4444", "#059669"]}
+                      colors={["#EF4444", "#C62828"]}
                       start={{ x: 0, y: 0 }}
                       end={{ x: 1, y: 1 }}
                       style={styles.addTeamsOptionGradient}
@@ -3667,7 +3667,7 @@ export default function MyCricketScreen() {
                       players: 15,
                       matches: 12,
                       wins: 8,
-                      color: "#00A66A",
+                      color: "#B71C1C",
                     },
                     {
                       id: 2,
@@ -3675,7 +3675,7 @@ export default function MyCricketScreen() {
                       players: 14,
                       matches: 10,
                       wins: 6,
-                      color: "#059669",
+                      color: "#C62828",
                     },
                     {
                       id: 3,
@@ -3683,7 +3683,7 @@ export default function MyCricketScreen() {
                       players: 16,
                       matches: 8,
                       wins: 5,
-                      color: "#059669",
+                      color: "#C62828",
                     },
                     {
                       id: 4,
@@ -3748,7 +3748,7 @@ export default function MyCricketScreen() {
                         <Ionicons
                           name="checkmark-circle-outline"
                           size={24}
-                          color="#00A66A"
+                          color="#B71C1C"
                         />
                       </View>
                     </TouchableOpacity>
@@ -3860,7 +3860,7 @@ export default function MyCricketScreen() {
                       ]}
                     >
                       <LinearGradient
-                        colors={["#00A66A", "#0F766E"]}
+                        colors={["#B71C1C", "#8B0000"]}
                         style={styles.vsTeamCircleSmall}
                       >
                         <Text style={styles.vsTeamInitialSmall}>
@@ -3885,7 +3885,7 @@ export default function MyCricketScreen() {
                       ]}
                     >
                       <LinearGradient
-                        colors={["#00A66A", "#0F766E"]}
+                        colors={["#B71C1C", "#8B0000"]}
                         style={styles.vsTextCircleSmall}
                       >
                         <Text style={styles.vsTextSmall}>VS</Text>
@@ -3910,7 +3910,7 @@ export default function MyCricketScreen() {
                       ]}
                     >
                       <LinearGradient
-                        colors={["#00A66A", "#0F766E"]}
+                        colors={["#B71C1C", "#8B0000"]}
                         style={styles.vsTeamCircleSmall}
                       >
                         <Text style={styles.vsTeamInitialSmall}>
@@ -3931,7 +3931,7 @@ export default function MyCricketScreen() {
                 <View style={styles.setupSection}>
                   <Text style={styles.setupSectionTitle}>Match Type *</Text>
                   <LinearGradient
-                    colors={["#F0FFF8", "#F0FFF8", "#D1FAE5"]}
+                    colors={["#FBE9E7", "#FBE9E7", "#FFCDD2"]}
                     start={{ x: 0, y: 0 }}
                     end={{ x: 1, y: 0 }}
                     style={styles.matchTypeCubeContainer}
@@ -3980,7 +3980,7 @@ export default function MyCricketScreen() {
 
                   {/* Overs Input */}
                   <View style={styles.inputContainer}>
-                    <Ionicons name="timer-outline" size={18} color="#00A66A" />
+                    <Ionicons name="timer-outline" size={18} color="#B71C1C" />
                     <TextInput
                       style={styles.input}
                       placeholder="Type number of overs"
@@ -4007,7 +4007,7 @@ export default function MyCricketScreen() {
                       onPress={handleEnableLocation}
                     >
                       <LinearGradient
-                        colors={["#00A66A", "#0F766E", "#064E3B"]}
+                        colors={["#B71C1C", "#8B0000", "#8B0000"]}
                         start={{ x: 0, y: 0 }}
                         end={{ x: 1, y: 1 }}
                         style={styles.locationButtonGradient}
@@ -4035,14 +4035,14 @@ export default function MyCricketScreen() {
                   ) : (
                     <View style={styles.locationEnabledContainer}>
                       <LinearGradient
-                        colors={["#F0FFF8", "#D1FAE5"]}
+                        colors={["#FBE9E7", "#FFCDD2"]}
                         style={styles.locationEnabledHeader}
                       >
                         <View style={styles.locationEnabledBadge}>
                           <Ionicons
                             name="checkmark-circle"
                             size={18}
-                            color="#00A66A"
+                            color="#B71C1C"
                           />
                           <Text style={styles.locationEnabledText}>
                             Location Enabled
@@ -4100,7 +4100,7 @@ export default function MyCricketScreen() {
                                 <LinearGradient
                                   colors={
                                     selectedGround === ground.name
-                                      ? ["#D1FAE5", "#6EE7B7"]
+                                      ? ["#FFCDD2", "#EF9A9A"]
                                       : ["#FFFFFF", "#F8F9FA"]
                                   }
                                   style={styles.groundCardGradient}
@@ -4165,7 +4165,7 @@ export default function MyCricketScreen() {
                                       <Ionicons
                                         name="checkmark-circle"
                                         size={24}
-                                        color="#00A66A"
+                                        color="#B71C1C"
                                       />
                                     </View>
                                   )}
@@ -4187,7 +4187,7 @@ export default function MyCricketScreen() {
                               ]}
                             >
                               <LinearGradient
-                                colors={["#00A66A", "#0F766E"]}
+                                colors={["#B71C1C", "#8B0000"]}
                                 style={styles.customScrollbarThumbGradient}
                               >
                                 <View style={styles.scrollbarGrip}>
@@ -4209,7 +4209,7 @@ export default function MyCricketScreen() {
                         <Ionicons
                           name="business-outline"
                           size={18}
-                          color="#00A66A"
+                          color="#B71C1C"
                         />
                         <TextInput
                           style={styles.input}
@@ -4225,7 +4225,7 @@ export default function MyCricketScreen() {
                         <Ionicons
                           name="location-outline"
                           size={18}
-                          color="#00A66A"
+                          color="#B71C1C"
                         />
                         <TextInput
                           style={styles.input}
@@ -4260,7 +4260,7 @@ export default function MyCricketScreen() {
                       <Ionicons
                         name="calendar-outline"
                         size={18}
-                        color="#00A66A"
+                        color="#B71C1C"
                       />
                       <TextInput
                         style={styles.input}
@@ -4271,7 +4271,7 @@ export default function MyCricketScreen() {
                       />
                     </View>
                     <View style={[styles.inputContainer, { flex: 1 }]}>
-                      <Ionicons name="time-outline" size={18} color="#00A66A" />
+                      <Ionicons name="time-outline" size={18} color="#B71C1C" />
                       <TextInput
                         style={styles.input}
                         placeholder="HH:MM"
@@ -4288,7 +4288,7 @@ export default function MyCricketScreen() {
                   <Text style={styles.setupSectionTitle}>Match Officials</Text>
 
                   <View style={styles.inputContainer}>
-                    <Ionicons name="person-outline" size={18} color="#00A66A" />
+                    <Ionicons name="person-outline" size={18} color="#B71C1C" />
                     <TextInput
                       style={styles.input}
                       placeholder="Umpire 1"
@@ -4299,7 +4299,7 @@ export default function MyCricketScreen() {
                   </View>
 
                   <View style={styles.inputContainer}>
-                    <Ionicons name="person-outline" size={18} color="#00A66A" />
+                    <Ionicons name="person-outline" size={18} color="#B71C1C" />
                     <TextInput
                       style={styles.input}
                       placeholder="Umpire 2"
@@ -4310,7 +4310,7 @@ export default function MyCricketScreen() {
                   </View>
 
                   <View style={styles.inputContainer}>
-                    <Ionicons name="create-outline" size={18} color="#00A66A" />
+                    <Ionicons name="create-outline" size={18} color="#B71C1C" />
                     <TextInput
                       style={styles.input}
                       placeholder="Scorer"
@@ -4324,7 +4324,7 @@ export default function MyCricketScreen() {
                     <Ionicons
                       name="videocam-outline"
                       size={18}
-                      color="#00A66A"
+                      color="#B71C1C"
                     />
                     <TextInput
                       style={styles.input}
@@ -4336,7 +4336,7 @@ export default function MyCricketScreen() {
                   </View>
 
                   <View style={styles.inputContainer}>
-                    <Ionicons name="people-outline" size={18} color="#00A66A" />
+                    <Ionicons name="people-outline" size={18} color="#B71C1C" />
                     <TextInput
                       style={styles.input}
                       placeholder="Others"
@@ -4410,7 +4410,7 @@ export default function MyCricketScreen() {
                   }}
                 >
                   <LinearGradient
-                    colors={["#00A66A", "#0F766E", "#064E3B"]}
+                    colors={["#B71C1C", "#8B0000", "#8B0000"]}
                     style={styles.startMatchButtonGradient}
                   >
                     <Ionicons name="disc" size={28} color="#FFF" />
@@ -4457,7 +4457,7 @@ export default function MyCricketScreen() {
                       <Ionicons
                         name="shirt"
                         size={38}
-                        color={tossWinner === "A" ? "#00A66A" : "#777"}
+                        color={tossWinner === "A" ? "#B71C1C" : "#777"}
                       />
                       {tossWinner === "A" && (
                         <View style={styles.tossCheckBadge}>
@@ -4486,7 +4486,7 @@ export default function MyCricketScreen() {
                       <Ionicons
                         name="shirt"
                         size={38}
-                        color={tossWinner === "B" ? "#00A66A" : "#777"}
+                        color={tossWinner === "B" ? "#B71C1C" : "#777"}
                       />
                       {tossWinner === "B" && (
                         <View style={styles.tossCheckBadge}>
@@ -4585,7 +4585,7 @@ export default function MyCricketScreen() {
                     }}
                   >
                     <LinearGradient
-                      colors={["#00A66A", "#0F766E", "#064E3B"]}
+                      colors={["#B71C1C", "#8B0000", "#8B0000"]}
                       style={styles.startMatchButtonGradient}
                     >
                       <Ionicons name="play-circle" size={28} color="#FFF" />
@@ -4801,7 +4801,7 @@ export default function MyCricketScreen() {
                     }}
                   >
                     <LinearGradient
-                      colors={["#00A66A", "#0F766E"]}
+                      colors={["#B71C1C", "#8B0000"]}
                       style={styles.startScoringButtonGradient}
                     >
                       <Ionicons name="play-circle" size={20} color="#FFF" />
@@ -4933,11 +4933,7 @@ export default function MyCricketScreen() {
                         style={styles.counterButton}
                         onPress={() => setWideRuns(Math.max(0, wideRuns - 1))}
                       >
-                        <Ionicons
-                          name="remove-circle-outline"
-                          size={24}
-                          color="#666"
-                        />
+                        <Ionicons size={24} color="#666" />
                       </TouchableOpacity>
                       <Text style={styles.counterValue}>{wideRuns}</Text>
                       <TouchableOpacity
@@ -5054,7 +5050,7 @@ export default function MyCricketScreen() {
                   }}
                 >
                   <LinearGradient
-                    colors={["#00A66A", "#0F766E"]}
+                    colors={["#B71C1C", "#8B0000"]}
                     style={styles.saveSettingsButtonGradient}
                   >
                     <Ionicons name="checkmark-circle" size={20} color="#FFF" />
@@ -5136,7 +5132,7 @@ export default function MyCricketScreen() {
                     {selectedBowler?.name || "Kapil Jangir"}
                   </Text>
                   <View style={styles.bowlerStats}>
-                    <Ionicons name="stats-chart" size={12} color="#4CAF50" />
+                    <Ionicons name="stats-chart" size={12} color="#10B981" />
                   </View>
                   <Text style={styles.bowlerFigures}>{bowlerOvers}</Text>
                 </View>
@@ -5158,7 +5154,7 @@ export default function MyCricketScreen() {
                     }
                   >
                     <View style={styles.wicketIcon}>
-                      <Ionicons name="stats-chart" size={20} color="#4CAF50" />
+                      <Ionicons name="stats-chart" size={20} color="#10B981" />
                     </View>
                     <Text style={styles.wicketTypeText}>Over the Wicket</Text>
                   </TouchableOpacity>
@@ -5178,7 +5174,7 @@ export default function MyCricketScreen() {
                     }
                   >
                     <View style={styles.wicketIcon}>
-                      <Ionicons name="stats-chart" size={20} color="#4CAF50" />
+                      <Ionicons name="stats-chart" size={20} color="#10B981" />
                     </View>
                     <Text style={styles.wicketTypeText}>
                       Between the Wicket
@@ -5200,7 +5196,7 @@ export default function MyCricketScreen() {
                     }
                   >
                     <View style={styles.wicketIcon}>
-                      <Ionicons name="stats-chart" size={20} color="#4CAF50" />
+                      <Ionicons name="stats-chart" size={20} color="#10B981" />
                     </View>
                     <Text style={styles.wicketTypeText}>Round the Wicket</Text>
                   </TouchableOpacity>
@@ -5354,7 +5350,7 @@ export default function MyCricketScreen() {
                       style={styles.selectTeamCardGradient}
                     >
                       <LinearGradient
-                        colors={["#00A66A", "#0F766E"]}
+                        colors={["#B71C1C", "#8B0000"]}
                         style={styles.selectTeamIcon}
                       >
                         <Text style={styles.selectTeamInitial}>
@@ -5384,7 +5380,7 @@ export default function MyCricketScreen() {
                       <Ionicons
                         name="chevron-forward"
                         size={20}
-                        color="#00A66A"
+                        color="#B71C1C"
                       />
                     </LinearGradient>
                   </TouchableOpacity>
@@ -5394,13 +5390,13 @@ export default function MyCricketScreen() {
               /* ── Create Team — Premium Redesign ── */
               <ScrollView
                 ref={scrollViewRef}
-                style={{ flex: 1, backgroundColor: "#F8FAFC" }}
+                style={{ flex: 1, backgroundColor: "#FAFAFA" }}
                 showsVerticalScrollIndicator={false}
                 keyboardShouldPersistTaps="handled"
               >
                 {/* ── Header ── */}
                 <LinearGradient
-                  colors={["#00A66A", "#0F766E", "#064E3B"]}
+                  colors={["#B71C1C", "#8B0000", "#8B0000"]}
                   start={{ x: 0, y: 0 }}
                   end={{ x: 1, y: 1 }}
                   style={ctStyles.header}
@@ -5457,7 +5453,7 @@ export default function MyCricketScreen() {
                   <View style={ctStyles.sectionCard}>
                     <View style={ctStyles.sectionHeader}>
                       <View style={ctStyles.sectionIconWrap}>
-                        <Ionicons name="shield" size={16} color="#00A66A" />
+                        <Ionicons name="shield" size={16} color="#B71C1C" />
                       </View>
                       <Text style={ctStyles.sectionTitle}>Team Identity</Text>
                     </View>
@@ -5476,12 +5472,12 @@ export default function MyCricketScreen() {
                         <Ionicons
                           name="shield-outline"
                           size={18}
-                          color={currentTeamName.trim() ? "#00A66A" : "#94A3B8"}
+                          color={currentTeamName.trim() ? "#B71C1C" : "#9E9E9E"}
                         />
                         <TextInput
                           style={ctStyles.fieldText}
                           placeholder="e.g. Mumbai Warriors"
-                          placeholderTextColor="#94A3B8"
+                          placeholderTextColor="#9E9E9E"
                           value={currentTeamName}
                           onChangeText={setCurrentTeamName}
                         />
@@ -5509,12 +5505,12 @@ export default function MyCricketScreen() {
                         <Ionicons
                           name="location-outline"
                           size={18}
-                          color={currentCity.trim() ? "#00A66A" : "#94A3B8"}
+                          color={currentCity.trim() ? "#B71C1C" : "#9E9E9E"}
                         />
                         <TextInput
                           style={ctStyles.fieldText}
                           placeholder="e.g. Mumbai"
-                          placeholderTextColor="#94A3B8"
+                          placeholderTextColor="#9E9E9E"
                           value={currentCity}
                           onChangeText={setCurrentCity}
                         />
@@ -5546,7 +5542,7 @@ export default function MyCricketScreen() {
                           <Ionicons
                             name="chevron-down"
                             size={12}
-                            color="#64748B"
+                            color="#616161"
                           />
                         </TouchableOpacity>
                         <View
@@ -5562,14 +5558,14 @@ export default function MyCricketScreen() {
                             size={18}
                             color={
                               currentMobile.length === 10
-                                ? "#00A66A"
-                                : "#94A3B8"
+                                ? "#B71C1C"
+                                : "#9E9E9E"
                             }
                           />
                           <TextInput
                             style={ctStyles.fieldText}
                             placeholder="10 digit number"
-                            placeholderTextColor="#94A3B8"
+                            placeholderTextColor="#9E9E9E"
                             keyboardType="phone-pad"
                             maxLength={10}
                             value={currentMobile}
@@ -5614,7 +5610,7 @@ export default function MyCricketScreen() {
                                 <Ionicons
                                   name="checkmark"
                                   size={14}
-                                  color="#00A66A"
+                                  color="#B71C1C"
                                 />
                               )}
                             </TouchableOpacity>
@@ -5628,7 +5624,7 @@ export default function MyCricketScreen() {
                   <View style={ctStyles.sectionCard}>
                     <View style={ctStyles.sectionHeader}>
                       <View style={ctStyles.sectionIconWrap}>
-                        <Ionicons name="star" size={16} color="#00A66A" />
+                        <Ionicons name="star" size={16} color="#B71C1C" />
                       </View>
                       <Text style={ctStyles.sectionTitle}>Leadership</Text>
                     </View>
@@ -5647,12 +5643,12 @@ export default function MyCricketScreen() {
                         <Ionicons
                           name="person-circle-outline"
                           size={18}
-                          color={currentCaptain.trim() ? "#00A66A" : "#94A3B8"}
+                          color={currentCaptain.trim() ? "#B71C1C" : "#9E9E9E"}
                         />
                         <TextInput
                           style={ctStyles.fieldText}
                           placeholder="e.g. Rohit Sharma"
-                          placeholderTextColor="#94A3B8"
+                          placeholderTextColor="#9E9E9E"
                           value={currentCaptain}
                           onChangeText={setCurrentCaptain}
                         />
@@ -5669,7 +5665,7 @@ export default function MyCricketScreen() {
                   <View style={ctStyles.sectionCard}>
                     <View style={ctStyles.sectionHeader}>
                       <View style={ctStyles.sectionIconWrap}>
-                        <Ionicons name="people" size={16} color="#00A66A" />
+                        <Ionicons name="people" size={16} color="#B71C1C" />
                       </View>
                       <Text style={ctStyles.sectionTitle}>Squad Size</Text>
                     </View>
@@ -5694,14 +5690,14 @@ export default function MyCricketScreen() {
                           size={18}
                           color={
                             currentPlayers && parseInt(currentPlayers) >= 11
-                              ? "#00A66A"
-                              : "#94A3B8"
+                              ? "#B71C1C"
+                              : "#9E9E9E"
                           }
                         />
                         <TextInput
                           style={ctStyles.fieldText}
                           placeholder="11–20 players"
-                          placeholderTextColor="#94A3B8"
+                          placeholderTextColor="#9E9E9E"
                           keyboardType="numeric"
                           maxLength={2}
                           value={currentPlayers}
@@ -5757,7 +5753,7 @@ export default function MyCricketScreen() {
                             <Ionicons
                               name="baseball"
                               size={14}
-                              color="#00A66A"
+                              color="#B71C1C"
                             />
                             <Text style={ctStyles.ruleTxt}>
                               Playing XI: 11 players
@@ -5774,7 +5770,7 @@ export default function MyCricketScreen() {
                             <Ionicons
                               name="swap-horizontal"
                               size={14}
-                              color="#64748B"
+                              color="#616161"
                             />
                             <Text style={ctStyles.ruleTxt}>
                               Substitutes:{" "}
@@ -5796,7 +5792,7 @@ export default function MyCricketScreen() {
                   <View style={ctStyles.sectionCard}>
                     <View style={ctStyles.sectionHeader}>
                       <View style={ctStyles.sectionIconWrap}>
-                        <Ionicons name="person-add" size={16} color="#00A66A" />
+                        <Ionicons name="person-add" size={16} color="#B71C1C" />
                       </View>
                       <Text style={ctStyles.sectionTitle}>Add Players</Text>
                       <Text style={ctStyles.sectionOptional}>Optional</Text>
@@ -5854,7 +5850,7 @@ export default function MyCricketScreen() {
                         <Ionicons
                           name="chevron-forward"
                           size={16}
-                          color="#94A3B8"
+                          color="#9E9E9E"
                         />
                       </TouchableOpacity>
 
@@ -5899,7 +5895,7 @@ export default function MyCricketScreen() {
                         <Ionicons
                           name="chevron-forward"
                           size={16}
-                          color="#94A3B8"
+                          color="#9E9E9E"
                         />
                       </TouchableOpacity>
 
@@ -5948,7 +5944,7 @@ export default function MyCricketScreen() {
                         <Ionicons
                           name="chevron-forward"
                           size={16}
-                          color="#94A3B8"
+                          color="#9E9E9E"
                         />
                       </TouchableOpacity>
                     </View>
@@ -5961,7 +5957,7 @@ export default function MyCricketScreen() {
                     activeOpacity={0.88}
                   >
                     <LinearGradient
-                      colors={["#00A66A", "#0F766E", "#064E3B"]}
+                      colors={["#B71C1C", "#8B0000", "#8B0000"]}
                       start={{ x: 0, y: 0 }}
                       end={{ x: 1, y: 0 }}
                       style={ctStyles.createBtnGrad}
@@ -5995,7 +5991,7 @@ export default function MyCricketScreen() {
                   >
                     {/* Accent strip */}
                     <LinearGradient
-                      colors={["#00A66A", "#064E3B"]}
+                      colors={["#B71C1C", "#8B0000"]}
                       start={{ x: 0, y: 0 }}
                       end={{ x: 0, y: 1 }}
                       style={styles.tsTeamCardStrip}
@@ -6006,7 +6002,7 @@ export default function MyCricketScreen() {
                       <View style={styles.tsTeamLogoWrap}>
                         {teamAName ? (
                           <LinearGradient
-                            colors={["#00A66A", "#064E3B"]}
+                            colors={["#B71C1C", "#8B0000"]}
                             style={styles.tsTeamLogo}
                           >
                             <Text style={styles.tsTeamLogoLetter}>
@@ -6018,7 +6014,7 @@ export default function MyCricketScreen() {
                             <Ionicons
                               name="shield-outline"
                               size={28}
-                              color="#CBD5E1"
+                              color="#BDBDBD"
                             />
                           </View>
                         )}
@@ -6047,7 +6043,7 @@ export default function MyCricketScreen() {
                         </Text>
                         {teamAName ? (
                           <View style={styles.tsTeamMeta}>
-                            <Ionicons name="people" size={12} color="#64748B" />
+                            <Ionicons name="people" size={12} color="#616161" />
                             <Text style={styles.tsTeamMetaTxt}>
                               11 Players · Captain assigned
                             </Text>
@@ -6070,7 +6066,7 @@ export default function MyCricketScreen() {
                         <Ionicons
                           name="people-outline"
                           size={16}
-                          color="#00A66A"
+                          color="#B71C1C"
                         />
                         <Text style={styles.tsActionBtnOutlineTxt}>Select</Text>
                       </TouchableOpacity>
@@ -6080,7 +6076,7 @@ export default function MyCricketScreen() {
                         activeOpacity={0.8}
                       >
                         <LinearGradient
-                          colors={["#00A66A", "#064E3B"]}
+                          colors={["#B71C1C", "#8B0000"]}
                           start={{ x: 0, y: 0 }}
                           end={{ x: 1, y: 0 }}
                           style={styles.tsActionBtnFillGrad}
@@ -6116,7 +6112,7 @@ export default function MyCricketScreen() {
                     ]}
                   >
                     <LinearGradient
-                      colors={["#0F766E", "#064E3B"]}
+                      colors={["#8B0000", "#8B0000"]}
                       start={{ x: 0, y: 0 }}
                       end={{ x: 0, y: 1 }}
                       style={styles.tsTeamCardStrip}
@@ -6126,7 +6122,7 @@ export default function MyCricketScreen() {
                       <View style={styles.tsTeamLogoWrap}>
                         {teamBName ? (
                           <LinearGradient
-                            colors={["#0F766E", "#064E3B"]}
+                            colors={["#8B0000", "#8B0000"]}
                             style={styles.tsTeamLogo}
                           >
                             <Text style={styles.tsTeamLogoLetter}>
@@ -6138,7 +6134,7 @@ export default function MyCricketScreen() {
                             <Ionicons
                               name="shield-outline"
                               size={28}
-                              color="#CBD5E1"
+                              color="#BDBDBD"
                             />
                           </View>
                         )}
@@ -6166,7 +6162,7 @@ export default function MyCricketScreen() {
                         </Text>
                         {teamBName ? (
                           <View style={styles.tsTeamMeta}>
-                            <Ionicons name="people" size={12} color="#64748B" />
+                            <Ionicons name="people" size={12} color="#616161" />
                             <Text style={styles.tsTeamMetaTxt}>
                               11 Players · Captain assigned
                             </Text>
@@ -6188,7 +6184,7 @@ export default function MyCricketScreen() {
                         <Ionicons
                           name="people-outline"
                           size={16}
-                          color="#00A66A"
+                          color="#B71C1C"
                         />
                         <Text style={styles.tsActionBtnOutlineTxt}>Select</Text>
                       </TouchableOpacity>
@@ -6198,7 +6194,7 @@ export default function MyCricketScreen() {
                         activeOpacity={0.8}
                       >
                         <LinearGradient
-                          colors={["#00A66A", "#064E3B"]}
+                          colors={["#B71C1C", "#8B0000"]}
                           start={{ x: 0, y: 0 }}
                           end={{ x: 1, y: 0 }}
                           style={styles.tsActionBtnFillGrad}
@@ -6262,7 +6258,7 @@ export default function MyCricketScreen() {
                       <Ionicons
                         name="information-circle-outline"
                         size={18}
-                        color="#94A3B8"
+                        color="#9E9E9E"
                       />
                       <Text style={styles.tsEmptyHintTxt}>
                         Set both teams to start the match
@@ -6300,7 +6296,7 @@ export default function MyCricketScreen() {
                     ]}
                   >
                     <LinearGradient
-                      colors={["#00A66A", "#0F766E", "#064E3B"]}
+                      colors={["#B71C1C", "#8B0000", "#8B0000"]}
                       start={{ x: 0, y: 0 }}
                       end={{ x: 1, y: 1 }}
                       style={styles.startMatchCard}
@@ -6367,7 +6363,7 @@ export default function MyCricketScreen() {
                               <Ionicons
                                 name="arrow-forward"
                                 size={18}
-                                color="#00A66A"
+                                color="#B71C1C"
                               />
                             </LinearGradient>
                           </TouchableOpacity>
@@ -6391,7 +6387,7 @@ export default function MyCricketScreen() {
                       >
                         {activeFilter === filter ? (
                           <LinearGradient
-                            colors={["#00A66A", "#0F766E"]}
+                            colors={["#B71C1C", "#8B0000"]}
                             style={styles.filterGradient}
                           >
                             <Text style={styles.activeFilterText}>
@@ -6474,7 +6470,7 @@ export default function MyCricketScreen() {
                                 <Ionicons
                                   name="baseball-outline"
                                   size={10}
-                                  color="#00A66A"
+                                  color="#B71C1C"
                                 />
                               </View>
                               <Text style={styles.matchType}>{match.type}</Text>
@@ -6482,12 +6478,12 @@ export default function MyCricketScreen() {
                             <LinearGradient
                               colors={
                                 match.status === "Live"
-                                  ? ["#EF4444", "#059669"]
+                                  ? ["#EF4444", "#C62828"]
                                   : match.status === "Upcoming"
                                     ? ["#F59E0B", "#D97706"]
                                     : match.status === "Completed"
-                                      ? ["#10B981", "#059669"]
-                                      : ["#00A66A", "#0F766E"]
+                                      ? ["#10B981", "#C62828"]
+                                      : ["#B71C1C", "#8B0000"]
                               }
                               style={styles.statusBadge}
                             >
@@ -6503,7 +6499,7 @@ export default function MyCricketScreen() {
                           <View style={styles.matchBody}>
                             <View style={styles.teamSection}>
                               <LinearGradient
-                                colors={["#00A66A", "#0F766E"]}
+                                colors={["#B71C1C", "#8B0000"]}
                                 style={styles.teamInitial}
                               >
                                 <Text style={styles.teamInitialText}>
@@ -6519,7 +6515,7 @@ export default function MyCricketScreen() {
                                     <Ionicons
                                       name="trophy"
                                       size={10}
-                                      color="#00A66A"
+                                      color="#B71C1C"
                                     />
                                     <Text style={styles.matchResult}>
                                       {match.result}
@@ -6535,7 +6531,7 @@ export default function MyCricketScreen() {
                                   <Ionicons
                                     name="calendar-outline"
                                     size={9}
-                                    color="#00A66A"
+                                    color="#B71C1C"
                                   />
                                 </View>
                                 <Text style={styles.detailText}>
@@ -6547,7 +6543,7 @@ export default function MyCricketScreen() {
                                   <Ionicons
                                     name="location-outline"
                                     size={9}
-                                    color="#00A66A"
+                                    color="#B71C1C"
                                   />
                                 </View>
                                 <Text style={styles.detailText}>
@@ -6581,7 +6577,7 @@ export default function MyCricketScreen() {
                                 <Ionicons
                                   name="stats-chart-outline"
                                   size={14}
-                                  color="#00A66A"
+                                  color="#B71C1C"
                                 />
                                 <Text style={styles.footerButtonText}>
                                   Insights
@@ -6600,7 +6596,7 @@ export default function MyCricketScreen() {
                                 <Ionicons
                                   name="people-outline"
                                   size={14}
-                                  color="#00A66A"
+                                  color="#B71C1C"
                                 />
                                 <Text style={styles.footerButtonText}>
                                   Squads
@@ -6628,7 +6624,7 @@ export default function MyCricketScreen() {
                       onPress={() => setCurrentView("createTournament")}
                     >
                       <LinearGradient
-                        colors={["#00A66A", "#0F766E", "#064E3B"]}
+                        colors={["#B71C1C", "#8B0000", "#8B0000"]}
                         start={{ x: 0, y: 0 }}
                         end={{ x: 1, y: 1 }}
                         style={styles.createTournamentGradient}
@@ -6665,7 +6661,7 @@ export default function MyCricketScreen() {
                           >
                             {activeTournamentFilter === filter ? (
                               <LinearGradient
-                                colors={["#00A66A", "#0F766E"]}
+                                colors={["#B71C1C", "#8B0000"]}
                                 style={styles.filterGradient}
                               >
                                 <Text style={styles.activeFilterText}>
@@ -6715,7 +6711,7 @@ export default function MyCricketScreen() {
                               <View style={styles.tournamentHeader}>
                                 <View style={styles.tournamentHeaderLeft}>
                                   <LinearGradient
-                                    colors={["#6EE7B7", "#059669"]}
+                                    colors={["#EF9A9A", "#C62828"]}
                                     style={styles.tournamentIcon}
                                   >
                                     <Ionicons
@@ -6746,8 +6742,8 @@ export default function MyCricketScreen() {
                                 <LinearGradient
                                   colors={
                                     tournament.status === "Ongoing"
-                                      ? ["#00A66A", "#0F766E"]
-                                      : ["#059669", "#0F766E"]
+                                      ? ["#B71C1C", "#8B0000"]
+                                      : ["#C62828", "#8B0000"]
                                   }
                                   style={styles.tournamentStatusBadge}
                                 >
@@ -6766,10 +6762,10 @@ export default function MyCricketScreen() {
                                         width: `${tournament.progress}%`,
                                         backgroundColor:
                                           tournament.progress > 70
-                                            ? "#00A66A"
+                                            ? "#B71C1C"
                                             : tournament.progress > 40
-                                              ? "#059669"
-                                              : "#00A66A",
+                                              ? "#C62828"
+                                              : "#B71C1C",
                                       },
                                     ]}
                                   />
@@ -6785,7 +6781,7 @@ export default function MyCricketScreen() {
                                     <Ionicons
                                       name="people"
                                       size={12}
-                                      color="#00A66A"
+                                      color="#B71C1C"
                                     />
                                   </View>
                                   <Text style={styles.tournamentStatText}>
@@ -6797,7 +6793,7 @@ export default function MyCricketScreen() {
                                     <Ionicons
                                       name="baseball"
                                       size={12}
-                                      color="#00A66A"
+                                      color="#B71C1C"
                                     />
                                   </View>
                                   <Text style={styles.tournamentStatText}>
@@ -6816,7 +6812,7 @@ export default function MyCricketScreen() {
                                   }}
                                 >
                                   <LinearGradient
-                                    colors={["#00A66A", "#0F766E"]}
+                                    colors={["#B71C1C", "#8B0000"]}
                                     style={styles.tournamentButtonGradient}
                                   >
                                     <Ionicons
@@ -6855,7 +6851,7 @@ export default function MyCricketScreen() {
                               <View style={styles.tournamentHeader}>
                                 <View style={styles.tournamentHeaderLeft}>
                                   <LinearGradient
-                                    colors={["#6EE7B7", "#059669"]}
+                                    colors={["#EF9A9A", "#C62828"]}
                                     style={styles.tournamentIcon}
                                   >
                                     <Ionicons
@@ -6884,7 +6880,7 @@ export default function MyCricketScreen() {
                                   </View>
                                 </View>
                                 <LinearGradient
-                                  colors={["#00A66A", "#0F766E"]}
+                                  colors={["#B71C1C", "#8B0000"]}
                                   style={styles.tournamentStatusBadge}
                                 >
                                   <Text style={styles.tournamentStatusText}>
@@ -6900,7 +6896,7 @@ export default function MyCricketScreen() {
                                       styles.progressFill,
                                       {
                                         width: `${tournament.progress}%`,
-                                        backgroundColor: "#00A66A",
+                                        backgroundColor: "#B71C1C",
                                       },
                                     ]}
                                   />
@@ -6916,7 +6912,7 @@ export default function MyCricketScreen() {
                                     <Ionicons
                                       name="people"
                                       size={12}
-                                      color="#00A66A"
+                                      color="#B71C1C"
                                     />
                                   </View>
                                   <Text style={styles.tournamentStatText}>
@@ -6928,7 +6924,7 @@ export default function MyCricketScreen() {
                                     <Ionicons
                                       name="baseball"
                                       size={12}
-                                      color="#00A66A"
+                                      color="#B71C1C"
                                     />
                                   </View>
                                   <Text style={styles.tournamentStatText}>
@@ -6947,7 +6943,7 @@ export default function MyCricketScreen() {
                                   }}
                                 >
                                   <LinearGradient
-                                    colors={["#00A66A", "#0F766E"]}
+                                    colors={["#B71C1C", "#8B0000"]}
                                     style={styles.tournamentButtonGradient}
                                   >
                                     <Ionicons
@@ -6986,7 +6982,7 @@ export default function MyCricketScreen() {
                               <View style={styles.tournamentHeader}>
                                 <View style={styles.tournamentHeaderLeft}>
                                   <LinearGradient
-                                    colors={["#6EE7B7", "#059669"]}
+                                    colors={["#EF9A9A", "#C62828"]}
                                     style={styles.tournamentIcon}
                                   >
                                     <Ionicons
@@ -7017,8 +7013,8 @@ export default function MyCricketScreen() {
                                 <LinearGradient
                                   colors={
                                     tournament.status === "Ongoing"
-                                      ? ["#00A66A", "#0F766E"]
-                                      : ["#059669", "#0F766E"]
+                                      ? ["#B71C1C", "#8B0000"]
+                                      : ["#C62828", "#8B0000"]
                                   }
                                   style={styles.tournamentStatusBadge}
                                 >
@@ -7037,10 +7033,10 @@ export default function MyCricketScreen() {
                                         width: `${tournament.progress}%`,
                                         backgroundColor:
                                           tournament.progress > 70
-                                            ? "#00A66A"
+                                            ? "#B71C1C"
                                             : tournament.progress > 40
-                                              ? "#059669"
-                                              : "#00A66A",
+                                              ? "#C62828"
+                                              : "#B71C1C",
                                       },
                                     ]}
                                   />
@@ -7056,7 +7052,7 @@ export default function MyCricketScreen() {
                                     <Ionicons
                                       name="people"
                                       size={12}
-                                      color="#00A66A"
+                                      color="#B71C1C"
                                     />
                                   </View>
                                   <Text style={styles.tournamentStatText}>
@@ -7068,7 +7064,7 @@ export default function MyCricketScreen() {
                                     <Ionicons
                                       name="baseball"
                                       size={12}
-                                      color="#00A66A"
+                                      color="#B71C1C"
                                     />
                                   </View>
                                   <Text style={styles.tournamentStatText}>
@@ -7097,7 +7093,7 @@ export default function MyCricketScreen() {
                                   }}
                                 >
                                   <LinearGradient
-                                    colors={["#00A66A", "#0F766E"]}
+                                    colors={["#B71C1C", "#8B0000"]}
                                     style={styles.tournamentButtonGradient}
                                   >
                                     <Ionicons
@@ -7134,7 +7130,7 @@ export default function MyCricketScreen() {
                             <View style={styles.tournamentHeader}>
                               <View style={styles.tournamentHeaderLeft}>
                                 <LinearGradient
-                                  colors={["#6EE7B7", "#059669"]}
+                                  colors={["#EF9A9A", "#C62828"]}
                                   style={styles.tournamentIcon}
                                 >
                                   <Ionicons
@@ -7165,10 +7161,10 @@ export default function MyCricketScreen() {
                               <LinearGradient
                                 colors={
                                   tournament.status === "Ongoing"
-                                    ? ["#00A66A", "#0F766E"]
+                                    ? ["#B71C1C", "#8B0000"]
                                     : tournament.status === "Completed"
-                                      ? ["#00A66A", "#0F766E"]
-                                      : ["#059669", "#0F766E"]
+                                      ? ["#B71C1C", "#8B0000"]
+                                      : ["#C62828", "#8B0000"]
                                 }
                                 style={styles.tournamentStatusBadge}
                               >
@@ -7187,12 +7183,12 @@ export default function MyCricketScreen() {
                                       width: `${tournament.progress}%`,
                                       backgroundColor:
                                         tournament.progress > 70
-                                          ? "#00A66A"
+                                          ? "#B71C1C"
                                           : tournament.progress > 40
-                                            ? "#059669"
+                                            ? "#C62828"
                                             : tournament.progress === 100
-                                              ? "#00A66A"
-                                              : "#00A66A",
+                                              ? "#B71C1C"
+                                              : "#B71C1C",
                                     },
                                   ]}
                                 />
@@ -7208,7 +7204,7 @@ export default function MyCricketScreen() {
                                   <Ionicons
                                     name="people"
                                     size={12}
-                                    color="#00A66A"
+                                    color="#B71C1C"
                                   />
                                 </View>
                                 <Text style={styles.tournamentStatText}>
@@ -7220,7 +7216,7 @@ export default function MyCricketScreen() {
                                   <Ionicons
                                     name="baseball"
                                     size={12}
-                                    color="#00A66A"
+                                    color="#B71C1C"
                                   />
                                 </View>
                                 <Text style={styles.tournamentStatText}>
@@ -7243,7 +7239,7 @@ export default function MyCricketScreen() {
                                 }}
                               >
                                 <LinearGradient
-                                  colors={["#00A66A", "#0F766E"]}
+                                  colors={["#B71C1C", "#8B0000"]}
                                   style={styles.tournamentButtonGradient}
                                 >
                                   <Ionicons
@@ -7289,7 +7285,7 @@ export default function MyCricketScreen() {
                         }}
                       >
                         <LinearGradient
-                          colors={["#059669", "#047857"]}
+                          colors={["#C62828", "#047857"]}
                           start={{ x: 0, y: 0 }}
                           end={{ x: 1, y: 1 }}
                           style={styles.teamOptionGradient}
@@ -7323,7 +7319,7 @@ export default function MyCricketScreen() {
                         }}
                       >
                         <LinearGradient
-                          colors={["#00A66A", "#0F766E"]}
+                          colors={["#B71C1C", "#8B0000"]}
                           start={{ x: 0, y: 0 }}
                           end={{ x: 1, y: 1 }}
                           style={styles.teamOptionGradient}
@@ -7586,13 +7582,13 @@ export default function MyCricketScreen() {
                     <View
                       style={[
                         styles.tsMenuIcon,
-                        item.danger && { backgroundColor: "#D1FAE5" },
+                        item.danger && { backgroundColor: "#FFCDD2" },
                       ]}
                     >
                       <Ionicons
                         name={item.icon as any}
                         size={20}
-                        color={item.danger ? "#059669" : "#555"}
+                        color={item.danger ? "#C62828" : "#555"}
                       />
                     </View>
                     <Text
@@ -7612,7 +7608,7 @@ export default function MyCricketScreen() {
                       <Ionicons
                         name="chevron-forward"
                         size={18}
-                        color={item.danger ? "#059669" : "#CCC"}
+                        color={item.danger ? "#C62828" : "#CCC"}
                       />
                     </View>
                   </TouchableOpacity>
@@ -7712,7 +7708,7 @@ export default function MyCricketScreen() {
                             <View style={styles.tournamentHeader}>
                               <View style={styles.tournamentHeaderLeft}>
                                 <LinearGradient
-                                  colors={["#6EE7B7", "#059669"]}
+                                  colors={["#EF9A9A", "#C62828"]}
                                   style={styles.tournamentIcon}
                                 >
                                   <Ionicons
@@ -7743,8 +7739,8 @@ export default function MyCricketScreen() {
                               <LinearGradient
                                 colors={
                                   tournament.status === "Ongoing"
-                                    ? ["#00A66A", "#0F766E"]
-                                    : ["#059669", "#0F766E"]
+                                    ? ["#B71C1C", "#8B0000"]
+                                    : ["#C62828", "#8B0000"]
                                 }
                                 style={styles.tournamentStatusBadge}
                               >
@@ -7763,10 +7759,10 @@ export default function MyCricketScreen() {
                                       width: `${tournament.progress}%`,
                                       backgroundColor:
                                         tournament.progress > 70
-                                          ? "#00A66A"
+                                          ? "#B71C1C"
                                           : tournament.progress > 40
-                                            ? "#059669"
-                                            : "#00A66A",
+                                            ? "#C62828"
+                                            : "#B71C1C",
                                     },
                                   ]}
                                 />
@@ -7782,7 +7778,7 @@ export default function MyCricketScreen() {
                                   <Ionicons
                                     name="people"
                                     size={12}
-                                    color="#00A66A"
+                                    color="#B71C1C"
                                   />
                                 </View>
                                 <Text style={styles.tournamentStatText}>
@@ -7794,7 +7790,7 @@ export default function MyCricketScreen() {
                                   <Ionicons
                                     name="baseball"
                                     size={12}
-                                    color="#00A66A"
+                                    color="#B71C1C"
                                   />
                                 </View>
                                 <Text style={styles.tournamentStatText}>
@@ -7815,7 +7811,7 @@ export default function MyCricketScreen() {
                                 }}
                               >
                                 <LinearGradient
-                                  colors={["#00A66A", "#0F766E"]}
+                                  colors={["#B71C1C", "#8B0000"]}
                                   style={styles.tournamentButtonGradient}
                                 >
                                   <Ionicons
@@ -7869,9 +7865,9 @@ export default function MyCricketScreen() {
                                   {
                                     backgroundColor:
                                       match.status === "Live"
-                                        ? "#00A66A"
+                                        ? "#B71C1C"
                                         : match.status === "Upcoming"
-                                          ? "#059669"
+                                          ? "#C62828"
                                           : "#666",
                                   },
                                 ]}
@@ -8065,7 +8061,7 @@ export default function MyCricketScreen() {
                       <Ionicons
                         name="checkmark-circle"
                         size={24}
-                        color="#00A66A"
+                        color="#B71C1C"
                       />
                     )}
                   </View>
@@ -8082,7 +8078,7 @@ export default function MyCricketScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#F0F7F4",
+    backgroundColor: "#F5F5F5",
   },
   header: {
     flexDirection: "row",
@@ -8129,7 +8125,7 @@ const styles = StyleSheet.create({
     width: 8,
     height: 8,
     borderRadius: 4,
-    backgroundColor: "#6EE7B7",
+    backgroundColor: "#EF9A9A",
     zIndex: 1,
   },
   tabsContainer: {
@@ -8149,7 +8145,7 @@ const styles = StyleSheet.create({
   },
   activeTab: {
     borderBottomWidth: 3,
-    borderBottomColor: "#00A66A",
+    borderBottomColor: "#B71C1C",
   },
   tabText: {
     fontSize: 15,
@@ -8157,7 +8153,7 @@ const styles = StyleSheet.create({
     fontWeight: "500",
   },
   activeTabText: {
-    color: "#00A66A",
+    color: "#B71C1C",
     fontWeight: "700",
   },
   tabIndicator: {
@@ -8165,7 +8161,7 @@ const styles = StyleSheet.create({
     bottom: 0,
     width: "100%",
     height: 3,
-    backgroundColor: "#00A66A",
+    backgroundColor: "#B71C1C",
   },
   content: {
     flex: 1,
@@ -8179,7 +8175,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    shadowColor: "#00A66A",
+    shadowColor: "#B71C1C",
     shadowOffset: { width: 0, height: 6 },
     shadowOpacity: 0.3,
     shadowRadius: 8,
@@ -8273,7 +8269,7 @@ const styles = StyleSheet.create({
   startButtonText: {
     fontSize: 14,
     fontWeight: "700",
-    color: "#00A66A",
+    color: "#B71C1C",
   },
   filterTabs: {
     flexDirection: "row",
@@ -8380,7 +8376,7 @@ const styles = StyleSheet.create({
     borderRadius: 18,
     justifyContent: "center",
     alignItems: "center",
-    shadowColor: "#00A66A",
+    shadowColor: "#B71C1C",
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.2,
     shadowRadius: 2,
@@ -8407,7 +8403,7 @@ const styles = StyleSheet.create({
   },
   matchResult: {
     fontSize: 10,
-    color: "#00A66A",
+    color: "#B71C1C",
     fontWeight: "700",
   },
   matchDetailsOld: {
@@ -8468,7 +8464,7 @@ const styles = StyleSheet.create({
   },
   footerButtonText: {
     fontSize: 11,
-    color: "#00A66A",
+    color: "#B71C1C",
     fontWeight: "700",
   },
   // Team Selection Styles
@@ -8512,7 +8508,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 16,
     borderRadius: 12,
     overflow: "hidden",
-    shadowColor: "#00A66A",
+    shadowColor: "#B71C1C",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 8,
@@ -8533,14 +8529,14 @@ const styles = StyleSheet.create({
   // Tournament Dashboard Styles
   dashboardContainer: {
     flex: 1,
-    backgroundColor: "#F0F7F4",
+    backgroundColor: "#F5F5F5",
   },
   dashboardHeader: {
     backgroundColor: "#FFF",
     paddingHorizontal: 16,
     paddingVertical: 16,
     borderBottomWidth: 1,
-    borderBottomColor: "#E5E5E5",
+    borderBottomColor: "#E0E0E0",
   },
   dashboardTitle: {
     fontSize: 20,
@@ -8557,7 +8553,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     backgroundColor: "#FFF",
     borderBottomWidth: 1,
-    borderBottomColor: "#E5E5E5",
+    borderBottomColor: "#E0E0E0",
     paddingHorizontal: 12,
   },
   dashboardTab: {
@@ -8568,7 +8564,7 @@ const styles = StyleSheet.create({
     borderBottomColor: "transparent",
   },
   dashboardTabActive: {
-    borderBottomColor: "#00A66A",
+    borderBottomColor: "#B71C1C",
   },
   dashboardTabText: {
     fontSize: 13,
@@ -8576,7 +8572,7 @@ const styles = StyleSheet.create({
     color: "#999",
   },
   dashboardTabTextActive: {
-    color: "#00A66A",
+    color: "#B71C1C",
     fontWeight: "700",
   },
   dashboardContent: {
@@ -8635,11 +8631,11 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     overflow: "hidden",
     borderWidth: 1,
-    borderColor: "#E5E5E5",
+    borderColor: "#E0E0E0",
   },
   pointsTableHeader: {
     flexDirection: "row",
-    backgroundColor: "#00A66A",
+    backgroundColor: "#B71C1C",
     paddingVertical: 10,
     paddingHorizontal: 8,
   },
@@ -8648,7 +8644,7 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     paddingHorizontal: 8,
     borderBottomWidth: 1,
-    borderBottomColor: "#E5E5E5",
+    borderBottomColor: "#E0E0E0",
   },
   pointsTableCell: {
     flex: 1,
@@ -8670,7 +8666,7 @@ const styles = StyleSheet.create({
     borderRadius: 6,
     paddingVertical: 4,
     fontWeight: "700",
-    color: "#00A66A",
+    color: "#B71C1C",
   },
   leaderboardItem: {
     marginBottom: 10,
@@ -8687,7 +8683,7 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: "#6EE7B7",
+    backgroundColor: "#EF9A9A",
     justifyContent: "center",
     alignItems: "center",
   },
@@ -8715,7 +8711,7 @@ const styles = StyleSheet.create({
   leaderboardRuns: {
     fontSize: 16,
     fontWeight: "800",
-    color: "#00A66A",
+    color: "#B71C1C",
   },
   leaderboardRunsLabel: {
     fontSize: 10,
@@ -8796,7 +8792,7 @@ const styles = StyleSheet.create({
     marginTop: 8,
     paddingTop: 8,
     borderTopWidth: 1,
-    borderTopColor: "#E5E5E5",
+    borderTopColor: "#E0E0E0",
   },
   matchResultContainer: {
     flexDirection: "row",
@@ -8811,7 +8807,7 @@ const styles = StyleSheet.create({
   matchResultText: {
     fontSize: 12,
     fontWeight: "600",
-    color: "#4CAF50",
+    color: "#10B981",
   },
   pointsTableRowQualified: {
     backgroundColor: "rgba(76, 175, 80, 0.05)",
@@ -8884,7 +8880,7 @@ const styles = StyleSheet.create({
   // New Tournament Dashboard Styles
   tournamentDashboardContainer: {
     flex: 1,
-    backgroundColor: "#F0F7F4",
+    backgroundColor: "#F5F5F5",
   },
   tournamentDashboardHeader: {
     paddingTop: 40,
@@ -8925,7 +8921,7 @@ const styles = StyleSheet.create({
     width: 8,
     height: 8,
     borderRadius: 4,
-    backgroundColor: "#4CAF50",
+    backgroundColor: "#10B981",
     marginRight: 8,
   },
   tournamentStatusText: {
@@ -8979,7 +8975,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     backgroundColor: "#FFF",
     borderBottomWidth: 1,
-    borderBottomColor: "#E5E5E5",
+    borderBottomColor: "#E0E0E0",
   },
   tournamentTab: {
     flex: 1,
@@ -9009,7 +9005,7 @@ const styles = StyleSheet.create({
   },
   tournamentTabContent: {
     flex: 1,
-    backgroundColor: "#F0F7F4",
+    backgroundColor: "#F5F5F5",
     padding: 16,
   },
   tournamentSectionTitle: {
@@ -9092,7 +9088,7 @@ const styles = StyleSheet.create({
     right: 0,
     top: 0,
     padding: 8,
-    backgroundColor: "#F0F7F4",
+    backgroundColor: "#F5F5F5",
     borderRadius: 20,
   },
   tournamentMatchVenue: {
@@ -9108,7 +9104,7 @@ const styles = StyleSheet.create({
   teamCardContainer: {
     borderRadius: 16,
     overflow: "hidden",
-    shadowColor: "#00A66A",
+    shadowColor: "#B71C1C",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.18,
     shadowRadius: 8,
@@ -9132,7 +9128,7 @@ const styles = StyleSheet.create({
     borderRadius: 28,
     justifyContent: "center",
     alignItems: "center",
-    shadowColor: "#00A66A",
+    shadowColor: "#B71C1C",
     shadowOffset: { width: 0, height: 3 },
     shadowOpacity: 0.35,
     shadowRadius: 6,
@@ -9195,17 +9191,17 @@ const styles = StyleSheet.create({
   vsLine: {
     flex: 1,
     height: 2,
-    backgroundColor: "#E5E5E5",
+    backgroundColor: "#E0E0E0",
   },
   vsCircle: {
     width: 50,
     height: 50,
     borderRadius: 25,
-    backgroundColor: "#00A66A",
+    backgroundColor: "#B71C1C",
     justifyContent: "center",
     alignItems: "center",
     marginHorizontal: 16,
-    shadowColor: "#00A66A",
+    shadowColor: "#B71C1C",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 6,
@@ -9222,7 +9218,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 32,
     borderRadius: 14,
     overflow: "hidden",
-    shadowColor: "#00A66A",
+    shadowColor: "#B71C1C",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 8,
@@ -9324,7 +9320,7 @@ const styles = StyleSheet.create({
     paddingVertical: 5,
     gap: 10,
     borderWidth: 1,
-    borderColor: "#E5E5E5",
+    borderColor: "#E0E0E0",
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.05,
@@ -9351,7 +9347,7 @@ const styles = StyleSheet.create({
     paddingVertical: 5,
     gap: 4,
     borderWidth: 1,
-    borderColor: "#E5E5E5",
+    borderColor: "#E0E0E0",
     minWidth: 70,
   },
   countryCodeText: {
@@ -9369,14 +9365,14 @@ const styles = StyleSheet.create({
     paddingVertical: 5,
     gap: 10,
     borderWidth: 1,
-    borderColor: "#E5E5E5",
+    borderColor: "#E0E0E0",
   },
   countryCodeDropdown: {
     backgroundColor: "#FFF",
     borderRadius: 10,
     marginTop: 6,
     borderWidth: 1,
-    borderColor: "#E5E5E5",
+    borderColor: "#E0E0E0",
     maxHeight: 200,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
@@ -9406,7 +9402,7 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     alignItems: "center",
     borderWidth: 2,
-    borderColor: "#E5E5E5",
+    borderColor: "#E0E0E0",
   },
   typeChipText: {
     fontSize: 13,
@@ -9427,7 +9423,7 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     gap: 6,
     borderWidth: 2,
-    borderColor: "#E5E5E5",
+    borderColor: "#E0E0E0",
   },
   formatChipText: {
     fontSize: 13,
@@ -9463,7 +9459,7 @@ const styles = StyleSheet.create({
     borderRadius: 14,
     overflow: "hidden",
     marginTop: 10,
-    shadowColor: "#00A66A",
+    shadowColor: "#B71C1C",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 6,
@@ -9485,7 +9481,7 @@ const styles = StyleSheet.create({
   addPlayersButtonCard: {
     borderRadius: 14,
     overflow: "hidden",
-    shadowColor: "#00A66A",
+    shadowColor: "#B71C1C",
     shadowOffset: { width: 0, height: 3 },
     shadowOpacity: 0.25,
     shadowRadius: 6,
@@ -9571,7 +9567,7 @@ const styles = StyleSheet.create({
     borderRadius: 19,
     justifyContent: "center",
     alignItems: "center",
-    shadowColor: "#00A66A",
+    shadowColor: "#B71C1C",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.3,
     shadowRadius: 4,
@@ -9687,7 +9683,7 @@ const styles = StyleSheet.create({
     borderRadius: 25,
     justifyContent: "center",
     alignItems: "center",
-    shadowColor: "#00A66A",
+    shadowColor: "#B71C1C",
     shadowOffset: { width: 0, height: 3 },
     shadowOpacity: 0.3,
     shadowRadius: 6,
@@ -9705,7 +9701,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     padding: 24,
-    backgroundColor: "#F0F7F4",
+    backgroundColor: "#F5F5F5",
     minHeight: 600,
   },
   vsBackButton: {
@@ -9772,7 +9768,7 @@ const styles = StyleSheet.create({
     borderRadius: 40,
     justifyContent: "center",
     alignItems: "center",
-    shadowColor: "#00A66A",
+    shadowColor: "#B71C1C",
     shadowOffset: { width: 0, height: 6 },
     shadowOpacity: 0.4,
     shadowRadius: 10,
@@ -9787,7 +9783,7 @@ const styles = StyleSheet.create({
   vsContinueButton: {
     borderRadius: 16,
     overflow: "hidden",
-    shadowColor: "#00A66A",
+    shadowColor: "#B71C1C",
     shadowOffset: { width: 0, height: 6 },
     shadowOpacity: 0.4,
     shadowRadius: 10,
@@ -9862,9 +9858,9 @@ const styles = StyleSheet.create({
     borderColor: "rgba(185, 28, 28, 0.3)",
   },
   matchTypePillActive: {
-    borderColor: "#00A66A",
-    backgroundColor: "#00A66A",
-    shadowColor: "#00A66A",
+    borderColor: "#B71C1C",
+    backgroundColor: "#B71C1C",
+    shadowColor: "#B71C1C",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.3,
     shadowRadius: 4,
@@ -9873,7 +9869,7 @@ const styles = StyleSheet.create({
   matchTypePillText: {
     fontSize: 12,
     fontWeight: "700",
-    color: "#00A66A",
+    color: "#B71C1C",
   },
   matchTypePillTextActive: {
     color: "#FFF",
@@ -9891,7 +9887,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 8,
     borderWidth: 2,
-    borderColor: "#E5E5E5",
+    borderColor: "#E0E0E0",
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.05,
@@ -9899,7 +9895,7 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   matchTypeCardActive: {
-    borderColor: "#00A66A",
+    borderColor: "#B71C1C",
     backgroundColor: "rgba(185, 28, 28, 0.05)",
   },
   matchTypeText: {
@@ -9909,13 +9905,13 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   matchTypeTextActive: {
-    color: "#00A66A",
+    color: "#B71C1C",
   },
   locationButton: {
     borderRadius: 14,
     overflow: "hidden",
     marginBottom: 12,
-    shadowColor: "#00A66A",
+    shadowColor: "#B71C1C",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 8,
@@ -9976,7 +9972,7 @@ const styles = StyleSheet.create({
   locationEnabledText: {
     fontSize: 13,
     fontWeight: "800",
-    color: "#00A66A",
+    color: "#B71C1C",
   },
   groundsCountBadge: {
     backgroundColor: "rgba(185, 28, 28, 0.15)",
@@ -9987,7 +9983,7 @@ const styles = StyleSheet.create({
   groundsCountText: {
     fontSize: 11,
     fontWeight: "700",
-    color: "#00A66A",
+    color: "#B71C1C",
   },
   groundsListContainer: {
     padding: 12,
@@ -10016,7 +10012,7 @@ const styles = StyleSheet.create({
     top: 0,
     width: 6,
     height: 240,
-    backgroundColor: "#E5E5E5",
+    backgroundColor: "#E0E0E0",
     borderRadius: 3,
   },
   customScrollbarThumb: {
@@ -10050,7 +10046,7 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   groundCardActive: {
-    shadowColor: "#00A66A",
+    shadowColor: "#B71C1C",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
     shadowRadius: 6,
@@ -10079,7 +10075,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   groundNumberBadgeActive: {
-    backgroundColor: "#00A66A",
+    backgroundColor: "#B71C1C",
   },
   groundNumberText: {
     fontSize: 13,
@@ -10099,7 +10095,7 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   groundNameActive: {
-    color: "#00A66A",
+    color: "#B71C1C",
   },
   groundMetaRow: {
     flexDirection: "row",
@@ -10244,7 +10240,7 @@ const styles = StyleSheet.create({
     color: "#555",
   },
   realPitchLabelSelected: {
-    color: "#00A66A",
+    color: "#B71C1C",
     fontWeight: "900",
   },
   pitchTypeContainer: {
@@ -10260,7 +10256,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 8,
     borderWidth: 2,
-    borderColor: "#E5E5E5",
+    borderColor: "#E0E0E0",
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.05,
@@ -10297,7 +10293,7 @@ const styles = StyleSheet.create({
   pitchTypeCubeContainer: {
     borderRadius: 12,
     padding: 8,
-    shadowColor: "#0F766E",
+    shadowColor: "#8B0000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.15,
     shadowRadius: 6,
@@ -10320,9 +10316,9 @@ const styles = StyleSheet.create({
     borderColor: "rgba(185, 28, 28, 0.3)",
   },
   pitchTypePillActive: {
-    borderColor: "#0F766E",
-    backgroundColor: "#0F766E",
-    shadowColor: "#0F766E",
+    borderColor: "#8B0000",
+    backgroundColor: "#8B0000",
+    shadowColor: "#8B0000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.3,
     shadowRadius: 4,
@@ -10331,7 +10327,7 @@ const styles = StyleSheet.create({
   pitchTypePillText: {
     fontSize: 11,
     fontWeight: "700",
-    color: "#0F766E",
+    color: "#8B0000",
   },
   pitchTypePillTextActive: {
     color: "#FFF",
@@ -10347,10 +10343,10 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     paddingHorizontal: 16,
     borderWidth: 2,
-    borderColor: "#E5E5E5",
+    borderColor: "#E0E0E0",
   },
   pitchTypeChipActive: {
-    borderColor: "#00A66A",
+    borderColor: "#B71C1C",
     backgroundColor: "rgba(185, 28, 28, 0.1)",
   },
   pitchTypeText: {
@@ -10359,7 +10355,7 @@ const styles = StyleSheet.create({
     color: "#666",
   },
   pitchTypeTextActive: {
-    color: "#00A66A",
+    color: "#B71C1C",
   },
   ballTypeGrid: {
     flexDirection: "row",
@@ -10441,7 +10437,7 @@ const styles = StyleSheet.create({
     color: "#555",
   },
   realBallLabelSelected: {
-    color: "#00A66A",
+    color: "#B71C1C",
     fontWeight: "900",
   },
   dateTimeRow: {
@@ -10456,7 +10452,7 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     padding: 16,
     borderWidth: 1,
-    borderColor: "#E5E5E5",
+    borderColor: "#E0E0E0",
   },
   toggleLeft: {
     flexDirection: "row",
@@ -10472,18 +10468,18 @@ const styles = StyleSheet.create({
     width: 50,
     height: 28,
     borderRadius: 14,
-    backgroundColor: "#E5E5E5",
+    backgroundColor: "#E0E0E0",
     padding: 2,
     justifyContent: "center",
   },
   toggleSwitchActive: {
-    backgroundColor: "#00A66A",
+    backgroundColor: "#B71C1C",
   },
   startMatchButton: {
     borderRadius: 16,
     overflow: "hidden",
     marginTop: 12,
-    shadowColor: "#00A66A",
+    shadowColor: "#B71C1C",
     shadowOffset: { width: 0, height: 6 },
     shadowOpacity: 0.4,
     shadowRadius: 10,
@@ -10504,11 +10500,11 @@ const styles = StyleSheet.create({
     letterSpacing: 0.5,
   },
   backButton: {
-    backgroundColor: "#00A66A",
+    backgroundColor: "#B71C1C",
     paddingHorizontal: 24,
     paddingVertical: 14,
     borderRadius: 12,
-    shadowColor: "#00A66A",
+    shadowColor: "#B71C1C",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 6,
@@ -10527,7 +10523,7 @@ const styles = StyleSheet.create({
     marginBottom: 16,
     borderRadius: 14,
     overflow: "hidden",
-    shadowColor: "#00A66A",
+    shadowColor: "#B71C1C",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 8,
@@ -10625,7 +10621,7 @@ const styles = StyleSheet.create({
   },
   progressBar: {
     height: 6,
-    backgroundColor: "#E5E5E5",
+    backgroundColor: "#E0E0E0",
     borderRadius: 3,
     overflow: "hidden",
     marginBottom: 6,
@@ -10670,7 +10666,7 @@ const styles = StyleSheet.create({
   tournamentFooter: {
     flexDirection: "row",
     borderTopWidth: 1,
-    borderTopColor: "#E5E5E5",
+    borderTopColor: "#E0E0E0",
     paddingTop: 10,
   },
   tournamentButton: {
@@ -10691,7 +10687,7 @@ const styles = StyleSheet.create({
   },
   tournamentDivider: {
     width: 1,
-    backgroundColor: "#E5E5E5",
+    backgroundColor: "#E0E0E0",
     marginHorizontal: 8,
   },
   teamsContainer: {
@@ -11061,7 +11057,7 @@ const styles = StyleSheet.create({
   // Create Tournament Form Styles
   createTournamentFormContainer: {
     padding: 16,
-    backgroundColor: "#F8FAFC",
+    backgroundColor: "#FAFAFA",
   },
   formHeaderBlock: {
     marginBottom: 18,
@@ -11114,7 +11110,7 @@ const styles = StyleSheet.create({
   },
   mediaPlaceholder: {
     width: "100%",
-    backgroundColor: "#F0F7F4",
+    backgroundColor: "#F5F5F5",
     borderRadius: 12,
     justifyContent: "center",
     alignItems: "center",
@@ -11173,7 +11169,7 @@ const styles = StyleSheet.create({
     width: 32,
     height: 32,
     borderRadius: 16,
-    backgroundColor: "#00A66A",
+    backgroundColor: "#B71C1C",
     justifyContent: "center",
     alignItems: "center",
   },
@@ -11184,7 +11180,7 @@ const styles = StyleSheet.create({
     width: 26,
     height: 26,
     borderRadius: 13,
-    backgroundColor: "#00A66A",
+    backgroundColor: "#B71C1C",
     borderWidth: 2,
     borderColor: "#FFF",
     justifyContent: "center",
@@ -11199,7 +11195,7 @@ const styles = StyleSheet.create({
     marginTop: 5,
     fontSize: 11,
     fontWeight: "800",
-    color: "#00A66A",
+    color: "#B71C1C",
   },
   formGroup: {
     marginBottom: 16,
@@ -11253,7 +11249,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#FAFAFA",
   },
   dateInputActive: {
-    borderColor: "#00A66A",
+    borderColor: "#B71C1C",
     backgroundColor: "#FFF7F7",
   },
   dateInputText: {
@@ -11269,7 +11265,7 @@ const styles = StyleSheet.create({
     padding: 12,
     marginTop: -8,
     marginBottom: 20,
-    shadowColor: "#00A66A",
+    shadowColor: "#B71C1C",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.08,
     shadowRadius: 10,
@@ -11285,7 +11281,7 @@ const styles = StyleSheet.create({
     width: 34,
     height: 34,
     borderRadius: 17,
-    backgroundColor: "#F0FFF8",
+    backgroundColor: "#FBE9E7",
     justifyContent: "center",
     alignItems: "center",
   },
@@ -11321,7 +11317,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
   calendarDaySelected: {
-    backgroundColor: "#00A66A",
+    backgroundColor: "#B71C1C",
   },
   calendarDayText: {
     fontSize: 13,
@@ -11431,7 +11427,7 @@ const styles = StyleSheet.create({
     fontWeight: "500",
   },
   ballTypeLabelSelected: {
-    color: "#00A66A",
+    color: "#B71C1C",
     fontWeight: "800",
   },
   checkboxRow: {
@@ -11450,8 +11446,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   checkboxChecked: {
-    backgroundColor: "#00A66A",
-    borderColor: "#00A66A",
+    backgroundColor: "#B71C1C",
+    borderColor: "#B71C1C",
   },
   checkboxLabel: {
     flex: 1,
@@ -11462,7 +11458,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
     borderRadius: 12,
     overflow: "hidden",
-    shadowColor: "#00A66A",
+    shadowColor: "#B71C1C",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 8,
@@ -11489,7 +11485,7 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 3,
     borderWidth: 1,
-    borderColor: "#E5E5E5",
+    borderColor: "#E0E0E0",
   },
   teamItemGradient: {
     padding: 12,
@@ -11681,7 +11677,7 @@ const styles = StyleSheet.create({
     color: "#999",
   },
   tdTabTextActive: {
-    color: "#00A66A",
+    color: "#B71C1C",
     fontWeight: "800",
   },
   tdTabIndicator: {
@@ -11690,7 +11686,7 @@ const styles = StyleSheet.create({
     left: "15%",
     right: "15%",
     height: 3,
-    backgroundColor: "#00A66A",
+    backgroundColor: "#B71C1C",
     borderRadius: 2,
   },
   tdContent: {
@@ -11786,7 +11782,7 @@ const styles = StyleSheet.create({
   tdVs: {
     fontSize: 11,
     fontWeight: "900",
-    color: "#00A66A",
+    color: "#B71C1C",
   },
   tdMatchFooter: {
     flexDirection: "row",
@@ -11824,7 +11820,7 @@ const styles = StyleSheet.create({
   },
   tdPtsRowQ: {
     borderLeftWidth: 3,
-    borderLeftColor: "#4CAF50",
+    borderLeftColor: "#10B981",
   },
   tdPtsCell: {
     flex: 1,
@@ -11924,7 +11920,7 @@ const styles = StyleSheet.create({
   tdPlayerStatMain: {
     fontSize: 20,
     fontWeight: "900",
-    color: "#00A66A",
+    color: "#B71C1C",
   },
   tdPlayerStatSub: {
     fontSize: 10,
@@ -11991,7 +11987,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 4,
-    backgroundColor: "#F0F7F4",
+    backgroundColor: "#F5F5F5",
     paddingHorizontal: 8,
     paddingVertical: 3,
     borderRadius: 20,
@@ -12086,17 +12082,17 @@ const styles = StyleSheet.create({
     paddingVertical: 15,
     paddingHorizontal: 20,
     borderBottomWidth: 1,
-    borderBottomColor: "#F0F7F4",
+    borderBottomColor: "#F5F5F5",
     gap: 14,
   },
   tsMenuItemDanger: {
-    borderBottomColor: "#F0FFF8",
+    borderBottomColor: "#FBE9E7",
   },
   tsMenuIcon: {
     width: 36,
     height: 36,
     borderRadius: 18,
-    backgroundColor: "#F0F7F4",
+    backgroundColor: "#F5F5F5",
     justifyContent: "center",
     alignItems: "center",
   },
@@ -12107,7 +12103,7 @@ const styles = StyleSheet.create({
     color: "#222",
   },
   tsMenuLabelDanger: {
-    color: "#059669",
+    color: "#C62828",
     fontWeight: "600",
   },
   tsMenuRight: {
@@ -12116,7 +12112,7 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   tsNewBadge: {
-    backgroundColor: "#059669",
+    backgroundColor: "#C62828",
     borderRadius: 20,
     paddingHorizontal: 10,
     paddingVertical: 3,
@@ -12141,7 +12137,7 @@ const styles = StyleSheet.create({
     paddingTop: 50,
     backgroundColor: "#FFF",
     borderBottomWidth: 1,
-    borderBottomColor: "#E5E5E5",
+    borderBottomColor: "#E0E0E0",
   },
   searchModalTitle: {
     fontSize: 18,
@@ -12151,7 +12147,7 @@ const styles = StyleSheet.create({
   searchInputContainer: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#F0F7F4",
+    backgroundColor: "#F5F5F5",
     marginHorizontal: 16,
     marginVertical: 16,
     paddingHorizontal: 12,
@@ -12241,7 +12237,7 @@ const styles = StyleSheet.create({
   },
   searchMatchResult: {
     fontSize: 12,
-    color: "#00A66A",
+    color: "#B71C1C",
     fontWeight: "600",
     marginTop: 8,
   },
@@ -12334,7 +12330,7 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
   },
   tossTeamCardSelected: {
-    borderColor: "#00A66A",
+    borderColor: "#B71C1C",
     backgroundColor: "#FFF7F7",
   },
   tossTeamJersey: {
@@ -12354,7 +12350,7 @@ const styles = StyleSheet.create({
     width: 22,
     height: 22,
     borderRadius: 11,
-    backgroundColor: "#00A66A",
+    backgroundColor: "#B71C1C",
     alignItems: "center",
     justifyContent: "center",
     borderWidth: 2,
@@ -12367,7 +12363,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   tossTeamNameSelected: {
-    color: "#00A66A",
+    color: "#B71C1C",
   },
   tossDecisionSection: {
     marginBottom: 24,
@@ -12399,7 +12395,7 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
   },
   tossDecisionCardSelected: {
-    borderColor: "#00A66A",
+    borderColor: "#B71C1C",
     backgroundColor: "#FFF7F7",
   },
   cricketActionFigure: {
@@ -12414,13 +12410,13 @@ const styles = StyleSheet.create({
     width: 18,
     height: 18,
     borderRadius: 9,
-    backgroundColor: "#064E3B",
+    backgroundColor: "#8B0000",
   },
   figureBody: {
     width: 24,
     height: 32,
     borderRadius: 10,
-    backgroundColor: "#00A66A",
+    backgroundColor: "#B71C1C",
     marginTop: 2,
   },
   bowlerFigureBody: {
@@ -12431,7 +12427,7 @@ const styles = StyleSheet.create({
     height: 18,
     borderLeftWidth: 6,
     borderRightWidth: 6,
-    borderColor: "#064E3B",
+    borderColor: "#8B0000",
     marginTop: -1,
   },
   batHandle: {
@@ -12451,7 +12447,7 @@ const styles = StyleSheet.create({
     width: 8,
     height: 40,
     borderRadius: 4,
-    backgroundColor: "#064E3B",
+    backgroundColor: "#8B0000",
     transform: [{ rotate: "-42deg" }],
   },
   bowlingBall: {
@@ -12461,7 +12457,7 @@ const styles = StyleSheet.create({
     width: 13,
     height: 13,
     borderRadius: 7,
-    backgroundColor: "#00A66A",
+    backgroundColor: "#B71C1C",
   },
   tossDecisionText: {
     fontSize: 18,
@@ -12469,7 +12465,7 @@ const styles = StyleSheet.create({
     color: "#666",
   },
   tossDecisionTextSelected: {
-    color: "#00A66A",
+    color: "#B71C1C",
   },
   // Player Selection Page Styles
   playerSelectionContainer: {
@@ -12519,7 +12515,7 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
   },
   playerSelectionCardSelected: {
-    borderColor: "#00A66A",
+    borderColor: "#B71C1C",
     backgroundColor: "#FFF7F7",
   },
   bowlerCard: {
@@ -12538,7 +12534,7 @@ const styles = StyleSheet.create({
     width: 68,
     height: 68,
     borderRadius: 34,
-    backgroundColor: "#F0FFF8",
+    backgroundColor: "#FBE9E7",
     alignItems: "center",
     justifyContent: "center",
     position: "relative",
@@ -12555,7 +12551,7 @@ const styles = StyleSheet.create({
   selectedPlayerName: {
     fontSize: 13,
     fontWeight: "800",
-    color: "#00A66A",
+    color: "#B71C1C",
     textAlign: "center",
   },
   playerActionButtons: {
@@ -12600,7 +12596,7 @@ const styles = StyleSheet.create({
   // Match Settings Page Styles
   matchSettingsContainer: {
     flex: 1,
-    backgroundColor: "#F0F7F4",
+    backgroundColor: "#F5F5F5",
     padding: 20,
   },
   matchSettingsTitle: {
@@ -12645,12 +12641,12 @@ const styles = StyleSheet.create({
     width: 50,
     height: 28,
     borderRadius: 14,
-    backgroundColor: "#E5E5E5",
+    backgroundColor: "#E0E0E0",
     padding: 2,
     justifyContent: "center",
   },
   toggleActive: {
-    backgroundColor: "#4CAF50",
+    backgroundColor: "#10B981",
   },
   toggleThumb: {
     width: 24,
@@ -12688,7 +12684,7 @@ const styles = StyleSheet.create({
   ruleLabel: {
     fontSize: 16,
     fontWeight: "700",
-    color: "#00A66A",
+    color: "#B71C1C",
     marginRight: 12,
     width: 20,
   },
@@ -12739,8 +12735,8 @@ const styles = StyleSheet.create({
     borderColor: "transparent",
   },
   ignoreRuleOptionActive: {
-    backgroundColor: "#00A66A",
-    borderColor: "#00A66A",
+    backgroundColor: "#B71C1C",
+    borderColor: "#B71C1C",
   },
   ignoreRuleOptionText: {
     fontSize: 16,
@@ -12781,7 +12777,7 @@ const styles = StyleSheet.create({
     paddingTop: 50,
     backgroundColor: "#FFF",
     borderBottomWidth: 1,
-    borderBottomColor: "#E5E5E5",
+    borderBottomColor: "#E0E0E0",
   },
   playerModalTitle: {
     fontSize: 18,
@@ -12805,7 +12801,7 @@ const styles = StyleSheet.create({
   playerItemSelected: {
     backgroundColor: "#FFF7F7",
     borderWidth: 1,
-    borderColor: "#00A66A",
+    borderColor: "#B71C1C",
   },
   playerItemContent: {
     flexDirection: "row",
@@ -12816,7 +12812,7 @@ const styles = StyleSheet.create({
     width: 50,
     height: 50,
     borderRadius: 25,
-    backgroundColor: "#00A66A",
+    backgroundColor: "#B71C1C",
     alignItems: "center",
     justifyContent: "center",
     marginRight: 16,
@@ -12850,7 +12846,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#111827",
   },
   scoringHeader: {
-    backgroundColor: "#1F2937",
+    backgroundColor: "#212121",
     paddingVertical: 18,
     paddingHorizontal: 20,
     alignItems: "center",
@@ -12860,7 +12856,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 6,
-    backgroundColor: "#DC2626",
+    backgroundColor: "#D32F2F",
     paddingHorizontal: 14,
     paddingVertical: 7,
     borderRadius: 14,
@@ -12873,7 +12869,7 @@ const styles = StyleSheet.create({
   scoringTeamName: {
     fontSize: 14,
     fontWeight: "800",
-    color: "#6EE7B7",
+    color: "#EF9A9A",
     marginBottom: 4,
   },
   scoringTotal: {
@@ -12890,7 +12886,7 @@ const styles = StyleSheet.create({
   },
   batsmenSection: {
     flexDirection: "row",
-    backgroundColor: "#1F2937",
+    backgroundColor: "#212121",
     borderBottomWidth: 1,
     borderBottomColor: "#111827",
   },
@@ -12926,7 +12922,7 @@ const styles = StyleSheet.create({
   bowlerSection: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#1F2937",
+    backgroundColor: "#212121",
     paddingVertical: 12,
     paddingHorizontal: 12,
     borderBottomWidth: 1,
@@ -12966,7 +12962,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 4,
   },
   wicketTypeButtonActive: {
-    borderColor: "#4CAF50",
+    borderColor: "#10B981",
     backgroundColor: "rgba(76, 175, 80, 0.1)",
   },
   wicketIcon: {
@@ -13075,7 +13071,7 @@ const styles = StyleSheet.create({
     letterSpacing: 0.5,
     marginBottom: 6,
   },
-  tsHeaderSub: { fontSize: 13, color: "#94A3B8", fontWeight: "500" },
+  tsHeaderSub: { fontSize: 13, color: "#9E9E9E", fontWeight: "500" },
 
   tsTeamCard: {
     backgroundColor: "#FFF",
@@ -13084,7 +13080,7 @@ const styles = StyleSheet.create({
     marginBottom: 4,
     borderWidth: 1.5,
     borderColor: "#E2E8F0",
-    shadowColor: "#00A66A",
+    shadowColor: "#B71C1C",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.1,
     shadowRadius: 12,
@@ -13131,7 +13127,7 @@ const styles = StyleSheet.create({
     borderStyle: "dashed",
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#F8FAFC",
+    backgroundColor: "#FAFAFA",
   },
   tsReadyDot: {
     position: "absolute",
@@ -13154,7 +13150,7 @@ const styles = StyleSheet.create({
   tsTeamSlot: {
     fontSize: 10,
     fontWeight: "800",
-    color: "#00A66A",
+    color: "#B71C1C",
     letterSpacing: 1.2,
   },
   tsTeamStatus: {
@@ -13168,12 +13164,12 @@ const styles = StyleSheet.create({
   tsTeamName: {
     fontSize: 17,
     fontWeight: "800",
-    color: "#0F172A",
+    color: "#212121",
     marginBottom: 4,
   },
   tsTeamMeta: { flexDirection: "row", alignItems: "center", gap: 5 },
-  tsTeamMetaTxt: { fontSize: 11, color: "#64748B", fontWeight: "500" },
-  tsTeamEmptyHint: { fontSize: 11, color: "#94A3B8", fontStyle: "italic" },
+  tsTeamMetaTxt: { fontSize: 11, color: "#616161", fontWeight: "500" },
+  tsTeamEmptyHint: { fontSize: 11, color: "#9E9E9E", fontStyle: "italic" },
   tsTeamActions: {
     flexDirection: "row",
     gap: 10,
@@ -13189,15 +13185,15 @@ const styles = StyleSheet.create({
     paddingVertical: 11,
     borderRadius: 12,
     borderWidth: 1.5,
-    borderColor: "#00A66A",
+    borderColor: "#B71C1C",
     backgroundColor: "#FFF9F9",
   },
-  tsActionBtnOutlineTxt: { fontSize: 13, fontWeight: "700", color: "#00A66A" },
+  tsActionBtnOutlineTxt: { fontSize: 13, fontWeight: "700", color: "#B71C1C" },
   tsActionBtnFill: {
     flex: 1,
     borderRadius: 12,
     overflow: "hidden",
-    shadowColor: "#00A66A",
+    shadowColor: "#B71C1C",
     shadowOffset: { width: 0, height: 3 },
     shadowOpacity: 0.25,
     shadowRadius: 6,
@@ -13279,12 +13275,12 @@ const styles = StyleSheet.create({
     gap: 6,
     marginTop: 20,
     paddingVertical: 12,
-    backgroundColor: "#F8FAFC",
+    backgroundColor: "#FAFAFA",
     borderRadius: 12,
     borderWidth: 1,
     borderColor: "#E2E8F0",
   },
-  tsEmptyHintTxt: { fontSize: 13, color: "#94A3B8", fontWeight: "500" },
+  tsEmptyHintTxt: { fontSize: 13, color: "#9E9E9E", fontWeight: "500" },
 });
 
 // ── Create Team Styles (ctStyles) ────────────────────────────────
@@ -13383,14 +13379,14 @@ const ctStyles = StyleSheet.create({
     width: 24,
     height: 24,
     borderRadius: 6,
-    backgroundColor: "#F0FFF8",
+    backgroundColor: "#FBE9E7",
     justifyContent: "center",
     alignItems: "center",
   },
-  sectionTitle: { fontSize: 13, fontWeight: "800", color: "#0F172A", flex: 1 },
+  sectionTitle: { fontSize: 13, fontWeight: "800", color: "#212121", flex: 1 },
   sectionOptional: {
     fontSize: 10,
-    color: "#94A3B8",
+    color: "#9E9E9E",
     fontWeight: "600",
     backgroundColor: "#F1F5F9",
     paddingHorizontal: 6,
@@ -13405,13 +13401,13 @@ const ctStyles = StyleSheet.create({
     color: "#475569",
     marginBottom: 4,
   },
-  fieldHint: { fontSize: 10, color: "#94A3B8", marginBottom: 4 },
+  fieldHint: { fontSize: 10, color: "#9E9E9E", marginBottom: 4 },
   req: { color: "#EF4444" },
   fieldInput: {
     flexDirection: "row",
     alignItems: "center",
     gap: 8,
-    backgroundColor: "#F8FAFC",
+    backgroundColor: "#FAFAFA",
     borderRadius: 10,
     borderWidth: 1.5,
     borderColor: "#E2E8F0",
@@ -13419,21 +13415,21 @@ const ctStyles = StyleSheet.create({
     paddingVertical: 5,
   },
   fieldInputDone: { borderColor: "#BBF7D0", backgroundColor: "#F0FFF4" },
-  fieldText: { flex: 1, fontSize: 13, color: "#0F172A", fontWeight: "500" },
+  fieldText: { flex: 1, fontSize: 13, color: "#212121", fontWeight: "500" },
 
   mobileRow: { flexDirection: "row", gap: 6 },
   dialCodeBtn: {
     flexDirection: "row",
     alignItems: "center",
     gap: 3,
-    backgroundColor: "#F8FAFC",
+    backgroundColor: "#FAFAFA",
     borderRadius: 10,
     borderWidth: 1.5,
     borderColor: "#E2E8F0",
     paddingHorizontal: 10,
     paddingVertical: 9,
   },
-  dialCodeTxt: { fontSize: 13, fontWeight: "700", color: "#0F172A" },
+  dialCodeTxt: { fontSize: 13, fontWeight: "700", color: "#212121" },
   dialDropdown: {
     marginTop: 4,
     backgroundColor: "#FFF",
@@ -13454,11 +13450,11 @@ const ctStyles = StyleSheet.create({
     paddingHorizontal: 12,
     paddingVertical: 9,
     borderBottomWidth: 1,
-    borderBottomColor: "#F8FAFC",
+    borderBottomColor: "#FAFAFA",
   },
   dialFlag: { fontSize: 16 },
   dialCountry: { flex: 1, fontSize: 12, color: "#374151", fontWeight: "500" },
-  dialCode: { fontSize: 12, color: "#64748B", fontWeight: "600" },
+  dialCode: { fontSize: 12, color: "#616161", fontWeight: "600" },
 
   captainBadge: {
     width: 18,
@@ -13477,20 +13473,20 @@ const ctStyles = StyleSheet.create({
     borderRadius: 16,
     borderWidth: 1.5,
     borderColor: "#E2E8F0",
-    backgroundColor: "#F8FAFC",
+    backgroundColor: "#FAFAFA",
   },
-  chipActive: { borderColor: "#00A66A", backgroundColor: "#F0FFF8" },
-  chipTxt: { fontSize: 12, fontWeight: "700", color: "#64748B" },
-  chipTxtActive: { color: "#00A66A" },
+  chipActive: { borderColor: "#B71C1C", backgroundColor: "#FBE9E7" },
+  chipTxt: { fontSize: 12, fontWeight: "700", color: "#616161" },
+  chipTxtActive: { color: "#B71C1C" },
 
   ruleBox: {
     marginTop: 8,
-    backgroundColor: "#F8FAFC",
+    backgroundColor: "#FAFAFA",
     borderRadius: 8,
     padding: 10,
     gap: 6,
     borderLeftWidth: 3,
-    borderLeftColor: "#00A66A",
+    borderLeftColor: "#B71C1C",
   },
   ruleRow: { flexDirection: "row", alignItems: "center", gap: 6 },
   ruleTxt: { fontSize: 11, color: "#475569", flex: 1 },
@@ -13505,7 +13501,7 @@ const ctStyles = StyleSheet.create({
 
   addPlayersNote: {
     fontSize: 11,
-    color: "#94A3B8",
+    color: "#9E9E9E",
     marginBottom: 8,
     fontStyle: "italic",
   },
@@ -13514,7 +13510,7 @@ const ctStyles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 10,
-    backgroundColor: "#F8FAFC",
+    backgroundColor: "#FAFAFA",
     borderRadius: 10,
     padding: 10,
     borderWidth: 1,
@@ -13531,15 +13527,15 @@ const ctStyles = StyleSheet.create({
   addOptionTitle: {
     fontSize: 13,
     fontWeight: "700",
-    color: "#0F172A",
+    color: "#212121",
     marginBottom: 1,
   },
-  addOptionSub: { fontSize: 10, color: "#64748B" },
+  addOptionSub: { fontSize: 10, color: "#616161" },
 
   createBtn: {
     borderRadius: 13,
     overflow: "hidden",
-    shadowColor: "#00A66A",
+    shadowColor: "#B71C1C",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 8,

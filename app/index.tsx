@@ -155,7 +155,7 @@ function SplashScreen({ onFinish }: { onFinish: () => void }) {
     <Animated.View style={[splashStyles.root, { opacity: screenOpacity }]}>
       {/* Deep navy → pitch-black gradient */}
       <LinearGradient
-        colors={["#060D1A", "#0A1628", "#071220"]}
+        colors={["#1A0000", "#2C0000", "#1A0000"]}
         locations={[0, 0.55, 1]}
         style={StyleSheet.absoluteFill}
       />
@@ -210,15 +210,15 @@ function SplashScreen({ onFinish }: { onFinish: () => void }) {
         {/* Green glow halo */}
         <LinearGradient
           colors={[
-            "rgba(0,196,122,0.32)",
-            "rgba(14,165,233,0.2)",
+            "rgba(183,28,28,0.32)",
+            "rgba(211,47,47,0.2)",
             "transparent",
           ]}
           style={splashStyles.logoHalo}
         />
         {/* Icon container */}
         <LinearGradient
-          colors={["#0F2D1F", "#0A1E14"]}
+          colors={["#2C0000", "#1A0000"]}
           style={splashStyles.logoBg}
         >
           <Text style={splashStyles.logoEmoji}>🏏</Text>
@@ -256,7 +256,7 @@ const splashStyles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "#060D1A",
+    backgroundColor: "#1A0000",
   },
 
   // Stadium spotlight
@@ -265,7 +265,7 @@ const splashStyles = StyleSheet.create({
     width: 500,
     height: 500,
     borderRadius: 250,
-    backgroundColor: "rgba(0,196,122,0.13)",
+    backgroundColor: "rgba(183,28,28,0.13)",
     top: "-10%",
     alignSelf: "center",
   },
@@ -301,7 +301,7 @@ const splashStyles = StyleSheet.create({
     height: 160,
     borderRadius: 80,
     borderWidth: 2,
-    borderColor: "rgba(0,196,122,0.55)",
+    borderColor: "rgba(183,28,28,0.55)",
     backgroundColor: "transparent",
   },
 
@@ -324,13 +324,13 @@ const splashStyles = StyleSheet.create({
     borderRadius: 32,
     alignItems: "center",
     justifyContent: "center",
-    shadowColor: "#00C47A",
+    shadowColor: "#D32F2F",
     shadowOffset: { width: 0, height: 18 },
     shadowOpacity: 0.55,
     shadowRadius: 36,
     elevation: 24,
     borderWidth: 1.5,
-    borderColor: "rgba(0,196,122,0.3)",
+    borderColor: "rgba(183,28,28,0.3)",
   },
   logoEmoji: {
     fontSize: 52,
@@ -352,20 +352,20 @@ const splashStyles = StyleSheet.create({
     fontWeight: "900",
     color: "#FFFFFF",
     letterSpacing: 5,
-    textShadowColor: "rgba(0,196,122,0.4)",
+    textShadowColor: "rgba(183,28,28,0.4)",
     textShadowOffset: { width: 0, height: 0 },
     textShadowRadius: 20,
   },
   appNameGreen: {
-    color: "#00C47A",
+    color: "#D32F2F",
   },
   wordUnderline: {
     marginTop: 6,
     width: 48,
     height: 2.5,
     borderRadius: 2,
-    backgroundColor: "#00C47A",
-    shadowColor: "#00C47A",
+    backgroundColor: "#D32F2F",
+    shadowColor: "#D32F2F",
     shadowOffset: { width: 0, height: 0 },
     shadowOpacity: 0.9,
     shadowRadius: 8,
@@ -588,7 +588,7 @@ export default function AuthScreen() {
             {/* Logo + brand */}
             <View style={styles.logoContainer}>
               <LinearGradient
-                colors={["rgba(0,166,106,0.15)", "rgba(14,165,233,0.12)"]}
+                colors={["rgba(183,28,28,0.15)", "rgba(211,47,47,0.12)"]}
                 style={styles.logoBgLight}
               >
                 <ImageBackground
@@ -614,7 +614,7 @@ export default function AuthScreen() {
 
               {authError && currentScreen === "login" ? (
                 <View style={styles.errorBanner}>
-                  <Ionicons name="alert-circle" size={16} color="#DC2626" />
+                  <Ionicons name="alert-circle" size={16} color="#D32F2F" />
                   <Text style={styles.errorBannerText}>{authError}</Text>
                 </View>
               ) : null}
@@ -625,13 +625,13 @@ export default function AuthScreen() {
                 <Ionicons
                   name="person-outline"
                   size={18}
-                  color={userFocus ? "#00A66A" : "#94A3B8"}
+                  color={userFocus ? "#B71C1C" : "#9E9E9E"}
                   style={styles.inputIcon}
                 />
                 <TextInput
                   style={styles.input}
                   placeholder="Username"
-                  placeholderTextColor="#94A3B8"
+                  placeholderTextColor="#9E9E9E"
                   value={username}
                   onChangeText={setUsername}
                   autoCapitalize="none"
@@ -646,13 +646,13 @@ export default function AuthScreen() {
                 <Ionicons
                   name="lock-closed-outline"
                   size={18}
-                  color={passFocus ? "#00A66A" : "#94A3B8"}
+                  color={passFocus ? "#B71C1C" : "#9E9E9E"}
                   style={styles.inputIcon}
                 />
                 <TextInput
                   style={styles.input}
                   placeholder="Password"
-                  placeholderTextColor="#94A3B8"
+                  placeholderTextColor="#9E9E9E"
                   secureTextEntry
                   value={password}
                   onChangeText={setPassword}
@@ -679,7 +679,7 @@ export default function AuthScreen() {
                 activeOpacity={0.88}
               >
                 <LinearGradient
-                  colors={["#00C47A", "#00A66A"]}
+                  colors={["#D32F2F", "#B71C1C"]}
                   start={{ x: 0, y: 0 }}
                   end={{ x: 1, y: 1 }}
                   style={styles.loginButtonGrad}
@@ -716,7 +716,7 @@ export default function AuthScreen() {
                     <Ionicons
                       name={showLoginDrawer ? "chevron-up" : "chevron-down"}
                       size={18}
-                      color="#94A3B8"
+                      color="#9E9E9E"
                     />
                   </TouchableOpacity>
                 </View>
@@ -731,7 +731,7 @@ export default function AuthScreen() {
                         router.push("/turf-management" as never);
                       }}
                     >
-                      <Ionicons name="football-outline" size={18} color="#0F766E" />
+                      <Ionicons name="football-outline" size={18} color="#8B0000" />
                       <Text style={styles.drawerOptionText}>Login as Turf Management</Text>
                     </TouchableOpacity>
 
@@ -810,7 +810,7 @@ export default function AuthScreen() {
 
             {authError && currentScreen === "signup" ? (
               <View style={styles.errorBanner}>
-                <Ionicons name="alert-circle" size={16} color="#DC2626" />
+                <Ionicons name="alert-circle" size={16} color="#D32F2F" />
                 <Text style={styles.errorBannerText}>{authError}</Text>
               </View>
             ) : null}
@@ -853,13 +853,13 @@ export default function AuthScreen() {
                 <Ionicons
                   name={field.icon as any}
                   size={18}
-                  color="#94A3B8"
+                  color="#9E9E9E"
                   style={styles.inputIcon}
                 />
                 <TextInput
                   style={styles.input}
                   placeholder={field.placeholder}
-                  placeholderTextColor="#94A3B8"
+                  placeholderTextColor="#9E9E9E"
                   value={field.value}
                   onChangeText={field.setter}
                   secureTextEntry={field.secure}
@@ -879,7 +879,7 @@ export default function AuthScreen() {
               activeOpacity={0.88}
             >
               <LinearGradient
-                colors={["#00C47A", "#00A66A"]}
+                colors={["#D32F2F", "#B71C1C"]}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 1 }}
                 style={styles.loginButtonGrad}
@@ -908,18 +908,18 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     width: "100%",
-    backgroundColor: "#F0F7F4",
+    backgroundColor: "#F5F5F5",
   },
   authScrollView: {
     flex: 1,
     width: "100%",
-    backgroundColor: "#F0F7F4",
+    backgroundColor: "#F5F5F5",
   },
   scrollContent: {
     flexGrow: 1,
     alignItems: "center",
     width: SCREEN_WIDTH,
-    backgroundColor: "#F0F7F4",
+    backgroundColor: "#F5F5F5",
     paddingVertical: 50,
   },
   authContent: {
@@ -934,7 +934,7 @@ const styles = StyleSheet.create({
   logoBgLight: {
     borderRadius: 30,
     padding: 3,
-    shadowColor: "#00A66A",
+    shadowColor: "#B71C1C",
     shadowOffset: { width: 0, height: 12 },
     shadowOpacity: 0.22,
     shadowRadius: 28,
@@ -957,7 +957,7 @@ const styles = StyleSheet.create({
     width: "100%",
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "rgba(15, 118, 110, 0.22)",
+    backgroundColor: "rgba(139, 0, 0, 0.22)",
   },
   cricketIcon: {
     fontSize: 48,
@@ -965,15 +965,15 @@ const styles = StyleSheet.create({
   appName: {
     fontSize: 30,
     fontWeight: "900",
-    color: "#0F172A",
+    color: "#212121",
     letterSpacing: 3,
     marginBottom: 5,
-    textShadowColor: "rgba(0,166,106,0.12)",
+    textShadowColor: "rgba(183,28,28,0.12)",
     textShadowOffset: { width: 0, height: 4 },
     textShadowRadius: 12,
   },
   appNameGreen: {
-    color: "#00A66A",
+    color: "#B71C1C",
   },
 
   // Card
@@ -984,24 +984,24 @@ const styles = StyleSheet.create({
     paddingHorizontal: 22,
     paddingTop: 28,
     paddingBottom: 24,
-    shadowColor: "#0F766E",
+    shadowColor: "#8B0000",
     shadowOffset: { width: 0, height: 16 },
     shadowOpacity: 0.1,
     shadowRadius: 32,
     elevation: 10,
     borderWidth: 1,
-    borderColor: "rgba(0,166,106,0.1)",
+    borderColor: "rgba(183,28,28,0.1)",
   },
   loginTitle: {
     fontSize: 24,
-    color: "#0F172A",
+    color: "#212121",
     fontWeight: "800",
     letterSpacing: 0.2,
     marginBottom: 2,
   },
   loginSubtitle: {
     fontSize: 14,
-    color: "#64748B",
+    color: "#616161",
     fontWeight: "500",
     marginBottom: 14,
   },
@@ -1011,21 +1011,21 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     width: "100%",
-    backgroundColor: "#F8FAFC",
+    backgroundColor: "#FAFAFA",
     borderRadius: 16,
     borderWidth: 1,
-    borderColor: "#E2EAE6",
+    borderColor: "#E0E0E0",
     marginBottom: 10,
     paddingHorizontal: 14,
-    shadowColor: "#0F766E",
+    shadowColor: "#8B0000",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.05,
     shadowRadius: 8,
     elevation: 2,
   },
   inputWrapFocused: {
-    borderColor: "#00A66A",
-    backgroundColor: "#F0FFF8",
+    borderColor: "#B71C1C",
+    backgroundColor: "#FBE9E7",
     shadowOpacity: 0.12,
     shadowRadius: 14,
     elevation: 5,
@@ -1037,7 +1037,7 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingVertical: 15,
     fontSize: 15,
-    color: "#0F172A",
+    color: "#212121",
     fontWeight: "500",
   },
   forgotPassword: {
@@ -1046,7 +1046,7 @@ const styles = StyleSheet.create({
     paddingVertical: 2,
   },
   forgotPasswordText: {
-    color: "#2563EB",
+    color: "#B71C1C",
     fontSize: 13,
     fontWeight: "700",
   },
@@ -1056,7 +1056,7 @@ const styles = StyleSheet.create({
     width: "100%",
     borderRadius: 18,
     overflow: "hidden",
-    shadowColor: "#00A66A",
+    shadowColor: "#B71C1C",
     shadowOffset: { width: 0, height: 10 },
     shadowOpacity: 0.35,
     shadowRadius: 20,
@@ -1091,10 +1091,10 @@ const styles = StyleSheet.create({
   dividerLine: {
     flex: 1,
     height: 1,
-    backgroundColor: "#E2EAE6",
+    backgroundColor: "#E0E0E0",
   },
   orText: {
-    color: "#94A3B8",
+    color: "#9E9E9E",
     fontSize: 13,
     fontWeight: "600",
   },
@@ -1103,14 +1103,14 @@ const styles = StyleSheet.create({
   socialIcon: {
     fontSize: 18,
     fontWeight: "800",
-    color: "#2563EB",
+    color: "#B71C1C",
   },
   drawerContainer: {
     width: "100%",
     borderRadius: 14,
     borderWidth: 1.5,
-    borderColor: "#E2EAE6",
-    backgroundColor: "#F8FAFC",
+    borderColor: "#E0E0E0",
+    backgroundColor: "#FAFAFA",
     overflow: "hidden",
     marginBottom: 20,
   },
@@ -1134,11 +1134,11 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: 14,
     fontWeight: "600",
-    color: "#0F172A",
+    color: "#212121",
   },
   drawerOptions: {
     borderTopWidth: 1,
-    borderTopColor: "#E2EAE6",
+    borderTopColor: "#E0E0E0",
   },
   drawerOption: {
     flexDirection: "row",
@@ -1147,12 +1147,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     gap: 12,
     borderBottomWidth: 1,
-    borderBottomColor: "#E2EAE6",
+    borderBottomColor: "#E0E0E0",
   },
   drawerOptionText: {
     fontSize: 14,
     fontWeight: "600",
-    color: "#0F172A",
+    color: "#212121",
   },
 
   // Signup row
@@ -1162,12 +1162,12 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   signupText: {
-    color: "#64748B",
+    color: "#616161",
     fontSize: 14,
     fontWeight: "500",
   },
   signupLink: {
-    color: "#2563EB",
+    color: "#B71C1C",
     fontSize: 14,
     fontWeight: "800",
   },
@@ -1185,7 +1185,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     borderWidth: 1,
     borderColor: "#D8E7E2",
-    shadowColor: "#0F766E",
+    shadowColor: "#8B0000",
     shadowOffset: { width: 0, height: 10 },
     shadowOpacity: 0.1,
     shadowRadius: 22,
@@ -1216,17 +1216,17 @@ const styles = StyleSheet.create({
     fontSize: 10,
     fontWeight: "800",
     letterSpacing: 1.2,
-    color: "#2563EB",
+    color: "#B71C1C",
   },
   heroText: {
     fontSize: 16,
     lineHeight: 22,
     fontWeight: "800",
-    color: "#0F172A",
+    color: "#212121",
   },
   signupTitle: {
     fontSize: 24,
-    color: "#0F172A",
+    color: "#212121",
     fontWeight: "800",
     marginBottom: 4,
   },
@@ -1236,7 +1236,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 8,
-    backgroundColor: "#FEF2F2",
+    backgroundColor: "#FBE9E7",
     borderRadius: 12,
     borderWidth: 1,
     borderColor: "#FECACA",
@@ -1248,7 +1248,7 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: 13,
     fontWeight: "600",
-    color: "#DC2626",
+    color: "#D32F2F",
     lineHeight: 18,
   },
 });

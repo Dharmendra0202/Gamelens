@@ -12,7 +12,7 @@ interface ChipGroupProps {
  * Shared chip/tag selector for forms.
  * Replaces `renderChipGroup` helper in my-cricket.tsx.
  */
-export function ChipGroup({ items, selected, onSelect, activeColor = '#00A66A' }: ChipGroupProps) {
+export function ChipGroup({ items, selected, onSelect, activeColor = '#B71C1C' }: ChipGroupProps) {
   return (
     <View style={styles.chipGrid}>
       {items.map((item) => (

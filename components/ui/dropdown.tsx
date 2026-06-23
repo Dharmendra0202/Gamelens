@@ -80,7 +80,7 @@ export function Dropdown<T extends string>({
                       {item}
                     </Text>
                     {selected ? (
-                      <Ionicons name="checkmark" size={18} color="#00A66A" />
+                      <Ionicons name="checkmark" size={18} color="#B71C1C" />
                     ) : null}
                   </TouchableOpacity>
                 );
@@ -104,7 +104,7 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   required: {
-    color: "#DC2626",
+    color: "#D32F2F",
   },
   field: {
     flexDirection: "row",
@@ -113,7 +113,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#F8FAFC",
     borderRadius: 14,
     borderWidth: 1.5,
-    borderColor: "#E2EAE6",
+    borderColor: "#E0E0E0",
     paddingHorizontal: 14,
     paddingVertical: 14,
   },
@@ -155,7 +155,7 @@ const styles = StyleSheet.create({
     borderRadius: 12,
   },
   optionSelected: {
-    backgroundColor: "#F0FFF8",
+    backgroundColor: "#FBE9E7",
   },
   optionText: {
     fontSize: 15,
@@ -163,7 +163,7 @@ const styles = StyleSheet.create({
     fontWeight: "600",
   },
   optionTextSelected: {
-    color: "#00A66A",
+    color: "#B71C1C",
     fontWeight: "800",
   },
 });
