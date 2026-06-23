@@ -6078,7 +6078,7 @@ export default function MyCricketScreen() {
                         <Ionicons
                           name="add-circle-outline"
                           size={16}
-                          color="#00A66A"
+                          color="#B91C1C"
                         />
                         <Text style={styles.tsActionBtnOutlineTxt}>Create</Text>
                       </TouchableOpacity>
@@ -6189,7 +6189,7 @@ export default function MyCricketScreen() {
                         <Ionicons
                           name="add-circle-outline"
                           size={16}
-                          color="#00A66A"
+                          color="#B91C1C"
                         />
                         <Text style={styles.tsActionBtnOutlineTxt}>Create</Text>
                       </TouchableOpacity>

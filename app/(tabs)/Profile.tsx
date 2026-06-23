@@ -93,7 +93,7 @@ export default function ProfileScreen() {
       icon: "shield-checkmark-outline",
       label: "Your Dashboard",
       desc: "Manage your bookings and services",
-      color: "#0D9488",
+      color: "#B91C1C",
     },
     {
       icon: "calendar-outline",
@@ -111,7 +111,7 @@ export default function ProfileScreen() {
       icon: "card-outline",
       label: "Payment Methods",
       desc: "Cards, UPI, and saved options",
-      color: "#059669",
+      color: "#B91C1C",
     },
     {
       icon: "headset-outline",
@@ -125,7 +125,7 @@ export default function ProfileScreen() {
     <View style={styles.container}>
       {/* Background gradient overlay */}
       <LinearGradient
-        colors={["#0F766E", "#064E3B", "#0B3D2E", "#091E1A"]}
+        colors={["#991B1B", "#7F1D1D", "#450A0A", "#1C0505"]}
         locations={[0, 0.3, 0.6, 1]}
         style={StyleSheet.absoluteFill}
       />
@@ -154,7 +154,7 @@ export default function ProfileScreen() {
               onPress={handleEditProfile}
               activeOpacity={0.7}
             >
-              <Ionicons name="create-outline" size={15} color="#A7F3D0" />
+              <Ionicons name="create-outline" size={15} color="#FCA5A5" />
               <Text style={styles.editBtnText}>Edit</Text>
             </TouchableOpacity>
           </View>
@@ -198,7 +198,7 @@ export default function ProfileScreen() {
                 <Ionicons
                   name={stat.icon as any}
                   size={16}
-                  color="rgba(167,243,208,0.7)"
+                  color="rgba(252,165,165,0.7)"
                 />
                 <Text style={styles.statValue}>{stat.value}</Text>
                 <Text style={styles.statLabel}>{stat.label}</Text>
@@ -279,7 +279,7 @@ export default function ProfileScreen() {
               <Switch
                 value={notifications}
                 onValueChange={setNotifications}
-                trackColor={{ false: "rgba(255,255,255,0.1)", true: "#0D9488" }}
+                trackColor={{ false: "rgba(255,255,255,0.1)", true: "#B91C1C" }}
                 thumbColor="#FFF"
               />
             </View>
@@ -303,7 +303,7 @@ export default function ProfileScreen() {
               <Switch
                 value={biometricLock}
                 onValueChange={setBiometricLock}
-                trackColor={{ false: "rgba(255,255,255,0.1)", true: "#0D9488" }}
+                trackColor={{ false: "rgba(255,255,255,0.1)", true: "#B91C1C" }}
                 thumbColor="#FFF"
               />
             </View>
@@ -351,7 +351,7 @@ const styles = StyleSheet.create({
     height: 60,
     borderRadius: 30,
     borderWidth: 2,
-    borderColor: "rgba(167,243,208,0.3)",
+    borderColor: "rgba(252,165,165,0.3)",
     overflow: "hidden",
   },
   avatarInner: {
@@ -367,19 +367,19 @@ const styles = StyleSheet.create({
     color: "#FFF",
     letterSpacing: 0.3,
   },
-  profileSub: { fontSize: 13, color: "rgba(167,243,208,0.6)", marginTop: 3 },
+  profileSub: { fontSize: 13, color: "rgba(252,165,165,0.6)", marginTop: 3 },
   editBtn: {
     flexDirection: "row",
     alignItems: "center",
     backgroundColor: "rgba(255,255,255,0.08)",
     borderWidth: 1,
-    borderColor: "rgba(167,243,208,0.2)",
+    borderColor: "rgba(252,165,165,0.2)",
     paddingHorizontal: 12,
     paddingVertical: 8,
     borderRadius: 10,
     gap: 5,
   },
-  editBtnText: { fontSize: 12, fontWeight: "600", color: "#A7F3D0" },
+  editBtnText: { fontSize: 12, fontWeight: "600", color: "#FCA5A5" },
 
   // Google Pill
   googlePill: {
@@ -424,7 +424,7 @@ const styles = StyleSheet.create({
   statValue: { fontSize: 22, fontWeight: "800", color: "#FFF", marginTop: 4 },
   statLabel: {
     fontSize: 11,
-    color: "rgba(167,243,208,0.5)",
+    color: "rgba(252,165,165,0.5)",
     fontWeight: "500",
   },
 
@@ -442,7 +442,7 @@ const styles = StyleSheet.create({
     color: "rgba(255,255,255,0.75)",
     letterSpacing: 0.5,
   },
-  sectionSub: { fontSize: 11, color: "rgba(167,243,208,0.4)" },
+  sectionSub: { fontSize: 11, color: "rgba(252,165,165,0.4)" },
 
   // Glass Card
   glassCard: {

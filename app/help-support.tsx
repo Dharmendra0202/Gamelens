@@ -2,23 +2,56 @@ import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
 import React from "react";
-import { Linking, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import {
+    Linking,
+    ScrollView,
+    StyleSheet,
+    Text,
+    TouchableOpacity,
+    View,
+} from "react-native";
 
 export default function HelpSupportScreen() {
   const router = useRouter();
 
   const options = [
-    { icon: "mail-outline", label: "Email Support", desc: "support@gamelens.app", action: () => Linking.openURL("mailto:support@gamelens.app") },
-    { icon: "call-outline", label: "Call Us", desc: "Available 9 AM - 6 PM", action: () => Linking.openURL("tel:+919999999999") },
-    { icon: "chatbubble-outline", label: "Live Chat", desc: "Chat with our team", action: () => {} },
-    { icon: "document-text-outline", label: "FAQs", desc: "Common questions answered", action: () => {} },
-    { icon: "bug-outline", label: "Report a Bug", desc: "Help us improve", action: () => Linking.openURL("mailto:bugs@gamelens.app?subject=Bug Report") },
+    {
+      icon: "mail-outline",
+      label: "Email Support",
+      desc: "support@gamelens.app",
+      action: () => Linking.openURL("mailto:support@gamelens.app"),
+    },
+    {
+      icon: "call-outline",
+      label: "Call Us",
+      desc: "Available 9 AM - 6 PM",
+      action: () => Linking.openURL("tel:+919999999999"),
+    },
+    {
+      icon: "chatbubble-outline",
+      label: "Live Chat",
+      desc: "Chat with our team",
+      action: () => {},
+    },
+    {
+      icon: "document-text-outline",
+      label: "FAQs",
+      desc: "Common questions answered",
+      action: () => {},
+    },
+    {
+      icon: "bug-outline",
+      label: "Report a Bug",
+      desc: "Help us improve",
+      action: () =>
+        Linking.openURL("mailto:bugs@gamelens.app?subject=Bug Report"),
+    },
   ];
 
   return (
     <View style={styles.container}>
       <LinearGradient
-        colors={["#00A66A", "#0F766E", "#064E3B"]}
+        colors={["#DC2626", "#B91C1C", "#7F1D1D"]}
         style={styles.header}
       >
         <TouchableOpacity style={styles.backBtn} onPress={() => router.back()}>
@@ -33,12 +66,15 @@ export default function HelpSupportScreen() {
           {options.map((item, index) => (
             <TouchableOpacity
               key={index}
-              style={[styles.option, index === options.length - 1 && { borderBottomWidth: 0 }]}
+              style={[
+                styles.option,
+                index === options.length - 1 && { borderBottomWidth: 0 },
+              ]}
               onPress={item.action}
               activeOpacity={0.7}
             >
               <View style={styles.optionIcon}>
-                <Ionicons name={item.icon as any} size={22} color="#0F766E" />
+                <Ionicons name={item.icon as any} size={22} color="#B91C1C" />
               </View>
               <View style={styles.optionText}>
                 <Text style={styles.optionLabel}>{item.label}</Text>
@@ -88,7 +124,7 @@ const styles = StyleSheet.create({
     width: 42,
     height: 42,
     borderRadius: 12,
-    backgroundColor: "#D1FAE5",
+    backgroundColor: "#FEE2E2",
     alignItems: "center",
     justifyContent: "center",
   },

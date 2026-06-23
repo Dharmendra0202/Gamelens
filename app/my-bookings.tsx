@@ -2,7 +2,13 @@ import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
 import React from "react";
-import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import {
+    ScrollView,
+    StyleSheet,
+    Text,
+    TouchableOpacity,
+    View,
+} from "react-native";
 
 export default function MyBookingsScreen() {
   const router = useRouter();
@@ -10,7 +16,7 @@ export default function MyBookingsScreen() {
   return (
     <View style={styles.container}>
       <LinearGradient
-        colors={["#00A66A", "#0F766E", "#064E3B"]}
+        colors={["#DC2626", "#B91C1C", "#7F1D1D"]}
         style={styles.header}
       >
         <TouchableOpacity style={styles.backBtn} onPress={() => router.back()}>
@@ -59,6 +65,17 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     marginBottom: 20,
   },
-  emptyTitle: { fontSize: 18, fontWeight: "700", color: "#334155", marginBottom: 8 },
-  emptyDesc: { fontSize: 14, color: "#94A3B8", textAlign: "center", lineHeight: 22, paddingHorizontal: 32 },
+  emptyTitle: {
+    fontSize: 18,
+    fontWeight: "700",
+    color: "#334155",
+    marginBottom: 8,
+  },
+  emptyDesc: {
+    fontSize: 14,
+    color: "#94A3B8",
+    textAlign: "center",
+    lineHeight: 22,
+    paddingHorizontal: 32,
+  },
 });

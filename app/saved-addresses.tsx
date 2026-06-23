@@ -3,13 +3,13 @@ import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
 import React, { useState } from "react";
 import {
-  Alert,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
+    Alert,
+    ScrollView,
+    StyleSheet,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    View,
 } from "react-native";
 
 export default function SavedAddressesScreen() {
@@ -33,15 +33,22 @@ export default function SavedAddressesScreen() {
   return (
     <View style={styles.container}>
       <LinearGradient
-        colors={["#00A66A", "#0F766E", "#064E3B"]}
+        colors={["#DC2626", "#B91C1C", "#7F1D1D"]}
         style={styles.header}
       >
         <TouchableOpacity style={styles.backBtn} onPress={() => router.back()}>
           <Ionicons name="arrow-back" size={22} color="#FFF" />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Saved Addresses</Text>
-        <TouchableOpacity style={styles.backBtn} onPress={() => setShowAddForm(!showAddForm)}>
-          <Ionicons name={showAddForm ? "close" : "add"} size={22} color="#FFF" />
+        <TouchableOpacity
+          style={styles.backBtn}
+          onPress={() => setShowAddForm(!showAddForm)}
+        >
+          <Ionicons
+            name={showAddForm ? "close" : "add"}
+            size={22}
+            color="#FFF"
+          />
         </TouchableOpacity>
       </LinearGradient>
 
@@ -65,7 +72,10 @@ export default function SavedAddressesScreen() {
               onChangeText={setAddressText}
               multiline
             />
-            <TouchableOpacity style={styles.saveBtn} onPress={handleSaveAddress}>
+            <TouchableOpacity
+              style={styles.saveBtn}
+              onPress={handleSaveAddress}
+            >
               <Text style={styles.saveBtnText}>Save Address</Text>
             </TouchableOpacity>
           </View>
@@ -111,7 +121,12 @@ const styles = StyleSheet.create({
     shadowRadius: 8,
     elevation: 3,
   },
-  formTitle: { fontSize: 16, fontWeight: "700", color: "#0F172A", marginBottom: 16 },
+  formTitle: {
+    fontSize: 16,
+    fontWeight: "700",
+    color: "#0F172A",
+    marginBottom: 16,
+  },
   input: {
     backgroundColor: "#F8FAFC",
     borderRadius: 12,
@@ -124,7 +139,7 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   saveBtn: {
-    backgroundColor: "#0F766E",
+    backgroundColor: "#B91C1C",
     borderRadius: 12,
     paddingVertical: 14,
     alignItems: "center",
@@ -141,6 +156,17 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     marginBottom: 20,
   },
-  emptyTitle: { fontSize: 18, fontWeight: "700", color: "#334155", marginBottom: 8 },
-  emptyDesc: { fontSize: 14, color: "#94A3B8", textAlign: "center", lineHeight: 22, paddingHorizontal: 32 },
+  emptyTitle: {
+    fontSize: 18,
+    fontWeight: "700",
+    color: "#334155",
+    marginBottom: 8,
+  },
+  emptyDesc: {
+    fontSize: 14,
+    color: "#94A3B8",
+    textAlign: "center",
+    lineHeight: 22,
+    paddingHorizontal: 32,
+  },
 });
