@@ -1,6 +1,8 @@
 import { AnimatedViewTransition } from "@/components/ui/animated-view-transition";
 import { ChipGroup } from "@/components/ui/chip-group";
+import { CitySearchDropdown } from "@/components/ui/city-search-dropdown";
 import { FormTextInput } from "@/components/ui/form-text-input";
+import { SquadSizePicker } from "@/components/ui/squad-size-picker";
 import { TabScreenWrapper } from "@/components/ui/tab-screen-wrapper";
 import { useSwipeableTabs } from "@/hooks/use-swipeable-tabs";
 import { LocalStorage } from "@/services/storage";
@@ -8,6 +10,9 @@ import type { Match } from "@/types";
 import { shareContent } from "@/utils/share";
 import { Ionicons } from "@expo/vector-icons";
 
+import { ComingSoonScreen } from "@/components/ComingSoonScreen";
+import { SportSelectionScreen } from "@/components/SportSelectionScreen";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as ImagePicker from "expo-image-picker";
 import { LinearGradient } from "expo-linear-gradient";
 import * as Location from "expo-location";
@@ -31,7 +36,92 @@ import {
 
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
 
+// ─── Sport Selection Key ────────────────────────────────────────────────────────
+const SPORT_STORAGE_KEY = "gamelens:selected_sport";
+
+// Sport name mapping for display
+const SPORT_NAMES: Record<string, string> = {
+  box_cricket: "Box Cricket",
+  badminton: "Badminton",
+  pickleball: "Pickleball",
+  padel: "Padel",
+  cricket: "Cricket",
+  tennis: "Tennis",
+  football: "Football",
+  basketball: "Basketball",
+};
+
+// Sports that are available (open existing screen)
+const AVAILABLE_SPORTS = new Set(["cricket", "box_cricket"]);
+
 export default function MyCricketScreen() {
+  const router = useRouter();
+  const params = useLocalSearchParams();
+
+  // ─── Sport Gateway State ──────────────────────────────────────────────────────
+  const [selectedSport, setSelectedSport] = useState<string | null>(null);
+  const [sportLoaded, setSportLoaded] = useState(false);
+  const [showSelection, setShowSelection] = useState(false);
+
+  // Load saved sport preference on mount
+  useEffect(() => {
+    AsyncStorage.getItem(SPORT_STORAGE_KEY).then((saved) => {
+      if (saved) {
+        setSelectedSport(saved);
+      } else {
+        setShowSelection(true);
+      }
+      setSportLoaded(true);
+    });
+  }, []);
+
+  // Handle sport selection
+  const handleSportSelect = async (sportId: string) => {
+    await AsyncStorage.setItem(SPORT_STORAGE_KEY, sportId);
+    setSelectedSport(sportId);
+    setShowSelection(false);
+  };
+
+  // Handle skip — default to cricket
+  const handleSkip = async () => {
+    await AsyncStorage.setItem(SPORT_STORAGE_KEY, "cricket");
+    setSelectedSport("cricket");
+    setShowSelection(false);
+  };
+
+  // Handle back from Coming Soon
+  const handleBackToSelection = async () => {
+    await AsyncStorage.removeItem(SPORT_STORAGE_KEY);
+    setSelectedSport(null);
+    setShowSelection(true);
+  };
+
+  // ─── Gate: Show Sport Selection or Coming Soon if needed ──────────────────────
+  if (!sportLoaded) {
+    return <View style={{ flex: 1, backgroundColor: "#F5F5F5" }} />;
+  }
+
+  if (showSelection || !selectedSport) {
+    return (
+      <SportSelectionScreen onSelect={handleSportSelect} onSkip={handleSkip} />
+    );
+  }
+
+  if (selectedSport && !AVAILABLE_SPORTS.has(selectedSport)) {
+    return (
+      <ComingSoonScreen
+        sportName={SPORT_NAMES[selectedSport] ?? selectedSport}
+        onBack={handleBackToSelection}
+      />
+    );
+  }
+
+  // ─── Existing Sports Screen (Cricket) ─────────────────────────────────────────
+  return <MyCricketContent onChangeSport={handleBackToSelection} />;
+}
+
+// ─── Original Screen Content (extracted into a sub-component) ───────────────────
+function MyCricketContent({ onChangeSport }: { onChangeSport: () => void }) {
   const router = useRouter();
   const params = useLocalSearchParams();
   // useSwipeableTabs provides goToMainTab internally via useTabNavigator
@@ -1159,10 +1249,10 @@ export default function MyCricketScreen() {
     }
     if (
       !currentPlayers.trim() ||
-      parseInt(currentPlayers) < 11 ||
+      parseInt(currentPlayers) < 1 ||
       parseInt(currentPlayers) > 20
     ) {
-      alert("Please enter number of players (11-20)");
+      alert("Please select number of players (1-20)");
       return;
     }
 
@@ -1503,6 +1593,12 @@ export default function MyCricketScreen() {
             </View>
 
             <View style={styles.headerRight}>
+              <TouchableOpacity
+                style={styles.iconButton}
+                onPress={onChangeSport}
+              >
+                <Ionicons name="swap-horizontal" size={22} color="#FFF" />
+              </TouchableOpacity>
               <TouchableOpacity
                 style={styles.iconButton}
                 onPress={() => setShowSearchModal(true)}
@@ -5496,32 +5592,10 @@ export default function MyCricketScreen() {
                       <Text style={ctStyles.fieldLabel}>
                         City / Town <Text style={ctStyles.req}>*</Text>
                       </Text>
-                      <View
-                        style={[
-                          ctStyles.fieldInput,
-                          currentCity.trim() && ctStyles.fieldInputDone,
-                        ]}
-                      >
-                        <Ionicons
-                          name="location-outline"
-                          size={18}
-                          color={currentCity.trim() ? "#B71C1C" : "#9E9E9E"}
-                        />
-                        <TextInput
-                          style={ctStyles.fieldText}
-                          placeholder="e.g. Mumbai"
-                          placeholderTextColor="#9E9E9E"
-                          value={currentCity}
-                          onChangeText={setCurrentCity}
-                        />
-                        {currentCity.trim() && (
-                          <Ionicons
-                            name="checkmark-circle"
-                            size={18}
-                            color="#22C55E"
-                          />
-                        )}
-                      </View>
+                      <CitySearchDropdown
+                        value={currentCity}
+                        onSelect={setCurrentCity}
+                      />
                     </View>
 
                     {/* Mobile */}
@@ -5675,116 +5749,12 @@ export default function MyCricketScreen() {
                         Number of Players <Text style={ctStyles.req}>*</Text>
                       </Text>
                       <Text style={ctStyles.fieldHint}>
-                        Min 11 (Playing XI) · Max 20 (with substitutes)
+                        Min 1 · Max 20 players
                       </Text>
-                      <View
-                        style={[
-                          ctStyles.fieldInput,
-                          currentPlayers &&
-                            parseInt(currentPlayers) >= 11 &&
-                            ctStyles.fieldInputDone,
-                        ]}
-                      >
-                        <Ionicons
-                          name="people-outline"
-                          size={18}
-                          color={
-                            currentPlayers && parseInt(currentPlayers) >= 11
-                              ? "#B71C1C"
-                              : "#9E9E9E"
-                          }
-                        />
-                        <TextInput
-                          style={ctStyles.fieldText}
-                          placeholder="11–20 players"
-                          placeholderTextColor="#9E9E9E"
-                          keyboardType="numeric"
-                          maxLength={2}
-                          value={currentPlayers}
-                          onChangeText={setCurrentPlayers}
-                        />
-                        {currentPlayers ? (
-                          parseInt(currentPlayers) >= 11 &&
-                          parseInt(currentPlayers) <= 20 ? (
-                            <Ionicons
-                              name="checkmark-circle"
-                              size={18}
-                              color="#22C55E"
-                            />
-                          ) : (
-                            <Ionicons
-                              name="alert-circle"
-                              size={18}
-                              color="#EF4444"
-                            />
-                          )
-                        ) : null}
-                      </View>
-
-                      {/* Quick select chips */}
-                      <View style={ctStyles.chipRow}>
-                        {[11, 14, 16, 20].map((n) => (
-                          <TouchableOpacity
-                            key={n}
-                            style={[
-                              ctStyles.chip,
-                              currentPlayers === String(n) &&
-                                ctStyles.chipActive,
-                            ]}
-                            onPress={() => setCurrentPlayers(String(n))}
-                          >
-                            <Text
-                              style={[
-                                ctStyles.chipTxt,
-                                currentPlayers === String(n) &&
-                                  ctStyles.chipTxtActive,
-                              ]}
-                            >
-                              {n}
-                            </Text>
-                          </TouchableOpacity>
-                        ))}
-                      </View>
-
-                      {/* Rule cards */}
-                      {currentPlayers && parseInt(currentPlayers) >= 11 && (
-                        <View style={ctStyles.ruleBox}>
-                          <View style={ctStyles.ruleRow}>
-                            <Ionicons
-                              name="baseball"
-                              size={14}
-                              color="#B71C1C"
-                            />
-                            <Text style={ctStyles.ruleTxt}>
-                              Playing XI: 11 players
-                            </Text>
-                            <View style={ctStyles.ruleCheck}>
-                              <Ionicons
-                                name="checkmark"
-                                size={12}
-                                color="#FFF"
-                              />
-                            </View>
-                          </View>
-                          <View style={ctStyles.ruleRow}>
-                            <Ionicons
-                              name="swap-horizontal"
-                              size={14}
-                              color="#616161"
-                            />
-                            <Text style={ctStyles.ruleTxt}>
-                              Substitutes:{" "}
-                              {Math.max(0, parseInt(currentPlayers) - 11)}
-                            </Text>
-                          </View>
-                          <View style={ctStyles.ruleRow}>
-                            <Ionicons name="star" size={14} color="#F59E0B" />
-                            <Text style={ctStyles.ruleTxt}>
-                              Roles needed: Batsmen, Bowlers, WK, All-rounders
-                            </Text>
-                          </View>
-                        </View>
-                      )}
+                      <SquadSizePicker
+                        value={currentPlayers}
+                        onChange={setCurrentPlayers}
+                      />
                     </View>
                   </View>
 
