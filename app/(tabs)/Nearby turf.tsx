@@ -246,20 +246,20 @@ const styles = StyleSheet.create({
   content: { flex: 1 },
 
   // Search
-  searchSection: { paddingHorizontal: 16, paddingTop: 14, paddingBottom: 4 },
+  searchSection: { paddingHorizontal: 14, paddingTop: 12, paddingBottom: 2 },
   searchBar: {
     flexDirection: "row",
     alignItems: "center",
     backgroundColor: "#FFF",
-    borderRadius: 14,
-    paddingHorizontal: 14,
-    paddingVertical: 12,
+    borderRadius: 20,
+    paddingHorizontal: 11,
+    paddingVertical: 4,
     gap: 10,
     shadowColor: "#8B0000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.06,
     shadowRadius: 8,
-    elevation: 3,
+    elevation: 7,
   },
   searchInput: { flex: 1, fontSize: 14, color: "#212121", fontWeight: "500" },
 
