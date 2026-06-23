@@ -5975,7 +5975,7 @@ export default function MyCricketScreen() {
                     </LinearGradient>
                   </TouchableOpacity>
 
-                  <View style={{ height: 80 }} />
+                  <View style={{ height: 120 }} />
                 </View>
               </ScrollView>
             ) : currentView === "teamSelection" ? (
@@ -5983,7 +5983,7 @@ export default function MyCricketScreen() {
               <ScrollView
                 style={{ flex: 1 }}
                 showsVerticalScrollIndicator={false}
-                contentContainerStyle={{ paddingBottom: 100 }}
+                contentContainerStyle={{ paddingBottom: 250 }}
               >
                 <View style={{ paddingHorizontal: 16, paddingTop: 20 }}>
                   {/* ── Team A Card ── */}
@@ -6075,23 +6075,16 @@ export default function MyCricketScreen() {
                         <Text style={styles.tsActionBtnOutlineTxt}>Select</Text>
                       </TouchableOpacity>
                       <TouchableOpacity
-                        style={styles.tsActionBtnFill}
+                        style={styles.tsActionBtnOutline}
                         onPress={() => handleCreateTeam("A")}
                         activeOpacity={0.8}
                       >
-                        <LinearGradient
-                          colors={["#00A66A", "#064E3B"]}
-                          start={{ x: 0, y: 0 }}
-                          end={{ x: 1, y: 0 }}
-                          style={styles.tsActionBtnFillGrad}
-                        >
-                          <Ionicons
-                            name="add-circle-outline"
-                            size={16}
-                            color="#FFF"
-                          />
-                          <Text style={styles.tsActionBtnFillTxt}>Create</Text>
-                        </LinearGradient>
+                        <Ionicons
+                          name="add-circle-outline"
+                          size={16}
+                          color="#00A66A"
+                        />
+                        <Text style={styles.tsActionBtnOutlineTxt}>Create</Text>
                       </TouchableOpacity>
                     </View>
                   </View>
@@ -6193,23 +6186,16 @@ export default function MyCricketScreen() {
                         <Text style={styles.tsActionBtnOutlineTxt}>Select</Text>
                       </TouchableOpacity>
                       <TouchableOpacity
-                        style={styles.tsActionBtnFill}
+                        style={styles.tsActionBtnOutline}
                         onPress={() => handleCreateTeam("B")}
                         activeOpacity={0.8}
                       >
-                        <LinearGradient
-                          colors={["#00A66A", "#064E3B"]}
-                          start={{ x: 0, y: 0 }}
-                          end={{ x: 1, y: 0 }}
-                          style={styles.tsActionBtnFillGrad}
-                        >
-                          <Ionicons
-                            name="add-circle-outline"
-                            size={16}
-                            color="#FFF"
-                          />
-                          <Text style={styles.tsActionBtnFillTxt}>Create</Text>
-                        </LinearGradient>
+                        <Ionicons
+                          name="add-circle-outline"
+                          size={16}
+                          color="#00A66A"
+                        />
+                        <Text style={styles.tsActionBtnOutlineTxt}>Create</Text>
                       </TouchableOpacity>
                     </View>
                   </View>
@@ -6269,6 +6255,8 @@ export default function MyCricketScreen() {
                       </Text>
                     </View>
                   )}
+
+                  <View style={{ height: 100 }} />
                 </View>
               </ScrollView>
             ) : (
