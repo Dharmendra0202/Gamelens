@@ -51,7 +51,7 @@ export default function RootLayout() {
             />
             <Stack.Screen name="setup/match" options={{ headerShown: false }} />
             <Stack.Screen
-              name="profile/setup"
+              name="user-dashboard"
               options={{ headerShown: false }}
             />
             <Stack.Screen
@@ -65,36 +65,6 @@ export default function RootLayout() {
             <Stack.Screen
               name="admin"
               options={{ headerShown: false }}
-            />
-            <Stack.Screen
-              name="my-bookings"
-              options={{ headerShown: false }}
-            />
-            <Stack.Screen
-              name="saved-addresses"
-              options={{ headerShown: false }}
-            />
-            <Stack.Screen
-              name="payment-methods"
-              options={{ headerShown: false }}
-            />
-            <Stack.Screen
-              name="help-support"
-              options={{ headerShown: false }}
-            />
-            <Stack.Screen
-              name="special-offers"
-              options={{ headerShown: false }}
-            />
-            <Stack.Screen
-              name="modal"
-              options={{
-                presentation: "transparentModal",
-                animation: "fade",
-                animationDuration: 250,
-                title: "Modal",
-                contentStyle: { backgroundColor: "transparent" },
-              }}
             />
           </Stack>
           <StatusBar style="auto" />
