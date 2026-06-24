@@ -56,7 +56,7 @@ const TABS = [
   },
 ];
 
-// Animated tab icon
+// Tab icon — instant switch, no animation delay
 function AnimatedTabIcon({
   name,
   color,
@@ -66,30 +66,10 @@ function AnimatedTabIcon({
   color: string;
   focused: boolean;
 }) {
-  const scale = useRef(new Animated.Value(focused ? 1.12 : 0.92)).current;
-  const opacity = useRef(new Animated.Value(focused ? 1 : 0.55)).current;
-
-  useEffect(() => {
-    Animated.parallel([
-      Animated.spring(scale, {
-        toValue: focused ? 1.12 : 0.92,
-        tension: 200,
-        friction: 12,
-        useNativeDriver: true,
-      }),
-      Animated.timing(opacity, {
-        toValue: focused ? 1 : 0.55,
-        duration: 200,
-        easing: Easing.out(Easing.quad),
-        useNativeDriver: true,
-      }),
-    ]).start();
-  }, [focused]);
-
   return (
-    <Animated.View style={{ transform: [{ scale }], opacity }}>
+    <View style={{ transform: [{ scale: focused ? 1.12 : 0.92 }], opacity: focused ? 1 : 0.55 }}>
       <Ionicons name={name} size={21} color={color} />
-    </Animated.View>
+    </View>
   );
 }
 
@@ -129,12 +109,19 @@ function TabIndicator({ focused }: { focused: boolean }) {
 }
 
 // Tab screens rendered in pager — order must match TABS
+// Memoized to prevent re-renders on tab switch (activeIndex change)
+const MemoizedHome = React.memo(HomeScreen);
+const MemoizedLooking = React.memo(LookingScreen);
+const MemoizedMyCricket = React.memo(MyCricketScreen);
+const MemoizedCommunity = React.memo(CommunityScreen);
+const MemoizedStore = React.memo(StoreScreen);
+
 const TAB_SCREENS = [
-  HomeScreen,
-  LookingScreen,
-  MyCricketScreen,
-  CommunityScreen,
-  StoreScreen,
+  MemoizedHome,
+  MemoizedLooking,
+  MemoizedMyCricket,
+  MemoizedCommunity,
+  MemoizedStore,
 ];
 
 export default function TabLayout() {
@@ -143,20 +130,16 @@ export default function TabLayout() {
   const scrollX = useRef(new Animated.Value(0)).current;
   const isProgrammaticScroll = useRef(false);
 
-  // Jump to tab — instant scroll, zero navigation lifecycle overhead
+  // Jump to tab — instant scroll, no animation blink
   const goToTab = useCallback(
     (index: number) => {
       isProgrammaticScroll.current = true;
-      scrollRef.current?.scrollTo({ x: index * SCREEN_WIDTH, animated: true });
+      scrollRef.current?.scrollTo({ x: index * SCREEN_WIDTH, animated: false });
       setActiveIndex(index);
-      // Programmatic animation updates scrollX directly to match target
-      Animated.spring(scrollX, {
-        toValue: index * SCREEN_WIDTH,
-        useNativeDriver: false,
-      }).start();
+      scrollX.setValue(index * SCREEN_WIDTH);
       setTimeout(() => {
         isProgrammaticScroll.current = false;
-      }, 350);
+      }, 50);
     },
     [scrollX],
   );
@@ -246,9 +229,35 @@ export default function TabLayout() {
           />
 
           {TABS.map((tab, index) => {
-            const focused = activeIndex === index;
-            const color = focused ? "#B71C1C" : "#9E9E9E";
-            const iconName = focused ? tab.iconFocused : tab.icon;
+            // Drive icon opacity from scrollX — same as the sliding indicator
+            // so they update in the same frame with zero delay
+            const focusedOpacity = scrollX.interpolate({
+              inputRange: [
+                (index - 1) * SCREEN_WIDTH,
+                index * SCREEN_WIDTH,
+                (index + 1) * SCREEN_WIDTH,
+              ],
+              outputRange: [0, 1, 0],
+              extrapolate: "clamp",
+            });
+            const unfocusedOpacity = scrollX.interpolate({
+              inputRange: [
+                (index - 1) * SCREEN_WIDTH,
+                index * SCREEN_WIDTH,
+                (index + 1) * SCREEN_WIDTH,
+              ],
+              outputRange: [1, 0, 1],
+              extrapolate: "clamp",
+            });
+            const labelColor = scrollX.interpolate({
+              inputRange: [
+                (index - 1) * SCREEN_WIDTH,
+                index * SCREEN_WIDTH,
+                (index + 1) * SCREEN_WIDTH,
+              ],
+              outputRange: ["#9E9E9E", "#B71C1C", "#9E9E9E"],
+              extrapolate: "clamp",
+            });
 
             return (
               <TouchableOpacity
@@ -258,13 +267,16 @@ export default function TabLayout() {
                 activeOpacity={0.7}
               >
                 <View style={styles.tabItemInner}>
-                  <AnimatedTabIcon
-                    name={iconName}
-                    color={color}
-                    focused={focused}
-                  />
+                  <View style={{ position: "relative", width: 22, height: 22 }}>
+                    <Animated.View style={{ position: "absolute", opacity: unfocusedOpacity }}>
+                      <Ionicons name={tab.icon} size={22} color="#9E9E9E" />
+                    </Animated.View>
+                    <Animated.View style={{ position: "absolute", opacity: focusedOpacity }}>
+                      <Ionicons name={tab.iconFocused} size={22} color="#B71C1C" />
+                    </Animated.View>
+                  </View>
                 </View>
-                <Text style={[styles.tabLabel, { color }]}>{tab.label}</Text>
+                <Animated.Text style={[styles.tabLabel, { color: labelColor }]}>{tab.label}</Animated.Text>
               </TouchableOpacity>
             );
           })}

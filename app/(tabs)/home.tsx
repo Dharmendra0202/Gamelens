@@ -3835,7 +3835,7 @@ const styles = StyleSheet.create({
   drawerProfile: {
     backgroundColor: "#4A4A4A",
     padding: 16,
-    paddingTop: 50,
+    paddingTop: HEADER_PADDING_TOP,
     flexDirection: "row",
     alignItems: "center",
   },
@@ -4117,7 +4117,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     paddingHorizontal: 16,
-    paddingTop: 50,
+    paddingTop: HEADER_PADDING_TOP,
     paddingBottom: 16,
   },
   fullModalBack: {

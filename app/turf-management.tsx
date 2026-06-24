@@ -736,7 +736,7 @@ const styles = StyleSheet.create({
   },
   sidebarHeader: { overflow: "hidden" },
   sidebarHeaderGrad: {
-    paddingTop: 50,
+    paddingTop: HEADER_PADDING_TOP,
     paddingBottom: 24,
     paddingHorizontal: 20,
     flexDirection: "row",
