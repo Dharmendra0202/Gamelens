@@ -1,3 +1,4 @@
+import { HEADER_PADDING_BOTTOM, HEADER_PADDING_TOP } from "@/constants/app-theme";
 import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
@@ -490,8 +491,8 @@ export default function TurfManagementScreen() {
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: "#F0FDF4" },
   header: {
-    paddingTop: 48,
-    paddingBottom: 16,
+    paddingTop: HEADER_PADDING_TOP + 8,
+    paddingBottom: HEADER_PADDING_BOTTOM + 6,
     paddingHorizontal: 16,
     flexDirection: "row",
     alignItems: "center",

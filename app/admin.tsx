@@ -1,3 +1,4 @@
+import { HEADER_PADDING_BOTTOM, HEADER_PADDING_TOP } from "@/constants/app-theme";
 import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
@@ -93,8 +94,8 @@ const styles = StyleSheet.create({
     backgroundColor: "#F5F3FF",
   },
   header: {
-    paddingTop: 50,
-    paddingBottom: 20,
+    paddingTop: HEADER_PADDING_TOP + 10,
+    paddingBottom: HEADER_PADDING_BOTTOM + 10,
     paddingHorizontal: 16,
     flexDirection: "row",
     alignItems: "center",

@@ -35,3 +35,7 @@ export const AppSpacing = Spacing;
 export const AppRadius = BorderRadius;
 
 export const TAB_BAR_HEIGHT = 60;
+
+/** Centralized header height control */
+export const HEADER_PADDING_TOP = 33;
+export const HEADER_PADDING_BOTTOM = 5;
