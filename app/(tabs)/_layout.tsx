@@ -3,6 +3,7 @@ import { Ionicons } from "@expo/vector-icons";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
     Animated,
+    BackHandler,
     Dimensions,
     Easing,
     Platform,
@@ -129,6 +130,18 @@ export default function TabLayout() {
   const scrollRef = useRef<ScrollView>(null);
   const scrollX = useRef(new Animated.Value(0)).current;
   const isProgrammaticScroll = useRef(false);
+
+  // Android hardware back button — go to Home tab first, then exit
+  useEffect(() => {
+    const backHandler = BackHandler.addEventListener("hardwareBackPress", () => {
+      if (activeIndex !== 0) {
+        goToTab(0);
+        return true; // prevent exit
+      }
+      return false; // let the app exit
+    });
+    return () => backHandler.remove();
+  }, [activeIndex]);
 
   // Jump to tab — instant scroll, no animation blink
   const goToTab = useCallback(
