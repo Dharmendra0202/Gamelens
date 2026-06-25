@@ -13,6 +13,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { ComingSoonScreen } from "@/components/ComingSoonScreen";
 import { SportSelectionScreen } from "@/components/SportSelectionScreen";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import DateTimePicker from "@react-native-community/datetimepicker";
 import * as ImagePicker from "expo-image-picker";
 import { LinearGradient } from "expo-linear-gradient";
 import * as Location from "expo-location";
@@ -185,20 +186,31 @@ function MyCricketContent({ onChangeSport }: { onChangeSport: () => void }) {
   const [currentCaptain, setCurrentCaptain] = useState("");
   const [currentPlayers, setCurrentPlayers] = useState("");
 
+  // TODO(dev-only): Temporary manual player list for testing team creation flow.
+  // Remove this entire block when backend player invites are implemented.
+  const [manualPlayers, setManualPlayers] = useState<string[]>([]);
+  const [manualPlayerName, setManualPlayerName] = useState("");
+  const [showManualPlayerModal, setShowManualPlayerModal] = useState(false);
+
   // Match Setup data
   const [matchType, setMatchType] = useState<string>("");
   const [numberOfOvers, setNumberOfOvers] = useState("");
   const [selectedCity, setSelectedCity] = useState("");
   const [selectedGround, setSelectedGround] = useState("");
-  const [pitchType, setPitchType] = useState<string>("");
   const [ballType, setBallType] = useState<string>("");
   const [matchDate, setMatchDate] = useState("");
   const [matchTime, setMatchTime] = useState("");
+  const [matchDuration, setMatchDuration] = useState("");
+  const [matchDateObj, setMatchDateObj] = useState(new Date());
+  const [matchTimeObj, setMatchTimeObj] = useState(new Date());
+  const [durationObj, setDurationObj] = useState(new Date(0, 0, 0, 2, 0));
+  const [showMatchDatePicker, setShowMatchDatePicker] = useState(false);
+  const [showMatchTimePicker, setShowMatchTimePicker] = useState(false);
+  const [showDurationPicker, setShowDurationPicker] = useState(false);
   const [umpire1, setUmpire1] = useState("");
-  const [umpire2, setUmpire2] = useState("");
-  const [scorer, setScorer] = useState("");
-  const [liveStreamer, setLiveStreamer] = useState("");
-  const [others, setOthers] = useState("");
+  const [locationMode, setLocationMode] = useState<"gps" | "manual" | null>(
+    null,
+  );
   const [locationEnabled, setLocationEnabled] = useState(false);
   const [nearbyGrounds, setNearbyGrounds] = useState<
     Array<{
@@ -358,13 +370,20 @@ function MyCricketContent({ onChangeSport }: { onChangeSport: () => void }) {
 
   // Squad rosters for the active match.
   // TODO(backend): load from match setup params / MatchService
+  // Populated from manually added players (dev testing) until backend is connected
   const battingTeamPlayers: {
     id: number;
     name: string;
     role: string;
     isOut: boolean;
     image: string;
-  }[] = [];
+  }[] = manualPlayers.map((name, i) => ({
+    id: i + 1,
+    name,
+    role: "Player",
+    isOut: false,
+    image: "",
+  }));
 
   const bowlingTeamPlayers: {
     id: number;
@@ -372,7 +391,13 @@ function MyCricketContent({ onChangeSport }: { onChangeSport: () => void }) {
     role: string;
     isOut: boolean;
     image: string;
-  }[] = [];
+  }[] = manualPlayers.map((name, i) => ({
+    id: i + 100,
+    name,
+    role: "Player",
+    isOut: false,
+    image: "",
+  }));
 
   // Reusable render functions
   const renderTextInput = (
@@ -478,6 +503,9 @@ function MyCricketContent({ onChangeSport }: { onChangeSport: () => void }) {
     </View>
   );
 
+  // Pitch type selector (kept for backward compat, no longer displayed in match setup)
+  const pitchType = "";
+  const setPitchType = (_: string) => {};
   const renderPitchTypeSelector = () => (
     <View style={styles.realPitchGrid}>
       {pitchOptions.map((pitch) => {
@@ -1371,7 +1399,6 @@ function MyCricketContent({ onChangeSport }: { onChangeSport: () => void }) {
         const nearestGround = grounds[0];
         setSelectedGround(nearestGround.name);
         setSelectedCity(nearestGround.city);
-        setPitchType(nearestGround.pitchType);
 
         Alert.alert(
           "Location Enabled!",
@@ -4190,7 +4217,6 @@ function MyCricketContent({ onChangeSport }: { onChangeSport: () => void }) {
                                 onPress={() => {
                                   setSelectedGround(ground.name);
                                   setSelectedCity(ground.city);
-                                  setPitchType(ground.pitchType);
                                 }}
                               >
                                 <LinearGradient
@@ -4301,23 +4327,13 @@ function MyCricketContent({ onChangeSport }: { onChangeSport: () => void }) {
 
                   {locationEnabled && (
                     <>
-                      <View style={styles.inputContainer}>
-                        <Ionicons
-                          name="business-outline"
-                          size={18}
-                          color="#B71C1C"
-                        />
-                        <TextInput
-                          style={styles.input}
-                          placeholder="City/Town"
-                          placeholderTextColor="#999"
-                          value={selectedCity}
-                          onChangeText={setSelectedCity}
-                          editable={false}
-                        />
-                      </View>
+                      <CitySearchDropdown
+                        value={selectedCity}
+                        onSelect={setSelectedCity}
+                        placeholder="Select City/Town"
+                      />
 
-                      <View style={styles.inputContainer}>
+                      <View style={[styles.inputContainer, { marginTop: 10 }]}>
                         <Ionicons
                           name="location-outline"
                           size={18}
@@ -4329,116 +4345,163 @@ function MyCricketContent({ onChangeSport }: { onChangeSport: () => void }) {
                           placeholderTextColor="#999"
                           value={selectedGround}
                           onChangeText={setSelectedGround}
-                          editable={false}
                         />
                       </View>
                     </>
                   )}
                 </View>
 
-                {/* Pitch Type */}
-                <View style={styles.setupSection}>
-                  <Text style={styles.setupSectionTitle}>Pitch Type *</Text>
-                  {renderPitchTypeSelector()}
-                </View>
-
-                {/* Ball Type */}
-                <View style={styles.setupSection}>
-                  <Text style={styles.setupSectionTitle}>Ball Type *</Text>
-                  {renderBallTypeSelector(ballType, setBallType)}
-                </View>
-
                 {/* Date & Time */}
                 <View style={styles.setupSection}>
                   <Text style={styles.setupSectionTitle}>Date & Time *</Text>
                   <View style={styles.dateTimeRow}>
-                    <View style={[styles.inputContainer, { flex: 1 }]}>
+                    <TouchableOpacity
+                      style={[styles.inputContainer, { flex: 1 }]}
+                      onPress={() => setShowMatchDatePicker(true)}
+                      activeOpacity={0.8}
+                    >
                       <Ionicons
                         name="calendar-outline"
                         size={18}
                         color="#B71C1C"
                       />
-                      <TextInput
-                        style={styles.input}
-                        placeholder="DD/MM/YYYY"
-                        placeholderTextColor="#999"
-                        value={matchDate}
-                        onChangeText={setMatchDate}
-                      />
-                    </View>
-                    <View style={[styles.inputContainer, { flex: 1 }]}>
+                      <Text
+                        style={[styles.input, !matchDate && { color: "#999" }]}
+                      >
+                        {matchDate || "DD/MM/YYYY"}
+                      </Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      style={[styles.inputContainer, { flex: 1 }]}
+                      onPress={() => setShowMatchTimePicker(true)}
+                      activeOpacity={0.8}
+                    >
                       <Ionicons name="time-outline" size={18} color="#B71C1C" />
-                      <TextInput
-                        style={styles.input}
-                        placeholder="HH:MM"
-                        placeholderTextColor="#999"
-                        value={matchTime}
-                        onChangeText={setMatchTime}
-                      />
-                    </View>
+                      <Text
+                        style={[styles.input, !matchTime && { color: "#999" }]}
+                      >
+                        {matchTime || "HH:MM"}
+                      </Text>
+                    </TouchableOpacity>
                   </View>
+                  {/* Match Duration */}
+                  <Text
+                    style={[
+                      styles.setupSectionTitle,
+                      { marginTop: 12, fontSize: 14 },
+                    ]}
+                  >
+                    Match Duration *
+                  </Text>
+                  <TouchableOpacity
+                    style={styles.inputContainer}
+                    onPress={() => setShowDurationPicker(true)}
+                    activeOpacity={0.8}
+                  >
+                    <Ionicons
+                      name="hourglass-outline"
+                      size={18}
+                      color="#B71C1C"
+                    />
+                    <Text
+                      style={[
+                        styles.input,
+                        !matchDuration && { color: "#999" },
+                      ]}
+                    >
+                      {matchDuration || "HH:MM"}
+                    </Text>
+                  </TouchableOpacity>
                 </View>
+
+                {showMatchDatePicker && (
+                  <DateTimePicker
+                    value={matchDateObj}
+                    mode="date"
+                    display="default"
+                    onChange={(_, selected) => {
+                      setShowMatchDatePicker(false);
+                      if (selected) {
+                        setMatchDateObj(selected);
+                        const d = selected
+                          .getDate()
+                          .toString()
+                          .padStart(2, "0");
+                        const m = (selected.getMonth() + 1)
+                          .toString()
+                          .padStart(2, "0");
+                        const y = selected.getFullYear();
+                        setMatchDate(`${d}/${m}/${y}`);
+                      }
+                    }}
+                  />
+                )}
+
+                {showMatchTimePicker && (
+                  <DateTimePicker
+                    value={matchTimeObj}
+                    mode="time"
+                    is24Hour
+                    display="spinner"
+                    onChange={(_, selected) => {
+                      setShowMatchTimePicker(false);
+                      if (selected) {
+                        setMatchTimeObj(selected);
+                        const h = selected
+                          .getHours()
+                          .toString()
+                          .padStart(2, "0");
+                        const min = selected
+                          .getMinutes()
+                          .toString()
+                          .padStart(2, "0");
+                        setMatchTime(`${h}:${min}`);
+                      }
+                    }}
+                  />
+                )}
+
+                {showDurationPicker && (
+                  <DateTimePicker
+                    value={durationObj}
+                    mode="time"
+                    is24Hour
+                    display="spinner"
+                    onChange={(_, selected) => {
+                      setShowDurationPicker(false);
+                      if (selected) {
+                        setDurationObj(selected);
+                        const h = selected
+                          .getHours()
+                          .toString()
+                          .padStart(2, "0");
+                        const min = selected
+                          .getMinutes()
+                          .toString()
+                          .padStart(2, "0");
+                        setMatchDuration(`${h}:${min}`);
+                      }
+                    }}
+                  />
+                )}
 
                 {/* Match Officials */}
                 <View style={styles.setupSection}>
                   <Text style={styles.setupSectionTitle}>Match Officials</Text>
+                  <Text
+                    style={{ fontSize: 12, color: "#9E9E9E", marginBottom: 8 }}
+                  >
+                    Optional
+                  </Text>
 
                   <View style={styles.inputContainer}>
                     <Ionicons name="person-outline" size={18} color="#B71C1C" />
                     <TextInput
                       style={styles.input}
-                      placeholder="Umpire 1"
+                      placeholder="Umpire Name"
                       placeholderTextColor="#999"
                       value={umpire1}
                       onChangeText={setUmpire1}
-                    />
-                  </View>
-
-                  <View style={styles.inputContainer}>
-                    <Ionicons name="person-outline" size={18} color="#B71C1C" />
-                    <TextInput
-                      style={styles.input}
-                      placeholder="Umpire 2"
-                      placeholderTextColor="#999"
-                      value={umpire2}
-                      onChangeText={setUmpire2}
-                    />
-                  </View>
-
-                  <View style={styles.inputContainer}>
-                    <Ionicons name="create-outline" size={18} color="#B71C1C" />
-                    <TextInput
-                      style={styles.input}
-                      placeholder="Scorer"
-                      placeholderTextColor="#999"
-                      value={scorer}
-                      onChangeText={setScorer}
-                    />
-                  </View>
-
-                  <View style={styles.inputContainer}>
-                    <Ionicons
-                      name="videocam-outline"
-                      size={18}
-                      color="#B71C1C"
-                    />
-                    <TextInput
-                      style={styles.input}
-                      placeholder="Live Streamer"
-                      placeholderTextColor="#999"
-                      value={liveStreamer}
-                      onChangeText={setLiveStreamer}
-                    />
-                  </View>
-
-                  <View style={styles.inputContainer}>
-                    <Ionicons name="people-outline" size={18} color="#B71C1C" />
-                    <TextInput
-                      style={styles.input}
-                      placeholder="Others"
-                      placeholderTextColor="#999"
-                      value={others}
-                      onChangeText={setOthers}
                     />
                   </View>
                 </View>
@@ -4495,10 +4558,10 @@ function MyCricketContent({ onChangeSport }: { onChangeSport: () => void }) {
                       overs: numberOfOvers,
                       city: selectedCity,
                       ground: selectedGround,
-                      pitchType,
                       ballType,
                       date: matchDate,
                       time: matchTime,
+                      duration: matchDuration,
                     });
 
                     // Navigate to toss page
@@ -5917,8 +5980,280 @@ function MyCricketContent({ onChangeSport }: { onChangeSport: () => void }) {
                           color="#9E9E9E"
                         />
                       </TouchableOpacity>
+
+                      {/* TODO(dev-only): Manual Add Players — temporary testing feature */}
+                      <TouchableOpacity
+                        style={ctStyles.addOption}
+                        activeOpacity={0.8}
+                        onPress={() => setShowManualPlayerModal(true)}
+                      >
+                        <View
+                          style={[
+                            ctStyles.addOptionIcon,
+                            { backgroundColor: "#FBE9E7" },
+                          ]}
+                        >
+                          <Ionicons name="pencil" size={18} color="#B71C1C" />
+                        </View>
+                        <View style={ctStyles.addOptionInfo}>
+                          <Text style={ctStyles.addOptionTitle}>
+                            Manual Add
+                          </Text>
+                          <Text style={ctStyles.addOptionSub}>
+                            Type player names (testing)
+                          </Text>
+                        </View>
+                        {manualPlayers.length > 0 && (
+                          <View
+                            style={{
+                              backgroundColor: "#B71C1C",
+                              borderRadius: 10,
+                              paddingHorizontal: 7,
+                              paddingVertical: 2,
+                            }}
+                          >
+                            <Text
+                              style={{
+                                color: "#FFF",
+                                fontSize: 11,
+                                fontWeight: "800",
+                              }}
+                            >
+                              {manualPlayers.length}
+                            </Text>
+                          </View>
+                        )}
+                        <Ionicons
+                          name="chevron-forward"
+                          size={16}
+                          color="#9E9E9E"
+                        />
+                      </TouchableOpacity>
                     </View>
                   </View>
+
+                  {/* TODO(dev-only): Manual Add Player Modal */}
+                  <Modal
+                    visible={showManualPlayerModal}
+                    transparent
+                    animationType="slide"
+                    onRequestClose={() => setShowManualPlayerModal(false)}
+                  >
+                    <View
+                      style={{
+                        flex: 1,
+                        backgroundColor: "rgba(0,0,0,0.5)",
+                        justifyContent: "flex-end",
+                      }}
+                    >
+                      <View
+                        style={{
+                          backgroundColor: "#FFF",
+                          borderTopLeftRadius: 24,
+                          borderTopRightRadius: 24,
+                          padding: 20,
+                          maxHeight: "70%",
+                        }}
+                      >
+                        <View
+                          style={{
+                            flexDirection: "row",
+                            justifyContent: "space-between",
+                            alignItems: "center",
+                            marginBottom: 16,
+                          }}
+                        >
+                          <Text
+                            style={{
+                              fontSize: 18,
+                              fontWeight: "800",
+                              color: "#212121",
+                            }}
+                          >
+                            Add Players Manually
+                          </Text>
+                          <TouchableOpacity
+                            onPress={() => setShowManualPlayerModal(false)}
+                          >
+                            <Ionicons name="close" size={24} color="#616161" />
+                          </TouchableOpacity>
+                        </View>
+
+                        <Text
+                          style={{
+                            fontSize: 12,
+                            color: "#9E9E9E",
+                            marginBottom: 12,
+                          }}
+                        >
+                          ⚠️ DEV ONLY — Session-only, not saved to backend
+                        </Text>
+
+                        <View
+                          style={{
+                            flexDirection: "row",
+                            gap: 10,
+                            marginBottom: 16,
+                          }}
+                        >
+                          <TextInput
+                            style={{
+                              flex: 1,
+                              backgroundColor: "#FAFAFA",
+                              borderRadius: 12,
+                              borderWidth: 1,
+                              borderColor: "#E0E0E0",
+                              paddingHorizontal: 14,
+                              paddingVertical: 12,
+                              fontSize: 15,
+                              color: "#212121",
+                            }}
+                            placeholder="Player Name"
+                            placeholderTextColor="#9E9E9E"
+                            value={manualPlayerName}
+                            onChangeText={setManualPlayerName}
+                            onSubmitEditing={() => {
+                              if (manualPlayerName.trim()) {
+                                setManualPlayers((prev) => [
+                                  ...prev,
+                                  manualPlayerName.trim(),
+                                ]);
+                                setManualPlayerName("");
+                              }
+                            }}
+                            returnKeyType="done"
+                          />
+                          <TouchableOpacity
+                            style={{
+                              backgroundColor: "#B71C1C",
+                              borderRadius: 12,
+                              paddingHorizontal: 16,
+                              justifyContent: "center",
+                            }}
+                            onPress={() => {
+                              if (manualPlayerName.trim()) {
+                                setManualPlayers((prev) => [
+                                  ...prev,
+                                  manualPlayerName.trim(),
+                                ]);
+                                setManualPlayerName("");
+                              }
+                            }}
+                          >
+                            <Text
+                              style={{
+                                color: "#FFF",
+                                fontWeight: "800",
+                                fontSize: 14,
+                              }}
+                            >
+                              Add
+                            </Text>
+                          </TouchableOpacity>
+                        </View>
+
+                        {manualPlayers.length > 0 && (
+                          <Text
+                            style={{
+                              fontSize: 13,
+                              fontWeight: "700",
+                              color: "#616161",
+                              marginBottom: 8,
+                            }}
+                          >
+                            Players ({manualPlayers.length})
+                          </Text>
+                        )}
+
+                        <ScrollView
+                          style={{ maxHeight: 200 }}
+                          showsVerticalScrollIndicator={false}
+                        >
+                          {manualPlayers.map((name, idx) => (
+                            <View
+                              key={`${name}-${idx}`}
+                              style={{
+                                flexDirection: "row",
+                                alignItems: "center",
+                                backgroundColor: "#FAFAFA",
+                                borderRadius: 10,
+                                padding: 12,
+                                marginBottom: 8,
+                              }}
+                            >
+                              <View
+                                style={{
+                                  width: 28,
+                                  height: 28,
+                                  borderRadius: 14,
+                                  backgroundColor: "#FFCDD2",
+                                  alignItems: "center",
+                                  justifyContent: "center",
+                                  marginRight: 10,
+                                }}
+                              >
+                                <Text
+                                  style={{
+                                    fontSize: 12,
+                                    fontWeight: "800",
+                                    color: "#B71C1C",
+                                  }}
+                                >
+                                  {idx + 1}
+                                </Text>
+                              </View>
+                              <Text
+                                style={{
+                                  flex: 1,
+                                  fontSize: 15,
+                                  fontWeight: "600",
+                                  color: "#212121",
+                                }}
+                              >
+                                {name}
+                              </Text>
+                              <TouchableOpacity
+                                onPress={() =>
+                                  setManualPlayers((prev) =>
+                                    prev.filter((_, i) => i !== idx),
+                                  )
+                                }
+                              >
+                                <Ionicons
+                                  name="close-circle"
+                                  size={20}
+                                  color="#D32F2F"
+                                />
+                              </TouchableOpacity>
+                            </View>
+                          ))}
+                        </ScrollView>
+
+                        {manualPlayers.length > 0 && (
+                          <TouchableOpacity
+                            style={{
+                              backgroundColor: "#B71C1C",
+                              borderRadius: 14,
+                              paddingVertical: 14,
+                              alignItems: "center",
+                              marginTop: 12,
+                            }}
+                            onPress={() => setShowManualPlayerModal(false)}
+                          >
+                            <Text
+                              style={{
+                                color: "#FFF",
+                                fontSize: 16,
+                                fontWeight: "800",
+                              }}
+                            >
+                              Done ({manualPlayers.length} players)
+                            </Text>
+                          </TouchableOpacity>
+                        )}
+                      </View>
+                    </View>
+                  </Modal>
 
                   {/* ── Create Button ── */}
                   <TouchableOpacity
