@@ -105,7 +105,7 @@ export default function NearbyTurfScreen() {
           <TouchableOpacity style={styles.iconButton} onPress={requestLocation}>
             <Ionicons name="navigate-outline" size={22} color="#FFF" />
           </TouchableOpacity>
-          <TouchableOpacity style={styles.iconButton}>
+          <TouchableOpacity style={styles.iconButton} onPress={() => Alert.alert("Notifications", "No new notifications")}>
             <Ionicons name="notifications-outline" size={22} color="#FFF" />
           </TouchableOpacity>
         </View>

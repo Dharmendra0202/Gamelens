@@ -60,7 +60,7 @@ export default function AdminScreen() {
           <Text style={styles.headerTitle}>Admin Panel</Text>
           <Text style={styles.headerSubtitle}>Platform control center</Text>
         </View>
-        <TouchableOpacity style={styles.headerIcon}>
+        <TouchableOpacity style={styles.headerIcon} onPress={() => Alert.alert("Admin", "You are verified as admin")}>
           <Ionicons name="shield-checkmark" size={22} color="#F59E0B" />
         </TouchableOpacity>
       </LinearGradient>

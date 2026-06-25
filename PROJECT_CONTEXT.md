@@ -1,4 +1,4 @@
-# GameLens — Project Context
+# GameLens — Project
 
 > Single source of truth. Update this file whenever project structure, architecture, or tech stack changes.
 
@@ -425,3 +425,4 @@ npm run reset-project
 - Live scoring auto-saves to AsyncStorage; "Resume Match?" prompt on open (my-cricket.tsx)
 - `my-cricket.tsx` is 3000+ lines — candidate for splitting into sub-screens
 - No authentication logic yet — login/signup navigates directly to home (Supabase Auth pending)
+

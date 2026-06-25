@@ -3,10 +3,10 @@ import { useAuth } from "@/hooks/use-auth";
 import { LocalStorage } from "@/services/storage";
 import type { Match, Tournament } from "@/types";
 import { Ionicons } from "@expo/vector-icons";
-import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
 import React, { useCallback, useEffect, useState } from "react";
 import {
+  Alert,
   RefreshControl,
   ScrollView,
   StyleSheet,
@@ -52,20 +52,15 @@ export default function DashboardScreen() {
   return (
     <View style={styles.container}>
       {/* Header */}
-      <LinearGradient
-        colors={["#7C3AED", "#5B21B6"]}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 1 }}
-        style={styles.header}
-      >
+      <View style={styles.header}>
         <TouchableOpacity style={styles.backBtn} onPress={() => router.back()}>
-          <Ionicons name="arrow-back" size={22} color="#FFF" />
+          <Ionicons name="arrow-back" size={22} color="#1E293B" />
         </TouchableOpacity>
         <View style={styles.headerCenter}>
           <Text style={styles.headerTitle}>Your Dashboard</Text>
           <Text style={styles.headerSubtitle}>Your cricket overview</Text>
         </View>
-      </LinearGradient>
+      </View>
 
       <ScrollView
         style={styles.content}
@@ -98,7 +93,7 @@ export default function DashboardScreen() {
           <View style={styles.sectionHeader}>
             <Text style={styles.sectionTitle}>Recent Matches</Text>
             {matches.length > 0 && (
-              <TouchableOpacity>
+              <TouchableOpacity onPress={() => Alert.alert("Match History", "Full match history coming soon")}>
                 <Text style={styles.seeAll}>See All</Text>
               </TouchableOpacity>
             )}
@@ -154,7 +149,7 @@ export default function DashboardScreen() {
           <View style={styles.sectionHeader}>
             <Text style={styles.sectionTitle}>My Tournaments</Text>
             {tournaments.length > 0 && (
-              <TouchableOpacity>
+              <TouchableOpacity onPress={() => Alert.alert("Tournaments", "Full tournament list coming soon")}>
                 <Text style={styles.seeAll}>See All</Text>
               </TouchableOpacity>
             )}
@@ -277,11 +272,12 @@ const styles = StyleSheet.create({
     backgroundColor: "#F8FAFC",
   },
   header: {
-    paddingTop: HEADER_PADDING_TOP + 10,
-    paddingBottom: HEADER_PADDING_BOTTOM + 10,
+    paddingTop: HEADER_PADDING_TOP,
+    paddingBottom: HEADER_PADDING_BOTTOM,
     paddingHorizontal: 16,
     flexDirection: "row",
     alignItems: "center",
+    backgroundColor: "#FFFFFF",
   },
   backBtn: {
     padding: 8,
@@ -293,12 +289,12 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontSize: 20,
     fontWeight: "800",
-    color: "#FFF",
+    color: "#1E293B",
     letterSpacing: 0.5,
   },
   headerSubtitle: {
     fontSize: 12,
-    color: "rgba(255,255,255,0.7)",
+    color: "#64748B",
     marginTop: 2,
   },
   content: {

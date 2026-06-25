@@ -1632,10 +1632,10 @@ function MyCricketContent({ onChangeSport }: { onChangeSport: () => void }) {
               >
                 <Ionicons name="search" size={22} color="#FFF" />
               </TouchableOpacity>
-              <TouchableOpacity style={styles.iconButton}>
+              <TouchableOpacity style={styles.iconButton} onPress={() => Alert.alert("Chat", "Chat feature coming soon")}>
                 <Ionicons name="chatbubble-outline" size={22} color="#FFF" />
               </TouchableOpacity>
-              <TouchableOpacity style={styles.iconButton}>
+              <TouchableOpacity style={styles.iconButton} onPress={() => Alert.alert("Notifications", "No new notifications")}>
                 <Ionicons name="notifications-outline" size={22} color="#FFF" />
               </TouchableOpacity>
             </View>
@@ -2901,7 +2901,7 @@ function MyCricketContent({ onChangeSport }: { onChangeSport: () => void }) {
                           </View>
 
                           {/* Action Menu */}
-                          <TouchableOpacity style={styles.tournamentMatchMenu}>
+                          <TouchableOpacity style={styles.tournamentMatchMenu} onPress={() => Alert.alert("Match Options", "Edit, reschedule, or cancel this match")}>
                             <Ionicons
                               name="ellipsis-vertical"
                               size={20}
@@ -6859,7 +6859,7 @@ function MyCricketContent({ onChangeSport }: { onChangeSport: () => void }) {
                           </View>
 
                           <View style={styles.matchFooter}>
-                            <TouchableOpacity style={styles.footerButton}>
+                            <TouchableOpacity style={styles.footerButton} onPress={() => Alert.alert("Insights", "Match insights and statistics coming soon")}>
                               <LinearGradient
                                 colors={[
                                   "rgba(185, 28, 28, 0.1)",
@@ -6878,7 +6878,7 @@ function MyCricketContent({ onChangeSport }: { onChangeSport: () => void }) {
                               </LinearGradient>
                             </TouchableOpacity>
                             <View style={styles.footerDivider} />
-                            <TouchableOpacity style={styles.footerButton}>
+                            <TouchableOpacity style={styles.footerButton} onPress={() => Alert.alert("Squads", "View team squads and player details")}>
                               <LinearGradient
                                 colors={[
                                   "rgba(185, 28, 28, 0.1)",
@@ -7957,17 +7957,17 @@ function MyCricketContent({ onChangeSport }: { onChangeSport: () => void }) {
               {searchQuery.length === 0 ? (
                 <>
                   <Text style={styles.searchResultsTitle}>Recent Searches</Text>
-                  <TouchableOpacity style={styles.searchResultItem}>
+                  <TouchableOpacity style={styles.searchResultItem} onPress={() => setSearchQuery("Mumbai Premier League")}>
                     <Ionicons name="time-outline" size={20} color="#666" />
                     <Text style={styles.searchResultText}>
                       Mumbai Premier League
                     </Text>
                   </TouchableOpacity>
-                  <TouchableOpacity style={styles.searchResultItem}>
+                  <TouchableOpacity style={styles.searchResultItem} onPress={() => setSearchQuery("T20 Match")}>
                     <Ionicons name="time-outline" size={20} color="#666" />
                     <Text style={styles.searchResultText}>T20 Match</Text>
                   </TouchableOpacity>
-                  <TouchableOpacity style={styles.searchResultItem}>
+                  <TouchableOpacity style={styles.searchResultItem} onPress={() => setSearchQuery("Wankhede Stadium")}>
                     <Ionicons name="time-outline" size={20} color="#666" />
                     <Text style={styles.searchResultText}>
                       Wankhede Stadium
