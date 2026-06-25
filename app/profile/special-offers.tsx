@@ -1,3 +1,4 @@
+import { HEADER_PADDING_BOTTOM, HEADER_PADDING_TOP } from "@/constants/app-theme";
 import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
@@ -10,7 +11,7 @@ import {
     View,
 } from "react-native";
 
-export default function MyBookingsScreen() {
+export default function SpecialOffersScreen() {
   const router = useRouter();
 
   return (
@@ -22,7 +23,7 @@ export default function MyBookingsScreen() {
         <TouchableOpacity style={styles.backBtn} onPress={() => router.back()}>
           <Ionicons name="arrow-back" size={22} color="#FFF" />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>My Bookings</Text>
+        <Text style={styles.headerTitle}>Special Offers</Text>
         <View style={{ width: 38 }} />
       </LinearGradient>
 
@@ -30,11 +31,12 @@ export default function MyBookingsScreen() {
         {/* Empty State */}
         <View style={styles.emptyState}>
           <View style={styles.emptyIcon}>
-            <Ionicons name="calendar-outline" size={56} color="#CBD5E1" />
+            <Ionicons name="gift-outline" size={56} color="#CBD5E1" />
           </View>
-          <Text style={styles.emptyTitle}>No bookings yet</Text>
+          <Text style={styles.emptyTitle}>No offers available</Text>
           <Text style={styles.emptyDesc}>
-            When you book a turf or service, your bookings will appear here
+            Check back soon for exclusive deals on turf bookings and cricket
+            gear
           </Text>
         </View>
       </ScrollView>
@@ -48,8 +50,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    paddingTop: 48,
-    paddingBottom: 16,
+    paddingTop: HEADER_PADDING_TOP,
+    paddingBottom: HEADER_PADDING_BOTTOM,
     paddingHorizontal: 16,
   },
   backBtn: { padding: 8 },

@@ -1,6 +1,7 @@
 import { EmptyState } from "@/components/EmptyState";
 import { SectionHeader } from "@/components/ui/section-header";
 import { TabScreenWrapper } from "@/components/ui/tab-screen-wrapper";
+import { HEADER_PADDING_BOTTOM, HEADER_PADDING_TOP } from "@/constants/app-theme";
 import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import React, { useEffect, useRef, useState } from "react";
@@ -407,8 +408,8 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     paddingHorizontal: 14,
-    paddingTop: 40,
-    paddingBottom: 10,
+    paddingTop: HEADER_PADDING_TOP,
+    paddingBottom: HEADER_PADDING_BOTTOM,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 3 },
     shadowOpacity: 0.25,
