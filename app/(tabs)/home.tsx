@@ -1,7 +1,9 @@
 import { CricketPostCard } from "@/components/ui/cricket-post-card";
-import { SectionHeader } from "@/components/ui/section-header";
 import { TabScreenWrapper } from "@/components/ui/tab-screen-wrapper";
-import { HEADER_PADDING_BOTTOM, HEADER_PADDING_TOP } from "@/constants/app-theme";
+import {
+    HEADER_PADDING_BOTTOM,
+    HEADER_PADDING_TOP,
+} from "@/constants/app-theme";
 import { useTabNavigator } from "@/contexts/TabNavigatorContext";
 import { useAuth } from "@/hooks/use-auth";
 import { shareContent, shareToPlatform } from "@/utils/share";
@@ -398,12 +400,6 @@ export default function HomeScreen() {
           style={styles.header}
         >
           <View style={styles.headerLeft}>
-            <TouchableOpacity
-              style={styles.menuButton}
-              onPress={() => setShowMenuDrawer(true)}
-            >
-              <Ionicons name="menu" size={26} color="#FFF" />
-            </TouchableOpacity>
             <Text style={styles.headerTitle}>
               GAME<Text style={styles.headerTitleOrange}>LENS</Text>
             </Text>
@@ -5282,8 +5278,7 @@ const styles = StyleSheet.create({
     shadowRadius: 6,
     elevation: 6,
   },
-  headerLeft: { flexDirection: "row", alignItems: "center", gap: 2 },
-  menuButton: { padding: 4 },
+  headerLeft: { flexDirection: "row", alignItems: "center" },
   headerTitle: {
     fontSize: 22,
     fontWeight: "800",
@@ -5575,7 +5570,12 @@ const styles = StyleSheet.create({
     borderColor: "#B71C1C33",
   },
   feedFilterTxt: { fontSize: 12, fontWeight: "600", color: "#B71C1C" },
-  storiesRow: { paddingHorizontal: 7, paddingTop: 5, paddingBottom: 3, gap: 12 },
+  storiesRow: {
+    paddingHorizontal: 7,
+    paddingTop: 5,
+    paddingBottom: 3,
+    gap: 12,
+  },
   storiesDivider: {
     width: "85%",
     height: 2,
