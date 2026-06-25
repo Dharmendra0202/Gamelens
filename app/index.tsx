@@ -703,7 +703,7 @@ export default function AuthScreen() {
                   <TouchableOpacity
                     style={styles.googleButton}
                     activeOpacity={0.75}
-                    onPress={() => console.log("Google login clicked")}
+                    onPress={() => Alert.alert("Google Sign-in", "Google authentication coming soon")}
                   >
                     <Text style={styles.socialIcon}>G</Text>
                     <Text style={styles.googleLabel}>Sign in with Google</Text>

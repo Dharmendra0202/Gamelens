@@ -8,7 +8,6 @@ import {
   ScrollView,
   StatusBar,
   StyleSheet,
-  Switch,
   Text,
   TouchableOpacity,
   View,
@@ -22,8 +21,6 @@ export default function ProfileScreen() {
   const { signOut, profile } = useAuth();
   const { activeMainTab } = useTabNavigator();
   const isActive = activeMainTab === 4; // Profile is the 5th tab (index 4)
-  const [notifications, setNotifications] = useState(true);
-  const [biometricLock, setBiometricLock] = useState(false);
 
   const userName = profile?.full_name || "Guest User";
   const userPhone = profile?.phone_number || "Not set";
@@ -110,7 +107,7 @@ export default function ProfileScreen() {
           </View>
 
           {/* Google Sign-in Pill */}
-          <TouchableOpacity style={styles.googlePill} activeOpacity={0.75}>
+          <TouchableOpacity style={styles.googlePill} activeOpacity={0.75} onPress={() => Alert.alert("Google Sign-in", "Google authentication coming soon")}>
             <Text style={styles.googleG}>G</Text>
             <Text style={styles.googleText}>Sign in with Google</Text>
             <Ionicons name="arrow-forward" size={16} color="#94A3B8" />
@@ -154,40 +151,6 @@ export default function ProfileScreen() {
               <Ionicons name="chevron-forward" size={16} color="#CBD5E1" />
             </TouchableOpacity>
           ))}
-        </View>
-
-        {/* Preferences */}
-        <View style={styles.sectionHeader}>
-          <Text style={styles.sectionTitle}>Preferences</Text>
-        </View>
-        <View style={styles.glassCard}>
-          <View style={styles.prefRow}>
-            <View style={[styles.menuIconWrap, { backgroundColor: "rgba(239,68,68,0.1)" }]}>
-              <Ionicons name="notifications-outline" size={20} color="#EF4444" />
-            </View>
-            <Text style={styles.prefLabel}>Notifications</Text>
-            <Switch
-              value={notifications}
-              onValueChange={setNotifications}
-              trackColor={{ false: "#E2E8F0", true: "#7C3AED" }}
-              thumbColor="#FFF"
-            />
-          </View>
-
-          <View style={styles.prefDivider} />
-
-          <View style={styles.prefRow}>
-            <View style={[styles.menuIconWrap, { backgroundColor: "rgba(100,116,139,0.1)" }]}>
-              <Ionicons name="finger-print-outline" size={20} color="#64748B" />
-            </View>
-            <Text style={styles.prefLabel}>Biometric lock</Text>
-            <Switch
-              value={biometricLock}
-              onValueChange={setBiometricLock}
-              trackColor={{ false: "#E2E8F0", true: "#7C3AED" }}
-              thumbColor="#FFF"
-            />
-          </View>
         </View>
 
         {/* Logout */}

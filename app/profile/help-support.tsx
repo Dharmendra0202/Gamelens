@@ -4,6 +4,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
 import React from "react";
 import {
+    Alert,
     Linking,
     ScrollView,
     StyleSheet,
@@ -32,20 +33,19 @@ export default function HelpSupportScreen() {
       icon: "chatbubble-outline",
       label: "Live Chat",
       desc: "Chat with our team",
-      action: () => {},
+      action: () => Alert.alert("Live Chat", "Live chat is currently offline. Please try email or call."),
     },
     {
       icon: "document-text-outline",
       label: "FAQs",
       desc: "Common questions answered",
-      action: () => {},
+      action: () => Alert.alert("FAQs", "Q: How to book a turf?\nA: Go to Nearby Turf tab and select a turf.\n\nQ: How to create a match?\nA: Go to Sport tab and tap 'Start Match'."),
     },
     {
       icon: "bug-outline",
       label: "Report a Bug",
       desc: "Help us improve",
-      action: () =>
-        Linking.openURL("mailto:bugs@gamelens.app?subject=Bug Report"),
+      action: () => Alert.alert("Report a Bug", "Please email bugs@gamelens.app with details about the issue."),
     },
   ];
 

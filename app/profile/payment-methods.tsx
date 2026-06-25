@@ -4,6 +4,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
 import React from "react";
 import {
+    Alert,
     ScrollView,
     StyleSheet,
     Text,
@@ -24,7 +25,7 @@ export default function PaymentMethodsScreen() {
           <Ionicons name="arrow-back" size={22} color="#FFF" />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Payment Methods</Text>
-        <TouchableOpacity style={styles.backBtn}>
+        <TouchableOpacity style={styles.backBtn} onPress={() => Alert.alert("Add Payment", "Add payment method feature coming soon")}>
           <Ionicons name="add" size={22} color="#FFF" />
         </TouchableOpacity>
       </LinearGradient>

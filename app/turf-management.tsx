@@ -4,6 +4,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
 import React, { useEffect, useState } from "react";
 import {
+  Alert,
   BackHandler,
   Dimensions,
   Modal,
@@ -270,7 +271,12 @@ export default function TurfManagementScreen() {
             key={index}
             style={[styles.settingsItem, index === 5 && { borderBottomWidth: 0 }]}
             onPress={() => {
-              if (item.label === "Logout") router.replace("/");
+              if (item.label === "Profile") Alert.alert("Profile", "Edit your turf owner profile");
+              else if (item.label === "Notifications") Alert.alert("Notifications", "Notification preferences coming soon");
+              else if (item.label === "Payment Methods") router.push("/profile/payment-methods" as never);
+              else if (item.label === "Help & Support") router.push("/profile/help-support" as never);
+              else if (item.label === "Terms & Conditions") Alert.alert("Terms & Conditions", "Terms and conditions will open in browser");
+              else if (item.label === "Logout") router.replace("/");
             }}
           >
             <View style={[styles.settingsIconBg, { backgroundColor: item.color + "15" }]}>

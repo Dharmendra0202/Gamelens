@@ -11,10 +11,12 @@ import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
 import React, { useEffect, useRef, useState } from "react";
 import {
+  Alert,
   Animated,
   Dimensions,
   Easing,
   Image,
+  Linking,
   Modal,
   ScrollView,
   StyleSheet,
@@ -99,6 +101,11 @@ export default function HomeScreen() {
   const [ratingSubmitted, setRatingSubmitted] = useState(false);
   const [profile, setProfile] = useState<Profile>(initialProfile);
   const [profileDraft, setProfileDraft] = useState<Profile>(initialProfile);
+
+  // Stories/Status state
+  const [myStatus, setMyStatus] = useState<{ uri: string; timestamp: number; views: number } | null>(null);
+  const [showStatusViewer, setShowStatusViewer] = useState(false);
+  const [statusViewUri, setStatusViewUri] = useState<string | null>(null);
 
   // Community feed state
   const [activeFeedTab, setActiveFeedTab] = useState("For You");
@@ -416,7 +423,7 @@ export default function HomeScreen() {
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.iconButton}
-              onPress={() => console.log("Notifications clicked")}
+              onPress={() => Alert.alert("Notifications", "No new notifications")}
             >
               <Ionicons name="notifications-outline" size={22} color="#FFF" />
             </TouchableOpacity>
@@ -435,6 +442,12 @@ export default function HomeScreen() {
               style={styles.storyItem}
               activeOpacity={0.8}
               onPress={async () => {
+                if (myStatus) {
+                  // If status exists, view it
+                  setStatusViewUri(myStatus.uri);
+                  setShowStatusViewer(true);
+                  return;
+                }
                 const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
                 if (!permission.granted) return;
                 const result = await ImagePicker.launchImageLibraryAsync({
@@ -444,14 +457,18 @@ export default function HomeScreen() {
                   quality: 0.85,
                 });
                 if (!result.canceled && result.assets[0]?.uri) {
-                  // TODO(backend): upload story to Supabase storage
-                  console.log("Story selected:", result.assets[0].uri);
+                  setMyStatus({ uri: result.assets[0].uri, timestamp: Date.now(), views: 0 });
                 }
               }}
             >
               <View style={styles.storyAvatarCreate}>
-                <View style={styles.storyCreateInner}>
-                  {profile.imageUri ? (
+                <View style={[styles.storyCreateInner, myStatus && { borderWidth: 2, borderColor: "#B71C1C" }]}>
+                  {myStatus ? (
+                    <Image
+                      source={{ uri: myStatus.uri }}
+                      style={styles.storyAvatarImg}
+                    />
+                  ) : profile.imageUri ? (
                     <Image
                       source={{ uri: profile.imageUri }}
                       style={styles.storyAvatarImg}
@@ -462,12 +479,14 @@ export default function HomeScreen() {
                     </Text>
                   )}
                 </View>
-                <View style={styles.storyAddDot}>
-                  <Ionicons name="add" size={12} color="#FFF" />
-                </View>
+                {!myStatus && (
+                  <View style={styles.storyAddDot}>
+                    <Ionicons name="add" size={12} color="#FFF" />
+                  </View>
+                )}
               </View>
               <Text style={styles.storyName}>
-                Add Status
+                {myStatus ? "My Status" : "Add Status"}
               </Text>
             </TouchableOpacity>
           </ScrollView>
@@ -522,6 +541,7 @@ export default function HomeScreen() {
               <TouchableOpacity
                 style={styles.feedFilterBtn}
                 activeOpacity={0.8}
+                onPress={() => Alert.alert("Filter", "Filter options:\n• Most Recent\n• Most Popular\n• Friends Only")}
               >
                 <Ionicons name="options-outline" size={18} color="#B71C1C" />
                 <Text style={styles.feedFilterTxt}>Filter</Text>
@@ -580,6 +600,87 @@ export default function HomeScreen() {
             <View style={{ height: 100 }} />
           </View>
         </ScrollView>
+
+        {/* ── Status Viewer Modal (Instagram-style) ── */}
+        <Modal
+          visible={showStatusViewer}
+          transparent={false}
+          animationType="fade"
+          onRequestClose={() => setShowStatusViewer(false)}
+        >
+          <View style={{ flex: 1, backgroundColor: "#000" }}>
+            {/* Progress bar at top */}
+            <View style={{ position: "absolute", top: 44, left: 12, right: 12, zIndex: 20 }}>
+              <View style={{ height: 2.5, backgroundColor: "rgba(255,255,255,0.3)", borderRadius: 2 }}>
+                <View style={{ height: 2.5, backgroundColor: "#FFF", borderRadius: 2, width: "100%" }} />
+              </View>
+            </View>
+
+            {/* Header - profile info + close */}
+            <View style={{ position: "absolute", top: 52, left: 0, right: 0, zIndex: 15, flexDirection: "row", alignItems: "center", paddingHorizontal: 16, paddingVertical: 8 }}>
+              <View style={{ width: 36, height: 36, borderRadius: 18, backgroundColor: "#333", alignItems: "center", justifyContent: "center", overflow: "hidden" }}>
+                {profile.imageUri ? (
+                  <Image source={{ uri: profile.imageUri }} style={{ width: 36, height: 36, borderRadius: 18 }} />
+                ) : (
+                  <Text style={{ color: "#FFF", fontWeight: "700", fontSize: 14 }}>{profileInitials}</Text>
+                )}
+              </View>
+              <View style={{ flex: 1, marginLeft: 10 }}>
+                <Text style={{ color: "#FFF", fontWeight: "700", fontSize: 14 }}>{profile.name || "You"}</Text>
+                <Text style={{ color: "rgba(255,255,255,0.6)", fontSize: 11 }}>
+                  {myStatus ? new Date(myStatus.timestamp).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) : ""} · {myStatus?.views ?? 0} views
+                </Text>
+              </View>
+              <TouchableOpacity onPress={() => setShowStatusViewer(false)} style={{ padding: 8 }}>
+                <Ionicons name="close" size={26} color="#FFF" />
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => {
+                  Alert.alert("Delete Status", "Remove your status?", [
+                    { text: "Cancel", style: "cancel" },
+                    { text: "Delete", style: "destructive", onPress: () => { setMyStatus(null); setShowStatusViewer(false); } },
+                  ]);
+                }}
+                style={{ padding: 8 }}
+              >
+                <Ionicons name="ellipsis-vertical" size={22} color="#FFF" />
+              </TouchableOpacity>
+            </View>
+
+            {/* Status Image */}
+            {statusViewUri && (
+              <Image
+                source={{ uri: statusViewUri }}
+                style={{ flex: 1, width: "100%", height: "100%" }}
+                resizeMode="contain"
+              />
+            )}
+
+            {/* Bottom bar - reply + actions */}
+            <View style={{ position: "absolute", bottom: 0, left: 0, right: 0, paddingBottom: 34, paddingTop: 12, paddingHorizontal: 16, flexDirection: "row", alignItems: "center", backgroundColor: "rgba(0,0,0,0.4)" }}>
+              <View style={{ flex: 1, backgroundColor: "rgba(255,255,255,0.15)", borderRadius: 24, borderWidth: 1, borderColor: "rgba(255,255,255,0.3)", paddingHorizontal: 16, paddingVertical: 10, marginRight: 12 }}>
+                <Text style={{ color: "rgba(255,255,255,0.6)", fontSize: 14 }}>Reply to status...</Text>
+              </View>
+              <TouchableOpacity style={{ padding: 8 }} onPress={() => Alert.alert("Liked!", "You liked this status")}>
+                <Ionicons name="heart-outline" size={24} color="#FFF" />
+              </TouchableOpacity>
+              <TouchableOpacity style={{ padding: 8 }} onPress={() => Alert.alert("Share", "Status sharing coming soon")}>
+                <Ionicons name="paper-plane-outline" size={22} color="#FFF" />
+              </TouchableOpacity>
+            </View>
+
+            {/* Viewers section (swipe up indicator) */}
+            <View style={{ position: "absolute", bottom: 90, left: 0, right: 0, alignItems: "center" }}>
+              <TouchableOpacity style={{ alignItems: "center" }} onPress={() => Alert.alert("Viewers", "No viewers yet")}>
+                <Ionicons name="chevron-up" size={20} color="rgba(255,255,255,0.5)" />
+                <View style={{ flexDirection: "row", alignItems: "center", gap: 4, marginTop: 2 }}>
+                  <Ionicons name="eye-outline" size={14} color="rgba(255,255,255,0.6)" />
+                  <Text style={{ color: "rgba(255,255,255,0.6)", fontSize: 12, fontWeight: "500" }}>{myStatus?.views ?? 0}</Text>
+                </View>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </Modal>
 
         {/* ── Create Post Modal ── */}
         <Modal
@@ -668,19 +769,22 @@ export default function HomeScreen() {
                 />
               </View>
               <View style={styles.createModalToolbar}>
-                <TouchableOpacity style={styles.toolbarBtn}>
+                <TouchableOpacity style={styles.toolbarBtn} onPress={async () => {
+                  const result = await ImagePicker.launchImageLibraryAsync({ mediaTypes: ImagePicker.MediaTypeOptions.Images, quality: 0.8 });
+                  if (!result.canceled) { Alert.alert("Image Selected", "Image attached to your post"); }
+                }}>
                   <Ionicons name="image-outline" size={22} color="#B71C1C" />
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.toolbarBtn}>
+                <TouchableOpacity style={styles.toolbarBtn} onPress={() => Alert.alert("Video", "Video attachment coming soon")}>
                   <Ionicons name="videocam-outline" size={22} color="#8B0000" />
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.toolbarBtn}>
+                <TouchableOpacity style={styles.toolbarBtn} onPress={() => Alert.alert("Voice", "Voice note coming soon")}>
                   <Ionicons name="mic-outline" size={22} color="#C62828" />
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.toolbarBtn}>
+                <TouchableOpacity style={styles.toolbarBtn} onPress={() => Alert.alert("Tag", "Tag people coming soon")}>
                   <Ionicons name="pricetag-outline" size={22} color="#EF9A9A" />
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.toolbarBtn}>
+                <TouchableOpacity style={styles.toolbarBtn} onPress={() => Alert.alert("Location", "Add location coming soon")}>
                   <Ionicons name="location-outline" size={22} color="#34D399" />
                 </TouchableOpacity>
                 <Text style={styles.charCount}>{newPostText.length}/500</Text>
@@ -924,7 +1028,10 @@ export default function HomeScreen() {
                   )}
                   <TouchableOpacity
                     style={styles.followButton}
-                    onPress={() => setShowPlayerModal(false)}
+                    onPress={() => {
+                      Alert.alert("Following!", "You are now following this player");
+                      setShowPlayerModal(false);
+                    }}
                   >
                     <Text style={styles.followButtonText}>Follow</Text>
                   </TouchableOpacity>
@@ -983,15 +1090,15 @@ export default function HomeScreen() {
               {searchQuery.length === 0 ? (
                 <>
                   <Text style={styles.searchResultsTitle}>Recent Searches</Text>
-                  <TouchableOpacity style={styles.searchResultItem}>
+                  <TouchableOpacity style={styles.searchResultItem} onPress={() => { console.log("Search: Virat Kohli"); setShowSearchModal(false); }}>
                     <Ionicons name="time-outline" size={20} color="#666" />
                     <Text style={styles.searchResultText}>Virat Kohli</Text>
                   </TouchableOpacity>
-                  <TouchableOpacity style={styles.searchResultItem}>
+                  <TouchableOpacity style={styles.searchResultItem} onPress={() => { console.log("Search: Cricket Bat"); setShowSearchModal(false); }}>
                     <Ionicons name="time-outline" size={20} color="#666" />
                     <Text style={styles.searchResultText}>Cricket Bat</Text>
                   </TouchableOpacity>
-                  <TouchableOpacity style={styles.searchResultItem}>
+                  <TouchableOpacity style={styles.searchResultItem} onPress={() => { console.log("Search: IPL 2024"); setShowSearchModal(false); }}>
                     <Ionicons name="time-outline" size={20} color="#666" />
                     <Text style={styles.searchResultText}>IPL 2024</Text>
                   </TouchableOpacity>
@@ -1189,13 +1296,13 @@ export default function HomeScreen() {
                 <Ionicons name="arrow-back" size={24} color="#333" />
               </TouchableOpacity>
               <Text style={styles.chatModalTitle}>Messages</Text>
-              <TouchableOpacity>
+              <TouchableOpacity onPress={() => Alert.alert("New Chat", "Start a new conversation coming soon")}>
                 <Ionicons name="create-outline" size={24} color="#B71C1C" />
               </TouchableOpacity>
             </View>
 
             <ScrollView style={styles.chatList}>
-              <TouchableOpacity style={styles.chatItem}>
+              <TouchableOpacity style={styles.chatItem} onPress={() => Alert.alert("Rahul Sharma", "Chat feature coming soon")}>
                 <View style={styles.chatAvatar}>
                   <Text style={styles.chatAvatarText}>RS</Text>
                 </View>
@@ -1211,7 +1318,7 @@ export default function HomeScreen() {
                 </View>
               </TouchableOpacity>
 
-              <TouchableOpacity style={styles.chatItem}>
+              <TouchableOpacity style={styles.chatItem} onPress={() => Alert.alert("Priya Patel", "Chat feature coming soon")}>
                 <View
                   style={[styles.chatAvatar, { backgroundColor: "#C62828" }]}
                 >
@@ -1228,7 +1335,7 @@ export default function HomeScreen() {
                 </View>
               </TouchableOpacity>
 
-              <TouchableOpacity style={styles.chatItem}>
+              <TouchableOpacity style={styles.chatItem} onPress={() => Alert.alert("Team Warriors", "Chat feature coming soon")}>
                 <View
                   style={[styles.chatAvatar, { backgroundColor: "#8B0000" }]}
                 >
@@ -1715,7 +1822,7 @@ export default function HomeScreen() {
                   </View>
                 </TouchableOpacity>
 
-                <TouchableOpacity style={styles.drawerMenuItem}>
+                <TouchableOpacity style={styles.drawerMenuItem} onPress={() => Alert.alert("Go Live", "Live streaming feature coming soon!")}>
                   <View style={styles.drawerMenuIcon}>
                     <Ionicons name="videocam-outline" size={20} color="#666" />
                   </View>
@@ -2193,7 +2300,7 @@ export default function HomeScreen() {
                         {item.originalPrice}
                       </Text>
                     </View>
-                    <TouchableOpacity style={styles.storeAddCartBtn}>
+                    <TouchableOpacity style={styles.storeAddCartBtn} onPress={() => Alert.alert("Added to Cart", item.name + " added to your cart!")}>
                       <Ionicons name="cart" size={14} color="#FFF" />
                       <Text style={styles.storeAddCartText}>Add to Cart</Text>
                     </TouchableOpacity>
@@ -2552,7 +2659,7 @@ export default function HomeScreen() {
                       </Text>
                     </View>
                   </View>
-                  <TouchableOpacity style={styles.assocJoinBtn}>
+                  <TouchableOpacity style={styles.assocJoinBtn} onPress={() => Alert.alert("Joined!", `You joined ${assoc.name}`)}>
                     <Text style={styles.assocJoinText}>Join</Text>
                   </TouchableOpacity>
                 </TouchableOpacity>
@@ -2587,7 +2694,7 @@ export default function HomeScreen() {
               style={styles.fullModalBody}
               showsVerticalScrollIndicator={false}
             >
-              <TouchableOpacity style={styles.createClubBtn}>
+              <TouchableOpacity style={styles.createClubBtn} onPress={() => Alert.alert("Create Club", "Club creation coming soon!")}>
                 <LinearGradient
                   colors={["#B71C1C", "#8B0000"]}
                   style={styles.createClubGradient}
@@ -2677,7 +2784,7 @@ export default function HomeScreen() {
                       </Text>
                     </View>
                   </View>
-                  <TouchableOpacity style={styles.clubJoinBtn}>
+                  <TouchableOpacity style={styles.clubJoinBtn} onPress={() => Alert.alert("Joined!", `You joined ${club.name}`)}>
                     <Text style={styles.clubJoinText}>Join</Text>
                   </TouchableOpacity>
                 </TouchableOpacity>
@@ -2751,6 +2858,17 @@ export default function HomeScreen() {
                   key={i}
                   style={styles.contactCard}
                   activeOpacity={0.85}
+                  onPress={() => {
+                    if (item.icon === "call") {
+                      Linking.openURL("tel:+919876543210");
+                    } else if (item.icon === "mail") {
+                      Linking.openURL("mailto:support@gamelens.com");
+                    } else if (item.icon === "logo-whatsapp") {
+                      Linking.openURL("https://wa.me/919876543210");
+                    } else if (item.icon === "location") {
+                      Linking.openURL("https://maps.google.com/?q=GameLens+HQ+Mumbai+Maharashtra+India");
+                    }
+                  }}
                 >
                   <View style={styles.contactIconCircle}>
                     <Ionicons
@@ -2789,7 +2907,7 @@ export default function HomeScreen() {
                   placeholderTextColor="#999"
                   multiline
                 />
-                <TouchableOpacity style={styles.contactSendBtn}>
+                <TouchableOpacity style={styles.contactSendBtn} onPress={() => Alert.alert("Message Sent", "We'll get back to you soon!")}>
                   <LinearGradient
                     colors={["#B71C1C", "#8B0000"]}
                     style={styles.contactSendGradient}
@@ -2844,7 +2962,7 @@ export default function HomeScreen() {
                 </Text>
                 <View style={styles.shareReferralCodeRow}>
                   <Text style={styles.shareReferralCode}>GAME2024</Text>
-                  <TouchableOpacity style={styles.shareCopyBtn}>
+                  <TouchableOpacity style={styles.shareCopyBtn} onPress={() => Alert.alert("Copied!", "Referral code copied to clipboard")}>
                     <Ionicons name="copy" size={18} color="#B71C1C" />
                     <Text style={styles.shareCopyText}>Copy</Text>
                   </TouchableOpacity>

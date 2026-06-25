@@ -40,5 +40,5 @@ export const TAB_BAR_HEIGHT = 60;
  * Centralized header height control.
  * Change these two values to adjust header height across the entire app.
  */
-export const HEADER_PADDING_TOP = 34;
-export const HEADER_PADDING_BOTTOM = 5;
+export const HEADER_PADDING_TOP = 38;
+export const HEADER_PADDING_BOTTOM = 3;

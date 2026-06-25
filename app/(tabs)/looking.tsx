@@ -6,6 +6,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import React, { useEffect, useRef, useState } from "react";
 import {
+    Alert,
     Animated,
     Easing,
     ScrollView,
@@ -161,19 +162,19 @@ export default function LookingScreen() {
           <View style={styles.headerRight}>
             <TouchableOpacity
               style={styles.iconButton}
-              onPress={() => console.log("Search clicked")}
+              onPress={() => Alert.alert("Search", "Search feature coming soon")}
             >
               <Ionicons name="search" size={22} color="#FFF" />
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.iconButton}
-              onPress={() => console.log("Filter clicked")}
+              onPress={() => Alert.alert("Filter", "Filter options coming soon")}
             >
               <Ionicons name="options-outline" size={22} color="#FFF" />
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.iconButton}
-              onPress={() => console.log("Notifications clicked")}
+              onPress={() => Alert.alert("Notifications", "No new notifications")}
             >
               <Ionicons name="notifications-outline" size={22} color="#FFF" />
             </TouchableOpacity>
