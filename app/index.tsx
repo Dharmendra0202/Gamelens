@@ -724,7 +724,7 @@ export default function AuthScreen() {
                 {showLoginDrawer && (
                   <View style={styles.drawerOptions}>
                     <TouchableOpacity
-                      style={styles.drawerOption}
+                      style={[styles.drawerOption, { borderBottomWidth: 0 }]}
                       activeOpacity={0.75}
                       onPress={() => {
                         setLoginRole("turf_owner");
@@ -733,18 +733,6 @@ export default function AuthScreen() {
                     >
                       <Ionicons name="football-outline" size={18} color="#8B0000" />
                       <Text style={styles.drawerOptionText}>Login as Turf Management</Text>
-                    </TouchableOpacity>
-
-                    <TouchableOpacity
-                      style={[styles.drawerOption, { borderBottomWidth: 0 }]}
-                      activeOpacity={0.75}
-                      onPress={() => {
-                        setLoginRole("admin");
-                        router.push("/admin" as never);
-                      }}
-                    >
-                      <Ionicons name="shield-outline" size={18} color="#7C3AED" />
-                      <Text style={styles.drawerOptionText}>Login as Admin</Text>
                     </TouchableOpacity>
                   </View>
                 )}
