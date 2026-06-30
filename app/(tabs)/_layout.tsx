@@ -5,7 +5,6 @@ import {
     Animated,
     BackHandler,
     Dimensions,
-    Easing,
     Platform,
     ScrollView,
     StyleSheet,
@@ -56,58 +55,6 @@ const TABS = [
     iconFocused: "person" as const,
   },
 ];
-
-// Tab icon — instant switch, no animation delay
-function AnimatedTabIcon({
-  name,
-  color,
-  focused,
-}: {
-  name: keyof typeof Ionicons.glyphMap;
-  color: string;
-  focused: boolean;
-}) {
-  return (
-    <View style={{ transform: [{ scale: focused ? 1.12 : 0.92 }], opacity: focused ? 1 : 0.55 }}>
-      <Ionicons name={name} size={21} color={color} />
-    </View>
-  );
-}
-
-// Animated active indicator dot
-function TabIndicator({ focused }: { focused: boolean }) {
-  const width = useRef(new Animated.Value(focused ? 20 : 0)).current;
-  const opacity = useRef(new Animated.Value(focused ? 1 : 0)).current;
-
-  useEffect(() => {
-    Animated.parallel([
-      Animated.spring(width, {
-        toValue: focused ? 20 : 0,
-        tension: 200,
-        friction: 14,
-        useNativeDriver: false,
-      }),
-      Animated.timing(opacity, {
-        toValue: focused ? 1 : 0,
-        duration: 180,
-        useNativeDriver: false,
-      }),
-    ]).start();
-  }, [focused]);
-
-  return (
-    <Animated.View
-      style={{
-        width,
-        height: 3,
-        borderRadius: 1.5,
-        backgroundColor: "#B71C1C",
-        opacity,
-        marginTop: 2,
-      }}
-    />
-  );
-}
 
 // Tab screens rendered in pager — order must match TABS
 // Memoized to prevent re-renders on tab switch (activeIndex change)

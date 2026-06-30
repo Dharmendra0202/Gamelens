@@ -108,6 +108,7 @@ export default function HomeScreen() {
   const [myStatus, setMyStatus] = useState<{ uri: string; timestamp: number; views: number } | null>(null);
   const [showStatusViewer, setShowStatusViewer] = useState(false);
   const [statusViewUri, setStatusViewUri] = useState<string | null>(null);
+  const [statusReply, setStatusReply] = useState("");
 
   // Community feed state
   const [activeFeedTab, setActiveFeedTab] = useState("For You");
@@ -654,13 +655,33 @@ export default function HomeScreen() {
 
             {/* Bottom bar - reply + actions */}
             <View style={{ position: "absolute", bottom: 0, left: 0, right: 0, paddingBottom: 34, paddingTop: 12, paddingHorizontal: 16, flexDirection: "row", alignItems: "center", backgroundColor: "rgba(0,0,0,0.4)" }}>
-              <View style={{ flex: 1, backgroundColor: "rgba(255,255,255,0.15)", borderRadius: 24, borderWidth: 1, borderColor: "rgba(255,255,255,0.3)", paddingHorizontal: 16, paddingVertical: 10, marginRight: 12 }}>
-                <Text style={{ color: "rgba(255,255,255,0.6)", fontSize: 14 }}>Reply to status...</Text>
+              <View style={{ flex: 1, backgroundColor: "rgba(255,255,255,0.15)", borderRadius: 24, borderWidth: 1, borderColor: "rgba(255,255,255,0.3)", paddingHorizontal: 16, paddingVertical: 0, marginRight: 12 }}>
+                <TextInput
+                  style={{ color: "#FFF", fontSize: 14, paddingVertical: 10 }}
+                  placeholder="Reply to status..."
+                  placeholderTextColor="rgba(255,255,255,0.6)"
+                  value={statusReply}
+                  onChangeText={setStatusReply}
+                  returnKeyType="send"
+                  onSubmitEditing={() => {
+                    if (statusReply.trim()) {
+                      Alert.alert("Reply Sent", `"${statusReply.trim()}"`);
+                      setStatusReply("");
+                    }
+                  }}
+                />
               </View>
               <TouchableOpacity style={{ padding: 8 }} onPress={() => Alert.alert("Liked!", "You liked this status")}>
                 <Ionicons name="heart-outline" size={24} color="#FFF" />
               </TouchableOpacity>
-              <TouchableOpacity style={{ padding: 8 }} onPress={() => Alert.alert("Share", "Status sharing coming soon")}>
+              <TouchableOpacity style={{ padding: 8 }} onPress={() => {
+                if (statusReply.trim()) {
+                  Alert.alert("Reply Sent", `"${statusReply.trim()}"`);
+                  setStatusReply("");
+                } else {
+                  Alert.alert("Share", "Status sharing coming soon");
+                }
+              }}>
                 <Ionicons name="paper-plane-outline" size={22} color="#FFF" />
               </TouchableOpacity>
             </View>
@@ -1086,15 +1107,15 @@ export default function HomeScreen() {
               {searchQuery.length === 0 ? (
                 <>
                   <Text style={styles.searchResultsTitle}>Recent Searches</Text>
-                  <TouchableOpacity style={styles.searchResultItem} onPress={() => { console.log("Search: Virat Kohli"); setShowSearchModal(false); }}>
+                  <TouchableOpacity style={styles.searchResultItem} onPress={() => { setShowSearchModal(false); }}>
                     <Ionicons name="time-outline" size={20} color="#666" />
                     <Text style={styles.searchResultText}>Virat Kohli</Text>
                   </TouchableOpacity>
-                  <TouchableOpacity style={styles.searchResultItem} onPress={() => { console.log("Search: Cricket Bat"); setShowSearchModal(false); }}>
+                  <TouchableOpacity style={styles.searchResultItem} onPress={() => { setShowSearchModal(false); }}>
                     <Ionicons name="time-outline" size={20} color="#666" />
                     <Text style={styles.searchResultText}>Cricket Bat</Text>
                   </TouchableOpacity>
-                  <TouchableOpacity style={styles.searchResultItem} onPress={() => { console.log("Search: IPL 2024"); setShowSearchModal(false); }}>
+                  <TouchableOpacity style={styles.searchResultItem} onPress={() => { setShowSearchModal(false); }}>
                     <Ionicons name="time-outline" size={20} color="#666" />
                     <Text style={styles.searchResultText}>IPL 2024</Text>
                   </TouchableOpacity>
@@ -1175,9 +1196,7 @@ export default function HomeScreen() {
                           key={match.id}
                           style={styles.searchMatchItem}
                           onPress={() => {
-                            console.log(
-                              `Viewing match: ${match.team1} vs ${match.team2}`,
-                            );
+                            // TODO: Navigate to match detail
                             setShowSearchModal(false);
                           }}
                         >
@@ -1231,7 +1250,7 @@ export default function HomeScreen() {
                           key={product.id}
                           style={styles.searchProductItem}
                           onPress={() => {
-                            console.log(`Viewing product: ${product.name}`);
+                            // TODO: Navigate to product detail
                             setShowSearchModal(false);
                           }}
                         >

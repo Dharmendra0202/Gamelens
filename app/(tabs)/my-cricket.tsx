@@ -4,6 +4,7 @@ import { CitySearchDropdown } from "@/components/ui/city-search-dropdown";
 import { FormTextInput } from "@/components/ui/form-text-input";
 import { SquadSizePicker } from "@/components/ui/squad-size-picker";
 import { TabScreenWrapper } from "@/components/ui/tab-screen-wrapper";
+import { HEADER_PADDING_BOTTOM, HEADER_PADDING_TOP } from "@/constants/app-theme";
 import { useSwipeableTabs } from "@/hooks/use-swipeable-tabs";
 import { LocalStorage } from "@/services/storage";
 import type { Match } from "@/types";
@@ -26,7 +27,9 @@ import {
   Dimensions,
   Easing,
   Image,
+  Linking,
   Modal,
+  Platform,
   ScrollView,
   StyleSheet,
   Text,
@@ -919,6 +922,7 @@ function MyCricketContent({ onChangeSport }: { onChangeSport: () => void }) {
   const modalAnim = useRef(new Animated.Value(0)).current;
   const scrollViewRef = useRef<ScrollView>(null);
   const tournamentDetailHorizontalScrollRef = useRef<ScrollView>(null);
+  const teamSelectionScrollRef = useRef<ScrollView>(null);
 
   // Tournament detail sub-pager (no main-tab edge needed — nested within my-cricket)
   const handleTournamentDetailTabPress = (tabName: string) => {
@@ -1019,7 +1023,6 @@ function MyCricketContent({ onChangeSport }: { onChangeSport: () => void }) {
       return;
     }
     if (params.source === "drawer") {
-      console.log("Coming from drawer - showing individual pages");
       setCurrentView("matches");
     } else if (params.action === "createTournament") {
       handleTabPress("tournaments");
@@ -1180,6 +1183,7 @@ function MyCricketContent({ onChangeSport }: { onChangeSport: () => void }) {
       if (currentView === "selectTeam" || currentView === "createTeam") {
         setCurrentView("teamSelection");
         setShowAddPlayerModal(false);
+        teamSelectionScrollRef.current?.scrollTo({ y: 0, animated: false });
         return true;
       }
       if (currentView === "teamSelection") {
@@ -1298,7 +1302,7 @@ function MyCricketContent({ onChangeSport }: { onChangeSport: () => void }) {
     setCurrentCaptain("");
     setCurrentPlayers("");
 
-    console.log(`Created team for Team ${teamSlot}: ${currentTeamName}`);
+    // TODO: Save team to backend
     handleBackToTeamSelection();
   };
 
@@ -1306,6 +1310,7 @@ function MyCricketContent({ onChangeSport }: { onChangeSport: () => void }) {
     // Close modal and scroll to top when going back
     setShowAddPlayerModal(false);
     scrollViewRef.current?.scrollTo({ y: 0, animated: false });
+    teamSelectionScrollRef.current?.scrollTo({ y: 0, animated: false });
     setCurrentView("teamSelection");
     // Reset VS animations
     vsTeamAnim.setValue(0);
@@ -1320,9 +1325,6 @@ function MyCricketContent({ onChangeSport }: { onChangeSport: () => void }) {
   };
 
   const handleLetsPlay = () => {
-    console.log("Starting match setup...");
-    console.log("Team A:", teamAName);
-    console.log("Team B:", teamBName);
     setCurrentView("matchSetup");
 
     // Trigger VS animations
@@ -1359,13 +1361,37 @@ function MyCricketContent({ onChangeSport }: { onChangeSport: () => void }) {
 
   const handleEnableLocation = async () => {
     try {
+      // Check current permission status first
+      const { status: existingStatus } = await Location.getForegroundPermissionsAsync();
+
+      // If permission was previously denied, guide user to settings
+      if (existingStatus === "denied") {
+        Alert.alert(
+          "Location Permission Required",
+          "Location permission was previously denied. Please enable location access in your device settings to find nearby grounds, or enter your city manually below.",
+          [
+            { text: "Use Manual Entry", style: "cancel" },
+            {
+              text: "Open Settings",
+              onPress: () => {
+                // On Android, this will open app settings
+                if (Platform.OS === 'android') {
+                  Linking.openSettings();
+                }
+              },
+            },
+          ],
+        );
+        return;
+      }
+
       // Request location permissions
       const { status } = await Location.requestForegroundPermissionsAsync();
 
       if (status !== "granted") {
         Alert.alert(
           "Permission Denied",
-          "Location permission is required to find nearby grounds. Please enable location access in your device settings.",
+          "Location permission is required to find nearby grounds. You can still enter your city manually below.",
           [{ text: "OK" }],
         );
         return;
@@ -1385,9 +1411,8 @@ function MyCricketContent({ onChangeSport }: { onChangeSport: () => void }) {
           ),
         ])) as Location.LocationObject;
 
-        console.log("Current location:", location.coords);
       } catch (locationError) {
-        console.log("Location fetch failed:", locationError);
+        // Location fetch failed silently
       }
 
       // TODO(backend): fetch nearby grounds from API using lat/long
@@ -1583,6 +1608,7 @@ function MyCricketContent({ onChangeSport }: { onChangeSport: () => void }) {
                     ) {
                       setCurrentView("teamSelection");
                       setShowAddPlayerModal(false);
+                      teamSelectionScrollRef.current?.scrollTo({ y: 0, animated: false });
                     } else if (currentView === "teamSelection") {
                       setCurrentView("matches");
                       setShowTeamSelection(false);
@@ -1598,13 +1624,13 @@ function MyCricketContent({ onChangeSport }: { onChangeSport: () => void }) {
                       if (teamSlot) {
                         // Came from team selection flow
                         setCurrentView("teamSelection");
+                        teamSelectionScrollRef.current?.scrollTo({ y: 0, animated: false });
                       } else {
                         // Came from addTeamsPlayers flow
                         setCurrentView("addTeamsPlayers");
                       }
                       setShowAddPlayerModal(false);
                     } else if (currentView === "tournamentDetail") {
-                      console.log("Header back from tournamentDetail");
                       setCurrentView("matches");
                       setSelectedTournament(null);
                     } else if (currentView === "tournamentTeamManagement") {
@@ -2653,9 +2679,6 @@ function MyCricketContent({ onChangeSport }: { onChangeSport: () => void }) {
                         <TouchableOpacity
                           style={styles.simpleTeamMgmtButton}
                           onPress={() => {
-                            console.log(
-                              "Add Teams pressed - navigating to Add Teams & Players page",
-                            );
                             setCurrentView("addTeamsPlayers");
                           }}
                         >
@@ -3410,7 +3433,7 @@ function MyCricketContent({ onChangeSport }: { onChangeSport: () => void }) {
                       <TouchableOpacity
                         style={styles.modalOption}
                         onPress={() => {
-                          console.log("Add via Team Link");
+                          // TODO: Implement team link sharing
                           Alert.alert(
                             "Team Link",
                             "Share invite link with teams and players",
@@ -3446,7 +3469,7 @@ function MyCricketContent({ onChangeSport }: { onChangeSport: () => void }) {
                       <TouchableOpacity
                         style={styles.modalOption}
                         onPress={() => {
-                          console.log("Add via QR Code");
+                          // TODO: Implement QR code generation
                           Alert.alert(
                             "QR Code",
                             "Generate QR code for teams to scan and join",
@@ -3480,7 +3503,7 @@ function MyCricketContent({ onChangeSport }: { onChangeSport: () => void }) {
                       <TouchableOpacity
                         style={styles.modalOption}
                         onPress={() => {
-                          console.log("Add from Contacts");
+                          // TODO: Implement contacts import
                           Alert.alert(
                             "From Contacts",
                             "Select teams and players from your contacts",
@@ -3520,7 +3543,7 @@ function MyCricketContent({ onChangeSport }: { onChangeSport: () => void }) {
                       <TouchableOpacity
                         style={styles.modalOption}
                         onPress={() => {
-                          console.log("Add Groups");
+                          // TODO: Implement group management
                           Alert.alert(
                             "Add Groups",
                             "Organize teams into groups for tournament structure",
@@ -3575,8 +3598,7 @@ function MyCricketContent({ onChangeSport }: { onChangeSport: () => void }) {
                   <TouchableOpacity
                     style={styles.addTeamsOption}
                     onPress={() => {
-                      console.log("Add via Team Link");
-                      // Generate tournament invite link
+                      // TODO: Generate real tournament invite link
                       const tournamentLink =
                         "https://crickbuz.app/join/MPL2024-8X7K";
                       Alert.alert(
@@ -3632,8 +3654,7 @@ function MyCricketContent({ onChangeSport }: { onChangeSport: () => void }) {
                   <TouchableOpacity
                     style={styles.addTeamsOption}
                     onPress={() => {
-                      console.log("Add via QR Code");
-                      // Generate dummy QR code
+                      // TODO: Generate real QR code
                       Alert.alert(
                         "QR Code Generated",
                         "Tournament QR Code has been generated!\n\nTournament ID: MPL2024-8X7K\nCode: QR-CRICKET-JOIN-789\n\nTeams can scan this code to join your tournament instantly.",
@@ -3684,9 +3705,8 @@ function MyCricketContent({ onChangeSport }: { onChangeSport: () => void }) {
                   <TouchableOpacity
                     style={styles.addTeamsOption}
                     onPress={async () => {
-                      console.log("Add from Contacts");
                       try {
-                        // Request contacts permission (dummy implementation)
+                        // TODO: Request real contacts permission
                         Alert.alert(
                           "Access Contacts",
                           "This feature would access your contacts to invite teams and players. Would you like to continue?",
@@ -3740,7 +3760,6 @@ function MyCricketContent({ onChangeSport }: { onChangeSport: () => void }) {
                   <TouchableOpacity
                     style={styles.addTeamsOption}
                     onPress={() => {
-                      console.log("Add New Team");
                       setCurrentView("createTeam");
                     }}
                   >
@@ -4124,37 +4143,63 @@ function MyCricketContent({ onChangeSport }: { onChangeSport: () => void }) {
                 <View style={styles.setupSection}>
                   <Text style={styles.setupSectionTitle}>Location *</Text>
 
+                  {/* City Input - Always visible */}
+                  <CitySearchDropdown
+                    value={selectedCity}
+                    onSelect={setSelectedCity}
+                    placeholder="Select City/Town"
+                  />
+
                   {!locationEnabled ? (
-                    <TouchableOpacity
-                      style={styles.locationButton}
-                      onPress={handleEnableLocation}
-                    >
-                      <LinearGradient
-                        colors={["#B71C1C", "#8B0000", "#8B0000"]}
-                        start={{ x: 0, y: 0 }}
-                        end={{ x: 1, y: 1 }}
-                        style={styles.locationButtonGradient}
+                    <>
+                      {/* Manual ground input when location is disabled */}
+                      <View style={[styles.inputContainer, { marginTop: 10 }]}>
+                        <Ionicons
+                          name="location-outline"
+                          size={18}
+                          color="#B71C1C"
+                        />
+                        <TextInput
+                          style={styles.input}
+                          placeholder="Ground Name"
+                          placeholderTextColor="#999"
+                          value={selectedGround}
+                          onChangeText={setSelectedGround}
+                        />
+                      </View>
+
+                      {/* Enable Location Button */}
+                      <TouchableOpacity
+                        style={[styles.locationButton, { marginTop: 10 }]}
+                        onPress={handleEnableLocation}
                       >
-                        <View style={styles.locationButtonContent}>
-                          <View style={styles.locationIconCircle}>
-                            <Ionicons name="location" size={24} color="#FFF" />
+                        <LinearGradient
+                          colors={["#B71C1C", "#8B0000", "#8B0000"]}
+                          start={{ x: 0, y: 0 }}
+                          end={{ x: 1, y: 1 }}
+                          style={styles.locationButtonGradient}
+                        >
+                          <View style={styles.locationButtonContent}>
+                            <View style={styles.locationIconCircle}>
+                              <Ionicons name="location" size={24} color="#FFF" />
+                            </View>
+                            <View style={styles.locationButtonTextContainer}>
+                              <Text style={styles.locationButtonTitle}>
+                                Find Nearby Grounds
+                              </Text>
+                              <Text style={styles.locationButtonSubtitle}>
+                                Or enable location to discover grounds nearby
+                              </Text>
+                            </View>
+                            <Ionicons
+                              name="chevron-forward"
+                              size={20}
+                              color="#FFF"
+                            />
                           </View>
-                          <View style={styles.locationButtonTextContainer}>
-                            <Text style={styles.locationButtonTitle}>
-                              Find Nearby Grounds
-                            </Text>
-                            <Text style={styles.locationButtonSubtitle}>
-                              Enable location to discover cricket grounds
-                            </Text>
-                          </View>
-                          <Ionicons
-                            name="chevron-forward"
-                            size={20}
-                            color="#FFF"
-                          />
-                        </View>
-                      </LinearGradient>
-                    </TouchableOpacity>
+                        </LinearGradient>
+                      </TouchableOpacity>
+                    </>
                   ) : (
                     <View style={styles.locationEnabledContainer}>
                       <LinearGradient
@@ -4323,31 +4368,6 @@ function MyCricketContent({ onChangeSport }: { onChangeSport: () => void }) {
                         </View>
                       </View>
                     </View>
-                  )}
-
-                  {locationEnabled && (
-                    <>
-                      <CitySearchDropdown
-                        value={selectedCity}
-                        onSelect={setSelectedCity}
-                        placeholder="Select City/Town"
-                      />
-
-                      <View style={[styles.inputContainer, { marginTop: 10 }]}>
-                        <Ionicons
-                          name="location-outline"
-                          size={18}
-                          color="#B71C1C"
-                        />
-                        <TextInput
-                          style={styles.input}
-                          placeholder="Ground Name"
-                          placeholderTextColor="#999"
-                          value={selectedGround}
-                          onChangeText={setSelectedGround}
-                        />
-                      </View>
-                    </>
                   )}
                 </View>
 
@@ -4551,19 +4571,6 @@ function MyCricketContent({ onChangeSport }: { onChangeSport: () => void }) {
                       return;
                     }
 
-                    console.log("Match setup complete, proceeding to toss:", {
-                      teamA: teamAName,
-                      teamB: teamBName,
-                      matchType,
-                      overs: numberOfOvers,
-                      city: selectedCity,
-                      ground: selectedGround,
-                      ballType,
-                      date: matchDate,
-                      time: matchTime,
-                      duration: matchDuration,
-                    });
-
                     // Navigate to toss page
                     setCurrentView("tossPage");
                   }}
@@ -4733,12 +4740,6 @@ function MyCricketContent({ onChangeSport }: { onChangeSport: () => void }) {
                   <TouchableOpacity
                     style={styles.startMatchButton}
                     onPress={() => {
-                      const winnerTeam =
-                        tossWinner === "A" ? teamAName : teamBName;
-                      console.log(
-                        `${winnerTeam} won the toss and elected to ${tossDecision.toUpperCase()} first.`,
-                      );
-
                       // Navigate to player selection
                       setCurrentView("playerSelection");
                     }}
@@ -5500,7 +5501,6 @@ function MyCricketContent({ onChangeSport }: { onChangeSport: () => void }) {
                     key={team.id}
                     style={styles.selectTeamCard}
                     onPress={() => {
-                      console.log(`Selected ${team.name} for Team ${teamSlot}`);
                       handleBackToTeamSelection();
                     }}
                   >
@@ -6282,6 +6282,7 @@ function MyCricketContent({ onChangeSport }: { onChangeSport: () => void }) {
             ) : currentView === "teamSelection" ? (
               /* Team Selection View — Premium Redesign */
               <ScrollView
+                ref={teamSelectionScrollRef}
                 style={{ flex: 1 }}
                 showsVerticalScrollIndicator={false}
                 contentContainerStyle={{ paddingBottom: 250 }}
@@ -7378,8 +7379,9 @@ function MyCricketContent({ onChangeSport }: { onChangeSport: () => void }) {
                                         { text: "Cancel", style: "cancel" },
                                         {
                                           text: "Join",
-                                          onPress: () =>
-                                            console.log("Joined tournament"),
+                                          onPress: () => {
+                                            // TODO: Implement tournament join
+                                          },
                                         },
                                       ],
                                     );
@@ -7571,9 +7573,6 @@ function MyCricketContent({ onChangeSport }: { onChangeSport: () => void }) {
                       <TouchableOpacity
                         style={styles.teamOption}
                         onPress={() => {
-                          console.log(
-                            "Select Team pressed - navigating to team selection",
-                          );
                           setCurrentView("teamsSelection");
                         }}
                       >
@@ -7606,7 +7605,6 @@ function MyCricketContent({ onChangeSport }: { onChangeSport: () => void }) {
                       <TouchableOpacity
                         style={styles.teamOption}
                         onPress={() => {
-                          console.log("Create Team pressed");
                           setCurrentView("createTeam");
                           setTeamSlot(null); // Clear team slot since this is not from team selection flow
                         }}
@@ -8143,7 +8141,7 @@ function MyCricketContent({ onChangeSport }: { onChangeSport: () => void }) {
                           key={match.id}
                           style={styles.searchMatchItem}
                           onPress={() => {
-                            console.log(`Viewing match: ${match.team}`);
+                            // TODO: Navigate to match detail view
                             setShowSearchModal(false);
                           }}
                         >
@@ -8378,8 +8376,8 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     paddingHorizontal: 14,
-    paddingTop: 40,
-    paddingBottom: 10,
+    paddingTop: HEADER_PADDING_TOP,
+    paddingBottom: HEADER_PADDING_BOTTOM,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 3 },
     shadowOpacity: 0.25,
@@ -9176,7 +9174,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#F5F5F5",
   },
   tournamentDashboardHeader: {
-    paddingTop: 40,
+    paddingTop: HEADER_PADDING_TOP,
     paddingBottom: 24,
     paddingHorizontal: 20,
     alignItems: "center",
@@ -12427,7 +12425,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     paddingHorizontal: 16,
     paddingVertical: 16,
-    paddingTop: 50,
+    paddingTop: HEADER_PADDING_TOP + 12,
     backgroundColor: "#FFF",
     borderBottomWidth: 1,
     borderBottomColor: "#E0E0E0",
@@ -13067,7 +13065,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     paddingHorizontal: 16,
     paddingVertical: 16,
-    paddingTop: 50,
+    paddingTop: HEADER_PADDING_TOP + 12,
     backgroundColor: "#FFF",
     borderBottomWidth: 1,
     borderBottomColor: "#E0E0E0",
@@ -13314,7 +13312,7 @@ const styles = StyleSheet.create({
 
   // ── Team Selection Premium Styles ──────────────────────────────
   tsMatchHeader: {
-    paddingTop: 52,
+    paddingTop: HEADER_PADDING_TOP + 14,
     paddingBottom: 28,
     paddingHorizontal: 20,
     alignItems: "center",
@@ -13579,8 +13577,8 @@ const styles = StyleSheet.create({
 // ── Create Team Styles (ctStyles) ────────────────────────────────
 const ctStyles = StyleSheet.create({
   header: {
-    paddingTop: 40,
-    paddingBottom: 10,
+    paddingTop: HEADER_PADDING_TOP,
+    paddingBottom: HEADER_PADDING_BOTTOM,
     paddingHorizontal: 14,
     alignItems: "center",
     overflow: "hidden",
