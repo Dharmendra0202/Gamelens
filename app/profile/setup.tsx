@@ -53,8 +53,6 @@ const BOWLING_STYLES: BowlingStyle[] = [
   "Left Arm Chinaman",
 ];
 
-const HEIGHT_UNITS: HeightUnit[] = ["cm", "ft"];
-
 const USERNAME_RE = /^[a-zA-Z0-9_]*$/;
 
 // ─── Component ──────────────────────────────────────────────────────────────────
@@ -71,9 +69,6 @@ export default function ProfileSetupScreen() {
   const [location, setLocation] = useState("");
   const [latitude, setLatitude] = useState<number | null>(null);
   const [longitude, setLongitude] = useState<number | null>(null);
-  const [height, setHeight] = useState("");
-  const [heightUnit, setHeightUnit] = useState<HeightUnit>("cm");
-  const [weightKg, setWeightKg] = useState("");
   const [dob, setDob] = useState<Date | null>(null);
   const [showDobPicker, setShowDobPicker] = useState(false);
   const [avatarUri, setAvatarUri] = useState("");
@@ -96,9 +91,6 @@ export default function ProfileSetupScreen() {
     setLocation(p.location ?? "");
     setLatitude(p.latitude);
     setLongitude(p.longitude);
-    setHeight(p.height != null ? String(p.height) : "");
-    setHeightUnit(p.height_unit ?? "cm");
-    setWeightKg(p.weight_kg != null ? String(p.weight_kg) : "");
     setDob(p.dob ? new Date(p.dob) : null);
     setAvatarUri(p.avatar_url ?? "");
     setPlayerRole(p.player_role);
@@ -201,26 +193,52 @@ export default function ProfileSetupScreen() {
 
   // ── Save ──
   const handleSave = async () => {
-    if (!canSave || !user) return;
+    if (!canSave || !user) {
+      console.warn("[Profile] Cannot save - validation failed", {
+        canSave,
+        hasUser: !!user,
+      });
+      return;
+    }
+
+    console.log("[Profile] Starting save process...", {
+      userId: user.id,
+      fullName,
+      username,
+    });
 
     // Validate username uniqueness
-    const available = await ProfileService.isUsernameAvailable(
-      username.trim(),
-      user.id,
-    );
-    if (!available) {
+    try {
+      console.log("[Profile] Checking username availability...");
+      const available = await ProfileService.isUsernameAvailable(
+        username.trim(),
+        user.id,
+      );
+      console.log("[Profile] Username check result:", { available });
+      if (!available) {
+        Alert.alert(
+          "Username taken",
+          "That username is already in use. Pick another.",
+        );
+        return;
+      }
+      console.log("[Profile] Username is available, proceeding...");
+    } catch (err) {
+      console.error("[Profile] Username check failed:", err);
       Alert.alert(
-        "Username taken",
-        "That username is already in use. Pick another.",
+        "Connection Error",
+        "Could not verify username. Please check your internet connection.",
       );
       return;
     }
 
+    console.log("[Profile] Setting isSaving to true");
     setIsSaving(true);
     try {
       // Upload avatar if it's a local file (non-blocking — save profile even if upload fails)
       let avatarUrl = existingProfile?.avatar_url ?? null;
       if (avatarUri && !avatarUri.startsWith("http")) {
+        console.log("[Profile] Uploading avatar...");
         const { url, error: uploadErr } = await ProfileService.uploadAvatar(
           user.id,
           avatarUri,
@@ -236,6 +254,7 @@ export default function ProfileSetupScreen() {
           // Keep existing avatar URL if any
         } else {
           avatarUrl = url;
+          console.log("[Profile] Avatar uploaded successfully");
         }
       } else if (avatarUri && avatarUri.startsWith("http")) {
         avatarUrl = avatarUri;
@@ -249,9 +268,6 @@ export default function ProfileSetupScreen() {
         location: location.trim() || null,
         latitude,
         longitude,
-        height: height ? parseFloat(height) : null,
-        height_unit: heightUnit,
-        weight_kg: weightKg ? parseFloat(weightKg) : null,
         dob: dob ? dob.toISOString().split("T")[0] : null,
         avatar_url: avatarUrl,
         player_role: playerRole,
@@ -259,19 +275,31 @@ export default function ProfileSetupScreen() {
         bowling_style: bowlingStyle,
       };
 
-      const { error } = await ProfileService.update(user.id, updates);
+      console.log("[Profile] Saving profile updates...", updates);
+
+      const { data, error } = await ProfileService.update(user.id, updates);
 
       if (error) {
-        Alert.alert("Error", error);
+        console.error("[Profile] Save failed:", error);
+        Alert.alert(
+          "Save Failed",
+          `Could not save your profile. Please try again.\n\nError: ${error}`,
+        );
         return;
       }
+
+      console.log("[Profile] Profile saved successfully:", data);
 
       await refreshProfile();
       Alert.alert("Profile saved!", "Your cricket profile is ready.", [
         { text: "OK", onPress: () => router.back() },
       ]);
-    } catch (err) {
-      Alert.alert("Error", "Something went wrong. Please try again.");
+    } catch (err: any) {
+      console.error("[Profile] Unexpected error during save:", err);
+      Alert.alert(
+        "Error",
+        `Something went wrong. Please try again.\n\nDetails: ${err?.message ?? "Unknown error"}`,
+      );
     } finally {
       setIsSaving(false);
     }
@@ -439,40 +467,6 @@ export default function ProfileSetupScreen() {
                 )}
               </TouchableOpacity>
             </View>
-          </View>
-
-          {/* Height */}
-          <View style={styles.fieldWrap}>
-            <Text style={styles.label}>Height</Text>
-            <View style={styles.phoneRow}>
-              <TextInput
-                style={[styles.input, { flex: 1 }]}
-                placeholder={heightUnit === "cm" ? "e.g. 175" : "e.g. 5.9"}
-                placeholderTextColor="#9E9E9E"
-                value={height}
-                onChangeText={(t) => setHeight(t.replace(/[^0-9.]/g, ""))}
-                keyboardType="decimal-pad"
-              />
-              <Dropdown<HeightUnit>
-                label=""
-                value={heightUnit}
-                options={HEIGHT_UNITS}
-                onSelect={setHeightUnit}
-              />
-            </View>
-          </View>
-
-          {/* Weight */}
-          <View style={styles.fieldWrap}>
-            <Text style={styles.label}>Weight (kg)</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="e.g. 72"
-              placeholderTextColor="#9E9E9E"
-              value={weightKg}
-              onChangeText={(t) => setWeightKg(t.replace(/[^0-9.]/g, ""))}
-              keyboardType="decimal-pad"
-            />
           </View>
 
           {/* Date of Birth */}

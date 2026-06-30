@@ -9,6 +9,8 @@ import {
     Alert,
     Animated,
     Easing,
+    Linking,
+    Modal,
     ScrollView,
     StyleSheet,
     Text,
@@ -49,6 +51,13 @@ type Post = {
   message: string;
   meta: string[];
   replies: number;
+  replyMessages?: string[];
+};
+
+type ReplyModalState = {
+  visible: boolean;
+  postId: number | null;
+  postAuthor: string;
 };
 
 const actionTemplates: Record<QuickActionId, string> = {
@@ -74,6 +83,16 @@ export default function LookingScreen() {
   const [draft, setDraft] = useState("");
   const [feedPosts, setFeedPosts] = useState<Post[]>(initialPosts);
   const [contactedPostIds, setContactedPostIds] = useState<number[]>([]);
+  const [isPosting, setIsPosting] = useState(false);
+  
+  // Reply modal state
+  const [replyModal, setReplyModal] = useState<ReplyModalState>({
+    visible: false,
+    postId: null,
+    postAuthor: "",
+  });
+  const [replyText, setReplyText] = useState("");
+  const [isSubmittingReply, setIsSubmittingReply] = useState(false);
 
   // Entrance animations
   const composerAnim = useRef(new Animated.Value(0)).current;
@@ -112,29 +131,146 @@ export default function LookingScreen() {
     const trimmedDraft = draft.trim();
 
     if (!trimmedDraft) {
+      Alert.alert("Empty Post", "Please write something before posting.");
       return;
     }
 
-    const newPost: Post = {
-      id: Date.now(),
-      name: "You",
-      role: "Cricket player",
-      time: "Just now",
-      tag: actionTags[selectedAction],
-      message: trimmedDraft,
-      meta: ["Open request", "Local match", "Chat available"],
-      replies: 0,
-    };
+    if (trimmedDraft.length < 10) {
+      Alert.alert("Too Short", "Please write at least 10 characters.");
+      return;
+    }
 
-    setFeedPosts([newPost, ...feedPosts]);
-    setDraft("");
+    setIsPosting(true);
+
+    // Simulate API call
+    setTimeout(() => {
+      const newPost: Post = {
+        id: Date.now(),
+        name: "You",
+        role: "Cricket player",
+        time: "Just now",
+        tag: actionTags[selectedAction],
+        message: trimmedDraft,
+        meta: ["Open request", "Local match", "Chat available"],
+        replies: 0,
+        replyMessages: [],
+      };
+
+      setFeedPosts([newPost, ...feedPosts]);
+      setDraft("");
+      setIsPosting(false);
+      
+      // Show success feedback
+      Alert.alert("✅ Posted!", "Your request has been posted successfully.");
+    }, 500);
   };
 
-  const addReply = (postId: number) => {
-    setFeedPosts((currentPosts) =>
-      currentPosts.map((post) =>
-        post.id === postId ? { ...post, replies: post.replies + 1 } : post,
-      ),
+  const openReplyModal = (postId: number, postAuthor: string) => {
+    setReplyModal({
+      visible: true,
+      postId,
+      postAuthor,
+    });
+    setReplyText("");
+  };
+
+  const closeReplyModal = () => {
+    setReplyModal({
+      visible: false,
+      postId: null,
+      postAuthor: "",
+    });
+    setReplyText("");
+  };
+
+  const submitReply = () => {
+    if (!replyText.trim()) {
+      Alert.alert("Empty Reply", "Please write a reply before sending.");
+      return;
+    }
+
+    if (!replyModal.postId) return;
+
+    setIsSubmittingReply(true);
+
+    // Simulate API call
+    setTimeout(() => {
+      setFeedPosts((currentPosts) =>
+        currentPosts.map((post) => {
+          if (post.id === replyModal.postId) {
+            return {
+              ...post,
+              replies: post.replies + 1,
+              replyMessages: [
+                ...(post.replyMessages || []),
+                replyText.trim(),
+              ],
+            };
+          }
+          return post;
+        }),
+      );
+
+      setIsSubmittingReply(false);
+      closeReplyModal();
+      Alert.alert("✅ Reply Sent!", "Your reply has been posted.");
+    }, 500);
+  };
+
+  const handleMessage = (postId: number, postAuthor: string) => {
+    const hasContacted = contactedPostIds.includes(postId);
+
+    if (hasContacted) {
+      Alert.alert(
+        "Already Messaged",
+        "You've already reached out to this post.",
+      );
+      return;
+    }
+
+    Alert.alert(
+      "Contact " + postAuthor,
+      "How would you like to contact them?",
+      [
+        {
+          text: "Cancel",
+          style: "cancel",
+        },
+        {
+          text: "WhatsApp",
+          onPress: () => {
+            // TODO(backend): Get actual phone number from user profile
+            const phoneNumber = "1234567890";
+            const message = encodeURIComponent(
+              "Hi! I saw your post on CrickBuz. I'm interested in connecting.",
+            );
+            Linking.openURL(`whatsapp://send?phone=${phoneNumber}&text=${message}`)
+              .then(() => {
+                toggleMessage(postId);
+              })
+              .catch(() => {
+                Alert.alert(
+                  "WhatsApp Not Available",
+                  "Please make sure WhatsApp is installed on your device.",
+                );
+              });
+          },
+        },
+        {
+          text: "Call",
+          onPress: () => {
+            // TODO(backend): Get actual phone number
+            const phoneNumber = "tel:1234567890";
+            Linking.openURL(phoneNumber)
+              .then(() => {
+                toggleMessage(postId);
+              })
+              .catch(() => {
+                Alert.alert("Error", "Unable to make a call.");
+              });
+          },
+        },
+      ],
     );
   };
 
@@ -238,12 +374,14 @@ export default function LookingScreen() {
                 <TouchableOpacity
                   style={[
                     styles.postButton,
-                    !draft.trim() && styles.disabledPostButton,
+                    (!draft.trim() || isPosting) && styles.disabledPostButton,
                   ]}
                   onPress={submitPost}
-                  disabled={!draft.trim()}
+                  disabled={!draft.trim() || isPosting}
                 >
-                  <Text style={styles.postButtonText}>Post</Text>
+                  <Text style={styles.postButtonText}>
+                    {isPosting ? "Posting..." : "Post"}
+                  </Text>
                 </TouchableOpacity>
               </View>
             </View>
@@ -353,7 +491,7 @@ export default function LookingScreen() {
                     <View style={styles.postFooter}>
                       <TouchableOpacity
                         style={styles.footerAction}
-                        onPress={() => addReply(post.id)}
+                        onPress={() => openReplyModal(post.id, post.name)}
                       >
                         <Ionicons
                           name="chatbubble-outline"
@@ -361,7 +499,7 @@ export default function LookingScreen() {
                           color="#666"
                         />
                         <Text style={styles.footerActionText}>
-                          {post.replies} replies
+                          {post.replies} {post.replies === 1 ? "reply" : "replies"}
                         </Text>
                       </TouchableOpacity>
                       <TouchableOpacity
@@ -369,7 +507,7 @@ export default function LookingScreen() {
                           styles.footerAction,
                           hasContacted && styles.activeFooterAction,
                         ]}
-                        onPress={() => toggleMessage(post.id)}
+                        onPress={() => handleMessage(post.id, post.name)}
                       >
                         <Ionicons
                           name={
@@ -384,16 +522,92 @@ export default function LookingScreen() {
                             hasContacted && styles.activeFooterActionText,
                           ]}
                         >
-                          {hasContacted ? "Messaged" : "Message"}
+                          {hasContacted ? "Contacted" : "Contact"}
                         </Text>
                       </TouchableOpacity>
                     </View>
+
+                    {/* Show recent replies if any */}
+                    {post.replyMessages && post.replyMessages.length > 0 && (
+                      <View style={styles.repliesPreview}>
+                        <Text style={styles.repliesPreviewTitle}>
+                          Recent replies:
+                        </Text>
+                        {post.replyMessages.slice(-2).map((reply, idx) => (
+                          <View key={idx} style={styles.replyItem}>
+                            <Ionicons
+                              name="arrow-forward"
+                              size={12}
+                              color="#B71C1C"
+                            />
+                            <Text style={styles.replyText}>{reply}</Text>
+                          </View>
+                        ))}
+                      </View>
+                    )}
                   </View>
                 );
               })
             )}
           </Animated.View>
         </ScrollView>
+
+        {/* Reply Modal */}
+        <Modal
+          visible={replyModal.visible}
+          animationType="slide"
+          transparent
+          onRequestClose={closeReplyModal}
+        >
+          <View style={styles.modalOverlay}>
+            <View style={styles.modalContainer}>
+              <View style={styles.modalHeader}>
+                <Text style={styles.modalTitle}>
+                  Reply to {replyModal.postAuthor}
+                </Text>
+                <TouchableOpacity
+                  onPress={closeReplyModal}
+                  style={styles.modalCloseBtn}
+                >
+                  <Ionicons name="close" size={24} color="#666" />
+                </TouchableOpacity>
+              </View>
+
+              <TextInput
+                style={styles.modalInput}
+                placeholder="Write your reply..."
+                placeholderTextColor="#999"
+                value={replyText}
+                onChangeText={setReplyText}
+                multiline
+                numberOfLines={4}
+                autoFocus
+              />
+
+              <View style={styles.modalActions}>
+                <TouchableOpacity
+                  style={styles.modalCancelBtn}
+                  onPress={closeReplyModal}
+                >
+                  <Text style={styles.modalCancelText}>Cancel</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={[
+                    styles.modalSubmitBtn,
+                    (!replyText.trim() || isSubmittingReply) &&
+                      styles.modalSubmitBtnDisabled,
+                  ]}
+                  onPress={submitReply}
+                  disabled={!replyText.trim() || isSubmittingReply}
+                >
+                  <Text style={styles.modalSubmitText}>
+                    {isSubmittingReply ? "Sending..." : "Send Reply"}
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+        </Modal>
       </View>
     </TabScreenWrapper>
   );
@@ -662,5 +876,102 @@ const styles = StyleSheet.create({
   },
   activeFooterActionText: {
     color: "#B71C1C",
+  },
+
+  // Replies Preview
+  repliesPreview: {
+    marginTop: 12,
+    paddingTop: 12,
+    borderTopWidth: 1,
+    borderTopColor: "#F0F0F0",
+  },
+  repliesPreviewTitle: {
+    fontSize: 12,
+    fontWeight: "600",
+    color: "#999",
+    marginBottom: 8,
+  },
+  replyItem: {
+    flexDirection: "row",
+    alignItems: "flex-start",
+    gap: 8,
+    marginBottom: 6,
+  },
+  replyText: {
+    flex: 1,
+    fontSize: 13,
+    color: "#555",
+    lineHeight: 18,
+  },
+
+  // Reply Modal
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    justifyContent: "flex-end",
+  },
+  modalContainer: {
+    backgroundColor: "#FFF",
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
+    padding: 20,
+    paddingBottom: 40,
+  },
+  modalHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginBottom: 20,
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: "800",
+    color: "#222",
+  },
+  modalCloseBtn: {
+    padding: 4,
+  },
+  modalInput: {
+    backgroundColor: "#F8F9FA",
+    borderRadius: 16,
+    padding: 16,
+    fontSize: 15,
+    color: "#222",
+    minHeight: 120,
+    textAlignVertical: "top",
+    borderWidth: 1,
+    borderColor: "#E2E8F0",
+  },
+  modalActions: {
+    flexDirection: "row",
+    gap: 12,
+    marginTop: 20,
+  },
+  modalCancelBtn: {
+    flex: 1,
+    backgroundColor: "#F5F5F5",
+    borderRadius: 14,
+    paddingVertical: 14,
+    alignItems: "center",
+  },
+  modalCancelText: {
+    fontSize: 15,
+    fontWeight: "700",
+    color: "#666",
+  },
+  modalSubmitBtn: {
+    flex: 1,
+    backgroundColor: "#B71C1C",
+    borderRadius: 14,
+    paddingVertical: 14,
+    alignItems: "center",
+  },
+  modalSubmitBtnDisabled: {
+    backgroundColor: "#D4D4D4",
+  },
+  modalSubmitText: {
+    fontSize: 15,
+    fontWeight: "700",
+    color: "#FFF",
   },
 });
