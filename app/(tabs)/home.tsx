@@ -5572,7 +5572,7 @@ const styles = StyleSheet.create({
   feedFilterTxt: { fontSize: 12, fontWeight: "600", color: "#B71C1C" },
   storiesRow: {
     paddingHorizontal: 7,
-    paddingTop: 5,
+    paddingTop: 7,
     paddingBottom: 3,
     gap: 12,
   },
